@@ -83,7 +83,7 @@ app.use("/api/admin", adminRouter);
 app.use("/api/gate", gateRouter);  // Corrected variable name here as 
 
 //gateAllocation routes
-// app.use("/api/gateAllocation",gateAllocationRouter); // Corrected variable name here as 
+// app.use("/api/gateAllocation",gateAllocationRouter); // Corrected variable name here as
 
 // Static folder for uploaded files (optional, for serving files)
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

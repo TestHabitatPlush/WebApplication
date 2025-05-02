@@ -2,7 +2,11 @@
 import React from "react";
 import Image from "next/image";
 import Navbar from "@/views/navbar/Navbar";
+<<<<<<< HEAD
 import Footer from "@/views/Footer/Footer";
+=======
+import Footer from "@/views/footer/Footer";
+>>>>>>> c6c1dfd5fcce2b989ccff079b263f58e51b5cc70
 import FeatureCard from "@/components/shared/FeatureCard";
 import staffManagementImg from "../../../../assets/images/login-background.jpg";
 

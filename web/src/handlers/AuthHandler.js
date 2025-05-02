@@ -29,9 +29,12 @@ const AuthHandler = () => {
       }
     } catch (error) {
       if (error.response && error.response.status === 404) {
+<<<<<<< HEAD
         // console.log(redirectUrl);
         // console.log(error);
         
+=======
+>>>>>>> c6c1dfd5fcce2b989ccff079b263f58e51b5cc70
         toast.error(error.response.data.message);
       } else {
         toast.error("An unexpected error occurred.");

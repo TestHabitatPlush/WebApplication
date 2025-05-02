@@ -301,8 +301,13 @@ const createAddress = () => {
     city: "Bangalore",
     state: "Karnataka",
     zipCode: "560102",
+<<<<<<< HEAD
     street: "WhiteField",
     address1: "Ecc road",
+=======
+    street: "Srivari street",
+    address1: "123 Greenwood Lane",
+>>>>>>> c6c1dfd5fcce2b989ccff079b263f58e51b5cc70
   };
 
   const data = Address.create(address);
@@ -356,6 +361,7 @@ const createSuperAdmin = async () => {
     salutation: "Mr",
     firstName: "Super",
     lastName: "Admin",
+<<<<<<< HEAD
     password: "Welcome@1234$",
     countyCode: 91,
     mobileNumber: 7873908844,
@@ -363,6 +369,15 @@ const createSuperAdmin = async () => {
     email: "super.admin@gmail.com",
     roleId: 1,
     livesHere: false,
+=======
+    password: "super.admin",
+    countyCode: 91,
+    mobileNumber: 9887865722,
+    alternateNumber: 9876543210,
+    email: "super.admin@gmail.com",
+    roleId: 1,
+    livesHere: true,
+>>>>>>> c6c1dfd5fcce2b989ccff079b263f58e51b5cc70
     primaryContact: true,
     isManagementCommittee: true,
     managementDesignation: "Super Admin",
@@ -402,7 +417,11 @@ const createDemoCustomer = async () => {
   try {
     const customer1 = {
       customerType: "society",
+<<<<<<< HEAD
       customerName: "Test Habitat Plush Society",
+=======
+      customerName: "Greenwood Society",
+>>>>>>> c6c1dfd5fcce2b989ccff079b263f58e51b5cc70
       societyType: "residential",
       societyName: "Greenwood Heights",
       establishedYear: "2005",
@@ -504,6 +523,7 @@ exports.createSuperAdmin = async (req, res) => {
     salutation: "Mr",
     firstName: "Super",
     lastName: "Admin",
+<<<<<<< HEAD
     password: "Welcome@123$", 
     countryCode: 91,
     mobileNumber: 7873908844,
@@ -514,6 +534,18 @@ exports.createSuperAdmin = async (req, res) => {
     livesHere: false,
     primaryContact: false,
     isManagementCommittee: false,
+=======
+    password: "super.admin", 
+    countryCode: 91,
+    mobileNumber: 9887865722,
+    alternateNumber: 9876543210,
+    email: "super.admin@gmail.com",
+    roleId: 1,
+    societyId:1,
+    livesHere: true,
+    primaryContact: true,
+    isManagementCommittee: true,
+>>>>>>> c6c1dfd5fcce2b989ccff079b263f58e51b5cc70
     managementDesignation: "Super Admin",
     status: "active",
     addressId: 1,
