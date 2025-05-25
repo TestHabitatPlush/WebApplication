@@ -94,3 +94,49 @@ exports.getUnitTypeBySocityId = async(req,res)=>{
     return sendErrorResponse(res, "Internal server error", 500, error.message);
   }
 }
+
+exports.updateUnitType = async(req,res)=>{
+  try{
+    const { unitTypeId } = req.params;
+    const { unitTypeName } = req.body;
+
+    if(!unitTypeId) {
+      return sendErrorResponse(res, "Unit Type Id not specified", 400);
+    }
+
+    const unitType = await UnitType.findByPk(unitTypeId);
+    if(!unitType) {
+      return sendErrorResponse(res, "No Unit Type found with this Id", 404);
+    }
+
+    await unitType.update({ unitTypeName });
+
+    return sendSuccessResponse(res, "Unit Type updated successfully", unitType, 200);
+
+  } catch (error){
+    console.error("Error updating Unit Type: ", error);
+    return sendErrorResponse(res, "Internal server error", 500, error.message);
+  }
+}
+
+exports.deleteUnitType = async (req,res)=>{
+  try{
+    const {unitTypeId} = req.params;
+    if(!unitTypeId){
+      return sendErrorResponse(res, "Floor Id is Require", 400);
+    }
+
+    const unitType = await UnitType.findByPk(unitTypeId);
+    if(!unitType){
+      return sendErrorResponse(res, "No Unit Type found with this Id", 404);
+    }
+
+    const deletedUnitType = await unitType.destroy();
+
+    return sendErrorResponse(res,"unitType Deleete successfully",null,200);
+
+  } catch (error){
+    console.error("Error deleting Unit Type: ", error);
+    return sendErrorResponse(res, "Internal server error", 500, error.message);
+  }
+}

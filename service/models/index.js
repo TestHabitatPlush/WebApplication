@@ -1,10 +1,13 @@
 const User = require("./User");
 const Address = require("./Address");
 const Customer = require("./Customer");
+const DiscussionForum = require("./Discussion_Forum");
 const GateAllocation = require("./GateAllocation")
 const SubscriptionPlan = require("./SubscriptionPlan");
 const Parking = require("./Parking");
+const Vehicle = require("./VehicleDetails")
 const JobProfile = require("./JobProfile");
+const Document = require("./Document");
 const Role = require("./RoleModel");
 const Building = require("./Building");
 const Gate = require("./Gate");
@@ -67,8 +70,11 @@ module.exports = {
   Address,
   SubscriptionPlan,
   Customer,
+  Document,
+  DiscussionForum,
   GateAllocation,
   Parking,
+  Vehicle,
   Role,
   Building,
   JobProfile,

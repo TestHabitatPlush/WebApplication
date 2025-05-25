@@ -134,3 +134,51 @@ exports.getFloorsBySocietyId = async (req, res) => {
     return sendErrorResponse(res, "Internal server error", 500, err.message);
   }
 };
+
+exports.updateFloor = async(req,res)=>{
+  try{
+
+    const {floorId} = req.params;
+    const{ floorName, shortForm } = req.body;
+
+    if(!floorId){
+      return sendErrorResponse(res,"floor Id is required",400);
+    }
+
+    const floor = await Floor.findByPk(floorId);
+    if(!floor){
+      return sendErrorResponse(res,"floor not found",404);
+    }
+
+    await floor.update({
+      floorName,
+      shortForm
+    })
+    return sendSuccessResponse(res,"floor updated successfully",floor,200);
+
+  } catch (err){
+    console.error("Error updating floor:", err);
+    return sendErrorResponse(res, "Internal server error", 500, err.message);
+  }
+}
+
+exports.deleteFloor = async (req,res) =>{
+  try{
+    const {floorId} = req.params;
+    if(!floorId){
+      return sendErrorResponse(res,"floor Id is required",400);
+    }
+
+    const floor = await Floor.findByPk(floorId);
+    if(!floorId){
+      return sendErrorResponse(res,"floor not found",404);
+    }
+
+    await floor.destroy();
+    return sendSuccessResponse(res,"floor deleted successfully",null,200);
+
+  } catch (error){
+    console.error("Error deleting floor:", error);
+    return sendErrorResponse(res, "Internal server error", 500, error.message);
+  }
+}

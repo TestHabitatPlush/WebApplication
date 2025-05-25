@@ -148,4 +148,56 @@ const getAllUnits = async (req, res) => {
   }
 };
 
-module.exports = { createUnit, getUnit, getAllUnits };
+const updateUnit  = async (req, res) =>{
+  try {
+    const unitId = req.params.unitId;
+    const {
+      floorId, buildingId, unitTypeId, unitNumber, unitName,unitsize,
+    } = req.body;
+
+    const [ updateCount ] = await Unit.update(
+      {
+        floorId,buildingId,unitTypeId,unitNumber,unitsize,unitName
+      },
+      {
+        where:{ unitId },
+      }
+    );
+
+    if (updateCount === 0) {
+      return res.status(404).json({ message: "Unit not found!" });
+    }
+
+    const updateUnit = await Unit.findByPk(unitId);
+
+    return res.status(200).json({
+      message: "Unit updated successfully",
+      data:updateUnit,
+    })
+
+  } catch (err){
+    console.error("Error updating unit: ", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+const deleteUnit = async (req,res) =>{
+  try {
+    const { unitId } = req.params;
+    if(!unitId){
+      return res.status(400).json({ message: "Unit ID is required" });
+    }
+    const unit = await Unit.findByPk(unitId);
+
+    if(!unit){
+      return res.status(404).json({ message: "Unit not found" });
+    }
+    await unit.destroy();
+    return res.status(200).json({ message: "Unit deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting unit: ", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+module.exports = { createUnit, getUnit, getAllUnits, updateUnit, deleteUnit };

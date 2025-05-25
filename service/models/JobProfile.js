@@ -28,8 +28,8 @@ const JobProfile = sequelize.define('JobProfile', {
     },
     email: {
         type: DataTypes.STRING,
-        allowNull: false,
-        unique: true, // Ensure email is unique
+        allowNull: true,
+        // unique: true, // Ensure email is unique
         validate: {
             isEmail: true,
         },

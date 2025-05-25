@@ -45,7 +45,6 @@ gateAllocationRouter.post('/', gateAllocationController.createGateAllocation);
 gateAllocationRouter.put('/:id', gateAllocationController.updateGateAllocation); 
 gateAllocationRouter.delete('/:id', gateAllocationController.deleteGateAllocation);
 
-// gateAllocationRouter.get('/list/socity/:id', gateAllocationController.getGateAllocationsBySocietyId);
 gateAllocationRouter.get('/list/:societyId', gateAllocationController.getGateAllocationsBySocietyId);
 
 

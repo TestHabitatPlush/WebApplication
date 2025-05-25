@@ -1,11 +1,13 @@
-const { getUnitType, createUnitType,getUnitTypeBySocityId } = require('../controllers/unitTypeController');
+const { getUnitType, createUnitType,getUnitTypeBySocityId, updateUnitType, deleteUnitType } = require('../controllers/unitTypeController');
 
 const unitTypeRouter = require('express').Router();
 
 unitTypeRouter
   .get("/", getUnitType)     
   .post("/", createUnitType)
-  .get("/:societyId", getUnitTypeBySocityId); 
+  .get("/:societyId", getUnitTypeBySocityId)
+  .put("/:unitTypeId",updateUnitType) 
+  .delete("/:unitTypeId",deleteUnitType)
 
 
 module.exports = unitTypeRouter;

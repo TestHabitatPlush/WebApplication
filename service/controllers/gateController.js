@@ -5,13 +5,10 @@ const { sendErrorResponse, sendSuccessResponse } = require('../utils/response');
 exports.createGate = async (req, res) => {
   try {
     let body = req.body;
-
-    // Ensure body is an array
     if (!Array.isArray(body)) {
       body = [body];
     }
 
-    // Validate all entries before processing
     for (const gate of body) {
       const { societyId, gateName, gateNumber } = gate;
       if (!societyId || !gateName || !gateNumber) {
@@ -23,7 +20,6 @@ exports.createGate = async (req, res) => {
       }
     }
 
-    // Create multiple gates
     const createdGates = await Promise.all(
       body.map(gate => {
         return Gate.create({
@@ -92,7 +88,7 @@ exports.getGates = async (req, res) => {
       include: [
         {
           model: Customer,
-          attributes: ["customerId", "customerName"], // Adjust fields as per your schema
+          attributes: ["customerId", "customerName"], 
         },
       ],
     });
@@ -126,7 +122,7 @@ exports.getGatesBySocietyId = async (req, res) => {
       include: [
         {
           model: Customer,
-          attributes: ["customerId", "customerName"], // Adjust fields as per your schema
+          attributes: ["customerId", "customerName"],
         },
       ],
     });
@@ -139,5 +135,43 @@ exports.getGatesBySocietyId = async (req, res) => {
   } catch (err) {
     console.error("Error fetching gates by societyId:", err);
     return sendErrorResponse(res, "Internal server error", 500, err.message);
+  }
+};
+
+exports.updateGate = async (req, res) => {
+  try {
+    const { gateId } = req.params;
+    const { gateName, gateNumber } = req.body;
+
+    if (!gateName || !gateNumber) {
+      return sendErrorResponse(res, "Gate name and gate number are required", 400);
+    }
+
+    const gate = await Gate.findByPk(gateId);
+    if (!gate) return sendErrorResponse(res, `Gate with ID ${gateId} not found`, 404);
+
+    gate.gateName = gateName;
+    gate.gateNumber = gateNumber;
+    await gate.save();
+
+    return sendSuccessResponse(res, `Gate with ID ${gateId} updated successfully`, gate, 200);
+  } catch (err) {
+    console.error("Error updating gate:", err);
+    return sendErrorResponse(res, "Internal server error", 500, err.message);
+  }
+};
+
+exports.deleteGate = async (req, res) => {
+  try {
+    const { gateId } = req.params;
+
+    const gate = await Gate.findByPk(gateId);
+    if (!gate) return sendErrorResponse(res, `Gate with ID ${gateId} not found`, 404);
+
+    await gate.destroy();
+    return sendSuccessResponse(res, `Gate with ID ${gateId} deleted successfully`, gate, 200);
+  } catch (error) {
+    console.error("Error deleting gate:", error);
+    return sendErrorResponse(res, "Internal server error", 500, error.message);
   }
 };

@@ -1,73 +1,84 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
-const Building = require("./Building");
-const Floor = require("./Floor");
-const UnitType = require("./UnitType");
-const Customer = require("./Customer");
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
+const Unit = require('./Unit');
+const Customer = require('./Customer');
 
-const Unit = sequelize.define(
-  "unit",
-  {
-    unitId: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-    unitName: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    unitNumber: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
+const Parking = sequelize.define('Parking', {
+    parkingId: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
     },
     societyId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: Customer,
-        key: "customerId",
-      },
-      allowNull: false,
+        type: DataTypes.INTEGER,
+        references: {
+            model: Customer,
+            key: 'customerId',
+        },
+        allowNull: false,
     },
-    buildingId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: Building,
-        key: "buildingId",
-      },
-      allowNull: false,
+    // unitName: {
+    //     type: DataTypes.STRING,
+    //     references: {
+    //         model: Unit,
+    //         key: 'unitName',
+    //     },
+    //     allowNull: true,
+    // },
+    unitId: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Unit,
+            key: 'unitId',
+        },
+        allowNull: true,
     },
-    floorId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: Floor,
-        key: "floorId",
-      },
-      allowNull: false,
+    parkingSlotName: {
+        type: DataTypes.STRING,
+        allowNull: false,
     },
-    unitTypeId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: UnitType,
-        key: "unitTypeId",
-      },
-      allowNull: false,
+    parkingSlotType: {
+        type: DataTypes.ENUM('PublicUsage', 'PrivateUsage'),
+        allowNull: false,
     },
-    unitsize: {
-      type: DataTypes.STRING,
-      allowNull: false,
+    parkingCharges: {
+        type: DataTypes.ENUM('Free', 'Paid'),
+        allowNull: false,
     },
-  },
-  {
-    tableName: "unit",
+    parkingUsage: {
+        type: DataTypes.ENUM('Hourly', 'Days'),
+        allowNull: false,
+    },
+    chargeAmount: {
+        type: DataTypes.DECIMAL(10, 2),
+        defaultValue: 0.00,
+        allowNull: false,
+    },
+    vehicleType: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    vehicleNumber: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    bookingFrom: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        validate: {
+            isDate: true,
+        },
+    },
+    bookingTo: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        validate: {
+            isDate: true,
+        },
+    },
+}, {
+    tableName: 'parking',
     timestamps: true,
-  }
-);
+});
 
-// Define associations
-Unit.belongsTo(Customer, { foreignKey: "societyId" });
-Unit.belongsTo(Building, { foreignKey: "buildingId" });
-Unit.belongsTo(Floor, { foreignKey: "floorId" });
-Unit.belongsTo(UnitType, { foreignKey: "unitTypeId" });
-
-module.exports = Unit;
+module.exports = Parking;

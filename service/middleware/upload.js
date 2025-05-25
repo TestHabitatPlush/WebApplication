@@ -1,34 +1,43 @@
 const multer = require('multer');
 const path = require('path');
 
-// Configure storage settings for file upload
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/'); // Directory to store files
+        cb(null, 'uploads/'); 
     },
     filename: (req, file, cb) => {
-        // Generate a unique file name based on current timestamp and original file name
+        
         cb(null, `${Date.now()}_${file.originalname}`);
     }
 });
 
-// Define allowed file types (images and PDFs)
 const fileFilter = (req, file, cb) => {
-    const allowedFileTypes = /jpeg|jpg|png|pdf/;
-    const extname = allowedFileTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedFileTypes.test(file.mimetype);
+    const allowedExtensions = /jpeg|jpg|png|pdf|xlsx|csv/;
+    const extname = allowedExtensions.test(path.extname(file.originalname).toLowerCase());
+
+    const allowedMimetypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "application/pdf",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
+        "text/csv"
+    ];
+    
+    const mimetype = allowedMimetypes.includes(file.mimetype);
 
     if (extname && mimetype) {
         cb(null, true);
     } else {
-        cb(new Error('Only image files (jpeg, jpg, png) and PDF files are allowed.'));
+        cb(new Error("Only image files (jpeg, jpg, png) and PDF, Excel(.xlsx), or CSV files are allowed."));
     }
 };
 
-// Configure multer upload options
+
+
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 2 * 1024 * 1024 }, // Limit file size to 2MB
+    limits: { fileSize: 5 * 1024 * 1024 }, 
     fileFilter: fileFilter
 });
 

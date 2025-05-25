@@ -25,7 +25,8 @@ const { Sequelize } = require("sequelize");
 // const DB_PASSWORD = "0Vw$DrhtE";
 // const DB_NAME = "u236629367_testdb_1";
 
-const DB_HOST = "localhost";
+const DB_HOST = "127.0.0.1";
+// const DB_HOST = "147.79.70.208";
 const DB_USER = "root";
 const DB_PASSWORD = "sabya@8855";
 const DB_NAME = "habitatplush_test";
@@ -33,6 +34,8 @@ const DB_NAME = "habitatplush_test";
 const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
   host: DB_HOST,
   dialect: "mysql",
+  logging: false,
+  
 });
 
 module.exports = sequelize;
