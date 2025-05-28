@@ -64,7 +64,7 @@ const AuthHandler = () => {
   const logoutHandler = () => {
     clearLocalStorage();
     dispatch(clearAuth());
-    window.location.href = 'http://147.79.70.208';
+    window.location.href = process.env.REACT_APP_PUBLIC_BASE_URL;
   };
 
   return {
