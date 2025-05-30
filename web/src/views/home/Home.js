@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "../navbar/Navbar";
-import Footer from "../Footer/Footer";
+import Footer from "../footer/Footer";
 import FAQ from "./FAQ";
 import HeroSection from "./HeroSection";
 import WhyHabitatPlush from "./WhyHabitatPlush";
@@ -13,7 +13,7 @@ const Home = () => {
     <div>
       <Navbar />
       {/* Hero Section */}
-      <section className="py-16 text-center bg-blue-100">
+      <section className="text-center py-16 bg-blue-100">
         <HeroSection />
       </section>
       <WhyHabitatPlush />

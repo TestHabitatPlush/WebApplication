@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const Customer = require('./Customer');
 const Role = require("./RoleModel");
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 
 const JobProfile = sequelize.define('JobProfile', {
     profileId: {

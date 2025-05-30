@@ -1,52 +1,30 @@
-// import React from "react";
-// import DashboardLayout from "@/components/layouts/DashboardLayout";
-// import DashboardHeader from "@/views/dashboard/DashboardHeader";
-// import DashboardLeftContents from "@/views/dashboard/DashboardLeftContents";
-
-// const Documents = () => {
-//   return (
-//     <main>
-//       <DashboardLayout
-//         header={<DashboardHeader />}
-//         leftContent={<DashboardLeftContents />}
-//         rightContent={<React.Fragment>
-//         <FileUploadApp/>
-//      Document
-//         </React.Fragment>}
-//       />
-//     </main>
-//   );
-// };
-
-// export default Documents;
-
-import React from "react";
+import { useState } from "react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import DashboardHeader from "@/views/dashboard/DashboardHeader";
 import DashboardLeftContents from "@/views/dashboard/DashboardLeftContents";
-// import FileUploadApp from "./FileUploadApp";
-import AddDocument from "../dashboard/components/document/AddDocument";
-import DocumentsList from "../dashboard/components/document/DocumentsList";
+import AddDocument from "@/views/documents/AddDocument";
+import DocumentList from "@/views/documents/DocumentList";
 
 const Documents = () => {
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleRefresh = () => {
+    setRefreshKey((prev) => prev + 1);
+  }; // ✅ Missing closing brace fixed here
+
   return (
-    <main>
-      <DashboardLayout
-        header={<DashboardHeader />}
-        leftContent={<DashboardLeftContents />}
-        rightContent={
-          <React.Fragment>
-            {/* <FileUploadApp /> */}
-            <AddDocument/>
-            <DocumentsList/>
-
-
-
-          </React.Fragment>
-        }
-      />
-    </main>
+    <DashboardLayout
+      header={<DashboardHeader />}
+      leftContent={<DashboardLeftContents />}
+      rightContent={
+        <>
+          <AddDocument onUploadSuccess={handleRefresh} />
+          <DocumentList refreshKey={refreshKey} />
+        </>
+      }
+    />
   );
 };
 
 export default Documents;
+

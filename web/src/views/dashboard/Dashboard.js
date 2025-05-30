@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import CommunityDirectories from "./components/directories/CommunityDirectories";
-import PostPreview from "./components/post/PostPreview";
+// import PostPreview from "./components/post/PostPreview";
 import Cookies from "js-cookie";
 import { AnnoucementPreview } from "../announcement";
-import { FaCar, FaUserTie , FaUsers , FaUserPlus } from "react-icons/fa6";
+import { FaCar, FaUserTie , FaUsers , FaUsersGear  } from "react-icons/fa6";
 const Dashboard = () => {
   useEffect(() => {
     console.log(Cookies.get("auth"));
@@ -15,7 +15,7 @@ const Dashboard = () => {
   const Info = () => {
     return (
       <div className="p-5 rounded-lg">
-        <h1 className="text-xl font-semibold text-center  text-turquoise">
+        <h1 className="text-xl font-semibold text-center text-turquoise">
        
         </h1>
   
@@ -27,7 +27,7 @@ const Dashboard = () => {
             <span className="p-3 border rounded-full border-turquoise">
               <FaUsers className="text-3xl text-turquoise" />
             </span>
-            <h3 className="mt-2 font-semibold text-center text-md">Add Members</h3>
+            <h3 className="mt-2 font-semibold text-center text-md">Members</h3>
           </div>
   
          
@@ -38,7 +38,7 @@ const Dashboard = () => {
             <span className="p-3 border rounded-full border-turquoise">
               <FaCar className="text-3xl text-turquoise" />
             </span>
-            <h3 className="mt-2 font-semibold text-center text-md">Add Vehicles</h3>
+            <h3 className="mt-2 font-semibold text-center text-md">Vehicles</h3>
           </div>
   
           
@@ -47,9 +47,9 @@ const Dashboard = () => {
               7 
             </div>
             <span className="p-3 border rounded-full border-turquoise">
-              <FaUserPlus className="text-3xl text-turquoise" />
+              <FaUsersGear  className="text-3xl text-turquoise" />
             </span>
-            <h3 className="mt-2 font-semibold text-center text-md">Add Tenants</h3>
+            <h3 className="mt-2 font-semibold text-center text-md">Tenants</h3>
           </div>
   
        
@@ -60,7 +60,7 @@ const Dashboard = () => {
             <span className="p-3 border rounded-full border-turquoise">
               <FaUserTie className="text-3xl text-turquoise" />
             </span>
-            <h3 className="mt-2 font-semibold text-center text-md">Add Staffs</h3>
+            <h3 className="mt-2 font-semibold text-center text-md">Staffs</h3>
           </div>
         </div>
       </div>
@@ -78,7 +78,7 @@ const Dashboard = () => {
        </section>
       <AnnoucementPreview/>
       <CommunityDirectories />
-      <PostPreview/>
+      {/* <PostPreview/> */}
     </div>
   );
 };
