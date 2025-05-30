@@ -18,6 +18,9 @@ userRouter.put("/resident/:societyId",userController.updateResidentBySocietyId)
 
 userRouter.post("/bulk-create/:societyId",upload.single("file"),userController.bulkCreateResidents)
 
+//userRouter.get("/moderator/:societyId", userController. getSocietyModerator);
+userRouter.get("/management/:societyId", userController.getManagement_committee);
+
 // userRouter.post("/resident/approve", userController.approveUser);
 // userRouter.get('/resident/approvedUser/:societyId', userController.getAllApprovedUsers);
 // 

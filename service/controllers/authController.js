@@ -1,9 +1,9 @@
-require("dotenv").config(); // Ensure at the top of your entry point
+require("dotenv").config(); 
 
 const { generateToken, verifyToken } = require("../utils/jwt");
 const cookieHandler = require("../middleware/cookieHandler");
 const { User, Role, Customer, JobProfile } = require("../models");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 
 const loginUser = async (req, res) => {
   try {
@@ -172,7 +172,3 @@ const loginToken = async (req, res) => {
 };
 
 module.exports = { loginUser, tokenSignIn, jobProfileLogin, loginToken };
-
-
-
-// helo
