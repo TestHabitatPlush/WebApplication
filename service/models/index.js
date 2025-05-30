@@ -26,6 +26,7 @@ const Ticket_Summery = require("./Ticket_Summery");
 const ref_ticket_status = require("./ref_ticket_status");
 const ref_ticket_catagorisation = require("./ref_ticket_catagorisation");
 const Socity_HelpDesk_Access_Management = require("./Socity_HelpDesk_Access_Management");
+const Emergency_Contact = require("./Emergency_Contact");
 
 Address.hasMany(Customer, { foreignKey: "addressId" });
 Customer.belongsTo(Address, { foreignKey: "addressId" });
@@ -72,6 +73,7 @@ module.exports = {
   Customer,
   Document,
   DiscussionForum,
+  Emergency_Contact,
   GateAllocation,
   Parking,
   Vehicle,

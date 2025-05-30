@@ -11,4 +11,3 @@ exports.verifyToken = (token) => {
     return null;
   }
 };
-

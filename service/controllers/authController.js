@@ -57,19 +57,55 @@ const loginUser = async (req, res) => {
   }
 };
 
+// const tokenSignIn = async (req, res) => {
+//   try {
+//     const { token } = req.body;
+//     console.log("token",token);
+//     if (!token) return res.status(401).json({ message: "Token not found." });
+
+//     const { email, password } = verifyToken(token);
+//     const user = await User.findOne({
+//       where: { email },
+//       include: [{ model: Role, as: "role" }, { model: Customer }],
+//     });
+
+//     if (!user || !(await bcrypt.compare(password, user.password))) {
+//       return res.status(401).json({ message: "Invalid email or password." });
+//     }
+
+//     const newToken = generateToken({ userId: user.userId, email });
+//     cookieHandler(res, newToken);
+
+//     return res.status(200).json({
+//       message: "Successfully logged in!",
+//       token: newToken,
+//       user,
+//     });
+//   } catch (error) {
+//     console.error("Token Sign-in Error:", error);
+//     return res.status(500).json({ message: error.message || "Internal Server Error" });
+//   }
+// };
+
+
+
 const tokenSignIn = async (req, res) => {
   try {
-    const { token } = req.body;
-    if (!token) return res.status(401).json({ message: "Token not found." });
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Authorization header missing or malformed." });
+    }
 
-    const { email, password } = verifyToken(token);
+    const token = authHeader.split(" ")[1];
+    const { email } = verifyToken(token); // Do NOT include password in token
+
     const user = await User.findOne({
       where: { email },
       include: [{ model: Role, as: "role" }, { model: Customer }],
     });
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({ message: "Invalid email or password." });
+    if (!user) {
+      return res.status(401).json({ message: "User not found." });
     }
 
     const newToken = generateToken({ userId: user.userId, email });
@@ -85,6 +121,7 @@ const tokenSignIn = async (req, res) => {
     return res.status(500).json({ message: error.message || "Internal Server Error" });
   }
 };
+
 
 const jobProfileLogin = async (req, res) => {
   try {
