@@ -163,12 +163,12 @@
 //         {/* Customer Info */}
 //         <div className="p-5 bg-white border border-gray-100 rounded-2xl">
 //           <h3 className="font-semibold text-lime">Customer Info</h3>
-//           <div className="mt-3 grid grid-cols-3 gap-5 items-center">
+//           <div className="grid items-center grid-cols-3 gap-5 mt-3">
 //             {/* <Input
 //               label={
 //                 <>
 //                   <span>Customer Name</span>
-//                   <span className="text-red-500 font-bold">*</span>
+//                   <span className="font-bold text-red-500">*</span>
 //                 </>
 //               }
 //               type="text"
@@ -184,7 +184,7 @@
 //   label={
 //     <>
 //       <span>Customer Name</span>
-//       <span className="text-red-500 font-bold">*</span>
+//       <span className="font-bold text-red-500">*</span>
 //     </>
 //   }
 //   type="text"
@@ -204,7 +204,7 @@
 //               label={
 //                 <>
 //                   <span>Select Customer Type</span>
-//                   <span className="text-red-500 font-bold">*</span>
+//                   <span className="font-bold text-red-500">*</span>
 //                 </>
 //               }
 //               options={customerTypeOptions}
@@ -220,7 +220,7 @@
 //               label={
 //                 <>
 //                   <span>Select Subscription Plan</span>
-//                   <span className="text-red-500 font-bold">*</span>
+//                   <span className="font-bold text-red-500">*</span>
 //                 </>
 //               }
 //               options={subscriptionPlans}
@@ -236,7 +236,7 @@
 //               label={
 //                 <>
 //                   <span>Established Year</span>
-//                   <span className="text-red-500 font-bold">*</span>
+//                   <span className="font-bold text-red-500">*</span>
 //                 </>
 //               }
 //               type="date"
@@ -253,7 +253,7 @@
 //                 label={
 //                   <>
 //                     <span>Select Society Type</span>
-//                     <span className="text-red-500 font-bold">*</span>
+//                     <span className="font-bold text-red-500">*</span>
 //                   </>
 //                 }
 //                 options={societyTypeOptions}
@@ -272,7 +272,7 @@
 //         {/* Builder Info */}
 //         <div className="p-5 bg-white border border-gray-100 rounded-2xl">
 //           <h3 className="font-semibold text-lime">Builder Info</h3>
-//           <div className="mt-3 grid grid-cols-3 gap-5 items-center">
+//           <div className="grid items-center grid-cols-3 gap-5 mt-3">
 //             <Input
 //               label="Builder Name"
 //               type="text"
@@ -310,9 +310,9 @@
 //           <h3 className="font-semibold text-lime">
 //             Society Location / Address
 //           </h3>
-//           <div className="mt-3 grid grid-cols-3 gap-5 items-center">
+//           <div className="grid items-center grid-cols-3 gap-5 mt-3">
 //             <Input 
-//               label={<><span>Address Line 1</span><span className="text-red-500 font-bold">*</span></>} 
+//               label={<><span>Address Line 1</span><span className="font-bold text-red-500">*</span></>} 
 //               type="text"
 //               placeholder="Enter address line 1"
 //               size="lg"
@@ -323,7 +323,7 @@
 //             />
             
 //             <Input
-//               label={<><span>Street</span><span className="text-red-500 font-bold">*</span></>} 
+//               label={<><span>Street</span><span className="font-bold text-red-500">*</span></>} 
 //               type="text"
 //               placeholder="Enter Street"
 //               size="lg"
@@ -333,9 +333,9 @@
 //               readOnly={isReadOnly()}
 //             />
 //           </div>
-//           <div className="mt-3 grid grid-cols-3 gap-5 items-center">
+//           <div className="grid items-center grid-cols-3 gap-5 mt-3">
 //             <Input
-//               label={<><span>City</span><span className="text-red-500 font-bold">*</span></>} 
+//               label={<><span>City</span><span className="font-bold text-red-500">*</span></>} 
 //               type="text"
 //               placeholder="Enter city"
 //               size="lg"
@@ -346,7 +346,7 @@
 //               error={errors.city}
 //             />
 //             <Input
-//               label={<><span>State</span><span className="text-red-500 font-bold">*</span></>} 
+//               label={<><span>State</span><span className="font-bold text-red-500">*</span></>} 
 //               type="text"
 //               placeholder="Enter state"
 //               size="lg"
@@ -357,7 +357,7 @@
 //               error={errors.state}
 //             />
 //             {/* <Input
-//               label={<><span>ZIP Code</span><span className="text-red-500 font-bold">*</span></>} 
+//               label={<><span>ZIP Code</span><span className="font-bold text-red-500">*</span></>} 
 //               type="text"
 //               placeholder="Enter ZIP code"
 //               size="lg"
@@ -372,7 +372,7 @@
 //   label={
 //     <>
 //       <span>ZIP Code</span>
-//       <span className="text-red-500 font-bold">*</span>
+//       <span className="font-bold text-red-500">*</span>
 //     </>
 //   }
 //   type="text"
@@ -394,9 +394,9 @@
 //         {/* Contact Info */}
 //         <div className="p-5 bg-white border border-gray-100 rounded-2xl">
 //           <h3 className="font-semibold text-lime">Society Contact Details</h3>
-//           <div className="mt-3 grid grid-cols-3 gap-5 items-center">
+//           <div className="grid items-center grid-cols-3 gap-5 mt-3">
 //             {/* <Input
-//               label={<><span>Phone</span><span className="text-red-500 font-bold">*</span></>} 
+//               label={<><span>Phone</span><span className="font-bold text-red-500">*</span></>} 
 //               type="text"
 //               placeholder="Enter phone number"
 //               size="lg"
@@ -410,7 +410,7 @@
 //   label={
 //     <>
 //       <span>Phone</span>
-//       <span className="text-red-500 font-bold">*</span>
+//       <span className="font-bold text-red-500">*</span>
 //     </>
 //   }
 //   type="text"
@@ -427,7 +427,7 @@
 // )}
 
 //           <Input
-//   label={<><span>Email</span><span className="text-red-500 font-bold">*</span></>}
+//   label={<><span>Email</span><span className="font-bold text-red-500">*</span></>}
 //   type="email"
 //   placeholder="Enter email address"
 //   size="lg"
@@ -508,7 +508,7 @@
 //       <div className="w-full space-y-5">
 //         <div className="p-5 bg-white border border-gray-100 rounded-2xl">
 //           <h3 className="font-semibold text-lime">Customer Info</h3>
-//           <div className="mt-3 grid grid-cols-3 gap-5 items-center">
+//           <div className="grid items-center grid-cols-3 gap-5 mt-3">
 //             <Input
 //               label="Customer Name"
 //               type="text"
@@ -569,7 +569,7 @@
 
 //         <div className="p-5 bg-white border border-gray-100 rounded-2xl">
 //           <h3 className="font-semibold text-lime">Builder Info</h3>
-//           <div className="mt-3 grid grid-cols-3 gap-5 items-center">
+//           <div className="grid items-center grid-cols-3 gap-5 mt-3">
 //             <Input
 //               label="Builder Name"
 //               type="text"
@@ -597,7 +597,7 @@
 //           <h3 className="font-semibold text-lime">
 //             Society Location / Address
 //           </h3>
-//           <div className="mt-3 grid grid-cols-3 gap-5 items-center">
+//           <div className="grid items-center grid-cols-3 gap-5 mt-3">
 //             <Input
 //               label="Address Line 1"
 //               type="text"
@@ -619,7 +619,7 @@
 //               readOnly={formMode === "view"}
 //             />
 //           </div>
-//           <div className="mt-3 grid grid-cols-3 gap-5 items-center">
+//           <div className="grid items-center grid-cols-3 gap-5 mt-3">
 //             <Input
 //               label="City"
 //               type="text"
@@ -655,7 +655,7 @@
 
 //         <div className="p-5 bg-white border border-gray-100 rounded-2xl">
 //           <h3 className="font-semibold text-lime">Society Contact Details</h3>
-//           <div className="mt-3 grid grid-cols-3 gap-5 items-center">
+//           <div className="grid items-center grid-cols-3 gap-5 mt-3">
 //             <Input
 //               label="Phone"
 //               type="text"
@@ -732,9 +732,9 @@ const SocietyCreateForm = ({ onSubmit, onEditHandler }) => {
       <div className="w-full space-y-5">
         <div className="p-5 bg-white border border-gray-100 rounded-2xl">
           <h3 className="font-semibold text-lime">Customer Info</h3>
-          <div className="mt-3 grid grid-cols-3 gap-5 items-center">
+          <div className="grid items-center grid-cols-3 gap-5 mt-3">
             <Input
-              label={<><span>Customer Name</span><span className="text-red-500 font-bold">*</span></>}
+              label={<><span>Customer Name</span><span className="font-bold text-red-500">*</span></>}
               type="text"
               placeholder="Enter customer name"
               size="lg"
@@ -744,7 +744,7 @@ const SocietyCreateForm = ({ onSubmit, onEditHandler }) => {
               readOnly={formMode !== "create"}
             />
             <Select
-              label={<><span>Select Customer Type</span><span className="text-red-500 font-bold">*</span></>}
+              label={<><span>Select Customer Type</span><span className="font-bold text-red-500">*</span></>}
               options={customerTypeOptions}
               value={formData.customerType}
               onChange={handleInputChange}
@@ -755,7 +755,7 @@ const SocietyCreateForm = ({ onSubmit, onEditHandler }) => {
               readOnly={formMode !== "create"}
             />
             <Select
-              label={<><span>Select Subscription Plan</span><span className="text-red-500 font-bold">*</span></>}
+              label={<><span>Select Subscription Plan</span><span className="font-bold text-red-500">*</span></>}
               options={subscriptionPlans}
               value={formData.subscriptionId}
               onChange={handleInputChange}
@@ -766,7 +766,7 @@ const SocietyCreateForm = ({ onSubmit, onEditHandler }) => {
               readOnly={formMode === "view"}
             />
             <Input
-              label={<><span>Establisment Year</span><span className="text-red-500 font-bold">*</span></>}
+              label={<><span>Establisment Year</span><span className="font-bold text-red-500">*</span></>}
               type="number"
               placeholder="Enter year"
               size="lg"
@@ -777,7 +777,7 @@ const SocietyCreateForm = ({ onSubmit, onEditHandler }) => {
             />
             {formData.customerType === "society" && (
               <Select
-                label={<><span>Select Society Type</span><span className="text-red-500 font-bold">*</span></>}
+                label={<><span>Select Society Type</span><span className="font-bold text-red-500">*</span></>}
                 options={societyTypeOptions}
                 value={formData.societyType}
                 onChange={handleInputChange}
@@ -793,7 +793,7 @@ const SocietyCreateForm = ({ onSubmit, onEditHandler }) => {
 
         <div className="p-5 bg-white border border-gray-100 rounded-2xl">
           <h3 className="font-semibold text-lime">Builder Info</h3>
-          <div className="mt-3 grid grid-cols-3 gap-5 items-center">
+          <div className="grid items-center grid-cols-3 gap-5 mt-3">
             <Input
               label="Builder Name"
               type="text"
@@ -821,9 +821,9 @@ const SocietyCreateForm = ({ onSubmit, onEditHandler }) => {
           <h3 className="font-semibold text-lime">
             Society Location / Address
           </h3>
-          <div className="mt-3 grid grid-cols-3 gap-5 items-center">
+          <div className="grid items-center grid-cols-3 gap-5 mt-3">
             <Input
-              label={<><span>Address Line 1</span><span className="text-red-500 font-bold">*</span></>}
+              label={<><span>Address Line 1</span><span className="font-bold text-red-500">*</span></>}
               type="text"
               placeholder="Enter address line 1"
               size="lg"
@@ -833,7 +833,7 @@ const SocietyCreateForm = ({ onSubmit, onEditHandler }) => {
               readOnly={formMode === "view"}
             />
             <Input
-              label={<><span>Address Line 2 </span><span className="text-red-500 font-bold">*</span></>}
+              label={<><span>Address Line 2 </span><span className="font-bold text-red-500">*</span></>}
               type="text"
               placeholder="Enter address line 2"
               size="lg"
@@ -843,9 +843,9 @@ const SocietyCreateForm = ({ onSubmit, onEditHandler }) => {
               readOnly={formMode === "view"}
             />
           </div>
-          <div className="mt-3 grid grid-cols-3 gap-5 items-center">
+          <div className="grid items-center grid-cols-3 gap-5 mt-3">
             <Input
-              label={<><span>City</span><span className="text-red-500 font-bold">*</span></>}
+              label={<><span>City</span><span className="font-bold text-red-500">*</span></>}
               type="text"
               placeholder="Enter city"
               size="lg"
@@ -855,7 +855,7 @@ const SocietyCreateForm = ({ onSubmit, onEditHandler }) => {
               readOnly={formMode === "view"}
             />
             <Input
-              label={<><span>State</span><span className="text-red-500 font-bold">*</span></>}
+              label={<><span>State</span><span className="font-bold text-red-500">*</span></>}
               type="text"
               placeholder="Enter state"
               size="lg"
@@ -865,7 +865,7 @@ const SocietyCreateForm = ({ onSubmit, onEditHandler }) => {
               readOnly={formMode === "view"}
             />
             <Input
-              label={<><span>Pin</span><span className="text-red-500 font-bold">*</span></>}
+              label={<><span>Pin</span><span className="font-bold text-red-500">*</span></>}
               type="text"
               placeholder="Enter pin"
               size="lg"
@@ -879,9 +879,9 @@ const SocietyCreateForm = ({ onSubmit, onEditHandler }) => {
 
         <div className="p-5 bg-white border border-gray-100 rounded-2xl">
           <h3 className="font-semibold text-lime">Society Contact Details</h3>
-          <div className="mt-3 grid grid-cols-3 gap-5 items-center">
+          <div className="grid items-center grid-cols-3 gap-5 mt-3">
             <Input
-              label={<><span>Mobile Number</span><span className="text-red-500 font-bold">*</span></>}
+              label={<><span>Mobile Number</span><span className="font-bold text-red-500">*</span></>}
               type="text"
               placeholder="Enter mobile number"
               size="lg"
@@ -891,7 +891,7 @@ const SocietyCreateForm = ({ onSubmit, onEditHandler }) => {
               readOnly={formMode === "view"}
             />
             <Input
-              label={<><span>Email</span><span className="text-red-500 font-bold">*</span></>}
+              label={<><span>Email</span><span className="font-bold text-red-500">*</span></>}
               type="text"
               placeholder="Enter email"
               size="lg"

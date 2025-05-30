@@ -14,7 +14,7 @@ import UserGroupHandler from "../../../../handlers/UseGroupHandler";
 import ViewNoticeDetailsModal from "./ViewNoticeDetailsModal";
 
 const NoticeList = () => {
-  const paths = ["users", "Notice List"];
+  const paths = ["Notice Announcement", "Notice List"];
   const Heading = ["Notice List"];
   const [notices, setNotices] = useState([]);
   const { getNoticeHandler, deleteNoticeByIdHandler, updateNoticeHandler } =
@@ -115,21 +115,22 @@ const NoticeList = () => {
       </div>
 
       <div className="flex flex-row justify-end mt-4">
-  <select
-    name="userGroupId"
-    onChange={(e) => setUserGroupId(e.target.value)}
-    className="py-2 border border-gray-300 rounded-md uppercase"
-  >
-    <option value="">Select Option</option>
-    {/* Map over the selectedOption array and ensure no duplicates */}
-    {selectedOption && selectedOption.length > 0 &&
-      selectedOption.map((item) => (
+      <select
+  name="userGroupId"
+  onChange={(e) => setUserGroupId(e.target.value)}
+  className="py-2 uppercase border border-gray-300 rounded-md"
+>
+  {selectedOption && selectedOption.length > 0 &&
+    [...selectedOption]
+      .sort((a, b) => a.userGroupName.localeCompare(b.userGroupName))
+      .map((item) => (
         <option key={item.userGroupId} value={item.userGroupId}>
           {item.userGroupName}
         </option>
       ))
-    }
-  </select>
+  }
+</select>
+
 </div>
 
 
@@ -139,55 +140,55 @@ const NoticeList = () => {
             type="text"
             onChange={handleSearchChange}
             placeholder="Search by Discussion Heading..."
-            className="px-4 py-2 border w-full border-gray-300 rounded-md focus:outline-none"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
           />
         </div>
       </div>
 
       {notices.map((el) => (
         <div key={el.noticeId} className="flex flex-col mt-4 space-y-2">
-          <div className="flex flex-col relative p-4 bg-gray-100 shadow-md rounded-lg">
+          <div className="relative flex flex-col p-4 bg-gray-100 rounded-lg shadow-md">
             <div className="text-xl font-semibold text-gray-800">
               {el.noticeHeading}
             </div>
-            <div className="absolute right-2 top-2 flex flex-row gap-2">
+            <div className="absolute flex flex-row gap-2 right-2 top-2">
               <div className="relative group">
                 <FaEye
-                  className="text-lg text-yellow-600 hover:text-yellow-700 cursor-pointer"
+                  className="text-lg text-yellow-600 cursor-pointer hover:text-yellow-700"
                   onClick={() => onViewHandler(el.noticeId)}
                 />
-                <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 text-xs bg-yellow-600 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">
+                <span className="absolute px-2 py-1 mb-2 text-xs text-white transition transform -translate-x-1/2 bg-yellow-600 rounded opacity-0 bottom-full left-1/2 group-hover:opacity-100">
                   View
                 </span>
               </div>
               <div className="relative group">
                 <FaEdit
-                  className="text-lg text-green-500 hover:text-green-700 cursor-pointer"
+                  className="text-lg text-green-500 cursor-pointer hover:text-green-700"
                   onClick={() => onEditHandler(el.noticeId)}
                 />
-                <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 text-xs bg-green-500 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">
+                <span className="absolute px-2 py-1 mb-2 text-xs text-white transition transform -translate-x-1/2 bg-green-500 rounded opacity-0 bottom-full left-1/2 group-hover:opacity-100">
                   Edit
                 </span>
               </div>
               <div className="relative group">
                 <FaTrashAlt
-                  className="text-lg text-red-500 hover:text-red-700 cursor-pointer"
+                  className="text-lg text-red-500 cursor-pointer hover:text-red-700"
                   onClick={() => handleDelete(el.noticeId)}
                 />
-                <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 text-xs bg-red-500 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">
+                <span className="absolute px-2 py-1 mb-2 text-xs text-white transition transform -translate-x-1/2 bg-red-500 rounded opacity-0 bottom-full left-1/2 group-hover:opacity-100">
                   Delete
                 </span>
               </div>
             </div>
-            <div className="text-gray-600 mt-2">{el.noticeDescription}</div>
-            <div className="absolute right-2 bottom-2 text-gray-500">
+            <div className="mt-2 text-gray-600">{el.noticeDescription}</div>
+            <div className="absolute text-gray-500 right-2 bottom-2">
               Expired Date {new Date(el.noticeExpireDate).toLocaleDateString()}
             </div>
           </div>
         </div>
       ))}
 
-      <div className="flex justify-between items-center mt-4">
+      <div className="flex items-center justify-between mt-4">
         <div>
           {page > 1 && (
             <>

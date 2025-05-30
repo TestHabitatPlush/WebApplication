@@ -12,7 +12,7 @@ import UpdateParkingDetailsModal from "../parkingDetails/UpdateParkingDetailsMod
 import toast from "react-hot-toast";
 
 const ParkingBookingDetails = () => {
-  const paths = ["User", "Parking Booking Details"];
+  const paths = ["Parking Managemen", "Parking Booking Details"];
   const Heading = ["Parking Booking Details"];
   return (
     <div className="px-5">

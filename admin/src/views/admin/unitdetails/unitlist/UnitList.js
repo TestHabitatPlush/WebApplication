@@ -43,8 +43,13 @@ const UnitList = () => {
 
   return (
     <div>
-      <UrlPath paths={["users", "Unit List"]} />
+      <UrlPath paths={["Building Management", "Unit List"]} />
       <PageHeading heading={["Unit List"]} />
+
+      <div className="flex flex-row my-3 font-sans text-lg font-medium text-gray-700">
+        TOTAL {totalCount} UNITS
+      </div>
+      
       <ReusableTable
         columns={columns}
         data={data}

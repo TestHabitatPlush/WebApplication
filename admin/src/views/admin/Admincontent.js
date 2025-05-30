@@ -21,7 +21,7 @@ import DefineGate from "./gatemanagement/definegate/DefineGate";
 import GateAllocation from "./gatemanagement/gateallocation/GateAllocation";
 import GateList from "./gatemanagement/gatelist/GateList";
 
-import DocumentUploadFacility from "./documentmanagement/documentuploadfacility/DocumentUploadFacility";
+
 import AddNewVendor from "./vendormanagement/addnewvendor/AddNewVendor";
 import AddNewParkingSlot from "./parkingmanagement/addnewparkingslot/AddNewParkingSlot";
 import AddNewBookingReqest from "./parkingmanagement/addnewbookingrequest/AddNewBookingReqest";
@@ -53,13 +53,17 @@ import GuardUserCreation from "./gatemanagement/guardcreation/GuardUserCreation"
 //import ViewGateUserDetails from "./gatemanagement/approvedgateusers/ViewGateUserDetails";
 import ApprovedGateUser from "./gatemanagement/approvedgateusers/ApprovedGateUser";
 import ParkingList from "./parkingmanagement/parkingDetails/ParkingList";
-
+import VehicleList from "./parkingmanagement/vehicleDetails/VehicleList";
+import ContactDetails from './emerencyContact/ContactDetails';
+import EmergencyList from './emerencyContact/emergencyList/EmergencyList'; 
+import DocumentUploadFacility from "./documentmanagement/documentuploadfacility/DocumentUploadFacility";
+import DocumentList from "./documentmanagement/documentlist/DocumentList";
 
 // import CreateResident from "./resident/create/CreateResident";
 // import CreateFloorInformation from "./floorinformation/create/CreateFloorInformation";
 // import CreateVendor from "./vendorinformation/create/CreateVendor";
-// import CreateEmployee from "./employeeinformation/create/CreateEmployee";
-// import CreateFacilityManagement from "./facilitylmanagement/create/CreateFacilityManagement";
+ //import CreateEmployee from "./employeeinformation/create/CreateEmployee";
+//import CreateFacilityManagement from "./facilitylmanagement/create/CreateFacilityManagement";
 // import CreateUnitcatagory from "./unitcatagories/create/CreateUnitcatagory";
 // import CreateTenants from "./tenantinformation/create/CreateTenants";
 // import Createunit from "./unitdetails/create/Createunit";
@@ -99,11 +103,11 @@ const Admincontent = () => {
       <Route
         path="/facilitymanagement/view"
         element={<div> View resident</div>}
-      />
-      <Route path="/employee/create" element={<CreateEmployee />} />
-      <Route path="/employee/view" element={<div> View employee</div>} /> */}
-      <Route path="/" element={<div>Admin content</div>} />
-      <Route path="/user" element={<DashboardUser />} />
+      />*/}
+      {/* <Route path="/employee/create" element={<CreateEmployee />} />
+      <Route path="/employee/view" element={<div> View employee</div>} />  */}
+      <Route path="/" element={<DashboardUser />} />
+      <Route path="/user" element={<DashboardUser />} /> 
       <Route path="/user/unapproved" element={<UnapprovedUser />} />
       <Route path="/user/adduser" element={<AddUser />} />
       <Route path="/user/approved" element={<ApprovedUser />} />
@@ -131,11 +135,11 @@ const Admincontent = () => {
       <Route path="/discussion/list" element={<DiscussionDetails />} />
       <Route path="/gate/definegate" element={<DefineGate />} />
       <Route path="/gate/allocation" element={<GateAllocation />} />
-        <Route path="/gate/guardCreation" element={<GuardUserCreation />} />
+      <Route path="/gate/guardCreation" element={<GuardUserCreation />} />
       <Route path="/gate/view" element={<GateList />} />
       <Route path="/gate/approvedusers" element={<ApprovedGateUser/>} />
       <Route path="/document/upload" element={<DocumentUploadFacility />} />
-      <Route path="/document/view" element={<div>Document List</div>} />
+      <Route path="/document/view" element={<DocumentList/>} />
 
       {/* Invoice */}
       <Route path="/invoice/newcharge" element={<DefineNewCharge />} />
@@ -158,6 +162,7 @@ const Admincontent = () => {
       />
       <Route path="/parking/bookingrequest" element={<AddNewBookingReqest />} />
       <Route path="/parking/vechicledetails" element={<AddVechicleDetails />} />
+      <Route path="/vehicle/list" element={<VehicleList/>}/>
 
       {/* facility management */}
       <Route path="/facility/new" element={<AddNewFacility />} />
@@ -189,7 +194,12 @@ const Admincontent = () => {
       <Route
         path="/socityhelpdesk/socityhelpdeskticketlist"
         element={<TicketList />}
-      />
+     />
+     <Route path="/emergencycontact/ContactDetails" 
+     element={<ContactDetails />} /> 
+     
+    <Route path="/emerencycontact/EmergencyList" 
+     element={<EmergencyList />} /> 
     </Routes>
   );
 };

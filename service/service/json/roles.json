@@ -1,0 +1,77 @@
+[
+  {
+    "roleCategory": "super_admin",
+    "roleName": "Super Admin",
+    "occupancyStatus": "NA"
+  },
+  {
+    "roleCategory": "super_admin_it",
+    "roleName": "Customer Support",
+    "occupancyStatus": "NA"
+  },
+  {
+    "roleCategory": "society_moderator",
+    "roleName": "Admin",
+    "occupancyStatus": "NA"
+  },
+  {
+    "roleCategory": "management_committee",
+    "roleName": "Admin",
+    "occupancyStatus": "NA"
+  },
+  {
+    "roleCategory": "society_owner",
+    "roleName": "Resident",
+    "occupancyStatus": "Owner Occupied"
+  },
+  {
+    "roleCategory": "society_owner_family",
+    "roleName": "Resident",
+    "occupancyStatus": "Owner Occupied"
+  },
+  {
+    "roleCategory": "society_tenant",
+    "roleName": "Resident",
+    "occupancyStatus": "Tenant Occupied"
+  },
+  {
+    "roleCategory": "society_tenant_family",
+    "roleName": "Resident",
+    "occupancyStatus": "Tenant Occupied"
+  },
+  {
+    "roleCategory": "society_builder",
+    "roleName": "Resident",
+    "occupancyStatus": "Builder Occupied"
+  },
+  {
+    "roleCategory": "society_builder",
+    "roleName": "Resident",
+    "occupancyStatus": "Not Sold"
+  },
+  {
+    "roleCategory": "society_facility_manager",
+    "roleName": "Facility Manager",
+    "occupancyStatus": "NA"
+  },
+  {
+    "roleCategory": "society_security_supervisor",
+    "roleName": "Supervisor",
+    "occupancyStatus": "NA"
+  },
+  {
+    "roleCategory": "society_security_guard",
+    "roleName": "Guard",
+    "occupancyStatus": "NA"
+  },
+  {
+    "roleCategory": "society_vendor",
+    "roleName": "Vendor",
+    "occupancyStatus": "NA"
+  },
+  {
+    "roleCategory": "society_visitor",
+    "roleName": "Visitor",
+    "occupancyStatus": "NA"
+  }
+]

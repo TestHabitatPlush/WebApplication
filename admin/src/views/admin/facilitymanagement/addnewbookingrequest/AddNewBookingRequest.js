@@ -19,8 +19,8 @@ const AddNewBookingRequest = () => {
 export default AddNewBookingRequest;
 
 const Addnewbookingfacilityrequest = () => {
-  const paths = ["User", "Add new Booking Request"];
-  const Heading = ["Add new Booking Request"];
+  const paths = ["Facility Management", "Add New Booking Request"];
+  const Heading = ["Add New Booking Request"];
   const { createFacilityHandler } = FacilityHandler();
   const [formData, setFormData] = useState({
   chargeAmount: 0.0,

@@ -4,7 +4,7 @@ import UrlPath from "../../../../../src/components/shared/UrlPath";
 import PageHeading from "../../../../../src/components/shared/PageHeading";
 
 const VisitorList = () => {
-  const paths = ["visitor", "Visitor List"];
+  const paths = ["Visitors Management", "Visitor List"];
   const Heading = ["Visitor List"];
   return (
     <div className="px-5">

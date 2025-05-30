@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { FaSearch, FaEye, FaTimes } from "react-icons/fa";
+import { FaEye, FaTimes } from "react-icons/fa";
 import UrlPath from "../../../../components/shared/UrlPath";
 import PageHeading from "../../../../components/shared/PageHeading";
 import ReusableTable from "../../../../components/shared/ReusableTable";
 import UserHandler from "../../../../handlers/UserHandler";
 import { useSelector } from "react-redux";
-import ViewUserAllDetailsModal from "../deactivateuser/ViewUserAllDetailsModal"; // Ensure correct import path
+import ViewUserAllDetailsModal from "../deactivateuser/ViewUserAllDetailsModal";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; 
-
+import "react-toastify/dist/ReactToastify.css";
 
 const ApprovedUser = () => {
   const [page, setPage] = useState(0);
@@ -16,51 +15,72 @@ const ApprovedUser = () => {
   const [transformedData, setTransformedData] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [total, setTotal] = useState(0);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
-  const [selectedUser, setSelectedUser] = useState(null); // Selected user data
-  const [searchQuery, setSearchQuery] = useState(""); // State for search query
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
 
-  const { getAllApprovedUserDataHandler, rejectUserHandler } = UserHandler();
+  const { getAllApprovedUserDataHandler, updateUserForApprovedAndRejectHandler } = UserHandler();
   const token = useSelector((state) => state.auth.token);
   const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
 
-  const paths = ["User", "Approved Users"];
+  const paths = ["User Management", "Approved Users"];
   const Heading = ["Approved Users"];
 
   useEffect(() => {
-    if (societyId && page >= 0 && pageSize > 0) {
+    if (societyId) {
       fetchApprovedUserList();
-    } else {
-      console.error("Invalid parameters: Ensure societyId, page, and pageSize are valid.");
     }
-  }, [societyId, page, pageSize, searchQuery]); // Added searchQuery dependency
+  }, [societyId, page, pageSize]);
 
   const fetchApprovedUserList = async () => {
     try {
-      if (!societyId || !token) {
-        console.error("Missing societyId or token");
-        return;
-      }
-
       const result = await getAllApprovedUserDataHandler(societyId, token, { page, pageSize });
-
-      // Log the entire result to inspect its structure
-      console.log("API Response:", result);
-
-      // If result is an array, set it directly
-      if (Array.isArray(result)) {
-        const filteredUsers = result.filter(user =>
-          user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          user.lastName.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-        setTransformedData(filteredUsers);
-        setTotal(filteredUsers.length); // Assuming the length of the array is the total
-        setTotalPages(Math.ceil(filteredUsers.length / pageSize));
+      if (result && result.users) {
+        setTransformedData(result.users);
+        setTotal(result.total);
+        setTotalPages(Math.ceil(result.total / pageSize));
       } else {
-        console.error("Unexpected API response structure:", result);
+        setTransformedData([]);
+        setTotal(0);
+        setTotalPages(0);
       }
     } catch (err) {
       console.error("Error fetching approved users:", err);
+    }
+  };
+
+  const handleView = (user) => {
+    setSelectedUser(user);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedUser(null);
+  };
+
+  const handleDelete = async (userId) => {
+    try {
+      if (!societyId || !token) {
+        console.error("Society ID or token is missing.");
+        return;
+      }
+
+      const updatedUser = {
+        userId,
+        status: "inactive",
+        societyId,
+      };
+
+      const response = await updateUserForApprovedAndRejectHandler(updatedUser);
+
+      if (response && response.status === 200) {
+        toast.success("User deactivated successfully!");
+        fetchApprovedUserList();
+      } else {
+        toast.error("Failed to deactivate user.");
+      }
+    } catch (error) {
+      toast.error("Error: " + (error.response?.data?.message || error.message));
     }
   };
 
@@ -80,46 +100,16 @@ const ApprovedUser = () => {
       accessor: "action",
       Cell: ({ row }) => (
         <div className="flex space-x-4">
-          <button
-            className="text-yellow-500 hover:text-yellow-700"
-            onClick={() => handleView(row.original)} // Passing user object directly
-          >
+          <button className="text-yellow-500 hover:text-yellow-700" onClick={() => handleView(row.original)}>
             <FaEye className="text-lg" />
           </button>
-          <button
-            className="text-red-500 hover:text-red-700"
-            onClick={() =>handleDelete(row.original.userId)}  // Passing user ID to handleDelete
-          >
+          <button className="text-red-500 hover:text-red-700" onClick={() => handleDelete(row.original.userId)}>
             <FaTimes className="text-lg" />
           </button>
         </div>
       ),
     },
   ];
-
-  const handleView = (user) => {
-    setSelectedUser(user); // Set the selected user data
-    setIsModalOpen(true); // Open the modal
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedUser(null);
-  };
-
-const handleDelete = async (userId) => {
-  console.log("Rejecting user with ID:", userId);
-  
-  try {
-    await rejectUserHandler(userId);
-    toast.success("User rejected successfully!"); 
-    fetchApprovedUserList(); 
-  } catch (error) {
-    console.error("Error rejecting user:", error);
-    toast.error("Error rejecting user: " + (error.response?.data?.message || error.message));
-  }
-};
-
 
   return (
     <div>
@@ -129,19 +119,6 @@ const handleDelete = async (userId) => {
           <PageHeading heading={Heading} />
           <div className="flex flex-row font-sans text-lg font-medium text-gray-700">
             TOTAL {total} USERS
-          </div>
-
-          <div className="flex flex-row mt-4">
-            <div className="relative w-full">
-              <input
-                type="text"
-                placeholder="Search"
-                className="px-4 py-4 border w-full border-gray-300 rounded-md focus:outline-none mb-4"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)} // Update searchQuery
-              />
-              <FaSearch className="absolute right-7 top-5 text-lg text-gray-500" />
-            </div>
           </div>
 
           <ReusableTable

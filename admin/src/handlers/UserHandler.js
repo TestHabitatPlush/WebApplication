@@ -4,15 +4,15 @@ import {
   createSocietyResidentService,
   getResidentBySocietyIdService,
   getUserByIdService,
-  getAllUserDataService,approveUserService,rejectUserService,getAllApprovedUserDataService,getAllDeactiveUserDataService,
+  getAllUserDataService,getAllApprovedUserDataService,getAllDeactiveUserDataService,updateUsersForApprovedAndRejectService
 } from '../services/userService';
 import { useSelector } from 'react-redux';
-import ResponseHandler from './ResponseHandler';
+
 
 const UserHandler = () => {
   const token = useSelector((state) => state.auth.token);
-  const { handleResponse } = ResponseHandler();
-const userId = useSelector((state) => state.auth.user?.userId);
+
+///const userId = useSelector((state) => state.auth.user?.userId);
 
   // Create Society Moderator Handler
   const createSocietyModeratorHandler = async (formData) => {
@@ -87,31 +87,31 @@ const getResidentBySocietyIdHandler = async (societyId, token, { page, pageSize 
 //   }
 // };
 
-const approveUserHandler = async (userId) => {
-  try {
-    const response = await approveUserService(userId, token);
-    if (response.status === 200) {
-      toast.success("User approved successfully!");
-    }
-  } catch (error) {
-    console.error("Error details:", error.response?.data || error.message);
-    toast.error(error.response?.data?.message || error.message);
-  }
-};
+// const approveUserHandler = async (userId) => {
+//   try {
+//     const response = await approveUserService(userId, token);
+//     if (response.status === 200) {
+//       toast.success("User approved successfully!");
+//     }
+//   } catch (error) {
+//     console.error("Error details:", error.response?.data || error.message);
+//     toast.error(error.response?.data?.message || error.message);
+//   }
+// };
 
 
 
-  const rejectUserHandler = async (userId) => {
-    try {
-      const response = await rejectUserService(userId, token);
-      if (response.status === 200) {
-        toast.success("User rejected successfully!");
-      }
-    } catch (error) {
-      console.error("Error rejecting user:", error);
-      toast.error(error.response?.data?.message || error.message);
-    }
-  };
+//   const rejectUserHandler = async (userId) => {
+//     try {
+//       const response = await rejectUserService(userId, token);
+//       if (response.status === 200) {
+//         toast.success("User rejected successfully!");
+//       }
+//     } catch (error) {
+//       console.error("Error rejecting user:", error);
+//       toast.error(error.response?.data?.message || error.message);
+//     }
+//   };
 
   // Get All User Data Handler
   // const getAllApprovedUserDataHandler = async (token) => {
@@ -133,15 +133,16 @@ const approveUserHandler = async (userId) => {
 //       });
 //   };
 
-const getAllApprovedUserDataHandler = async (societyId, token, { page, pageSize }) => {
+const getAllApprovedUserDataHandler = async (societyId, token, data) => {
   try {
-    const response = await getAllApprovedUserDataService(societyId, token, { page, pageSize });
-    return response.data; // Return the response data
+    const response = await getAllApprovedUserDataService(societyId, token, data);
+    return response.data;
   } catch (error) {
     console.error("Error fetching approved user data:", error);
     return null;
   }
 };
+
 const getAllDeactiveUserDataHandler = async (societyId, token, { page, pageSize }) => {
   try {
     const response = await getAllDeactiveUserDataService(societyId, token, { page, pageSize });
@@ -152,6 +153,17 @@ const getAllDeactiveUserDataHandler = async (societyId, token, { page, pageSize 
   }
 };
 
+const updateUserForApprovedAndRejectHandler= async (data) => {
+  console.log("update user handler", data);
+
+  return await updateUsersForApprovedAndRejectService(data, token)
+    .then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
   return {
     createSocietyModeratorHandler,
@@ -159,10 +171,10 @@ const getAllDeactiveUserDataHandler = async (societyId, token, { page, pageSize 
     getResidentBySocietyIdHandler,
     getUserByIdHandler,
     getAllUserDataHandler,
-    approveUserHandler,
-    rejectUserHandler,
+
     getAllApprovedUserDataHandler,
     getAllDeactiveUserDataHandler,
+    updateUserForApprovedAndRejectHandler
   };
 };
 

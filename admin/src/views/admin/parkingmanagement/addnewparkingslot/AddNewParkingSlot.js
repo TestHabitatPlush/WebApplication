@@ -20,7 +20,7 @@ const AddNewParkingSlot = ({ societyId, token }) => {
 export default AddNewParkingSlot;
 
 const AddNewParkingSlotForm = ({ societyId, token }) => {
-  const paths = ["User", "Add New Parking Slot"];
+  const paths = ["Parking Managemen", "Add New Parking Slot"];
   const heading = ["Add New Parking Slot"];
 
   const { createParkingHandler } = ParkingHandler(societyId, token);
@@ -174,6 +174,20 @@ useEffect(() => {
             </label>
           ))}
         </div>
+         {formData.parkingCharges === "Paid" && (
+                    <div className="grid items-center grid-cols-1 gap-3 py-4">
+                      <Input
+                        label="Charge Amount"
+                        type="text"
+                        name="chargeAmount"
+                        placeholder="INR : Enter Amount"
+                        size="lg"
+                        value={formData.chargeAmount}
+                        onChange={handleChange}
+                      />
+                    </div>
+                  )}
+        
         <div className="flex flex-row items-center gap-4 pt-4">
           <div>Parking Charge :</div>
           <div className="flex flex-row items-center gap-3">
@@ -185,7 +199,7 @@ useEffect(() => {
             ))}
           </div>
         </div>
-        <Input
+        {/* <Input
           label="Charge Amount:"
           type="number"
           placeholder="INR: Enter Amount"
@@ -193,7 +207,7 @@ useEffect(() => {
           name="chargeAmount"
           value={formData.chargeAmount}
           onChange={handleChange}
-        />
+        /> */}
 
 
          <div className="flex flex-row items-center gap-3 py-4">

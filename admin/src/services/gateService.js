@@ -70,3 +70,13 @@ export const gateListServices = (data, token) => {
       },
     });
   };
+
+
+  export const ChangeGateNameService = (data, token, gateId) => {
+    
+    const url = `${process.env.REACT_APP_PUBLIC_API_URL}/gate/gate/${gateId}}`;
+    return axios.put(url, data, {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+    })
+  }

@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { createUnitTypeService, getUnitTypeBySocietyIdService } from "../../services/building_management/unitTypeService";
+import { createUnitTypeService, getUnitTypeBySocietyIdService,deleteUnitTypeService,updateUnitTypeService } from "../../services/building_management/unitTypeService";
 
 const UnitTypeHandler = () => {
   const token = useSelector((state) => state.auth.token);
@@ -35,7 +35,40 @@ const UnitTypeHandler = () => {
   console.error(err);
   });
   }
-  return { createUnitTypeHandler, getUnitTypeHandler };
+
+
+  const deleteUnitTypeHandler = async (unitTypeId) => {
+      try {
+        const res = await deleteUnitTypeService(unitTypeId, token);
+        return res;
+      } catch (err) {
+        console.error("Delete UnitType failed", err);
+        throw err;
+      }
+    };
+
+    const updateUnitTypeHandler = async (data) => {
+      if (!data.unitTypeId) {
+        console.error("Error: Missing UnitType in update data", data);
+        return;
+      }
+    
+      try {
+        const res = await updateUnitTypeService(data, token);
+        if (res.status === 200 && res.data?.data) {
+          toast.success("UnitType updated successfully.");
+          return res.data.data;
+        } else {
+          toast.error("Unexpected response status while updating.");
+        }
+      } catch (err) {
+        console.error("Update failed:", err.response?.data || err.message);
+        toast.error("Failed to update UnitType.");
+      }
+    };
+    
+  
+  return { createUnitTypeHandler, getUnitTypeHandler ,deleteUnitTypeHandler,updateUnitTypeHandler};
 };
 
 export default UnitTypeHandler;

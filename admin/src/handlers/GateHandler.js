@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { gateAllocationService, gateAllocationListService, gateListServices, CreateGateService } from "../services/gateService"
+import { gateAllocationService, gateAllocationListService, gateListServices, CreateGateService, ChangeGateNameService } from "../services/gateService"
+import { delay } from "framer-motion";
 
 const GateHandler = () => {
   const token = useSelector((state) => state.auth.token);
@@ -90,8 +91,30 @@ const GateHandler = () => {
   };
 
 
+  const getChangeGateName = async (data) => {
+    try {
+      const {gateId, ...payLoad} = data;
+      await ChangeGateNameService(payLoad, token, data.gateId)
+        .then((res) => {
+          if(res.data.data === 200){
+            toast.success("Gate Name Changed !!");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+
+        })
+
+    } catch (error) {
+      console.error("Error in Gatename Change: ", error);
+      throw error;
+    }
+  }
+
+
 
   return {
+    getChangeGateName,
     GateRelationshipHandler,
     getGateListHandler,
     makeGateAllocation,

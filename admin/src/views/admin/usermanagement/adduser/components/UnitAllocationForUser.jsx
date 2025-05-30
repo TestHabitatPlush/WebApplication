@@ -138,8 +138,8 @@ const UnitAllocationForUser = () => {
   }
 
   return (
-    <div className=" my-5 rounded-lg">
-      <div className="grid grid-cols-3 gap-5 items-center py-6">
+    <div className="my-5 rounded-lg ">
+      <div className="grid items-center grid-cols-3 gap-5 py-6">
         <Select
           label="Tower /Building (Name / No.)"
           options={buildingOptions}
@@ -190,9 +190,9 @@ const UnitAllocationForUser = () => {
 
       <div className="mt-5">
         <h5>Unit Names List</h5>
-        <div className="py-5 grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-3 py-5">
           {units.map((el) => (
-            <div className="bg-gray-200 p-2 border rounded-md text-center">
+            <div className="p-2 text-center bg-gray-200 border rounded-md">
               <span className="font-bold text-turquoise">{el}</span>
             </div>
           ))}
