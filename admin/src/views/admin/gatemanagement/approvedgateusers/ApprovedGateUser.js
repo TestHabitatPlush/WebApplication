@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaFilter, FaEdit, FaEye, FaTrashAlt } from "react-icons/fa";
 import UrlPath from "../../../../components/shared/UrlPath";
 import { IoPersonOutline } from "react-icons/io5";
-import { FaCar } from "react-icons/fa";
 import PageHeading from "../../../../components/shared/PageHeading";
 import ReusableTable from "../../../../components/shared/ReusableTable";
 import ViewGateUserDetails from "./ViewGateUserDetails";
+import EditGateUserDetails from "./EditGateUserDetails";
 
 import ProfileHandler from "../../../../handlers/ProfileHandler";
 import GateHandler from "../../../../handlers/GateHandler";
@@ -24,10 +24,16 @@ const ApprovedGateUser = () => {
 
   // on View Handler
   const [viewmodal, setViewModal] = useState(false);
+  const [editmodal, setEditModal] = useState(false);
+  const [isDeleteBtn, setIsDeleteBtn] = useState(false)
   const [showViewFormData, setShowViewFormData] = useState(null);
+  const [showEditFormData, setShowEditFormData] = useState(null);
   const toggleViewNoticeDetailModal = () => {
     setViewModal((prev) => !prev); // Toggle modal visibility
   };
+  const toggleEditModal = () => {
+    setEditModal((prev) => !prev);
+  }
 
 
 
@@ -43,6 +49,7 @@ const ApprovedGateUser = () => {
       profilePhoto: element.profilePhoto || null, // Handle profile photo
       idProof: element.idProof || null, // Handle ID proof
       roleId: element.roleId || null, // Include roleId
+      roleCategory: element.roleCategory || null,
       status: element.status || 'inactive', // Default status if needed
       createdAt: element.createdAt || null, // Include createdAt
       updatedAt: element.updatedAt || null // Include updatedAt
@@ -61,15 +68,16 @@ const ApprovedGateUser = () => {
 
   useEffect(() => {
     getGateUserList().then((res) => {
-      if(Array.isArray(res.data)){
+      if (Array.isArray(res.data)) {
         setGuardProfile(transformSecurityUserData(res.data));
+        console.log(res.data);
         setTotalCount(res.data.length);
-      }else{
+      } else {
         setGuardProfile([]);
         setTotalCount(0);
       }
 
-    }).catch((error)=>{
+    }).catch((error) => {
       console.log(error);
       setGuardProfile([]);
     })
@@ -77,18 +85,18 @@ const ApprovedGateUser = () => {
     getGateAllocationList().then((res) => {
       setGateAllocations(res);
 
-    }).catch((error)=>{
+    }).catch((error) => {
       console.error("Error fetching gate list:", error);
     })
 
-    getGateListHandler().then((res)=>{
+    getGateListHandler().then((res) => {
       console.log(res.data.data);
       setGateList(res.data.data);
       setTotalGate(res.data.data.length)
     })
-    .catch((error)=>{
-      console.error("Error fetching gate list:", error);
-    })
+      .catch((error) => {
+        console.error("Error fetching gate list:", error);
+      })
 
   }, [])
 
@@ -104,22 +112,24 @@ const ApprovedGateUser = () => {
       console.error("Invalid input: All inputs must be arrays.");
       return [];
     }
-  
-    return gateAllocations.map(allocation => {
-      const guard = guardProfile.find(user => user.profileId === allocation.profileId);
-      const gate = gateList.find(gate => gate.gateId === allocation.gateId);
-  
-      return {
-        profileId: allocation.profileId,
-        firstName: guard?.firstName || "N/A",
-        lastName: guard?.lastName || "N/A",
-        gateId: allocation.gateId,
-        email: guard?.email,
-        mobileNo: guard?.mobileNo,
-        gateName: gate?.gateName || "N/A",
-        gateNumber: gate?.gateNumber || "N/A",
-      };
-    });
+
+    return gateAllocations
+      .filter(allocation => guardProfile.some(user => user.profileId === allocation.profileId && user.status === 'active'))
+      .map(allocation => {
+        const guard = guardProfile.find(user => user.profileId === allocation.profileId && user.status === 'active');
+        const gate = gateList.find(gate => gate.gateId === allocation.gateId);
+
+        return {
+          profileId: allocation.profileId,
+          firstName: guard.firstName,
+          lastName: guard.lastName,
+          email: guard.email,
+          mobileNo: guard.mobileNo,
+          gateId: allocation.gateId,
+          gateName: gate?.gateName || "N/A",
+          gateNumber: gate?.gateNumber || "N/A",
+        };
+      });
   };
 
   const Combined = combineData({ guardProfile, gateAllocations, gateList });
@@ -136,6 +146,34 @@ const ApprovedGateUser = () => {
     // console.log("Found Guard",foundGuard);
     // console.log(typeof (foundGuard));
     setShowViewFormData(foundGuard);
+    setIsDeleteBtn(false);
+    setViewModal(true);
+  }
+
+  const onEditHandler = (idValue) => {
+    console.log("Edit clicked: ", idValue);
+    const findGuardById = (guardProfile, targetId) => {
+      return guardProfile.find(guard => guard.profileId === targetId);
+    };
+
+    const foundGuard = findGuardById(guardProfile, idValue);
+    // console.log("Found Guard",foundGuard);
+    // console.log(typeof (foundGuard));
+    setShowEditFormData(foundGuard);
+    setEditModal(true);
+  }
+
+  const onDeleteHandler = (idValue) => {
+    console.log("Delete clicked: ", idValue);
+    const findGuardById = (guardProfile, targetId) => {
+      return guardProfile.find(guard => guard.profileId === targetId);
+    };
+
+    const foundGuard = findGuardById(guardProfile, idValue);
+    // console.log("Found Guard",foundGuard);
+    // console.log(typeof (foundGuard));
+    setShowViewFormData(foundGuard);
+    setIsDeleteBtn(true);
     setViewModal(true);
   }
 
@@ -149,15 +187,23 @@ const ApprovedGateUser = () => {
     { Header: "MOBILE NO.", accessor: "mobileNo" },
     { Header: "EMAIL", accessor: "email" },
     {
-      Header: "VIEW",
+      Header: "Action",
       accessor: "profileId",
       Cell: ({ value }) => (
-        <button
-          onClick={() => onViewHandler(value)}
-          className="px-1 py-1 font-medium text-blue-600 hover:text-blue-800"
-        >
-          Details
-        </button>
+        <div className="flex space-x-4">
+          <FaEye
+            onClick={() => onViewHandler(value)}
+            className="text-lg text-yellow-600 hover:text-yellow-700 cursor-pointer"
+          />
+          <FaEdit
+            onClick={() => onEditHandler(value)}
+            className="text-lg text-green-500 hover:text-green-700 cursor-pointer"
+          />
+          <FaTrashAlt
+            onClick={() => onDeleteHandler(value)}
+            className="text-lg text-red-500 hover:text-red-700 cursor-pointer"
+          />
+        </div>
       )
     }
   ];
@@ -179,9 +225,9 @@ const ApprovedGateUser = () => {
               <input
                 type="text"
                 placeholder="Search by Gate/Users..."
-                className="w-full px-4 py-4 border border-gray-300 rounded-md focus:outline-none"
+                className="px-4 py-4 border w-full border-gray-300 rounded-md focus:outline-none"
               />
-              <FaSearch className="absolute text-lg text-gray-500 right-7 top-5" />
+              <FaSearch className="absolute right-7 top-5 text-lg text-gray-500" />
             </div>
           </div>
           <div className="flex flex-col mt-[35px] space-y-3">
@@ -202,10 +248,17 @@ const ApprovedGateUser = () => {
       </div>
 
 
-      {setViewModal && (<ViewGateUserDetails
+      {viewmodal && (<ViewGateUserDetails
+        deleteButton={isDeleteBtn}
         isOpen={viewmodal} // Modal open state
         onClose={toggleViewNoticeDetailModal} // Close modal handler
         formData={showViewFormData} // The data to display in the modal
+      />)}
+
+      {editmodal && (<EditGateUserDetails
+        isOpen={editmodal}
+        onClose={toggleEditModal}
+        formData={showEditFormData}
       />)}
 
     </div>
