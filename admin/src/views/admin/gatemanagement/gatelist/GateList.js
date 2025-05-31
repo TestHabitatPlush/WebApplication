@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaPencilAlt, FaEdit } from "react-icons/fa";
 import UrlPath from "../../../../components/shared/UrlPath";
 import PageHeading from "../../../../components/shared/PageHeading";
 import ReusableTable from "../../../../components/shared/ReusableTable";
 import GateHandler from "../../../../handlers/GateHandler";
+import ViewGateModal from "./ViewGateModal";
 
 const GateList = () => {
   const paths = ["Gate Management", "Gate List"];
   const Heading = ["Gate List"];
 
-  const [totalGate, setTotalGate] = useState(0)
+  const [totalGate, setTotalGate] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedGate, setSelectedGate] = useState(null);
+  const [gateId, setGateId] = useState(null);
 
   const [data, setData] = useState([]);
 
@@ -20,9 +24,10 @@ const GateList = () => {
     setTotalGate(response.data.length)
     return response.data.map(element => ({
       ...element,
+      gateId: element.gateId,
       gateNumbar: element.gateNumber,
       gateName: element.gateName,
-      // societyId: element.societyId
+      societyId: element.societyId
     }));
   };
  
@@ -33,10 +38,31 @@ const GateList = () => {
   const [totalPages, setTotalPages] = useState(0);
 
 
+  const handleEdit = (gate) =>{
+    console.log(gate);
+    setGateId(gate.original.gateId);
+    setSelectedGate(gate.values);
+    setIsModalOpen(true);
+  }
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedGate(null);
+    setGateId(null);
+  }
+
+
   const columns = [
     { Header: "GATE NO.", accessor: "gateNumbar" },
     { Header: "GATE NAME", accessor: "gateName" },
-    // { Header: "SOCIETY ID", accessor: "societyId" }
+    { Header: "Action", accessor: "societyId",
+      Cell: ({row}) => (
+        <div className="flex space-x-4">
+          <button onClick={()=>handleEdit(row)}>
+            <FaEdit className="text-lg text-green-500 hover:text-green-700 cursor-pointer" />
+          </button>
+        </div>
+      )
+     }
   ];
 
   useEffect(()=>{
@@ -46,6 +72,7 @@ const GateList = () => {
       if (res && res.data) { // Check if res and res.data exist
         const transformedData = transformGateData(res.data);
         setData(transformedData);
+        console.log(data);        
         setTotalCount(res.data.total || 0);
         setTotalPages(res.data.totalPages || 0);
       }else{
@@ -96,6 +123,15 @@ const GateList = () => {
           </div>
         </div>
       </div>
+      {isModalOpen && selectedGate && (
+        <ViewGateModal
+        isOpen = {isModalOpen}
+        onClose = {closeModal}
+        gateData={selectedGate}
+        gateId = {gateId}
+        setClose = {setIsModalOpen}
+        />
+      )}
     </div>
   );
 };
