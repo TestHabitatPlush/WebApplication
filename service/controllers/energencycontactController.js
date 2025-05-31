@@ -471,7 +471,6 @@
 //   getEmergencyContacts,
 //   getEmergencyContactsById
 // };
-
 const Emergency_Contact = require("../models/Emergency_Contact");
 const { sendSuccessResponse, sendErrorResponse } = require("../utils/response");
 const { getUserRoleCategory, isFullAccessRole, isViewOnlyRole } = require("../utils/permission");
@@ -584,7 +583,7 @@ const getEmergencyContactsById = async (req, res) => {
       return sendErrorResponse(res, 'Permission denied. Not authorized to view.', 403);
     }
 
-    const contact = await Emergency_Contact.findOne({ where: { contactId } });
+    const contact = await Emergency_Contact.findByPk(contactId);
     if (!contact) return sendErrorResponse(res, 'Emergency Contact not found', 404);
 
     return sendSuccessResponse(res, 'Emergency contact retrieved successfully', contact);

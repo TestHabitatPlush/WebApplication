@@ -63,9 +63,8 @@ const express = require("express");
 const router = express.Router();
 const emergencyController = require("../controllers/energencycontactController");
 
-// CRUD based on userId in params
 router.post("/emergency/:userId/:societyId", emergencyController.createEmergencyContact);
-router.put("/emergency/:userId/:contactId", emergencyController.updateEmergencyContact);
+router.put("/emergency/:userId/:societyId/:contactId", emergencyController.updateEmergencyContact);
 router.delete("/emergency/:userId/:contactId", emergencyController.deleteEmergencyContact);
 router.get('/emergency/:userId/:societyId', emergencyController.getEmergencyContacts);
 router.get('/emergency/:userId/contact/:contactId', emergencyController.getEmergencyContactsById);

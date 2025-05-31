@@ -1,7 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 const Customer = require("./Customer");
-const User = require("./User");
 
 const Emergency_Contact = sequelize.define(
   "Emergency_Contact",
@@ -11,14 +10,6 @@ const Emergency_Contact = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    // userId: {
-    //   type: DataTypes.INTEGER,
-    //   references: {
-    //     model: User,
-    //     key: "userId",
-    //   },
-    //   allowNull: true,
-    // },
     societyId: {
       type: DataTypes.INTEGER,
       references: {
@@ -67,3 +58,4 @@ const Emergency_Contact = sequelize.define(
 );
 
 module.exports = Emergency_Contact;
+
