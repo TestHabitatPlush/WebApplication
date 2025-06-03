@@ -121,7 +121,7 @@ const getDiscussionByUserId = async (req, res) => {
         });
     }
 };
-// Update discussion by society ID
+//Update discussion by society ID
 const updateDiscussionBySocietyId = async (req, res) => {
     //upload.fields([{ name: 'document' }])(req, res, async (err) => {
       //  if (err) return res.status(400).json({ message: "File upload error", error: err.message });
@@ -151,9 +151,12 @@ const updateDiscussionBySocietyId = async (req, res) => {
         } catch (err) {
             return res.status(500).json({ message: "Failed to update discussion", error: err.message });
         }
-    
+   
 };
 
+
+
+  
 // Update discussion by user ID
 const updateDiscussionByUserId = async (req, res) => {
     upload.fields([{ name: 'document' }])(req, res, async (err) => {

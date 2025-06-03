@@ -42,7 +42,7 @@ const createSocietyModerator = async (req, res) => {
 };
 const createSocietyResident = async (req, res) => {
   try {
-    const { address, email, salutation, firstName, lastName, mobileNumber, alternateNumber, roleId, unitId } = req.body;
+    const { address, email, salutation, firstName, lastName, mobileNumber, roleId, unitId } = req.body;
     const { societyId } = req.params;
 
     if (!societyId) {
@@ -74,14 +74,13 @@ const createSocietyResident = async (req, res) => {
       password,
       countryCode: address.countryCode || 91,
       mobileNumber,
-      alternateNumber,
       email,
       roleId,
       livesHere: true,
       primaryContact: true,
       isManagementCommittee: false,
       managementDesignation: "Resident",
-      status: "active",
+      status: "pending",
       addressId,
       societyId,
      unitId: unit ? unit.unitId : null,
@@ -218,7 +217,7 @@ const getResidentBySocietyId = async (req, res) => {
         societyId,
         isManagementCommittee: false,
          isDeleted:0,
-        status: "active",
+        status: "pending",
       },
       attributes: [
         "userId",
