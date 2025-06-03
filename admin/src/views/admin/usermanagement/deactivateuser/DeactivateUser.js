@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaCheck, FaSearch, FaEye } from "react-icons/fa";
+import { FaCheck, FaEye } from "react-icons/fa";
 import UrlPath from "../../../../components/shared/UrlPath";
 import PageHeading from "../../../../components/shared/PageHeading";
 import ReusableTable from "../../../../components/shared/ReusableTable";
@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import ViewUserAllDetailsModal from "./ViewUserAllDetailsModal";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 
 const DeactivateUser = () => {
   const [page, setPage] = useState(0);
@@ -18,23 +19,23 @@ const DeactivateUser = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
   const [selectedUser, setSelectedUser] = useState(null); // Selected user data
 
-  const { getAllDeactiveUserDataHandler ,approveUserHandler} = UserHandler();
+  const { getAllDeactiveUserDataHandler ,updateUserForApprovedAndRejectHandler} = UserHandler();
   const token = useSelector((state) => state.auth.token);
   const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
 
 
-  const paths = ["User", "Deactivate Users"];
+  const paths = ["User Management", "Deactivate Users"];
   const Heading = ["Deactivate Users"];
 
   useEffect(() => {
     if (societyId && page >= 0 && pageSize > 0) {
-      fetchDeactiveUserList();
+      fetchAllDeactiveUserList();
     } else {
       console.error("Invalid parameters: Ensure societyId, page, and pageSize are valid.");
     }
   }, [societyId, page, pageSize]);
 
-  const fetchDeactiveUserList = async () => {
+  const fetchAllDeactiveUserList = async () => {
     try {
       if (!societyId || !token) {
         console.error("Missing societyId or token");
@@ -66,6 +67,7 @@ const DeactivateUser = () => {
     { Header: "Last Name", accessor: "lastName" },
     { Header: "Role", accessor: "roleId" },
     { Header: "Mobile No.", accessor: "mobileNumber" },
+    { Header: "Status", accessor: "status" },
     {
       Header: "Action",
       accessor: "action",
@@ -79,7 +81,7 @@ const DeactivateUser = () => {
           </button>
           <button
             className="text-green-500 hover:text-green-700"
-            onClick={() => handleApproveUser(row.original.userId)}
+            onClick={() => handleActivate(row.original.userId)}
           >
             <FaCheck className="text-lg" />
           </button>
@@ -87,18 +89,36 @@ const DeactivateUser = () => {
       ),
     },
   ];
-
-  const handleApproveUser = async (userId) => {
+  const handleActivate = async (userId) => { // Expect only userId
     try {
-       await approveUserHandler(userId);
-        toast.success("User rejected successfully!"); 
-      fetchDeactiveUserList(); // Refresh the user list
-   } catch (error) {
-       console.error("Error rejecting user:", error);
-       toast.error("Error rejecting user: " + (error.response?.data?.message || error.message));
-     }
-    };
-
+      if (!societyId || !token) {
+        console.error("Society ID or token is missing.");
+        return;
+      }
+  
+      const updatedUser = {
+        userId,  // Ensure only userId is passed
+        status: "active",
+        societyId,
+      };
+  
+      console.log("Activating user:", updatedUser);
+  
+      const response = await updateUserForApprovedAndRejectHandler(updatedUser);
+      
+      if (response && response.status === 200) { // Ensure response is successful
+        toast.success("User activated successfully!");
+        fetchAllDeactiveUserList(); // Refresh list
+      } else {
+        console.error("Activation failed:", response);
+        toast.error("Failed to activate user.");
+      }
+    } catch (error) {
+      console.error("Error activating user:", error);
+      toast.error("Error activating user: " + (error.response?.data?.message || error.message));
+    }
+  };
+  
   const handleView = (user) => {
     setSelectedUser(user); // Set the selected user data
     setIsModalOpen(true); // Open the modal
@@ -118,16 +138,7 @@ const DeactivateUser = () => {
           <div className="flex flex-row font-sans text-lg font-medium text-gray-700">
             TOTAL {total} USERS
           </div>
-          <div className="flex flex-row mt-4">
-            <div className="relative w-full">
-              <input
-                type="text"
-                placeholder="Search"
-                className="px-4 py-4 border w-full border-gray-300 rounded-md focus:outline-none mb-4"
-              />
-              <FaSearch className="absolute right-7 top-5 text-lg text-gray-500" />
-            </div>
-          </div>
+        
           <ReusableTable
             columns={columns}
             data={transformedData}

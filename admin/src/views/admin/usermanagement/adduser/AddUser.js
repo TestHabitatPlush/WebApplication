@@ -6,44 +6,48 @@ import UrlPath from "../../../../components/shared/UrlPath";
 import PageHeading from "../../../../components/shared/PageHeading";
 import Button from "../../../../components/ui/Button";
 import Select from "../../../../components/ui/Select";
-import FloorHandler from "../../../../handlers/FloorHandler";
 import UserHandler from "../../../../handlers/UserHandler";
-import BuildingHandler from "../../../../handlers/BuildingHandler";
 import UserRoleHandler from "../../../../handlers/UserRoleHandler";
 import UnitHandler from "../../../../handlers/UnitHandler";
-import ReusableTable from "../../../../components/shared/ReusableTable";
-import { FaEye} from "react-icons/fa";
+import DefineUnitHandler from "../../../../handlers/DefineUnitHandler";
+import BuildingHandler from "../../../../handlers/BuildingHandler";
+import FloorHandler from "../../../../handlers/FloorHandler";
+import UnitTypeHandler from "../../../../handlers/building_management/UnitTypeHandler";
+import { FaTimes} from "react-icons/fa";
 
 const AddUser = () => {
-  const paths = ["User", "Add"];
+  const paths = ["User Management", "Add User"];
   const Heading = ["Add Resident User"];
-   const [page, setPage] = useState(0);
-   const [pageSize, setPageSize] = useState(5);
-   const [transformedData, setTransformedData] = useState([]);
-   const [totalPages, setTotalPages] = useState(0);
- const [total, setTotal] = useState(0);
-  const [unitAllocationSearch, setUnitAllocationSearch] = useState({
-   
+  const societyId = useSelector((state) => state.auth.user?.Customer?.customerId) || "";
+  const unitId = useSelector((state) => state.auth.user?.Unit?.unitId) || "";
+  const countryCodesList = useSelector((state) => state.countryCode.countryCodes) || [];
 
-  });
-    const handleSearchChange = (e) => {
-    const { name, value } = e.target;
-    setUnitAllocationSearch({ ...unitAllocationSearch, [name]: value });
-  };
-
-  const societyId =
-    useSelector((state) => state.auth.user?.Customer?.customerId) || "";
-  const unitId =
-    useSelector((state) => state.auth.user?.Unit?.unitId) || "";
-  const countryCodesList =
-    useSelector((state) => state.countryCode.countryCodes) || [];
-
+  const { CreateDefineUnitHandler } = DefineUnitHandler();
+  const { getFloorHandler } = FloorHandler();
+  const { getUnitTypeHandler } = UnitTypeHandler();
+  const { getBuildingshandler } = BuildingHandler();
   const { createSocietyResidentUserHandler } = UserHandler();
   const { getUserRolesHandler } = UserRoleHandler();
+  const { deleteUnitHandler ,getAllUnitHandler} = UnitHandler();
 
-
+  const [buildingOptions, setBuildingOptions] = useState([]);
+  const [floorOptions, setFloorOptions] = useState([]);
+  const [unitTypeOptions, setUnitTypeOptions] = useState([]);
   const [roles, setRoles] = useState([]);
   const [selectedRoleId, setSelectedRoleId] = useState(null);
+  const [unitNoOptions, setUnitNoOptions] = useState([]);
+
+
+
+
+  const [defineUnit, setDefineUnit] = useState({
+    buildingId: "",
+    floorId: "",
+    unitTypeId: "",
+    unitNumber: "",
+    unitsize: "",
+  });
+
   const [formData, setFormData] = useState({
     salutation: "",
     firstName: "",
@@ -68,8 +72,16 @@ const AddUser = () => {
     remark: "",
     societyId: "",
     roleId: "",
-    unitId: "", 
+    unitId: "",
   });
+
+  const [unitName, setUnitName] = useState({
+    buildingId: "",
+    floorId: "",
+    unitNumber: "",
+  });
+
+  const [units, setUnits] = useState([]); 
 
   const selectOption = {
     salutation: [
@@ -87,6 +99,7 @@ const AddUser = () => {
     society_owner: "Owner",
     society_tenant: "Tenant",
     society_tenant_family: "Tenant Family",
+    management_committee:"Managment Committee"
   };
 
   useEffect(() => {
@@ -94,7 +107,8 @@ const AddUser = () => {
       setFormData((prev) => ({ ...prev, societyId }));
     }
   }, [societyId]);
-    useEffect(() => {
+
+  useEffect(() => {
     if (unitId) {
       setFormData((prev) => ({ ...prev, unitId }));
     }
@@ -137,6 +151,7 @@ const AddUser = () => {
               "society_tenant",
               "society_owner",
               "society_tenant_family",
+              "management_committee"
             ].includes(el.roleCategory)
           )
           .map((el) => ({
@@ -153,9 +168,174 @@ const AddUser = () => {
     }
   };
 
+  const getBuildings = async () => {
+    try {
+      const res = await getBuildingshandler();
+      const optionData = res.data.data.map((el) => ({
+        label: el.buildingName,
+        value: el.buildingId,
+      }));
+      setBuildingOptions([{ label: "Select Building", value: "" }, ...optionData]);
+    } catch (error) {
+      console.error("Error fetching buildings:", error);
+    }
+  };
+
+  const getFloors = async () => {
+    try {
+      const res = await getFloorHandler();
+      const optionData = res.data.data.map((el) => ({
+        label: `${el.floorName} (${el.shortForm})`,
+        value: el.floorId,
+        shortForm: el.shortForm,
+      }));
+      setFloorOptions([{ label: "Select Floor", value: "" }, ...optionData]);
+    } catch (error) {
+      console.error("Error fetching floors:", error);
+    }
+  };
+
+  const getUnitTypes = async () => {
+    try {
+      const res = await getUnitTypeHandler();
+      const optionData = res.data.data.map((el) => ({
+        label: el.unitTypeName,
+        value: el.unitTypeId,
+      }));
+      setUnitTypeOptions([{ label: "Select Unit Type", value: "" }, ...optionData]);
+    } catch (error) {
+      console.error("Error fetching unit types:", error);
+    }
+  };
+
+  const getUnitNumber = async () => {
+    try {
+      const res = await getAllUnitHandler();
+      const optionData = res.data.data.map((el) => ({
+        label: el.unitNumber,
+        value: el.unitId,
+      }));
+      setUnitNoOptions([{ label: "Select Unit Number", value: "" }, ...optionData]);
+    } catch (error) {
+      console.error("Error fetching unit number:", error);
+    }
+  };
+  
   useEffect(() => {
     fetchRoles();
+    getBuildings();
+    getFloors();
+    getUnitTypes();
+    getUnitNumber();
   }, []);
+
+ // const handleRadioChange = (roleId) => setSelectedRoleId(roleId);
+ const handleRadioChange = (roleId) => {
+  setSelectedRoleId(roleId);
+
+  const managementCommitteeRole = roles.find(
+    (role) => role.label.toLowerCase() === "managment committee"
+  );
+
+  if (managementCommitteeRole && roleId === managementCommitteeRole.value) {
+    setFormData((prev) => ({
+      ...prev,
+      ismaemberofassociationcommite: true,
+    }));
+  } else {
+    setFormData((prev) => ({
+      ...prev,
+      ismaemberofassociationcommite: false,
+    }));
+  }
+};
+
+
+
+  const handleDeleteUnit = async (id) => {
+    const confirmed = window.confirm("Are you sure you want to delete this unit?");
+    if (!confirmed) return;
+    try {
+      const res = await deleteUnitHandler(id);
+      toast.success("Unit deleted successfully");
+      setUnits((prev) => prev.filter((unit) => unit.unitId !== id));
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast.error("Failed to delete unit");
+    }
+  };
+
+  const onBuildingChange = (e) => {
+    const { name, value } = e.target;
+    setDefineUnit((prev) => ({ ...prev, [name]: value }));
+    const label = buildingOptions.find((el) => el.value === parseInt(value))?.label;
+    setUnitName((prev) => ({ ...prev, buildingId: label?.toUpperCase() || "" }));
+  };
+
+  const onFloorChange = (e) => {
+    const { name, value } = e.target;
+    setDefineUnit((prev) => ({ ...prev, [name]: value }));
+    const short = floorOptions.find((el) => el.value === parseInt(value))?.shortForm;
+    setUnitName((prev) => ({ ...prev, floorId: short?.toUpperCase() || "" }));
+  };
+
+  const onUnitNumberChange = (e) => {
+    const { name, value } = e.target;
+    setDefineUnit((prev) => ({ ...prev, [name]: value }));
+    setUnitName((prev) => ({ ...prev, unitNumber: value }));
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setDefineUnit((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const resetFormData = () => {
+    setDefineUnit({
+      buildingId: "",
+      floorId: "",
+      unitTypeId: "",
+      unitNumber: "",
+      unitsize: "",
+    });
+    setUnitName({
+      buildingId: "",
+      floorId: "",
+      unitNumber: "",
+    });
+
+  };
+
+  const submitHandler = async () => {
+    const newUnitName = `${unitName.buildingId}${unitName.floorId}${unitName.unitNumber}`;
+    const unitPayload = {
+      ...defineUnit,
+      unitName: newUnitName,
+      societyId,
+    };
+
+    try {
+      const response = await CreateDefineUnitHandler(unitPayload);
+      if (response.status === 201) {
+        const createdUnitId = response.data?.data?.unitId;
+        if (!createdUnitId) {
+          toast.error("Unit created, but ID not returned");
+          return;
+        }
+
+        setFormData((prev) => ({ ...prev, unitId: createdUnitId }));
+        setUnits((prev) => [...prev, { unitId: createdUnitId, unitName: newUnitName }]);
+        toast.success("Unit created successfully");
+        resetFormData();
+         
+      } else {
+        toast.error("Failed to create unit");
+      }
+    } catch (error) {
+      console.error("Error creating unit:", error);
+      toast.error("Error creating unit");
+    }
+  };
 
   const submitProfileUser = async () => {
     if (!selectedRoleId) {
@@ -168,242 +348,44 @@ const AddUser = () => {
       ...formData,
       societyId,
       roleId: selectedRoleId,
-     
     };
-
-    console.log("FormData before submission:", updatedFormData);
 
     try {
       await createSocietyResidentUserHandler(societyId, updatedFormData);
       toast.success("User profile created successfully.");
+      setFormData({
+        salutation: "",
+        firstName: "",
+        lastName: "",
+        countryCode: "",
+        mobileNumber: "",
+        alternateCountryCode: "",
+        alternateNumber: "",
+        email: "",
+        address: {
+          addressLine1: "",
+          addressLine2: "",
+          state: "",
+          city: "",
+          country: "",
+          zipCode: "",
+        },
+        liveshere: false,
+        primarycontact: false,
+        ismaemberofassociationcommite: false,
+        membertype: "",
+        remark: "",
+        societyId,
+        roleId: "",
+        unitId: "",
+      });
+      setSelectedRoleId(null);
+      setUnits([]);
     } catch (error) {
       console.error("Error creating resident:", error);
       toast.error("Failed to create user profile.");
     }
   };
-
-  const handleRadioChange = (roleId) => {
-    setSelectedRoleId(roleId);
-  };
-
-  const { getFloorHandler } = FloorHandler();
-  const { getBuildingshandler } = BuildingHandler();
-  const { getAllUnitHandler } = UnitHandler();
-
-  const [buildingOptions, setBuildingOptions] = useState([]);
-  const [floorOptions, setFloorOptions] = useState([]);
-  const [unitOptions, setUnitOptions] = useState([]);
-  const [unitName, setUnitName] = useState({
-    buildingId: "",
-    floorId: "",
-    unitNumber: "",
-  });
-
-  const [units, setUnits] = useState([]);
-
-  const getBuildings = () => {
-    getBuildingshandler()
-      .then((res) => {
-        const optionData = res.data.data.map((el) => ({
-          label: el.buildingName,
-          value: el.buildingId,
-        }));
-        setBuildingOptions([
-          { label: "Select Building", value: "" },
-          ...optionData,
-        ]);
-      })
-      .catch((error) => {
-        console.error("Error fetching buildings:", error);
-      });
-  };
-
-  const getFloors = () => {
-    getFloorHandler()
-      .then((res) => {
-        const optionData = res.data.data.map((el) => ({
-          label: `${el.floorName} (${el.shortForm})`,
-          value: el.floorId,
-          shortForm: el.shortForm,
-        }));
-        setFloorOptions([{ label: "Select Floor", value: "" }, ...optionData]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  useEffect(() => {
-    getBuildings();
-    getFloors();
-    getUnitName();
-  }, []);
-
-  const getUnitName = () => {
-    getAllUnitHandler()
-      .then((res) => {
-        const optionData = res.data.data.map((el) => ({
-           label: el.unitName,
-           value: el.unitId,
-        }));
-        setUnitOptions([
-          { label: "Select Unit Name", value: "" },
-          ...optionData,
-        ]);
-      })
-      .catch((error) => {
-        console.error("Error fetching Unit Name:", error);
-      });
-  };
-  const [defineUnit, setDefineUnit] = useState({
-    buildingId: "",
-    floorId: "",
-    unitNumber: "",
-  });
-
-  const resetFormData = () => {
-    setDefineUnit({
-      buildingId: "",
-      floorId: "",
-      unitNumber: "",
-    });
-    setUnitName({
-      buildingId: "",
-      floorId: "",
-      unitNumber: "",
-    });
-  };
-
-  const submitHandler = async () => {
-       const unitId = unitName.buildingId + unitName.floorId + unitName.unitNumber;
-       setUnits((prev) => [...prev, unitId]);
-       // setFormData((prev) => ({ ...prev, unitId })); // Update unitId in formData
-      resetFormData();
-  };
-
-  const onBuildingChange = (e) => {
-    const { name, value } = e.target;
-    setDefineUnit({
-      ...defineUnit,
-      [name]: value,
-    });
-    const id = parseInt(value);
-    const bName = buildingOptions.find((el) => el.value === id);
-    setUnitName((prev) => ({ ...prev, buildingId: bName.label.toUpperCase() }));
-  };
-
-  function onFloorChange(e) {
-    const { name, value } = e.target;
-    setDefineUnit({
-      ...defineUnit,
-      [name]: value,
-    });
-    const id = parseInt(value);
-    const bName = floorOptions.find((el) => el.value === id);
-    setUnitName((prev) => ({
-      ...prev,
-      floorId: bName.shortForm.toUpperCase(),
-    }));
-  }
-    function onUnitChange(e) {
-    const { name, value } = e.target;
-    setDefineUnit({
-      ...defineUnit,
-      [name]: value,
-    });
-
-    const id = parseInt(value);
-    const bName = unitOptions.find((el) => el.value === id);
-    setUnitName((prev) => ({
-      ...prev,
-      unitId: bName?.shortForm?.toUpperCase() || "",
-    }));
-  }
-function handleView(id){
-  console.log(id);
-}
-  function onUnitNumberChange(e) {
-    const { name, value } = e.target;
-    setDefineUnit({
-      ...defineUnit,
-      [name]: value,
-    });
-    setUnitName((prev) => ({
-      ...prev,
-      unitNumber: value,
-    }));
-  }
-
-const handleSearch= async () => {
-    try {
-      const result = await getAllUnitHandler(unitAllocationSearch);
-      setTransformedData(result.data.data || []);
-    } catch (err) {
-      console.error("Error during search:", err);
-    }
-  };
-
- const columns = [
-    {
-      Header: "Sl. No",
-      accessor: "serialNumber",
-      Cell: ({ row }) => page * pageSize + row.index + 1,
-    },
-    { Header: "Building", 
-      accessor: "buildingId" },
-    { Header: "Floor",
-       accessor: "floorId" },
-   
-    { Header: "Unit Name", accessor: "unitName" },
-    
-    {
-      Header: "Action",
-      accessor: "action",
-      Cell: ({ row }) => (
-        <div className="flex space-x-6">
-          {/* View Icon */}
-          <div className="relative group">
-            <button
-              className="text-yellow-600 hover:text-yellow-700"
-              onClick={() => handleView(row.original.visit_entry_Id)}
-            >
-              <FaEye className="text-lg" />
-            </button>
-            <span className="absolute px-3 py-1 text-xs text-white transition transform -translate-x-1/2 bg-blue-500 rounded opacity-0 pointer-events-none bottom-6 left-1/2 group-hover:opacity-100">
-              View
-            </span>
-          </div>
-
-          {/* QR Code Icon */}
-          {/* <div className="relative group">
-            <button
-              className="text-black-600 hover:text-black-700"
-              onClick={() => handleViewQRCode(row.original.visit_entry_Id)}
-            >
-              <FaQrcode className="text-lg" />
-            </button>
-            <span className="absolute px-3 py-1 text-xs text-white transition transform -translate-x-1/2 bg-green-500 rounded opacity-0 pointer-events-none bottom-6 left-1/2 group-hover:opacity-100">
-              QR Code
-            </span>
-          </div> */}
-
-          {/* Delete Icon */}
-          {/* <div className="relative group">
-            <button
-              className="text-red-500 hover:text-red-700"
-              onClick={() => handleDelete(row.original.visit_entry_Id)}
-            >
-              <FaTrashAlt className="text-lg" />
-            </button>
-            <span className="absolute px-3 py-1 text-xs text-white transition transform -translate-x-1/2 bg-red-500 rounded opacity-0 pointer-events-none bottom-6 left-1/2 group-hover:opacity-100">
-              Delete
-            </span>
-          </div> */}
-        </div>
-      ),
-    },
-  ];
-
   return (
     <div className="px-5 ">
       <div className="flex items-center gap-2 my-2 text-sm font-semibold text-gray-200">
@@ -418,7 +400,7 @@ const handleSearch= async () => {
         </div>
 
  
-        <div className="grid items-center grid-cols-3 gap-3 py-6">
+        <div className="grid items-center grid-cols-4 gap-3 py-6">
        
           <Select
             label={<span>Salutation<span className="text-red-500">*</span></span>}           
@@ -428,7 +410,7 @@ const handleSearch= async () => {
             name="salutation"
             color="blue"
             size="md"
-            className="py-[14px]"
+            className="py-[14px] "
           />
           <Input
            label={<span>First Name <span className="text-red-500">*</span></span>}
@@ -448,6 +430,18 @@ const handleSearch= async () => {
             placeholder={"Enter Last Name"}
             size={"lg"}
           />
+          {/* <div className="grid items-center grid-cols-3 gap-5"> */}
+          <Input
+           label={<span>Email<span className="text-red-500">*</span></span>} 
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            placeholder={"Enter Email"}
+            size={"lg"}
+          />
+        
+        {/* </div> */}
         </div>
 
         {/* mobile and country codes */}
@@ -470,7 +464,7 @@ const handleSearch= async () => {
             size="lg"
           />
           <Select
-           label={<span>Country Code<span className="text-red-500">*</span></span>} 
+           label={<span>Country Code</span>} 
             options={countryCodesList}
             value={formData.alternateCountryCode}
             onChange={handleInputChange}
@@ -478,7 +472,7 @@ const handleSearch= async () => {
             className="py-[14px]"
           />
           <Input
-            label={<span>Alternate Mobile No.<span className="text-red-500">*</span></span>} 
+            label={<span>Alternate Mobile No.</span>} 
             type="number"
             placeholder="Enter Alt. Mobile Number"
             name="alternateNumber"
@@ -487,26 +481,13 @@ const handleSearch= async () => {
             size="lg"
           />
         </div>
-        <div className="grid items-center grid-cols-3 gap-5">
-          <Input
-           label={<span>Email<span className="text-red-500">*</span></span>} 
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            placeholder={"Enter Email"}
-            size={"lg"}
-          />
         
-        </div>
 
- {/* <div className="p-10 my-5 bg-gray-100 border rounded-lg"> */}
         <div className="mt-10 font-sans text-xl font-semibold text-lime">
           Address Details
         </div>
         <div className="grid items-center grid-cols-3 gap-3 py-6 ">
           <Input
-          // label={<span>Address line 1<span className="text-red-500">*</span></span>}
            label={<span>Address line 1</span>} 
             name="addressLine1"
             value={formData.address.addressLine1}
@@ -523,9 +504,10 @@ const handleSearch= async () => {
             placeholder={"Enter Address"}
             size={"lg"}
           />
+         
         </div>
-        <div className="grid items-center grid-cols-3 gap-5">
-          <Input
+        <div className="grid items-center grid-cols-4 gap-4">
+        <Input
            label={<span>State</span>} 
             type="text"
             name="state"
@@ -581,6 +563,8 @@ const handleSearch= async () => {
           className="cursor-pointer"
         />
         <label className="cursor-pointer">{role.label}</label>
+
+        
       </div>
     ))
   ) : (
@@ -607,6 +591,18 @@ const handleSearch= async () => {
               onChange={handleInputChange}
             />
           </div>
+          {/* <div className="flex flex-row items-center gap-3">
+            <div>Is Member Of Association Committee?</div>
+            <div>
+              <input
+                type="checkbox"
+                name="ismaemberofassociationcommite"
+                checked={formData.ismaemberofassociationcommite}
+                onChange={handleInputChange}
+              />
+            </div>
+          </div> */}
+
           <div className="flex flex-row items-center gap-3">
             <div>Is Member Of Association Committee?</div>
             <div>
@@ -618,6 +614,7 @@ const handleSearch= async () => {
               />
             </div>
           </div>
+
 
           <div className="max-w-sm">
             <Input
@@ -639,112 +636,152 @@ const handleSearch= async () => {
               size={"lg"}
             />
           </div>
+        </div>        
+      </div>
+
+           <div className="p-10 my-5 bg-gray-100 border rounded-lg">
+             <div className="font-sans text-xl font-semibold text-lime">
+          Unit Details
         </div>
-      {/* </div> */}
-
-         
-      </div>
-
-     
-
-      <div className="p-10 my-5 bg-gray-100 border rounded-lg">
-        <div className="font-sans text-xl font-semibold text-lime">
-          Unit Allocation
-        </div>
- <div className="my-5 rounded-lg ">
-      <div className="grid items-center grid-cols-4 gap-5 py-6">
-        <Select
-          label="Tower /Building (Name / No.)"
-          options={buildingOptions}
-          value={defineUnit.buildingId}
-          
-           onChange={(e) => {
-    onBuildingChange(e);
-    handleSearchChange(e);
-  }}
-          name="buildingId"
-          color="blue"
-          size="md"
-          className="py-[14px]"
-        />
-        <Select
-          label="Select Floor"
-          options={floorOptions}
-          value={defineUnit.floorId}
-          
-           onChange={(e) => {
-    onFloorChange(e);
-    handleSearchChange(e);
-  }}
-          name="floorId"
-          color="blue"
-          size="md"
-          className="py-[14px]"
-        />
-      <Select
-          label="Select Unit Name"
-          options={unitOptions}
-          value={defineUnit.unitId}
-         onChange={(e) => {
-    onUnitChange(e);
-    handleSearchChange(e);
-  }}
-          name="unitId"
-        />
-        {/* <Input
-          label={"Unit Number"}
-          type="text"
-          name="unitNumber"
-          placeholder="Enter Unit No"
-          size="lg"
-          value={defineUnit.unitNumber}
-          onChange={onUnitNumberChange}
-        /> */}
-        {/* <div>
-          <h3 className="">
-            <strong>Unit Name</strong> :{" "}
-            {`${unitName.buildingId}${unitName.floorId}${unitName.unitNumber}`}{" "}
-          </h3>
-        </div> */}
-         <Button onClick={handleSearch}>Search</Button>
-      </div>
-
-    <ReusableTable
-        columns={columns}
-        data={transformedData}
-        pageIndex={page}
-        pageSize={pageSize}
-        totalCount={total}
-        totalPages={totalPages}
-        setPageIndex={setPage}
-        setPageSize={setPageSize}
-      />
-
-
-
-      <div className="flex justify-center mt-5">
-        <Button
-          className="max-w-sm"
-          type="submit"
-          onClick={submitHandler}
-          size="lg"
-        >
-          Add Unit
-        </Button>
-      </div>
-
-      <div className="mt-5">
-        <h5>Unit Names List</h5>
+              <div className="grid items-center grid-cols-3 gap-5 py-6">
+                <Select
+                  label={
+                      <div>
+                        Tower / Building (Name / No.) <span className="text-red-500">*</span>
+                      </div>
+                    }
+                  options={buildingOptions}
+                  value={defineUnit.buildingId}
+                  onChange={onBuildingChange}
+                  name="buildingId"
+                  color="blue"
+                  size="md"
+                  className="py-[14px]"
+                />
+                <Select 
+                  label={
+                      <div>
+                        Select Floor<span className="text-red-500">*</span>
+                      </div>
+                    }
+                  options={floorOptions}
+                  value={defineUnit.floorId}
+                  onChange={onFloorChange}
+                  name="floorId"
+                  color="blue"
+                  size="md"
+                  className="py-[14px]"
+                />
+            <Select
+                  label={
+                      <div>
+                        Unit Type<span className="text-red-500">*</span>
+                      </div>
+                    }
+                  options={unitTypeOptions}
+                  value={defineUnit.unitTypeId}
+                  onChange={handleChange}
+                  name="unitTypeId"
+                  color="blue"
+                  size="md"
+                  className="py-[14px]"
+                />
+                 <Select
+                  label={
+                      <div>
+                        Unit Number<span className="text-red-500">*</span>
+                      </div>
+                    }
+                  options={unitNoOptions}
+                  value={defineUnit.unitNumber}
+                  onChange={onUnitNumberChange}
+                  name="unitNumber"
+                  color="blue"
+                  size="md"
+                  className="py-[14px]"
+                />
+                {/* <Input
+                  label={
+                      <div>
+                       Unit Number<span className="text-red-500">*</span>
+                      </div>
+                    }
+                  type="text"
+                  name="unitNumber"
+                  placeholder="Enter Unit No"
+                  size="lg"
+                  value={defineUnit.unitNumber}
+                  onChange={onUnitNumberChange}
+                /> */}
+                <Input
+                  label= {
+                      <div>
+                       Unit Size (Sq.feet)<span className="text-red-500">*</span>
+                      </div>
+                    }
+                  type="text"
+                  name="unitsize"
+                  placeholder="Enter Super Built-up Area"
+                  size="lg"
+                  value={defineUnit.unitsize}
+                  onChange={handleChange}
+                />
+        
+                {/* <div>
+                  <h3 className="">
+                    <strong>Unit Name</strong> :{" "}
+                    {`${unitName.buildingId}${unitName.floorId}${unitName.unitNumber}`}{" "}
+                  </h3>
+                </div>
+              </div> */}
+        
+              <div className="flex justify-center mt-5">
+                <Button
+                  className="max-w-sm"
+                  type="submit"
+                  onClick={submitHandler}
+                  size="lg"
+                >
+                  Submit
+                </Button>
+                
+              </div>
+              {/* <div className="mt-5">
+  <h5 className="text-lg font-semibold">
+    Unit Names List ({units.length})
+  </h5> */}
+     {/* Units List */}
+     <div className="mt-5">
+        <h5 className="text-lg font-semibold">Unit Names List ({units.length})</h5>
         <div className="grid grid-cols-3 gap-3 py-5">
-          {units.map((el) => (
-            <div className="p-2 text-center bg-gray-200 border rounded-md">
-              <span className="font-bold text-turquoise">{el}</span>
-            </div>
+          {units.map((unit, index) => (
+        <div
+          key={unit.unitId}
+          className="relative w-full max-w-sm p-6 mx-auto bg-white border shadow rounded-xl"
+        >
+          <button
+            onClick={() => handleDeleteUnit(unit.unitId)}
+            className="absolute text-red-500 top-2 right-2 hover:text-red-700"
+            title="Delete Unit"
+            aria-label={`Delete unit ${unit.unitName}`}
+          >
+            <FaTimes />
+          </button>
+
+          <div className="flex items-center justify-center h-auto text-center">
+            <span className="text-lg font-semibold text-blue-700 break-words">
+              {unit.unitName}
+            </span>
+          </div>
+        </div>
           ))}
         </div>
       </div>
+
+
+
     </div>
-        </div>
+            </div>
         <div className="flex justify-center mt-5">
           <Button className="max-w-sm" type="button" onClick={submitProfileUser} size="lg">
             Add Profile

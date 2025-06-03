@@ -6,11 +6,11 @@ import Button from "../../../../components/ui/Button";
 import AddVisitorForm from "./AddVisitorForm";
 
 const AddVisitor = () => {
-  const paths = ["User", "New Visitor Entry"];
+  const paths = ["Visitors Management", "New Visitor Entry"];
   const Heading = ["New Visitor Entry"];
   return (
     <div className="px-5 ">
-      <div className="text-sm font-semibold my-2 flex items-center gap-2 text-gray-200">
+      <div className="flex items-center gap-2 my-2 text-sm font-semibold text-gray-200">
         <UrlPath paths={paths} />
       </div>
       <PageHeading heading={Heading} />

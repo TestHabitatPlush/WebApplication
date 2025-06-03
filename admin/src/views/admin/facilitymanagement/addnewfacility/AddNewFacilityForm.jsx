@@ -7,7 +7,7 @@ import UrlPath from "../../../../components/shared/UrlPath";
 import PageHeading from "../../../../components/shared/PageHeading";
 
 const AddNewFacilityForm = () => {
-  const paths = ["User", "Add new Facility"];
+  const paths = ["Facility Management", "Add new Facility"];
   const Heading = ["Add new Facility"];
 
   const { createFacilityHandler } = FacilityHandler();

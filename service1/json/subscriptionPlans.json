@@ -1,0 +1,15 @@
+[
+  {
+    "planName": "Silver",
+    "planDetails": "This plan is Basic."
+  },
+   {
+     "planName": "Gold",
+     "planDetails": "This plan is Gold."
+   },
+   {
+     "planName": "Platinum",
+     "planDetails": "This plan is Platinum."
+   }
+
+]

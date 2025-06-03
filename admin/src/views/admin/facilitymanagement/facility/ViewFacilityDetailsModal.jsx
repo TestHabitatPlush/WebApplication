@@ -1,40 +1,92 @@
+
+
+
 import React, { useEffect, useState } from "react";
 import Dialog from "../../../../components/ui/Dialog";
-import Input from "../../../../components/shared/Input";
+import {
+  FaIdBadge,
+  FaBuilding,
+  FaLayerGroup,
+  FaClipboardList,
+  FaRupeeSign,
+  FaCalendarAlt,
+} from "react-icons/fa";
 
 const ViewFacilityDetailsModal = ({ isOpen, onClose, formData }) => {
   const [facilityViewForm, setFacilityViewForm] = useState(formData);
 
   useEffect(() => {
     if (formData) {
-      setFacilityViewForm(formData);  // Update form data when modal opens
+      setFacilityViewForm(formData);
     }
   }, [formData]);
+
+  const facilityDetails = [
+    {
+      icon: <FaIdBadge className="text-xl text-blue-600" />,
+      label: "Facility ID",
+      value: facilityViewForm?.facilityId || "—",
+    },
+    {
+      icon: <FaBuilding className="text-xl text-blue-600" />,
+      label: "Facility Name",
+      value: facilityViewForm?.facilityName || "—",
+    },
+    {
+      icon: <FaLayerGroup className="text-xl text-blue-600" />,
+      label: "Facility Type",
+      value: facilityViewForm?.facilityType || "—",
+    },
+    {
+      icon: <FaClipboardList className="text-xl text-blue-600" />,
+      label: "Facility Usage",
+      value: facilityViewForm?.facilityUsage || "—",
+    },
+    {
+      icon: <FaRupeeSign className="text-xl text-blue-600" />,
+      label: "Facility Charge",
+      value: facilityViewForm?.facilityCharge || "—",
+    },
+    {
+      icon: <FaCalendarAlt className="text-xl text-blue-600" />,
+      label: "Booking From",
+      value: facilityViewForm?.bookingFrom?.slice(0, 10) || "—",
+    },
+    {
+      icon: <FaCalendarAlt className="text-xl text-blue-600" />,
+      label: "Booking To",
+      value: facilityViewForm?.bookingTo?.slice(0, 10) || "—",
+    },
+  ];
 
   return (
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
       className="w-full h-full p-10 overflow-auto"
-      contentClassName="w-full h-full bg-white lg:max-w-6xl rounded-lg overflow-auto scrollbar p-5"
+      contentClassName="w-full h-full bg-white lg:max-w-4xl rounded-lg overflow-auto p-5"
       overlayClassName="backdrop-blur"
     >
+      {/* Header */}
       <div className="pb-4 mb-6 border-b">
-        <h2 className="text-2xl font-semibold text-gray-800">View Facility Details</h2>
+        <h2 className="text-2xl font-semibold text-gray-800">Facility Details</h2>
       </div>
 
-      <div className="p-10 my-5 bg-gray-100 border rounded-lg">
-        <div className="grid items-center grid-cols-3 gap-5 py-6">
-          <Input label="Facility ID" type="text" value={facilityViewForm?.facilityId} readOnly />
-          <Input label="Facility Name" type="text" value={facilityViewForm?.facilityName} readOnly />
-          <Input label="Facility Type" type="text" value={facilityViewForm?.facilityType} readOnly />
-          <Input label="Facility Usage" type="text" value={facilityViewForm?.facilityUsage} readOnly />
-          <Input label="Facility Charge" type="text" value={facilityViewForm?.facilityCharge} readOnly />
-          <Input label="Booking From" type="text" value={facilityViewForm?.bookingFrom?.slice(0, 10) || ""} readOnly />
-          <Input label="Booking To" type="text" value={facilityViewForm?.bookingTo?.slice(0, 10) || ""}  readOnly />
-          {/* Add more form fields as needed */}
-        </div>
-      </div>
+      {/* Facility Details List */}
+      <ul className="space-y-4">
+        {facilityDetails.map((item, index) => (
+          <li
+            key={index}
+            className="flex items-start gap-4 p-4 border border-gray-200 rounded-md shadow-sm bg-gray-50"
+          >
+            <div className="flex-shrink-0">{item.icon}</div>
+            <div className="flex-1">
+              <h4 className="mb-1 text-sm font-medium text-gray-600">{item.label}</h4>
+              <p className="text-sm text-gray-800">{item.value}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
     </Dialog>
   );
 };

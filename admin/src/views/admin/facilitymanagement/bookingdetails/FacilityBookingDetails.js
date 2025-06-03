@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 
 
 const FacilityBookingDetails = () => {
-  const paths = ["User", "Facility Booking Details"];
+  const paths = ["Facility Management", "Facility Booking Details"];
   const Heading = ["Facility Booking Details"];
   return (
     <div className="px-5">
