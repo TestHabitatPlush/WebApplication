@@ -123,8 +123,8 @@ const getDiscussionByUserId = async (req, res) => {
 };
 // Update discussion by society ID
 const updateDiscussionBySocietyId = async (req, res) => {
-    upload.fields([{ name: 'document' }])(req, res, async (err) => {
-        if (err) return res.status(400).json({ message: "File upload error", error: err.message });
+    //upload.fields([{ name: 'document' }])(req, res, async (err) => {
+      //  if (err) return res.status(400).json({ message: "File upload error", error: err.message });
 
         try {
             const { discussionId } = req.params;
@@ -134,21 +134,24 @@ const updateDiscussionBySocietyId = async (req, res) => {
                 return res.status(404).json({ message: "Discussion not found" });
             }
 
-            const { discussionTitle, discussionDescription, userGroupId } = req.body;
-            let document = existingDoc.document;
+          //  const { discussionTitle, discussionDescription, userGroupId } = req.body;
+            const {  discussionDescription } = req.body;
 
-            if (req.files?.document) {
-                if (document && fs.existsSync(document)) fs.unlinkSync(document);
-                document = req.files.document[0].path;
-            }
+            // let document = existingDoc.document;
 
-            await existingDoc.update({ discussionTitle, discussionDescription, userGroupId, document });
+            // if (req.files?.document) {
+            //     if (document && fs.existsSync(document)) fs.unlinkSync(document);
+            //     document = req.files.document[0].path;
+            // }
+            await existingDoc.update({  discussionDescription});
+
+            //await existingDoc.update({ discussionTitle, discussionDescription, userGroupId, document });
 
             return res.status(200).json({ message: "Discussion updated successfully", data: existingDoc });
         } catch (err) {
             return res.status(500).json({ message: "Failed to update discussion", error: err.message });
         }
-    });
+    
 };
 
 // Update discussion by user ID
@@ -206,6 +209,23 @@ const deleteDiscussion = async (req, res) => {
         });
     }
 };
+//View data by Id
+const getDiscussionById = async (req, res) => {
+    try {
+    
+      const { discussionId } = req.params;
+      const discussion = await DiscussionForum.findOne({ where: { discussionId } });
+      
+      if (!discussion) {
+        return res.status(404).json({ message: "Discussion not found" });
+      }
+  
+      return res.status(200).json(discussion);
+    } catch (err) {
+      console.error("Error fetching Discussion by ID:", err);
+      return res.status(500).json({ message: "Server error" });
+    }
+  };
 
 module.exports = {
     createDiscussionBySocietyId,
@@ -214,5 +234,6 @@ module.exports = {
     getDiscussionByUserId,
     updateDiscussionBySocietyId,
     updateDiscussionByUserId,
-    deleteDiscussion
+    deleteDiscussion,
+    getDiscussionById
 };

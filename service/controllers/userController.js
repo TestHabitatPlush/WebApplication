@@ -413,6 +413,80 @@ const getManagement_committee = async (req, res) => {
 }
 }
 
+
+
+const getAllApprovedUsers = async (req, res) => {
+  try {
+    const { societyId } = req.params;
+    const { page = 0, pageSize = 10 } = req.query;
+
+    if (!societyId) {
+      return res.status(400).json({ message: "societyId is required" });
+    }
+
+    const offset = parseInt(page) * parseInt(pageSize);
+    const limit = parseInt(pageSize);
+
+    const { count, rows: activeUsers } = await User.findAndCountAll({
+      where: {
+        societyId,
+        status: "active",
+        isDeleted: 0, // <- assuming 0 means not deleted
+        managementDesignation: "Resident",
+      },
+      offset,
+      limit,
+    });
+
+    if (!activeUsers || activeUsers.length === 0) {
+      return res.status(404).json({ message: "No approved users found" });
+    }
+
+    return res.status(200).json({ total: count, users: activeUsers });
+  } catch (error) {
+    console.error("Error fetching approved users:", error);
+    return res.status(500).json({ error: error.message || "Internal Server Error" });
+  }
+};
+
+
+ const getAllDeactiveUsers = async (req, res) => {
+  const { societyId } = req.params; 
+
+  try {
+    if (!societyId) {
+      return res.status(400).json({ error: "Society ID is required" });
+    }
+    const deactiveUsers = await User.findAll({
+      where: {
+        status: "inactive", 
+        societyId: societyId,   
+      },
+    });
+
+    // Check if any users were found
+    if (deactiveUsers.length === 0) {
+      return res.status(404).json({ message: "No deactivated users found for this society" });
+    }
+
+    // Respond with the retrieved users
+    res.status(200).json({
+      message: "Deactivated users retrieved successfully",
+      users: deactiveUsers.map(user => ({
+        userId: user.userId,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        roleId: user.roleId,
+        mobileNumber: user.mobileNumber,
+        status: user.status,
+      })),
+    });
+  } catch (err) {
+    console.error("Error retrieving deactivated users:", err);
+    res.status(500).json({ error: "Failed to retrieve deactivated users", details: err.message });
+  }
+};
+
 module.exports = {
   createUser,
   getAllUsers,
@@ -424,4 +498,6 @@ module.exports = {
   updateResidentBySocietyId,
   //getSocietyModerator,
   getManagement_committee,
+  getAllApprovedUsers,
+  getAllDeactiveUsers
 };
