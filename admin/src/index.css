@@ -3,6 +3,21 @@
 @tailwind utilities;
 
 @layer utilities {
+
+  /* Tailwind-compatible custom scrollbar */
+.scrollbar-custom::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background-color: white;
+  border-radius: 9999px;
+}
+
   /* Custom scrollbar styles */
   .scrollbar {
     scrollbar-width: thin; /* Firefox */
@@ -43,7 +58,7 @@
 
 .dialog {
     outline: none;
-    @apply absolute min-h-full min-w-full flex justify-center items-center ;
+    @apply absolute flex items-center justify-center min-w-full min-h-full ;
 }
 
 @screen sm {
@@ -71,12 +86,12 @@
 }
 
 .dialog-content {
-    @apply shadow-xl relative h-full;
+    @apply relative h-full shadow-xl;
 }
 
 .dialog-overlay {
     transition: all 0.15s ease-in-out;
-    @apply inset-0 fixed z-30 ;
+    @apply fixed inset-0 z-30 ;
 }
 
 .dialog-overlay-after-open {

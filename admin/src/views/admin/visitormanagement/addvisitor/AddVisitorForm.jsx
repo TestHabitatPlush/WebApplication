@@ -173,7 +173,7 @@ const handleSubmit = async (e) => {
             onChange={handleChange}
             min={new Date().toISOString().split("T")[0]} 
           />
-          <div>
+       <div>
             <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
               Type Of Visitor <span className="text-red-500">*</span>
             </label>
@@ -182,7 +182,7 @@ const handleSubmit = async (e) => {
               name="visit_type_Id"
               value={formData.visit_type_Id}
               onChange={handleChange}
-              className="block w-full p-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="block w-full h-12 p-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             >
               <option value="" disabled>Select type of Visitor</option>
               {visitorTypes.length > 0 ? (

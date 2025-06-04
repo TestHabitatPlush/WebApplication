@@ -65,65 +65,19 @@ export const getAllUserDataService = (data, token) => {
   });
 };
 
-// export const approveUserService = (userId, unitId, token) => {
-//   const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/resident/approve`;
-
-//   return axios.post(
-//     url,
-//     { userId, unitId },  // Ensure userId and unitId are passed here
-//     {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         "Content-Type": "application/json",
-//       },
-//     }
-//   );
-// };
-
-export const approveUserService = (userId, token) => {
-  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/resident/approve`;
-
-   return axios.post(
-    url,
-    { userId }, 
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
-};
-
-export const rejectUserService = (userId, token) => {
-  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/resident/reject`;
-
-  return axios.post(
-    url,
-    { userId },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
-};
 
 
-export const getAllApprovedUserDataService = (societyId, token, { page, pageSize }) => {
+export const getAllApprovedUserDataService = (societyId, token, data) => {
   const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/resident/approvedUser/${societyId}`;
 
   return axios.get(url, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    params: {
-      page,
-      pageSize,
-    },
+    params: data,
   });
 };
+
 
 
 export const getAllDeactiveUserDataService = (societyId, token, { page, pageSize }) => {
@@ -135,6 +89,21 @@ export const getAllDeactiveUserDataService = (societyId, token, { page, pageSize
     params: {
       page,
       pageSize,
+    },
+  });
+};
+
+export const updateUsersForApprovedAndRejectService = (data, token) => {
+  if (!data.societyId) {
+    console.error("Society ID is missing in API request");
+    return;
+  }
+
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/resident/${data.societyId}`;
+  return axios.put(url, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     },
   });
 };

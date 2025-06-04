@@ -1,13 +1,15 @@
-import { FaUserAlt, FaIdCard,FaBuilding, FaBullhorn, FaComments,  FaParking, FaCog,  FaLaptopCode,FaHome, FaUserTie } from 'react-icons/fa';
+import { FaTachometerAlt ,FaUserAlt, FaIdCard,FaBuilding, FaBullhorn, FaComments, FaFileAlt, FaAddressBook,FaParking, FaCog,  FaLaptopCode,FaHome, FaUserTie, FaFileInvoice,FaHeadset} from 'react-icons/fa';
 
 import { GiGate } from 'react-icons/gi';
+
+
 
 const SideBarMenu = {
   society_moderator: [
      {
       name: "Dashboard",
       isAvailable: true,
-       icon: FaBuilding,
+       icon: FaTachometerAlt ,
       children: [
         {
           name: "Dashboard",
@@ -34,10 +36,10 @@ const SideBarMenu = {
           name: "Unit List",
           url: "unit/view",
         },
-        // {
-        //   name: "Report",
-        //   url: "unit/report",
-        // },
+        {
+          name: "Report",
+          url: "unit/report",
+        },
       ],
     },
      {
@@ -65,16 +67,16 @@ const SideBarMenu = {
           url: "user/deactivated",
           path: ["user", "setting"],
         },
-        // {
-        //   name: "User Access",
-        //   url: "user/access",
-        //   path: ["user", "setting"],
-        // },
-        // {
-        //   name: "User Report",
-        //   url: "user/access",
-        //   path: ["user", "setting"],
-        // },
+        {
+          name: "User Access",
+          url: "user/access",
+          path: ["user", "setting"],
+        },
+        {
+          name: "User Report",
+          url: "user/access",
+          path: ["user", "setting"],
+        },
       ],
     },
     {
@@ -136,10 +138,10 @@ const SideBarMenu = {
           name: "Visitor List",
           url: "visitor/visitorlist",
         },
-        // {
-        //   name: "Visitor Report",
-        //   url: "visitor/report",
-        // },
+        {
+          name: "Visitor Report",
+          url: "visitor/report",
+        },
       ],
     },
     {
@@ -179,10 +181,10 @@ const SideBarMenu = {
           name: "Approved Gate Users",
           url: "gate/approvedusers",
         },
-        // {
-        //   name: "Deactivated Gate Users",
-        //   url: "gate/deactivatedusers"
-        // }
+        {
+          name: "Deactivated Gate Users",
+          url: "gate/deactivatedusers"
+        }
       ],
     },
     // {
@@ -222,61 +224,61 @@ const SideBarMenu = {
     //     },
     //   ],
     // },
-    // {
-    //   name: "Document Management",
-    //   isAvailable: true,
-    //   icon:FaFileAlt ,
-    //   children: [
-    //     {
-    //       name: "Document Upload Facility",
-    //       url: "document/upload",
-    //     },
+    {
+      name: "Document Management",
+      isAvailable: true,
+      icon:FaFileAlt ,
+      children: [
+        {
+          name: "Document Upload Facility",
+          url: "document/upload",
+        },
 
-    //     {
-    //       name: "Document List",
-    //       url: "document/view",
-    //     },
-    //   ],
-    // },
-    //  {
-    //   name: "Invoice Management",
-    //   isAvailable: true,
-    //   icon:FaFileInvoice ,
-    //   children: [
-    //     {
-    //       name: "Define New Charge",
-    //       url: "invoice/newcharge",
-    //     },
-    //     {
-    //       name: " Charge List",
-    //       url: "invoice/chargelist",
-    //     },
-    //     {
-    //       name: "Invoice Setup",
-    //       url: "invoice/setup",
-    //     },
-    //     {
-    //       name: "Invoice Details",
-    //       url: "invoice/details",
-    //     },
-    //     {
-    //       name: "Invoice scheduler",
-    //       url: "invoice/scheduler",
-    //     },
-    //     {
-    //       name: "Defaulter List",
-    //       url: "invoice/defaulterlist",
-    //     },
-    //     {
-    //       name: "Invoice Adjustment",
-    //       url: "invoice/adjustment",
-    //     },
-    //     {
-    //       name: "Income Summary Report",
-    //       url: "invoice/summury",
-    //     },
-    //   ],
-    // },
+        {
+          name: "Document List",
+          url: "document/view",
+        },
+      ],
+    },
+     {
+      name: "Invoice Management",
+      isAvailable: true,
+      icon:FaFileInvoice ,
+      children: [
+        {
+          name: "Define New Charge",
+          url: "invoice/newcharge",
+        },
+        {
+          name: " Charge List",
+          url: "invoice/chargelist",
+        },
+        {
+          name: "Invoice Setup",
+          url: "invoice/setup",
+        },
+        {
+          name: "Invoice Details",
+          url: "invoice/details",
+        },
+        {
+          name: "Invoice scheduler",
+          url: "invoice/scheduler",
+        },
+        {
+          name: "Defaulter List",
+          url: "invoice/defaulterlist",
+        },
+        {
+          name: "Invoice Adjustment",
+          url: "invoice/adjustment",
+        },
+        {
+          name: "Income Summary Report",
+          url: "invoice/summury",
+        },
+      ],
+    },
     {
       name: "Facility Management",
       isAvailable: true,
@@ -328,101 +330,120 @@ const SideBarMenu = {
           url: "parking/vechicledetails",
         },
         
-        // {
-        //   name: "Vechicle List",
-        //   url: "vechicle/list",
-        // },
+        {
+          name: "Vehicle List",
+          url: "vehicle/list",
+        },
       ],
     },
-    // {
-    //   name: "Socity Admin Confugaration",
-    //   isAvailable: true,
-    //   icon:FaCog ,
-    //   children: [
-    //     {
-    //       name: "Socity Financial Confugaration",
-    //       url: "socityconfugartion/financial",
-    //     },
-    //     {
-    //       name: "Notification",
-    //       url: "socityconfugartion/notification",
-    //     },
-    //     {
-    //       name: "Calender Settings",
-    //       url: "socityconfugartion/calender",
-    //     },
-    //     {
-    //       name: "SMS Alert Confugaration",
-    //       url: "socityconfugartion/smsalert",
-    //     },
-    //     // {
-    //     //   name: "Email Confugaration",
-    //     //   url: "socityconfugartion/emailconfugaration",
-    //     // },
-    //     {
-    //       name: "Template Management",
-    //       url: "socityconfugartion/templatemanagement",
-    //     },
-    //   ],
-    // },
-    // {
-    //   name: "Socity HelpDesk Management",
-    //   isAvailable: true,
-    //   icon:FaHeadset ,
-    //   children: [
-    //     {
-    //       name: "SetUp",
-    //       url: "socityhelpdesk/socityhelpdesksetup",
-    //       children: [
-    //         {
-    //           name: "Approval Matrix",
-    //           url: "socityhelpdesk/socityhelpdesksetup/socityapprovalmatrix",
-    //         },
-    //         {
-    //           name: "Define Purpose",
-    //           url: "socityhelpdesk/socityhelpdesksetup/socitydefinepurpose",
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       name: "Create Ticket",
-    //       url: "socityhelpdesk/socityhelpdeskcreateticket",
-    //     },
-    //     {
-    //       name: "Ticket List",
-    //       url: "socityhelpdesk/socityhelpdeskticketlist",
-    //     },
-    //   ],
-    // },
-    // {
-    //   name: "Software HelpDesk Management",
-    //   isAvailable: true,
-    //   icon:FaLaptopCode,
-    //   children: [
-    //     // {
-    //     //   name: "SetUp",
-    //     //   url: "softwarehelpdesk/softwarehelpdesksetup",
-    //     //   children: [
-    //     //     {
-    //     //       name: "Approval Matrix",
-    //     //       url: "softwarehelpdesk/softwarehelpdesksetup/softwareapprovalmatrix",
-    //     //     },
-    //     //     {
-    //     //       name: "Define Purpose",
-    //     //       url: "softwarehelpdesk/softwarehelpdesksetup/softwaredefinepurpose",
-    //     //     },
-    //     //   ],
-    //     // },
-    //     {
-    //       name: "Create Ticket",
-    //       url: "softwarehelpdesk/softwarehelpdeskcreateticket",
-    //     },
-    //     {
-    //       name: "Ticket List",
-    //       url: "softwarehelpdesk/softwarehelpdeskticketlist",
-    //     },
-    //   ],
-    // },
+    {
+      name: "Socity Admin Confugaration",
+      isAvailable: true,
+      icon:FaCog ,
+      children: [
+        {
+          name: "Socity Financial Confugaration",
+          url: "socityconfugartion/financial",
+        },
+        {
+          name: "Notification",
+          url: "socityconfugartion/notification",
+        },
+        {
+          name: "Calender Settings",
+          url: "socityconfugartion/calender",
+        },
+        {
+          name: "SMS Alert Confugaration",
+          url: "socityconfugartion/smsalert",
+        },
+        {
+          name: "Email Confugaration",
+          url: "socityconfugartion/emailconfugaration",
+        },
+        {
+          name: "Template Management",
+          url: "socityconfugartion/templatemanagement",
+        },
+      ],
+    },
+    {
+      name: "Socity HelpDesk Management",
+      isAvailable: true,
+      icon:FaHeadset ,
+      children: [
+        {
+          name: "SetUp",
+          url: "socityhelpdesk/socityhelpdesksetup",
+          children: [
+            {
+              name: "Approval Matrix",
+              url: "socityhelpdesk/socityhelpdesksetup/socityapprovalmatrix",
+            },
+            {
+              name: "Define Purpose",
+              url: "socityhelpdesk/socityhelpdesksetup/socitydefinepurpose",
+            },
+          ],
+        },
+        {
+          name: "Create Ticket",
+          url: "socityhelpdesk/socityhelpdeskcreateticket",
+        },
+        {
+          name: "Ticket List",
+          url: "socityhelpdesk/socityhelpdeskticketlist",
+        },
+      ],
+    },
+    {
+      name: "Software HelpDesk Management",
+      isAvailable: true,
+      icon:FaLaptopCode,
+      children: [
+        {
+          name: "SetUp",
+          url: "softwarehelpdesk/softwarehelpdesksetup",
+          children: [
+            {
+              name: "Approval Matrix",
+              url: "softwarehelpdesk/softwarehelpdesksetup/softwareapprovalmatrix",
+            },
+            {
+              name: "Define Purpose",
+              url: "softwarehelpdesk/softwarehelpdesksetup/softwaredefinepurpose",
+            },
+          ],
+        },
+        {
+          name: "Create Ticket",
+          url: "softwarehelpdesk/softwarehelpdeskcreateticket",
+        },
+        {
+          name: "Ticket List",
+          url: "softwarehelpdesk/softwarehelpdeskticketlist",
+        },
+      ],
+    },
+
+
+{
+  name: "Emergency Contact",
+  isAvailable: true,
+  icon: FaAddressBook,
+  children: [
+    {
+      name: "Contact Details",
+      url: "emergencycontact/ContactDetails",
+    },
+   {
+      name: "Emergency List",
+      url: "/emerencycontact/EmergencyList",
+    },
+    
+  ],
+}
+
   ],
   // super_admin: [
   //   {

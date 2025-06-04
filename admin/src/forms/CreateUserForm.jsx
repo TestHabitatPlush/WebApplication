@@ -133,8 +133,8 @@ const validateForm = () => {
   };
 
   return (
-    <div className="p-10 my-5 border rounded-lg bg-gray-100">
-      <div className="text-xl font-sans font-semibold text-lime">
+    <div className="p-10 my-5 bg-gray-100 border rounded-lg">
+      <div className="font-sans text-xl font-semibold text-lime">
         Profile Details
       </div>
 
@@ -142,7 +142,7 @@ const validateForm = () => {
         <div className="flex flex-row mt-5">
           <div className="flex items-center gap-5">
             <div
-              className="relative h-28 w-28 rounded-full border-2 border-lime"
+              className="relative border-2 rounded-full h-28 w-28 border-lime"
               style={{
                 backgroundImage: formData.profilePhoto
                   ? `url(${formData.profilePhoto})`
@@ -172,9 +172,9 @@ const validateForm = () => {
         </div>
 
         {/* Profile Fields */}
-        <div className="grid grid-cols-3 gap-5 items-center py-6">
+        <div className="grid items-center grid-cols-3 gap-5 py-6">
           <Select
-            label={<><span>Salutation</span><span className="text-red-500 font-bold">*</span></>} 
+            label={<><span>Salutation</span><span className="font-bold text-red-500">*</span></>} 
             options={selectOptions.salutation}
             value={formData.salutation}
             onChange={handleInputChange}
@@ -184,7 +184,7 @@ const validateForm = () => {
             className="py-[14px]"
           />
           <Input
-            label={<><span> First Name</span><span className="text-red-500 font-bold">*</span></>}
+            label={<><span> First Name</span><span className="font-bold text-red-500">*</span></>}
             type="text"
             placeholder="Enter First Name"
             name="firstName"
@@ -193,7 +193,7 @@ const validateForm = () => {
             size="lg"
           />
           <Input
-            label={<><span>Last Name</span><span className="text-red-500 font-bold">*</span></>}
+            label={<><span>Last Name</span><span className="font-bold text-red-500">*</span></>}
             type="text"
             placeholder="Enter Last Name"
             name="lastName"
@@ -204,9 +204,9 @@ const validateForm = () => {
         </div>
 
         {/* Contact Details */}
-        <div className="grid grid-cols-4 items-center gap-5">
+        <div className="grid items-center grid-cols-4 gap-5">
           <Select
-            label={<><span> Country Code</span><span className="text-red-500 font-bold">*</span></>}
+            label={<><span> Country Code</span><span className="font-bold text-red-500">*</span></>}
             options={selectOptions.countryCodes}
             value={formData.countryCode}
             onChange={handleInputChange}
@@ -214,7 +214,7 @@ const validateForm = () => {
             className="py-[14px]"
           />
           <Input
-            label={<><span> Mobile No.(Primary)</span><span className="text-red-500 font-bold">*</span></>}
+            label={<><span> Mobile No.(Primary)</span><span className="font-bold text-red-500">*</span></>}
             type="number"
             placeholder="Enter Mobile Number"
             name="mobileNumber"
@@ -224,7 +224,7 @@ const validateForm = () => {
           />
 
           <Select
-            label={<><span> Country Code</span><span className="text-red-500 font-bold">*</span></>}
+            label={<><span> Country Code</span><span className="font-bold text-red-500">*</span></>}
             options={selectOptions.countryCodes}
             value={formData.alternateCountryCode}
             onChange={handleInputChange}
@@ -232,7 +232,7 @@ const validateForm = () => {
             className="py-[14px]"
           />
           <Input
-            label={<><span> Alternate Mobile No.</span><span className="text-red-500 font-bold">*</span></>}
+            label={<><span> Alternate Mobile No.</span><span className="font-bold text-red-500">*</span></>}
             type="number"
             placeholder="Enter Alternate Mobile Number"
             name="alternateNumber"
@@ -241,7 +241,7 @@ const validateForm = () => {
             size="lg"
           />
           <Input
-            label={<><span>Email</span><span className="text-red-500 font-bold">*</span></>}
+            label={<><span>Email</span><span className="font-bold text-red-500">*</span></>}
             type="email"
             placeholder="Enter Email"
             name="email"
@@ -262,12 +262,12 @@ const validateForm = () => {
 
         {/* Address Details */}
         <div className="py-5">
-          <div className="text-xl font-sans font-semibold text-lime">
+          <div className="font-sans text-xl font-semibold text-lime">
             Address Details
           </div>
-          <div className="grid grid-cols-3 gap-5 items-center">
+          <div className="grid items-center grid-cols-3 gap-5">
             <Input
-              label={<><span>Address Line 1</span><span className="text-red-500 font-bold">*</span></>}
+              label={<><span>Address Line 1</span><span className="font-bold text-red-500">*</span></>}
               type="text"
               placeholder="Enter Address"
               name="addressLine1"
@@ -276,7 +276,7 @@ const validateForm = () => {
               size="lg"
             />
             <Input
-              label={<><span> Address Line 2</span><span className="text-red-500 font-bold">*</span></>}
+              label={<><span> Address Line 2</span><span className="font-bold text-red-500">*</span></>}
               type="text"
               placeholder="Enter Address"
               name="addressLine2"
@@ -285,9 +285,9 @@ const validateForm = () => {
               size="lg"
             />
           </div>
-          <div className="grid grid-cols-3 gap-5 items-center">
+          <div className="grid items-center grid-cols-3 gap-5">
             <Input
-              label={<><span>State</span><span className="text-red-500 font-bold">*</span></>}
+              label={<><span>State</span><span className="font-bold text-red-500">*</span></>}
               type="text"
               placeholder="Enter State"
               name="state"
@@ -296,7 +296,7 @@ const validateForm = () => {
               size="lg"
             />
             <Input
-              label={<><span>City</span><span className="text-red-500 font-bold">*</span></>}
+              label={<><span>City</span><span className="font-bold text-red-500">*</span></>}
               type="text"
               placeholder="Enter City"
               name="city"
@@ -305,7 +305,7 @@ const validateForm = () => {
               size="lg"
             />
             <Input
-              label={<><span>Country</span><span className="text-red-500 font-bold">*</span></>}
+              label={<><span>Country</span><span className="font-bold text-red-500">*</span></>}
               type="text"
               placeholder="Enter Country "
               name="country"
@@ -314,7 +314,7 @@ const validateForm = () => {
               size="lg"
             />
             <Input
-              label={<><span>Zip Code</span><span className="text-red-500 font-bold">*</span></>}
+              label={<><span>Zip Code</span><span className="font-bold text-red-500">*</span></>}
               type="text"
               placeholder="Enter PIN"
               name="zipCode"
@@ -328,7 +328,7 @@ const validateForm = () => {
         {/* Role and Remark */}
         <div className="grid grid-cols-2 gap-5">
           <Select
-            label={<><span>Role</span><span className="text-red-500 font-bold">*</span></>}
+            label={<><span>Role</span><span className="font-bold text-red-500">*</span></>}
             options={selectOptions.userRoles}
             value={formData.roleId}
             onChange={handleInputChange}
@@ -338,7 +338,7 @@ const validateForm = () => {
             className="py-[14px]"
           />
           <Input
-            label={<><span> Remarks </span><span className="text-red-500 font-bold">*</span></>}
+            label={<><span> Remarks </span><span className="font-bold text-red-500">*</span></>}
             type="text"
             placeholder="Enter Any Remarks"
             name="remark"
@@ -347,7 +347,7 @@ const validateForm = () => {
             size="lg"
           />
           <Select
-            label={<><span>Select Society</span><span className="text-red-500 font-bold">*</span></>}
+            label={<><span>Select Society</span><span className="font-bold text-red-500">*</span></>}
             options={selectOptions.societyLists}
             value={formData.societyId}
             onChange={handleInputChange}
@@ -367,4 +367,4 @@ const validateForm = () => {
   );
 };
 
-export default CreateUserForm;
+export default CreateUserForm;

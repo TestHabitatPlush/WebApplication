@@ -11,12 +11,12 @@ const DefineVisitorcatagories = () => {
   const visitorOptions = ["Recurring", "Onetime"];
   return (
     <div className="px-5">
-      <div className="text-sm font-semibold my-2 flex items-center gap-2 text-gray-200">
+      <div className="flex items-center gap-2 my-2 text-sm font-semibold text-gray-200">
         <UrlPath paths={paths} />
       </div>
-      {/* <div className="text-2xl font-semibold text-lime mt-4">Add Unit</div> */}
+      {/* <div className="mt-4 text-2xl font-semibold text-lime">Add Unit</div> */}
       <PageHeading heading={Heading} />
-      <div className="p-10 my-5 border rounded-lg bg-gray-100">
+      <div className="p-10 my-5 bg-gray-100 border rounded-lg">
         <div className="grid grid-cols-3 gap-4">
           <div>Define Type of Entry</div>
           <div>
@@ -64,7 +64,7 @@ const DefineVisitorcatagories = () => {
             />
           </div>
           <div>
-            <Button className="max-w-sm" type="submit" size="md">
+            <Button className="w-full" type="submit" size="lg">
               Submit
             </Button>
           </div>

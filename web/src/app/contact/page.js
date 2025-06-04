@@ -1,9 +1,5 @@
 "use client";
-<<<<<<< HEAD
 import Footer from "@/views/Footer/Footer";
-=======
-import Footer from "@/views/footer/Footer";
->>>>>>> c6c1dfd5fcce2b989ccff079b263f58e51b5cc70
 import Navbar from "@/views/navbar/Navbar";
 import emailjs from "@emailjs/browser";
 import { useState } from "react";

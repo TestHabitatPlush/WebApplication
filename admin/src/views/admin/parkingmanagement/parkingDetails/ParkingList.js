@@ -4,7 +4,7 @@ import PageHeading from "../../../../components/shared/PageHeading";
 import ParkingListTable from "./ParkingListTable";
 
 const ParkingList = () => {
-  const paths = ["Parking", "Parking List"];
+  const paths = ["Parking Managemen", "Parking List"];
   const Heading = ["Parking List"];
   return (
     <div className="px-5">

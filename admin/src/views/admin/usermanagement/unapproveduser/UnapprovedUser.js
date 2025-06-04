@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { FaCheck, FaSearch, FaEye, FaTimes } from "react-icons/fa";
+import { FaCheck, FaEye, FaTimes } from "react-icons/fa";
 import UrlPath from "../../../../components/shared/UrlPath";
 import PageHeading from "../../../../components/shared/PageHeading";
 import ReusableTable from "../../../../components/shared/ReusableTable";
 import UserHandler from "../../../../handlers/UserHandler";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import Input from "../../../../components/shared/Input";
 import ViewUserAllDetailsModal from "../deactivateuser/ViewUserAllDetailsModal";
 
 const UnapprovedUser = () => {
@@ -19,27 +18,17 @@ const UnapprovedUser = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [isUnApprovedModalOpen, setUnApprovedModal] = useState(false);
 
-  const { getResidentBySocietyIdHandler, approveUserHandler, rejectUserHandler } = UserHandler();
-  const [formData, setFormData] = useState({
-    userId: "",
-  });
+  const { getResidentBySocietyIdHandler, updateUserForApprovedAndRejectHandler } = UserHandler();
 
-  const paths = ["User", "Unapproved Users"];
+  const paths = ["User Management", "Unapproved Users"];
   const Heading = ["Unapproved Users"];
 
   const token = useSelector((state) => state.auth.token);
   const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
-   const userId = useSelector((state) => state.auth.user?.userId);
 
-  useEffect(() => {
-    if (societyId) {
-      fetchUnapprovedUserList();
-    } else {
-      console.error("Society ID not found. Please check authentication state.");
-    }
-  }, [societyId, page, pageSize]);
 
-  const fetchUnapprovedUserList = async () => {
+
+  const fetchAllUserList = async () => {
     try {
       if (!societyId || !token) {
         console.error("Missing societyId or token");
@@ -58,30 +47,78 @@ const UnapprovedUser = () => {
       console.error("Error fetching unapproved users:", err);
     }
   };
-
-
-
-  const handleUnapproveUserDelete = async (userId) => {
-    try {
-      await rejectUserHandler(userId);
-      //toast.success("User rejected successfully!");
-      fetchUnapprovedUserList();
-    } catch (error) {
-      console.error("Error rejecting user:", error);
-     // toast.error("Error rejecting user: " + (error.response?.data?.message || error.message));
+  useEffect(() => {
+    if (societyId) {
+      fetchAllUserList();
+    } else {
+      console.error("Society ID not found. Please check authentication state.");
     }
-  };
+  }, [societyId, page, pageSize]);
 
-  const handleUnapproveUserApprove = async (userId) => {
-    try {
-      await approveUserHandler(userId);
-      //toast.success("User approved successfully!");
-      fetchUnapprovedUserList();
-    } catch (error) {
-      console.error("Error approving user:", error);
-      //toast.error("Error approving user: " + (error.response?.data?.message || error.message));
-    }
-  };
+
+
+  const handleDeactive = async (userId) => {
+     try {
+         if (!societyId || !token) {
+           console.error("Society ID or token is missing.");
+           return;
+         }
+     
+         const updatedUser = {
+           userId,  // Ensure only userId is passed
+           status: "inactive",
+           societyId,
+         };
+     
+         console.log("Activating user:", updatedUser);
+     
+         const response = await updateUserForApprovedAndRejectHandler(updatedUser);
+         
+         if (response && response.status === 200) { // Ensure response is successful
+           toast.success("User deactivated successfully!");
+           fetchAllUserList(); // Refresh list
+         } else {
+           console.error("Activation failed:", response);
+           toast.error("Failed to deactivate user.");
+         }
+       } catch (error) {
+         console.error("Error deactivating user:", error);
+         toast.error("Error deactivating user: " + (error.response?.data?.message || error.message));
+       }
+     };
+  
+  
+
+  const handleActivate = async (userId) => {
+     try {
+        if (!societyId || !token) {
+          console.error("Society ID or token is missing.");
+          return;
+        }
+    
+        const updatedUser = {
+          userId,  // Ensure only userId is passed
+          status: "active",
+          societyId,
+        };
+    
+        console.log("Activating user:", updatedUser);
+    
+        const response = await updateUserForApprovedAndRejectHandler(updatedUser);
+        
+        if (response && response.status === 200) { // Ensure response is successful
+          toast.success("User activated successfully!");
+          fetchAllUserList(); // Refresh list
+        } else {
+          console.error("Activation failed:", response);
+          toast.error("Failed to activate user.");
+        }
+      } catch (error) {
+        console.error("Error activating user:", error);
+        toast.error("Error activating user: " + (error.response?.data?.message || error.message));
+      }
+    };
+    
 
   const viewUnapprovedData = (type, user) => {
     setUnApprovedModal(type);
@@ -93,13 +130,7 @@ const UnapprovedUser = () => {
     setSelectedUser(null);
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
-  };
+
 
   const columns = [
     {
@@ -113,6 +144,7 @@ const UnapprovedUser = () => {
     { Header: "Role", accessor: "roleId" },
     { Header: "Mobile No.", accessor: "mobileNumber" },
     { Header: "Email", accessor: "email" },
+    { Header: "Status", accessor: "status" },
     {
       Header: "Action",
       accessor: "action",
@@ -120,7 +152,7 @@ const UnapprovedUser = () => {
         <div className="flex space-x-4">
        <button
   className="text-green-600 hover:text-green-700"
-  onClick={() => handleUnapproveUserApprove(row.original.userId)}
+  onClick={() => handleActivate(row.original.userId)}
 >
   <FaCheck className="text-lg" />
 </button>
@@ -133,7 +165,7 @@ const UnapprovedUser = () => {
           </button>
           <button
             className="text-red-500 hover:text-red-700"
-            onClick={() => handleUnapproveUserDelete(row.original.userId)}
+            onClick={() => handleDeactive(row.original.userId)}
           >
             <FaTimes className="text-lg" />
           </button>
@@ -152,16 +184,7 @@ const UnapprovedUser = () => {
             TOTAL {total} USERS
           </div>
 
-          <div className="flex flex-row mt-4">
-            <div className="relative w-full">
-              <input
-                type="text"
-                placeholder="Search"
-                className="px-4 py-4 border w-full border-gray-300 rounded-md focus:outline-none mb-4"
-              />
-              <FaSearch className="absolute right-7 top-5 text-lg text-gray-500" />
-            </div>
-          </div>
+         
 
           <ReusableTable
             columns={columns}

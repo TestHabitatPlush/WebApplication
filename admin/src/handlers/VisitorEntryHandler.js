@@ -136,15 +136,7 @@ const handleViewQRCodeById = async (visitEntryId) => {
   //     toast.error("Error fetching visitor entry.");
   //   }
   // };
-  const getVisitorEntry = async (visitEntryId) => {  // Corrected function name
-    try {
-      const response = await getvisitorEntryService(visitEntryId, token);
-      return response.data;
-    } catch (err) {
-      console.error("Error fetching visitor entry:", err);
-      toast.error("Error fetching visitor entry.");
-    }
-  };
+ 
   
   return {
     getTypeofVisitor,
