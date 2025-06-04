@@ -1,11 +1,9 @@
-require("dotenv").config();
+require("dotenv").config(); 
 
 const { generateToken, verifyToken } = require("../utils/jwt");
 const cookieHandler = require("../middleware/cookieHandler");
 const { User, Role, Customer, JobProfile } = require("../models");
 const bcrypt = require("bcrypt");
-
-const ADMIN_BASE_URL = process.env.ADMIN_BASE_URL.replace(/\/+$/, "");
 
 const loginUser = async (req, res) => {
   try {
@@ -20,7 +18,7 @@ const loginUser = async (req, res) => {
       return res.status(404).json({ message: "Email does not exist!" });
     }
 
-    if (["inactive", "pending"].includes(user.status)) {
+    if (user.status === "inactive" || user.status === "pending") {
       return res.status(403).json({
         message: "Your account is inactive or pending. Please contact the administrator.",
       });
@@ -31,9 +29,13 @@ const loginUser = async (req, res) => {
       return res.status(404).json({ message: "Entered password is incorrect!" });
     }
 
-    if (["super_admin", "society_moderator", "management_committee"].includes(user.role.roleCategory)) {
+    // Token & redirection for special roles
+    if (
+      ["super_admin", "society_moderator", "management_committee"].includes(user.role.roleCategory)
+    ) {
       const token = generateToken({ email, password }, "1h");
-      const redirectUrl = `${ADMIN_BASE_URL}/signin/${token}`;
+      const baseUrl = process.env.ADMIN_BASE_URL.replace(/\/+$/, "");
+      const redirectUrl = `${baseUrl}/signin/${token}`;
       return res.json({ redirectUrl, token, user });
     }
 
@@ -109,13 +111,19 @@ const jobProfileLogin = async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password." });
     }
 
-    const isRedirectRole = ["society_security_guard", "society_facility_manager"].includes(profile.role.roleCategory);
-    const payload = isRedirectRole ? { email, password } : { profileId: profile.profileId, email: profile.email };
-    const token = generateToken(payload, isRedirectRole ? "1h" : undefined);
+    const payload = ["society_security_guard", "society_facility_manager"].includes(profile.role.roleCategory)
+      ? { email, password }
+      : { profileId: profile.profileId, email: profile.email };
 
-    if (isRedirectRole) {
-      const redirectUrl = `${ADMIN_BASE_URL}/signin/${token}`;
-      return res.json({ redirectUrl, token, profile });
+    const token = generateToken(payload, payload.password ? "1h" : undefined);
+
+    if (payload.password) {
+      const baseUrl = process.env.ADMIN_BASE_URL.replace(/\/+$/, "");
+      return res.json({
+        redirectUrl: `${baseUrl}/signin/${token}`,
+        token,
+        profile,
+      });
     }
 
     cookieHandler(res, token);

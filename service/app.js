@@ -22,6 +22,7 @@ const errorHandler = require("./middleware/errorHandler");
 const passwordReset = require("./routes/resetPasswordRoutes");
 
 const userRouter = require("./routes/userRoutes");
+const familyRouter = require("./routes/userFamilyRoutes.js");
 const authRouter = require("./routes/authRoutes");
 const documentRouter = require("./routes/documentRoutes");
 const discussionRouter = require("./routes/discussion_forum_Routes");
@@ -39,8 +40,6 @@ const facilityManagement = require("./routes/facilityManagementRoutes");
 const unitTypeRouter = require("./routes/unitTypeRoutes");
 const gateRouter = require("./routes/gateRouter"); // Corrected variable name
 const contactRouter = require("./routes/contactRoutes");
-const familyRouter = require("./routes/userFamilyRoutes.js")
-
 const {
   User,
   Customer,
@@ -143,8 +142,6 @@ app.use(errorHandler);
 //   .catch((err) => console.error("Error syncing the User table:", err));
 
 app.use("/api/filter", filterRoutes);
-// Emergency Contact
-app.use("/api/contacts",contactRouter);
 
 // facilityManagement
 app.use("/api/facilityManagement", facilityManagement);
@@ -152,15 +149,15 @@ app.use("/api/facilityManagement", facilityManagement);
 // Parking
 app.use("/api", parkingRoutes);
 
-
-
-
 // passwordReset
 
 app.use("/api", passwordReset);
 
 // documentReset
 app.use("/api/document", documentRouter);
+
+// Emergency Contact
+app.use("/api/contacts",contactRouter);
 
 // discussionForum
 app.use("/api/discussionForum",discussionRouter);

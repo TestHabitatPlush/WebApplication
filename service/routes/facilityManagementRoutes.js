@@ -9,4 +9,5 @@ facilityRoutes.put("/:societyId/:facilityId",updateFacilityRecord);
 facilityRoutes.delete("/facility_management/:facilityId",deleteFacilityRecord);
 facilityRoutes.get("/:facilityId",getFacilityDataById);
 
+
 module.exports=facilityRoutes;

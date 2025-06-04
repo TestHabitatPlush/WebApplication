@@ -65,6 +65,8 @@ visitorManagementRouter.get("/visitor/:visit_entry_Id", getVisitorById);
 visitorManagementRouter.get("/visitor-list", newVisitorListTable);
 
 // QR Code Generation Route
+// visitorManagementRouter.post("/generate-qrCode", CreateQRCode);
+// visitorManagementRouter.get("/qrCode/:visit_entry_Id",getQRCode);
 
 visitorManagementRouter.get("/qrCode/:visit_entry_Id", getQRCode);
 

@@ -42,7 +42,7 @@ const createSocietyModerator = async (req, res) => {
 };
 const createSocietyResident = async (req, res) => {
   try {
-    const { address, email, salutation, firstName, lastName, mobileNumber, roleId, unitId } = req.body;
+    const { address, email, salutation, firstName, lastName, mobileNumber, alternateNumber, roleId, unitId } = req.body;
     const { societyId } = req.params;
 
     if (!societyId) {
@@ -74,6 +74,7 @@ const createSocietyResident = async (req, res) => {
       password,
       countryCode: address.countryCode || 91,
       mobileNumber,
+      alternateNumber,
       email,
       roleId,
       livesHere: true,
@@ -411,9 +412,6 @@ const getManagement_committee = async (req, res) => {
     res.status(500).json({ error: error.message });
 }
 }
-
-
-
 const getAllApprovedUsers = async (req, res) => {
   try {
     const { societyId } = req.params;
@@ -485,7 +483,6 @@ const getAllApprovedUsers = async (req, res) => {
     res.status(500).json({ error: "Failed to retrieve deactivated users", details: err.message });
   }
 };
-
 module.exports = {
   createUser,
   getAllUsers,

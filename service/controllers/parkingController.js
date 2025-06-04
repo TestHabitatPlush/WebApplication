@@ -6,7 +6,6 @@ const { sendErrorResponse, sendSuccessResponse } = require("../utils/response");
 exports.parkingBooked = async (req, res) => {
   try {
     const societyId = req.params.societyId;
-    console.log("Request body: ", req.body);
 
     const {
       parkingSlotName,
@@ -14,7 +13,7 @@ exports.parkingBooked = async (req, res) => {
       parkingUsage,
       parkingCharges,
       chargeAmount,
-      unitName,
+      unitName, // Input is unitName
       vehicleType,
       vehicleNumber,
       bookingFrom,
@@ -25,7 +24,14 @@ exports.parkingBooked = async (req, res) => {
     const allowedUsageTypes = ["Hourly", "Days"];
     const allowedChargeTypes = ["Free", "Paid"];
 
-    if (!parkingSlotName || !parkingSlotType || !parkingUsage || !parkingCharges || chargeAmount === undefined) {
+    if (
+      !parkingSlotName ||
+      !parkingSlotType ||
+      !parkingUsage ||
+      !parkingCharges ||
+      chargeAmount === undefined ||
+      !unitName
+    ) {
       return sendErrorResponse(res, "All fields are required", 400);
     }
 
@@ -39,11 +45,13 @@ exports.parkingBooked = async (req, res) => {
       return sendErrorResponse(res, "Invalid parkingCharges. Allowed values: Free, Paid", 400);
     }
 
-    const unitExists = await Unit.findOne({ where: { unitName, societyId } });
-    if (!unitExists) {
+    //  Get unitId from unitName + societyId
+    const unit = await Unit.findOne({ where: { unitName, societyId } });
+    if (!unit) {
       return sendErrorResponse(res, "Invalid unitName or does not belong to this society", 400);
     }
 
+    //  Use unitId in all queries
     const existingParkingSlot = await Parking.findOne({
       where: {
         parkingSlotName,
@@ -52,7 +60,7 @@ exports.parkingBooked = async (req, res) => {
         parkingCharges,
         chargeAmount,
         societyId,
-        unitName,
+        unitId: unit.unitId,
         bookingFrom,
         bookingTo,
       },
@@ -68,7 +76,7 @@ exports.parkingBooked = async (req, res) => {
       parkingUsage,
       parkingCharges,
       chargeAmount,
-      unitName,
+      unitId: unit.unitId, //  Use unitId, not unitName
       vehicleType,
       vehicleNumber,
       bookingFrom,
@@ -76,7 +84,6 @@ exports.parkingBooked = async (req, res) => {
       societyId,
     });
 
-    console.log("Parking Slot Created:", parkingSlot);
     return sendSuccessResponse(res, "Parking Slot booked successfully", parkingSlot);
   } catch (error) {
     console.error("Error Creating Parking:", error);
@@ -263,7 +270,6 @@ exports.getVehicleBySocietyId = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 exports.getVehicleDataByIdForview = async (req, res) => {
   try {
     const { vehicleId } = req.params;
