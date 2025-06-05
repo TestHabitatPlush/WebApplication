@@ -24,20 +24,26 @@ const CreateUserForm = () => {
 
   const getUserRoles = async () => {
     const result = await getUserRolesHandler();
-    // console.log(result.data);
-    const newData = result.data
-      .filter((el) => el.roleCategory === "society_moderator")
-      .map((el) => ({ label: el.roleCategory, value: el.roleId }));
-
-    dispatch({
-      type: "societyModeratorForm/setUserRoleOptions",
-      payload: newData,
-    });
+    const moderatorRole = result.data.find(el => el.roleCategory === "society_moderator");
+  
+    if (moderatorRole) {
+      // Dispatch role options if needed
+      dispatch({
+        type: "society_moderator",
+        payload: [{ label: moderatorRole.roleCategory, value: moderatorRole.roleId }],
+      });
+  
+      // Auto-fill roleId in formData
+      dispatch({
+        type: "society_moderator",
+        payload: { roleId: moderatorRole.roleId },
+      });
+    }
   };
-
-  useEffect(() => {
+    useEffect(() => {
     getUserRoles();
   }, []);
+  
 const validateForm = () => {
     const requiredFields = [
       "salutation",

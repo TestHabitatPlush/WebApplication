@@ -8,7 +8,7 @@ const bcrypt = require("bcrypt");
 
 const createSocietyModerator = async (req, res) => {
   try {
-    const { address, email, ...customerData } = req.body;
+    const { address, email, roleId, ...customerData } = req.body;
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
@@ -18,17 +18,25 @@ const createSocietyModerator = async (req, res) => {
     const addressData = await addressService.createAddress(address);
     const addressId = addressData.addressId;
 
-    const password = "admin";
+    const role = await Role.findByPk(roleId);
+    if (!role) {
+      return res.status(400).json({ message: "Invalid role ID" });
+    }
+
+    const managementDesignation = role.roleName;
+
+    const password = "admin"; // In real-world apps, hash the password and make it secure.
 
     const result = await User.create({
       ...customerData,
       email,
+      roleId,
       addressId,
       password,
       livesHere: true,
       primaryContact: true,
       isManagementCommittee: true,
-      managementDesignation: "admin",
+      managementDesignation,
     });
 
     res.status(201).json({
@@ -40,6 +48,7 @@ const createSocietyModerator = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 const createSocietyResident = async (req, res) => {
   try {
     const { address, email, salutation, firstName, lastName, mobileNumber, alternateNumber, roleId, unitId } = req.body;
@@ -67,6 +76,12 @@ const createSocietyResident = async (req, res) => {
       }
     }
 
+    const role = await Role.findByPk(roleId);
+    if (!role) {
+      return res.status(400).json({ message: "Invalid role ID" });
+    }
+
+    const managementDesignation = role.roleName;
     const residentDetails = {
       salutation,
       firstName,
@@ -80,7 +95,7 @@ const createSocietyResident = async (req, res) => {
       livesHere: true,
       primaryContact: true,
       isManagementCommittee: false,
-      managementDesignation: "Resident",
+      managementDesignation,
       status: "active",
       addressId,
       societyId,
