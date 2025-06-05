@@ -5,6 +5,9 @@ import axios from "axios";
 import { clearAuth, setToken, setUser } from "../redux/slices/authSlice";
 import NavigationHandler from "./NavigationHandler";
 
+const API_URL = process.env.REACT_APP_PUBLIC_API_URL;
+const FRONTEND_URL = process.env.REACT_APP_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+
 const AuthHandler = () => {
   const dispatch = useDispatch();
   const { customNavigation } = NavigationHandler();
@@ -12,19 +15,17 @@ const AuthHandler = () => {
   const loginHandler = async (token) => {
     try {
       await axios
-        .post("http://localhost:5000/api/auth/token-signin", { token })
+        .post(`${API_URL}/auth/token-signin`, { token })
         .then((res) => {
-          console.log(res);
           setReduxAuthState(res.data);
           setLocalStorage(res.data);
           toast.success("Successfully logged in!");
           customNavigation('/');
-          return;
         })
         .catch((err) => {
-          console.log(err);
+          console.error("Login failed:", err);
+          toast.error("Login failed. Please check credentials.");
         });
-      console.log("end f catch block");
     } catch (error) {
       console.log(error.message);
       toast.error("An error occurred. Please try again.");
@@ -32,28 +33,23 @@ const AuthHandler = () => {
   };
 
   const setLocalStorage = ({ user, token }) => {
-    console.log("set local storage!");
-    const storageData = { token, user };
-    localStorage.setItem("authData", JSON.stringify(storageData));
-  };
-
-  const setReduxAuthState = ({ user, token }) => {
-    console.log("set redux storage!");
-    dispatch(setUser(user));
-    dispatch(setToken(token));
+    localStorage.setItem("authData", JSON.stringify({ user, token }));
   };
 
   const getLocalStorage = () => {
     const storageData = localStorage.getItem("authData");
-    if (storageData) return JSON.parse(storageData);
-    else return null;
+    return storageData ? JSON.parse(storageData) : null;
+  };
+
+  const setReduxAuthState = ({ user, token }) => {
+    dispatch(setUser(user));
+    dispatch(setToken(token));
   };
 
   const setIntitalReduxState = () => {
     const data = getLocalStorage();
     if (data?.token && data?.user) {
-      dispatch(setUser(data.user));
-      dispatch(setToken(data.token));
+      setReduxAuthState(data);
     }
   };
 
@@ -64,7 +60,7 @@ const AuthHandler = () => {
   const logoutHandler = () => {
     clearLocalStorage();
     dispatch(clearAuth());
-    window.location.href = 'http://localhost:3000';
+    window.location.href = FRONTEND_URL;
   };
 
   return {
