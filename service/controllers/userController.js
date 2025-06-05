@@ -25,8 +25,7 @@ const createSocietyModerator = async (req, res) => {
 
     const managementDesignation = role.roleName;
 
-    const password = "admin"; // In real-world apps, hash the password and make it secure.
-
+    const password = "admin"; 
     const result = await User.create({
       ...customerData,
       email,
@@ -66,7 +65,7 @@ const createSocietyResident = async (req, res) => {
     const addressData = await addressService.createAddress(address);
     const addressId = addressData.addressId;
 
-    const password = "Himansu"; // Replace with a secure password strategy
+    const password = "Himansu"; 
 
     let unit = null;
     if(unitId) {
