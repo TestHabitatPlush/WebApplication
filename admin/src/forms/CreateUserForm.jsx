@@ -27,13 +27,10 @@ const CreateUserForm = () => {
     const moderatorRole = result.data.find(el => el.roleCategory === "society_moderator");
   
     if (moderatorRole) {
-      // Dispatch role options if needed
       dispatch({
         type: "society_moderator",
         payload: [{ label: moderatorRole.roleCategory, value: moderatorRole.roleId }],
       });
-  
-      // Auto-fill roleId in formData
       dispatch({
         type: "society_moderator",
         payload: { roleId: moderatorRole.roleId },
