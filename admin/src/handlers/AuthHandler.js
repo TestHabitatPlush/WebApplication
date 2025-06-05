@@ -12,7 +12,7 @@ const AuthHandler = () => {
   const loginHandler = async (token) => {
     try {
       await axios
-        .post("http://localhost:5000/api/auth/token-signin", { token })
+        .post(`${process.env.REACT_APP_PUBLIC_API_URL}/auth/token-signin`, { token })
         .then((res) => {
           console.log(res);
           setReduxAuthState(res.data);
@@ -64,7 +64,7 @@ const AuthHandler = () => {
   const logoutHandler = () => {
     clearLocalStorage();
     dispatch(clearAuth());
-    window.location.href = 'http://localhost:3000';
+    window.location.href = process.env.REACT_APP_PUBLIC_BASE_URL;
   };
 
   return {
