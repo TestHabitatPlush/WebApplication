@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { parkingBookedService, getParkingStatusService,getParkingDataByIdService,updateParkingService,createVehicleBySocietyService } from "../services/parkingService";
+import { parkingBookedService, getParkingStatusService,getParkingDataByIdService,updateParkingService,createVehicleBySocietyService,getVehicleService,getVehicleDataByIdService } from "../services/parkingService";
 
 const ParkingHandler = () => {
   const token = useSelector((state) => state.auth.token);
@@ -86,21 +86,42 @@ const ParkingHandler = () => {
       }
     };
     
-  
-    
+
   const createNewVehicleHandler = async (data) => {
     try {
-  
-      const response = await createVehicleBySocietyService(societyId, token, data);
-  
-      if (response.status === 200 || response.status === 201) {
+      const res = await createVehicleBySocietyService(societyId, data, token);
+      if (res.status === 201) {
         toast.success("Vehicle created successfully.");
+        return res;
       }
-    } catch (error) {
-      console.error("Error creating vehicle:", error.response?.data || error.message);
-      toast.error("Error creating vehicle: " + (error.response?.data?.message || error.message));
+    } catch (err) {
+      if (err.response && err.response.status === 400) {
+        toast.error(err.response.data.message);
+      } else {
+        toast.error("Error creating Vehicle.");
+      }
+      console.error(err);
+    }
+  }
+  const getVehicleHandler = async () => {
+    try {
+      return await getVehicleService(societyId, {}, token);
+    } catch (err) {
+      console.error("Error fetching vehicle:", err);
     }
   };
+
+  const getVehicleByIdHandler = async (vehicleId) => {
+    try {
+      const response = await getVehicleDataByIdService(vehicleId, token);
+      console.log(response);
+      return response.data;  
+    } catch (err) {
+      console.error("Error Vehicle by ID:", err);
+    
+    }
+  };
+  
   
   return {
     createParkingHandler,
@@ -109,6 +130,8 @@ const ParkingHandler = () => {
     updateParkingHandler,
 
     createNewVehicleHandler,
+    getVehicleHandler,
+    getVehicleByIdHandler
   };
 };
 

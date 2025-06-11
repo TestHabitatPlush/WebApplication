@@ -4,7 +4,7 @@ const { getAllUsersService, getUserByIdService } = require("../services/userServ
 const addressService = require("../services/addressService");
 const XLSX = require("xlsx");
 const fs = require("fs");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 
 const createSocietyModerator = async (req, res) => {
   try {
@@ -18,7 +18,7 @@ const createSocietyModerator = async (req, res) => {
     const addressData = await addressService.createAddress(address);
     const addressId = addressData.addressId;
 
-    const password = "Admin@123$";
+    const password = "admin";
 
     const result = await User.create({
       ...customerData,
@@ -28,7 +28,7 @@ const createSocietyModerator = async (req, res) => {
       livesHere: true,
       primaryContact: true,
       isManagementCommittee: true,
-      managementDesignation: "Admin",
+      managementDesignation: "admin",
     });
 
     res.status(201).json({
@@ -337,6 +337,155 @@ const getUserById = async (req, res) => {
   }
 };
 
+// const getSocietyModerator = async (req, res) => {
+//   try {
+//     const societyId = req.params.societyId;
+//     if (!societyId) {
+//       return res.status(400).json({ message: "Society ID is required" });
+//     }
+//     const moderator = await User.findAll({
+//       where: {
+//         societyId,
+//         isManagementCommittee: true,
+//         isDeleted: 0,
+//         status: "active",
+//       },
+//       attributes: [
+//         "userId",
+//         "salutation",
+//         "firstName",
+//         "lastName",
+//         "email",
+//         "mobileNumber",
+//         "roleId",
+//         "status",
+//         "addressId",
+//         "primaryContact",
+//         "livesHere",
+//       ],
+//     })
+//     if (!moderator || moderator.length === 0) {
+//       return res.status(404).json({ message: "No society moderator found for the given Society ID" });
+//     }
+//     res.status(200).json({
+//       message: "Society Moderator fetched successfully",
+//       moderator,
+//     });
+//   }
+//   catch (error) {
+//     console.error("Error fetching society moderator:", error);
+//     res.status(500).json({ error: error.message });
+//   }
+// }
+
+const getManagement_committee = async (req, res) => {
+  try{
+    const societyId = req.params.societyId;
+    if(!societyId) {
+      return res.status(400).json({ message: "Society ID is required" });
+    }
+    const allowedCategories = ["management_committee","society_moderator"];
+    const roles = await Role.findAll({
+      where: {
+        roleCategory: allowedCategories,
+      }
+    });
+
+    const roleIds = roles.map(role => role.roleId);
+    const members = await User.findAll({
+      where: {
+        societyId,
+        roleId: roleIds,
+      },
+      include: [
+        {model: Role, as:"role"},
+        // {model: Address, as: "address"},
+      ],
+    });
+    res.status(200).json({
+      message: "Management committee members fetched successfully",
+      members,
+    });
+  }
+  catch (error) {
+    console.error("Error fetching management committee:", error);
+    res.status(500).json({ error: error.message });
+}
+}
+
+
+
+const getAllApprovedUsers = async (req, res) => {
+  try {
+    const { societyId } = req.params;
+    const { page = 0, pageSize = 10 } = req.query;
+
+    if (!societyId) {
+      return res.status(400).json({ message: "societyId is required" });
+    }
+
+    const offset = parseInt(page) * parseInt(pageSize);
+    const limit = parseInt(pageSize);
+
+    const { count, rows: activeUsers } = await User.findAndCountAll({
+      where: {
+        societyId,
+        status: "active",
+        isDeleted: 0, // <- assuming 0 means not deleted
+        managementDesignation: "Resident",
+      },
+      offset,
+      limit,
+    });
+
+    if (!activeUsers || activeUsers.length === 0) {
+      return res.status(404).json({ message: "No approved users found" });
+    }
+
+    return res.status(200).json({ total: count, users: activeUsers });
+  } catch (error) {
+    console.error("Error fetching approved users:", error);
+    return res.status(500).json({ error: error.message || "Internal Server Error" });
+  }
+};
+
+
+ const getAllDeactiveUsers = async (req, res) => {
+  const { societyId } = req.params; 
+
+  try {
+    if (!societyId) {
+      return res.status(400).json({ error: "Society ID is required" });
+    }
+    const deactiveUsers = await User.findAll({
+      where: {
+        status: "inactive", 
+        societyId: societyId,   
+      },
+    });
+
+    // Check if any users were found
+    if (deactiveUsers.length === 0) {
+      return res.status(404).json({ message: "No deactivated users found for this society" });
+    }
+
+    // Respond with the retrieved users
+    res.status(200).json({
+      message: "Deactivated users retrieved successfully",
+      users: deactiveUsers.map(user => ({
+        userId: user.userId,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        roleId: user.roleId,
+        mobileNumber: user.mobileNumber,
+        status: user.status,
+      })),
+    });
+  } catch (err) {
+    console.error("Error retrieving deactivated users:", err);
+    res.status(500).json({ error: "Failed to retrieve deactivated users", details: err.message });
+  }
+};
 
 module.exports = {
   createUser,
@@ -347,4 +496,8 @@ module.exports = {
   bulkCreateResidents,
   getResidentBySocietyId,
   updateResidentBySocietyId,
+  //getSocietyModerator,
+  getManagement_committee,
+  getAllApprovedUsers,
+  getAllDeactiveUsers
 };

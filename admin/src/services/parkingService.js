@@ -28,16 +28,7 @@ export const parkingBookedService = (societyId, token, parkingData) => {
       throw error;
     });
 };
-// export const parkingBookedService = (societyId, token, data) => {
-//   console.log("parkingBookedService", data);
-//   const url = `${process.env.REACT_APP_PUBLIC_API_URL}/parking/${societyId}`;
-//   return axios.post(url, data, {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//       "Content-Type": "application/json",
-//     },
-//   });
-// };
+
 export const getParkingStatusService = (societyId, token) => {
   if (!BASE_URL) {
     console.error("Error: API base URL is missing in environment variables.");
@@ -63,8 +54,8 @@ export const getParkingStatusService = (societyId, token) => {
   });
 };
 
-export const getParkingDataByIdService = (facilityId, token) => {
-  const url = `${BASE_URL}/${facilityId}`;
+export const getParkingDataByIdService = (parkingId, token) => {
+  const url = `${BASE_URL}/${parkingId}`;
 
   return axios.get(url, {
     headers: {
@@ -84,21 +75,32 @@ export const updateParkingService = (data, token) => {
 };
 
 
+export const createVehicleBySocietyService = (societyId, data, token) => {
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/vehicle/${societyId}`;
+  return axios.post(url, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
 
-export const createVehicleBySocietyService = (societyId, token, vehicleData) => {
+export const getVehicleService = (societyId, data, token) => {
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/society/${societyId}/vehicles`;
 
-  const url = `${BASE_URL}/vehicle/${societyId}`;
-  console.log("POST URL:", url);
+  return axios.get(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params: data,
+  });
+};
+export const getVehicleDataByIdService = (vehicleId, token) => {
+  const url = `${BASE_URL}/vehicleData/${vehicleId}`;
 
-  return axios
-    .post(url, vehicleData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    })
-    .catch((error) => {
-      console.error("API Error:", error.response?.data || error.message);
-      throw error;
-    });
+  return axios.get(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
 };

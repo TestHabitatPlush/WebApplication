@@ -1,52 +1,168 @@
 import React, { useEffect, useState } from "react";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaEye} from "react-icons/fa";
 import UrlPath from "../../../../components/shared/UrlPath";
 import { IoPersonOutline } from "react-icons/io5";
 import { FaCar } from "react-icons/fa";
 import PageHeading from "../../../../components/shared/PageHeading";
-import DeactivatedGateUserHandler from "../../../../handlers/DeactivatedGateUserHandler";
 import ReusableTable from "../../../../components/shared/ReusableTable";
+import ViewGateUserDetails from "./ViewGateUserDetails";
 
-const DeactivatedGateUser = () => {
-  const paths = ["Gate Management", "Deactivate Gate Users"];
-  const Heading = ["Deactivated Gate Users"];
+import ProfileHandler from "../../../../handlers/ProfileHandler";
+import GateHandler from "../../../../handlers/GateHandler";
+
+const ApprovedGateUser = () => {
+  const paths = ["Gate Management", "Unapproved Gate Users"];
+  const Heading = ["Unapproved Gate Users"];
+
+  const { getGateUserList } = ProfileHandler();
+  const { getGateAllocationList } = GateHandler();
+  const { getGateListHandler } = GateHandler();
+
+  const [guardProfile, setGuardProfile] = useState([]);
+  const [gateAllocations, setGateAllocations] = useState([]);
+  const [gateList, setGateList] = useState([]);
+
+  // on View Handler
+  const [viewmodal, setViewModal] = useState(false);
+  const [showViewFormData, setShowViewFormData] = useState(null);
+  const toggleViewNoticeDetailModal = () => {
+    setViewModal((prev) => !prev); // Toggle modal visibility
+  };
 
 
-  const [data, setData] = useState([]);
-  const { getDeactivatedUserHandler } = DeactivatedGateUserHandler()
 
-  const transformGateDeactivatedUserData = (data) => {
-    return data.map((element) => {
-      return {}
-    })
-  }
+  const transformSecurityUserData = (response) => {
+    if (!response || !Array.isArray(response)) return [];
+
+    return response.map(element => ({
+      profileId: element.profileId, // Keep profileId if needed
+      firstName: element.firstName || '', // Default to empty string if undefined
+      lastName: element.lastName || '',
+      email: element.email || '',
+      mobileNo: element.mobileNumber || '', // Include mobile number if needed
+      profilePhoto: element.profilePhoto || null, // Handle profile photo
+      idProof: element.idProof || null, // Handle ID proof
+      roleId: element.roleId || null, // Include roleId
+      roleCategory: element.roleCategory || null,
+      status: element.status || 'inactive', // Default status if needed
+      createdAt: element.createdAt || null, // Include createdAt
+      updatedAt: element.updatedAt || null // Include updatedAt
+    }));
+  };
+
+  // console.log(guardProfile);
 
   // Pagination states
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
+  const [totalGate, setTotalGate] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
+
   useEffect(() => {
-    getDeactivatedUserHandler({ page: pageIndex, limit: pageSize })
-      .then((res) => {
-        console.log(res.data.data);
-        setData(transformGateDeactivatedUserData(res.data.data));
-        setTotalCount(res.data.total);
-        setTotalPages(res.data.totalPages);
-      })
-      .catch((err) => console.log(err));
-  }, [pageIndex, pageSize]);
+    getGateUserList().then((res) => {
+      if(Array.isArray(res.data)){
+        setGuardProfile(transformSecurityUserData(res.data));
+        setTotalCount(res.data.length);
+      }else{
+        setGuardProfile([]);
+        setTotalCount(0);
+      }
+
+    }).catch((error)=>{
+      console.log(error);
+      setGuardProfile([]);
+    })
+
+    getGateAllocationList().then((res) => {
+      setGateAllocations(res);
+
+    }).catch((error)=>{
+      console.error("Error fetching gate list:", error);
+    })
+
+    getGateListHandler().then((res)=>{
+      console.log(res.data.data);
+      setGateList(res.data.data);
+      setTotalGate(res.data.data.length)
+    })
+    .catch((error)=>{
+      console.error("Error fetching gate list:", error);
+    })
+
+  }, [])
+
+  // console.log(totalCount);
+  // console.log("Guard Profile: ", guardProfile);
+  // console.log("Gate Allocation Details: ",gateAllocations);
+  // console.log("Gate List: ", gateList);
+
+
+  // Combining Data
+  const combineData = ({ guardProfile, gateAllocations, gateList }) => {
+    if (!Array.isArray(guardProfile) || !Array.isArray(gateAllocations) || !Array.isArray(gateList)) {
+      console.error("Invalid input: All inputs must be arrays.");
+      return [];
+    }
+
+    return gateAllocations
+      .filter(allocation => guardProfile.some(user => user.profileId === allocation.profileId && user.status === 'inactive'))
+      .map(allocation => {
+        const guard = guardProfile.find(user => user.profileId === allocation.profileId && user.status === 'inactive');
+        const gate = gateList.find(gate => gate.gateId === allocation.gateId);
+
+        return {
+          profileId: allocation.profileId,
+          firstName: guard.firstName,
+          lastName: guard.lastName,
+          email: guard.email,
+          mobileNo: guard.mobileNo,
+          gateId: allocation.gateId,
+          gateName: gate?.gateName || "N/A",
+          gateNumber: gate?.gateNumber || "N/A",
+        };
+      });
+  };
+
+  const Combined = combineData({ guardProfile, gateAllocations, gateList });
+
+
+
+  const onViewHandler = (idValue) => {
+    console.log("View clicked: ", idValue);
+    const findGuardById = (guardProfile, targetId) => {
+      return guardProfile.find(guard => guard.profileId === targetId);
+    };
+
+    const foundGuard = findGuardById(guardProfile, idValue);
+    // console.log("Found Guard",foundGuard);
+    // console.log(typeof (foundGuard));
+    setShowViewFormData(foundGuard);
+    setViewModal(true);
+  }
+
+
 
   const columns = [
     { Header: "FIRST NAME", accessor: "firstName" },
-    { Header: "LAST NAME", accessor: "lastNumber" },
-    { Header: "GATE NO.", accessor: "gateNo" },
+    { Header: "LAST NAME", accessor: "lastName" },
+    { Header: "GATE NO.", accessor: "gateNumber" },
+    { Header: "GATE Name", accessor: "gateName" },
     { Header: "MOBILE NO.", accessor: "mobileNo" },
     { Header: "EMAIL", accessor: "email" },
-    { Header: "VIEW", accessor: "view" }
+    {
+      Header: "VIEW",
+      accessor: "profileId",
+      Cell: ({ value }) => (
+        <div className="flex space-x-4">
+        <FaEye 
+        onClick={() => onViewHandler(value)}
+        className="text-lg text-yellow-600 hover:text-yellow-700 cursor-pointer"/>
+        </div>
+      )
+    }
   ];
-
 
   return (
     <div className="">
@@ -57,8 +173,8 @@ const DeactivatedGateUser = () => {
           {/* <div className="flex flex-row font-sans text-2xl font-bold">
             Approved Users
           </div> */}
-          <div className="uppercase flex flex-row font-sans text-lg font-medium text-gray-700">
-            TOTAL 3 DEACTIVATED USERS
+          <div className="flex flex-row font-sans text-lg font-medium text-gray-700">
+            TOTAL {totalGate} GATES AND {totalCount} USERS
           </div>
           <div className="flex flex-row mt-4">
             <div className="relative w-full">
@@ -74,55 +190,28 @@ const DeactivatedGateUser = () => {
             <div className="relative w-full overflow-x-auto shadow-md sm:rounded-lg">
               <ReusableTable
                 columns={columns}
-                data={data}
+                data={Combined}
                 pageIndex={pageIndex}
                 pageSize={pageSize}
                 totalCount={totalCount}
                 totalPages={totalPages}
                 setPageIndex={(index) => setPageIndex(index)}
                 setPageSize={(size) => setPageSize(size)}
-              />  
+              />
             </div>
           </div>
         </div>
-        {/* <div className="w-1/2 ">
-          <div className="px-[45px] text-xl font-semibold">
-            UNIT : <span>A-013</span>
-          </div>
-          <div className="border my-[30px] mx-[45px] border-gray-800"></div>
-          <div className="flex flex-col space-y-2 px-[45px] ">
-            <div className="font-sans text-[15px] text-gray-600">
-              {" "}
-              Bill to name : Praveen
-            </div>
-            <div className="font-sans text-[15px] text-gray-600">
-              Unit no :A-013{" "}
-            </div>
-            <div className="font-sans text-[15px] text-gray-600">
-              Physical Unit Address:{" "}
-            </div>
-
-            <div className="font-sans text-[15px] text-gray-600">
-              Billing Address{" "}
-            </div>
-          </div>
-          <div className="text-lime px-[45px] pt-[40px] font-sans">
-            View/Edit Unit and Address details
-          </div>
-          <div className="flex flex-row items-center py-[30px] px-[45px]">
-            <IoPersonOutline className="text-xl mr-[30px]" />{" "}
-            <div className="text-lg font-sans font-base">Unit Members(2)</div>
-          </div>
-          <div className="border  mx-[45px] border-gray-800"></div>
-          <div className="flex flex-row items-center py-[30px] px-[45px]">
-            <FaCar className="text-xl mr-[30px]" />{" "}
-            <div className="text-lg font-sans font-base">Vehicle(1)</div>
-          </div>
-          <div className="border  mx-[45px] border-gray-800"></div>
-        </div>{" "} */}
       </div>
+
+
+      {setViewModal && (<ViewGateUserDetails
+        isOpen={viewmodal} // Modal open state
+        onClose={toggleViewNoticeDetailModal} // Close modal handler
+        formData={showViewFormData} // The data to display in the modal
+      />)}
+
     </div>
   );
 };
 
-export default DeactivatedGateUser;
+export default ApprovedGateUser;

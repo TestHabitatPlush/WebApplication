@@ -60,13 +60,13 @@
 //           icon: img,
 //           linkOf: "myUnit",
 //         },
-        // {
-        //   name: "Documents",
-        //   url: "/documents",
-        //   icon: img,
-        //   linkOf: "myUnit",
-        // },
-      // ],
+//         {
+//           name: "Documents",
+//           url: "/documents",
+//           icon: img,
+//           linkOf: "myUnit",
+//         },
+//       ],
 //       community: [
 //         {
 //           name: "Vendor List",
@@ -421,10 +421,17 @@ export const QuickLinks = {
           icon: visitorIcon, 
           linkOf: "myUnit",
         },
+        
         {
           name: "Directories",
-          url: "/communityDirectories",
+          url: "/community",
           icon: directoryIcon, 
+          linkOf: "myUnit",
+        },
+        {
+          name: "Vehicle List",
+          url: " /vehicle",
+          icon: vendorIcon, 
           linkOf: "myUnit",
         },
         // {
@@ -434,7 +441,7 @@ export const QuickLinks = {
         //   linkOf: "myUnit",
         // },
         {
-          name: "Documents",
+          name: "My File",
           url: "/documents",
           icon: documentIcon, 
           linkOf: "myUnit",
@@ -473,18 +480,15 @@ export const QuickLinks = {
           icon: tentantIcon, 
           linkOf: "myUnit",
         },
-        {
-          name: "Visitors",
-          url: "/visitors",
-          icon: visitorIcon, 
-          linkOf: "myUnit",
-        },
+        
         // {
         //   name: "Vendor List",
         //   url: "/directories",
         //   icon: vendorIcon, 
         //   linkOf: "myUnit",
         // },
+      
+       
          {
           name: "Directories",
           url: "/communityDirectories",
@@ -493,5 +497,6 @@ export const QuickLinks = {
         },
       ],
     },
+    
   },
 };

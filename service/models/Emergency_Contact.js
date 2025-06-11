@@ -16,7 +16,7 @@ const Emergency_Contact = sequelize.define(
         model: Customer,
         key: "customerId",
       },
-      allowNull: false,
+      allowNull: true,
     },
     name: {
       type: DataTypes.STRING,
@@ -49,6 +49,11 @@ const Emergency_Contact = sequelize.define(
     pin: {
       type: DataTypes.STRING,
       allowNull: true,
+    },
+    viewStatus: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
     },
   },
   {

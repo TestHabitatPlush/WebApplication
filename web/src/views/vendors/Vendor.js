@@ -13,8 +13,8 @@ const Vendor = () => {
         leftContent={<DashboardLeftContents />}
         rightContent={
           <React.Fragment>
-           {/* <AddVendor /> */}
-           {/* <VendorList /> */}
+           <AddVendor />
+           <VendorList />
             {/* <div>Vendors List</div> */}
           </React.Fragment>
         }

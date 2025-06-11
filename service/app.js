@@ -22,6 +22,7 @@ const errorHandler = require("./middleware/errorHandler");
 const passwordReset = require("./routes/resetPasswordRoutes");
 
 const userRouter = require("./routes/userRoutes");
+const familyRouter = require("./routes/userFamilyRoutes.js");
 const authRouter = require("./routes/authRoutes");
 const documentRouter = require("./routes/documentRoutes");
 const discussionRouter = require("./routes/discussion_forum_Routes");
@@ -38,7 +39,8 @@ const floorRouter = require("./routes/floorRoutes");
 const facilityManagement = require("./routes/facilityManagementRoutes");
 const unitTypeRouter = require("./routes/unitTypeRoutes");
 const gateRouter = require("./routes/gateRouter"); // Corrected variable name
-const contactRouter = require("./routes/contactRoutes");
+const contactRouter = require("./routes/contactRoutes.js");
+
 const {
   User,
   Customer,
@@ -61,8 +63,8 @@ const {
 const refUserGroupRouter = require("./routes/refUserGroupRouter");
 const {
   initController,
-  // createSuperAdmin,
-  // createAdmin,
+  //createSuperAdmin,
+  //createAdmin,
 } = require("./auto-creating-handlers");
 const noticeAnnouncementRouter = require("./routes/noticeAnnouncementRouter");
 const visitorManagementRouter = require("./routes/visitorManagementRouter");
@@ -80,6 +82,7 @@ app.get("/getenv", (req, res) => {
 });
 
 app.use("/api/users", userRouter);
+app.use("/api/family",familyRouter);
 app.use("/api/password",passwordRouter);
 app.use("/api/auth", authRouter);
 app.use("/api", customerRoutes);
@@ -152,11 +155,10 @@ app.use("/api", parkingRoutes);
 app.use("/api", passwordReset);
 
 // documentReset
-app.use("/api/document", documentRouter);
+app.use("/api/documents", documentRouter);
 
-// Emergency Contact
-app.use("/api/contacts",contactRouter);
-
+//emergencyContactrouter
+app.use("/api/contacts", contactRouter);
 // discussionForum
 app.use("/api/discussionForum",discussionRouter);
 module.exports = app;

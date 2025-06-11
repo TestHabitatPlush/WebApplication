@@ -22,8 +22,8 @@ const AddNewBookingReqest = () => {
 export default AddNewBookingReqest;
 
 const Addnewbookingrequest = () => {
-  const paths = ["User", "Add new Booking Request"];
-  const heading = ["Add new Booking Request"];
+  const paths = ["Parking Managemen", "Add New Booking Request"];
+  const heading = ["Add New Booking Request"];
   const { createParkingHandler } = ParkingHandler() ;
   const { getUnitsHandler } = DefineUnitHandler() ;
 
@@ -170,6 +170,19 @@ const Addnewbookingrequest = () => {
             </label>
           ))}
         </div>
+          {formData.parkingCharges === "Paid" && (
+                            <div className="grid items-center grid-cols-1 gap-3 py-4">
+                              <Input
+                                label="Charge Amount"
+                                type="text"
+                                name="chargeAmount"
+                                placeholder="INR : Enter Amount"
+                                size="lg"
+                                value={formData.chargeAmount}
+                                onChange={handleChange}
+                              />
+                            </div>
+                          )}
         <div className="flex flex-row items-center gap-4 pt-4">
           <div>Parking Charge :</div>
           <div className="flex flex-row items-center gap-3">
@@ -181,7 +194,7 @@ const Addnewbookingrequest = () => {
             ))}
           </div>
         </div>
-        <Input
+        {/* <Input
           label="Charge Amount:"
           type="number"
           placeholder="INR: Enter Amount"
@@ -189,7 +202,7 @@ const Addnewbookingrequest = () => {
           name="chargeAmount"
           value={formData.chargeAmount}
           onChange={handleChange}
-        />
+        /> */}
 
 
          <div className="flex flex-row items-center gap-3 py-4">

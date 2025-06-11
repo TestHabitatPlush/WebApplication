@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const sendEmail = require('../utils/sendEmail');
 const { Op } = require('sequelize');
@@ -53,20 +53,20 @@ exports.resetPassword = async (req, res) => {
       return res.status(400).json({ error: 'Invalid or expired token' });
     }
 
-   // Hash the new password before storing
+    // Hash the new password before storing
     const hashedPassword = await bcrypt.hash(password, 10);
 
     //Update the password and clear the resetToken fields
     // await user.update({
-      // password: hashedPassword,
-      // resetToken: null,
-      // resetTokenExpiration: null,
+    // password: hashedPassword,
+    // resetToken: null,
+    // resetTokenExpiration: null,
     // });
 
     user.password = hashedPassword;
-  user.resetToken = null;
-  user.resetTokenExpiration = null;
-  await user.save();
+    user.resetToken = null;
+    user.resetTokenExpiration = null;
+    await user.save();
 
     return res.status(200).json({ message: 'Password has been reset successfully.' });
   } catch (error) {

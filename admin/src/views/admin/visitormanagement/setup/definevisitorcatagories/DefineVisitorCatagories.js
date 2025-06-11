@@ -4,7 +4,7 @@ import PageHeading from "../../../../../components/shared/PageHeading";
 import VisitorRelationship from "./VisitorRelationship";
 
 const DefineVisitorCatagories = () => {
-  const paths = ["user", ""];
+  const paths = ["Visitor Management", "Setup", "Define Visitor Catagories"];
   const Heading = [""];
 
   return (

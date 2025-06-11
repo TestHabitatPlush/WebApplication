@@ -1,22 +1,22 @@
 {
   "development": {
     "username": "root",
-    "password": "sabya@8855",
-    "database": "habitatplush_test",
+    "password": "root",
+    "database": "habitatplush",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "test": {
     "username": "root",
-    "password": "sabya@8855",
-    "database": "habitatplush_test",
+    "password": "root",
+    "database": "habitatplush",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "production": {
     "username": "root",
-    "password": "sabya@8855",
-    "database": "habitatplush_test",
+    "password": "root",
+    "database": "habitatplush",
     "host": "127.0.0.1",
     "dialect": "mysql"
   }

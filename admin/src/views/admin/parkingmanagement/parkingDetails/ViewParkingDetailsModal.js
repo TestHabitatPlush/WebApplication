@@ -1,15 +1,69 @@
+
+
+
 import React, { useEffect, useState } from "react";
+import {
+  FaParking,
+  FaIdBadge,
+  FaLayerGroup,
+  FaClipboardList,
+  FaRupeeSign,
+  FaCalendarAlt,
+  FaMoneyBillAlt
+} from "react-icons/fa";
 import Dialog from "../../../../components/ui/Dialog";
-import Input from "../../../../components/shared/Input";
 
 const ViewParkingModal = ({ isOpen, onClose, formData }) => {
   const [parkingViewForm, setParkingViewForm] = useState(formData);
 
   useEffect(() => {
     if (formData) {
-      setParkingViewForm(formData);  // Update form data when modal opens
+      setParkingViewForm(formData);
     }
   }, [formData]);
+
+  const parkingDetails = [
+    {
+      icon: () => <FaIdBadge className="text-xl text-blue-600" />,
+      label: "Parking ID",
+      value: parkingViewForm?.parkingId || "—",
+    },
+    {
+      icon: () => <FaParking className="text-xl text-blue-600" />,
+      label: "Parking Name",
+      value: parkingViewForm?.parkingSlotName || "—",
+    },
+    {
+      icon: () => <FaLayerGroup className="text-xl text-blue-600" />,
+      label: "Parking Type",
+      value: parkingViewForm?.parkingSlotType || "—",
+    },
+    {
+      icon: () => <FaClipboardList className="text-xl text-blue-600" />,
+      label: "Parking Usage",
+      value: parkingViewForm?.parkingUsage || "—",
+    },
+    {
+      icon: () => <FaRupeeSign className="text-xl text-blue-600" />,
+      label: "Parking Charge",
+      value: parkingViewForm?.parkingCharges || "—",
+    },
+    {
+      icon: () => <FaMoneyBillAlt className="text-xl text-blue-600" />,
+      label: "Charge Amount",
+      value: parkingViewForm?.chargeAmount || "—",
+    },
+    {
+      icon: () => <FaCalendarAlt className="text-xl text-blue-600" />,
+      label: "Booking From",
+      value: parkingViewForm?.bookingFrom?.slice(0, 10) || "—",
+    },
+    {
+      icon: () => <FaCalendarAlt className="text-xl text-blue-600" />,
+      label: "Booking To",
+      value: parkingViewForm?.bookingTo?.slice(0, 10) || "—",
+    },
+  ];
 
   return (
     <Dialog
@@ -20,21 +74,24 @@ const ViewParkingModal = ({ isOpen, onClose, formData }) => {
       overlayClassName="backdrop-blur"
     >
       <div className="pb-4 mb-6 border-b">
-        <h2 className="text-2xl font-semibold text-gray-800">View Parking Details</h2>
+        <h2 className="text-2xl font-semibold text-gray-800"> Parking Details</h2>
       </div>
 
-      <div className="p-10 my-5 bg-gray-100 border rounded-lg">
-        <div className="grid items-center grid-cols-3 gap-5 py-6">
-          <Input label="Parking ID" type="text" value={parkingViewForm?.parkingId} readOnly />
-          <Input label="Parking Name" type="text" value={parkingViewForm?.parkingSlotName} readOnly />
-          <Input label="Parking Type" type="text" value={parkingViewForm?.parkingSlotType} readOnly />
-          <Input label="Parking Usage" type="text" value={parkingViewForm?.parkingUsage} readOnly />
-          <Input label="Parking Charge" type="text" value={parkingViewForm?.parkingCharges} readOnly />
-          <Input label=" Charge Amount" type="text" value={parkingViewForm?.chargeAmount} readOnly />
-          <Input label="Booking From" type="text" value={parkingViewForm?.bookingFrom?.slice(0, 10) || ""} readOnly />
-          <Input label="Booking To" type="text" value={parkingViewForm?.bookingTo?.slice(0, 10) || ""}  readOnly />
-          {/* Add more form fields as needed */}
-        </div>
+      <div className="p-6 bg-gray-100 border rounded-lg">
+        <ul className="space-y-4">
+          {parkingDetails.map((item, index) => (
+            <li
+              key={index}
+              className="flex items-start gap-4 p-4 bg-white border border-gray-200 rounded-md shadow-sm"
+            >
+              <div className="flex-shrink-0">{item.icon()}</div>
+              <div className="flex-1">
+                <h4 className="mb-1 text-sm font-medium text-gray-600">{item.label}</h4>
+                <p className="text-sm text-gray-800">{item.value}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </Dialog>
   );
