@@ -29,6 +29,7 @@ const discussionRouter = require("./routes/discussion_forum_Routes");
 const jobProfileRouter = require("./routes/jobProfileRoutes");
 const customerRoutes = require("./routes/customerRoutes");
 const parkingRoutes = require("./routes/parkingRoutes");
+const emergencyContact_router = require("./routes/emergencyContact");
 const gateAllocationRoutes = require("./routes/gateAllocationRoutes.js");
 const subscriptionPlanRoutes = require("./routes/subscriptionPlanRoutes");
 const roleRouter = require("./routes/roleRoutes");
@@ -157,4 +158,8 @@ app.use("/api/document", documentRouter);
 
 // discussionForum
 app.use("/api/discussionForum",discussionRouter);
+
+// emergencyContact
+app.use("/api/emergencyContact", emergencyContact_router);
+
 module.exports = app;

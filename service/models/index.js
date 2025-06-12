@@ -11,6 +11,7 @@ const Document = require("./Document");
 const Role = require("./RoleModel");
 const Building = require("./Building");
 const Gate = require("./Gate");
+const Emergency_Contact = require("./Emergency_Contact");
 const Floor = require("./Floor");
 const Facility = require("./FacilityManagement");
 const UnitType = require("./UnitType");
@@ -79,6 +80,7 @@ module.exports = {
   Building,
   JobProfile,
   Gate,
+  Emergency_Contact,
   Floor,
   Facility,
   UnitType,
