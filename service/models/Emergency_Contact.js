@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 const Customer = require("./Customer");
+const User = require("./User");
 
 const Emergency_Contact = sequelize.define(
   "Emergency_Contact",
@@ -18,6 +19,15 @@ const Emergency_Contact = sequelize.define(
       },
       allowNull: true,
     },
+    userId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: User,
+        key: "userId",
+      },
+      allowNull: true,
+    },
+
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -31,7 +41,7 @@ const Emergency_Contact = sequelize.define(
       allowNull: false,
     },
     emergencyContactType: {
-      type: DataTypes.ENUM("hospital", "police", "fire", "ambulance", "others"),
+      type: DataTypes.STRING,
       allowNull: true,
     },
     address: {
@@ -51,9 +61,9 @@ const Emergency_Contact = sequelize.define(
       allowNull: true,
     },
     viewStatus: {
-      type: DataTypes.BOOLEAN,
+      type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: true,
+      defaultValue: "active",
     },
   },
   {
@@ -63,4 +73,3 @@ const Emergency_Contact = sequelize.define(
 );
 
 module.exports = Emergency_Contact;
-

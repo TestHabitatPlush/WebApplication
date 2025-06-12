@@ -17,3 +17,4 @@ router.put("/:userId/:contactId", updateEmergencyContact);
 router.delete("/:userId/:contactId", deleteEmergencyContact);
 
 module.exports = router;
+

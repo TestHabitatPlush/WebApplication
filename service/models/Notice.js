@@ -18,7 +18,7 @@ const Notice = sequelize.define(
         model: Customer,
         key: "customerId",
       },
-      allowNull: false,
+      allowNull: true,
     },
     noticeHeading: {
       type: DataTypes.STRING,

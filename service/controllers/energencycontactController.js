@@ -6,17 +6,7 @@ const { sendSuccessResponse, sendErrorResponse } = require("../utils/response");
 const createEmergencyContactByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
-    const { name, econtactNo1, econtactNo2, emergencyContactType, address, state, city, pin } = req.body;
-
-    const user = await User.findByPk(userId);
-    if (!user) return sendErrorResponse(res, "User not found", 404);
-
-    const role = await Role.findByPk(user.roleId);
-    if (!role || role.roleCategory !== "super_admin") {
-      return sendErrorResponse(res, "Only Super Admin can use this endpoint", 403);
-    }
-
-    const contact = await Emergency_Contact.create({
+    const {
       name,
       econtactNo1,
       econtactNo2,
@@ -25,11 +15,47 @@ const createEmergencyContactByUserId = async (req, res) => {
       state,
       city,
       pin,
+      societyId: inputSocietyId,
+      viewStatus 
+    } = req.body;
+
+    const user = await User.findByPk(userId);
+    if (!user) return sendErrorResponse(res, "User not found", 404);
+
+    const role = await Role.findByPk(user.roleId);
+    if (!role) return sendErrorResponse(res, "Role not found", 404);
+
+    let societyIdToUse = null;
+
+    if (["super_admin", "super_admin_it"].includes(role.roleCategory)) {
+      
+      societyIdToUse = inputSocietyId || null;
+    } else if (["society_moderator", "management_committee"].includes(role.roleCategory)) {
+      if (inputSocietyId && inputSocietyId.toString() !== user.societyId?.toString()) {
+        return sendErrorResponse(res, "You can only add contacts to your own society", 403);
+      }
+      societyIdToUse = user.societyId;
+    } else {
+      return sendErrorResponse(res, "Permission denied", 403);
+    }
+
+    const contact = await Emergency_Contact.create({
+      societyId: societyIdToUse,
+      userId: user.userId,
+      name,
+      econtactNo1,
+      econtactNo2,
+      emergencyContactType,
+      address,
+      state,
+      city,
+      pin,
+      viewStatus,
     });
 
-    return sendSuccessResponse(res, "Emergency Contact created", contact, 201);
+    return sendSuccessResponse(res, "Emergency Contact created successfully", contact, 201);
   } catch (error) {
-    console.error("Create contact (super_admin) error:", error);
+    console.error("Error creating emergency contact:", error);
     return sendErrorResponse(res, "Internal Server Error", 500, error.message);
   }
 };
@@ -116,14 +142,18 @@ const getEmergencyContactsByUserId = async (req, res) => {
 
     let contacts;
 
-    if (role.roleCategory === "super_admin") {
+    if (["super_admin", "super_admin_it"].includes(role.roleCategory)) {
+      // Super Admins can see all active contacts
       contacts = await Emergency_Contact.findAll();
     } else if (user.societyId) {
+      // Others can only see active contacts of their own society
       contacts = await Emergency_Contact.findAll({
-        where: { societyId: user.societyId },
+        where: {
+          societyId: user.societyId,
+        },
       });
     } else {
-      return sendErrorResponse(res, "User has no associated society", 403);
+      return sendErrorResponse(res, "Unauthorized to view contacts", 403);
     }
 
     return sendSuccessResponse(res, "Emergency contacts retrieved", contacts);
@@ -132,6 +162,7 @@ const getEmergencyContactsByUserId = async (req, res) => {
     return sendErrorResponse(res, "Internal Server Error", 500, error.message);
   }
 };
+
 
 const deleteEmergencyContact = async (req, res) => {
   try {

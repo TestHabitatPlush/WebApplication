@@ -1,29 +1,6 @@
-// const { Notice } = require("../models");
 const { Op } = require("sequelize");
-const { Notice } = require("../models");
+const { Notice, User, Role } = require("../models");
 const { sendErrorResponse, sendSuccessResponse } = require("../utils/response");
-
-// exports.createNotice = async (req, res) => {
-//   try {
-//     console.log("Notice Announcement is working");
-//     const { noticeHeading, noticeDescription, noticeExpireDate, userGroupId } =
-//       req.body;
-//     if (
-//       !noticeHeading ||
-//       !noticeDescription ||
-//       !noticeExpireDate ||
-//       !userGroupId
-//     ) {
-//       return sendErrorResponse(res, "Enter All Details", 400);
-//     }
-
-//     const result = await Notice.create(req.body);
-//     return sendSuccessResponse(res, "Notice created successfully", result, 201);
-//   } catch (err) {
-//     console.error("Error creating building:", err);
-//     return sendErrorResponse(res, "Internal server error", 500, err.message);
-//   }
-// };
 
 exports.createNotice = async (req, res) => {
   try {
@@ -152,3 +129,198 @@ exports.updateNoticeById = async (req, res) => {
     return res.status(400).json({ error: error.message });
   }
 };
+
+
+
+// const { Op } = require("sequelize");
+// const { Notice, User, Role } = require("../models");
+// const { sendErrorResponse, sendSuccessResponse } = require("../utils/response");
+
+// // Create notice by Super Admin (no societyId)
+// exports.createByUserId = async (req, res) => {
+//   try {
+//     const { userId } = req.params;
+//     const {
+//       noticeHeading,
+//       noticeDescription,
+//       noticeExpireDate,
+//       userGroupId,
+//       senderId,
+//     } = req.body;
+
+//     if (!noticeHeading || !noticeDescription || !noticeExpireDate || !userGroupId || !senderId) {
+//       return sendErrorResponse(res, "Please provide all required fields", 400);
+//     }
+
+//     const user = await User.findByPk(userId);
+//     if (!user) return sendErrorResponse(res, "User not found", 404);
+
+//     const role = await Role.findByPk(user.roleId);
+//     if (!role || role.roleCategory !== "super_admin") {
+//       return sendErrorResponse(res, "Only Super Admin can create this notice", 403);
+//     }
+
+//     const notice = await Notice.create({
+//       noticeHeading,
+//       noticeDescription,
+//       noticeExpireDate,
+//       userGroupId,
+//       senderId,
+//       societyId: null,
+//     });
+
+//     return sendSuccessResponse(res, "Notice created successfully", notice, 201);
+//   } catch (error) {
+//     console.error("Create Error:", error);
+//     return sendErrorResponse(res, "Internal server error", 500, error.message);
+//   }
+// };
+
+// // Create notice by Admin (with societyId)
+// exports.createNotice = async (req, res) => {
+//   try {
+//     const {
+//       noticeHeading,
+//       noticeDescription,
+//       noticeExpireDate,
+//       userGroupId,
+//       societyId,
+//       senderId,
+//     } = req.body;
+
+//     if (!noticeHeading || !noticeDescription || !noticeExpireDate || !userGroupId || !societyId || !senderId) {
+//       return sendErrorResponse(res, "Enter All Details", 400);
+//     }
+
+//     const result = await Notice.create(req.body);
+//     return sendSuccessResponse(res, "Notice created successfully", result, 201);
+//   } catch (err) {
+//     console.error("Error creating notice:", err);
+//     return sendErrorResponse(res, "Internal server error", 500, err.message);
+//   }
+// };
+
+// // Get all Super Admin notices
+// exports.getNoticesForSuperAdmin = async (req, res) => {
+//   try {
+//     const { noticeHeading = "", userGroupId } = req.query;
+
+//     const whereClause = { societyId: null };
+//     if (noticeHeading) {
+//       whereClause.noticeHeading = { [Op.like]: `%${noticeHeading}%` };
+//     }
+//     if (userGroupId) {
+//       whereClause.userGroupId = userGroupId;
+//     }
+
+//     const page = parseInt(req.query.page) || 0;
+//     const pageSize = parseInt(req.query.pageSize) || 10;
+
+//     const { count, rows } = await Notice.findAndCountAll({
+//       where: whereClause,
+//       limit: pageSize,
+//       offset: page * pageSize,
+//     });
+
+//     const totalPages = Math.ceil(count / pageSize);
+//     return sendSuccessResponse(res, "Notices fetched successfully", {
+//       data: rows,
+//       total: count,
+//       totalPages,
+//     });
+//   } catch (error) {
+//     console.error("Read Error:", error);
+//     return sendErrorResponse(res, "Internal server error", 500, error.message);
+//   }
+// };
+
+// // Get society-based notices
+// exports.getNotice = async (req, res) => {
+//   try {
+//     const { noticeHeading = "", societyId, userGroupId } = req.query;
+
+//     if (!societyId) {
+//       return sendErrorResponse(res, "Enter Society Id", 400);
+//     }
+
+//     const page = parseInt(req.query.page) || 0;
+//     const pageSize = parseInt(req.query.pageSize) || 10;
+
+//     const whereClause = {
+//       societyId,
+//     };
+
+//     if (noticeHeading) {
+//       whereClause.noticeHeading = { [Op.like]: `%${noticeHeading}%` };
+//     }
+
+//     if (userGroupId) {
+//       whereClause.userGroupId = userGroupId;
+//     }
+
+//     const { count, rows } = await Notice.findAndCountAll({
+//       where: whereClause,
+//       limit: pageSize,
+//       offset: page * pageSize,
+//     });
+
+//     const totalPages = Math.ceil(count / pageSize);
+//     return sendSuccessResponse(res, "Notice fetched successfully", {
+//       data: rows,
+//       total: count,
+//       totalPages,
+//     });
+//   } catch (err) {
+//     console.error("Error fetching notice:", err);
+//     return sendErrorResponse(res, "Internal server error", 500, err.message);
+//   }
+// };
+
+// // Get single notice by ID
+// exports.getNoticeById = async (req, res) => {
+//   try {
+//     const { noticeId } = req.params;
+//     const notice = await Notice.findByPk(noticeId);
+//     if (!notice) return sendErrorResponse(res, "Notice not found", 404);
+//     return sendSuccessResponse(res, "Notice fetched successfully", notice);
+//   } catch (error) {
+//     console.error("Fetch by ID Error:", error);
+//     return sendErrorResponse(res, "Internal server error", 500, error.message);
+//   }
+// };
+
+// // Update notice
+// exports.updateNoticeById = async (req, res) => {
+//   try {
+//     const { noticeId } = req.params;
+//     const [updatedRows] = await Notice.update(req.body, {
+//       where: { noticeId },
+//     });
+
+//     if (updatedRows === 0) {
+//       return sendErrorResponse(res, "Notice not found or no changes made", 404);
+//     }
+
+//     return sendSuccessResponse(res, "Notice updated successfully");
+//   } catch (error) {
+//     console.error("Update Error:", error);
+//     return sendErrorResponse(res, "Internal server error", 500, error.message);
+//   }
+// };
+
+// // Delete notice
+// exports.deleteNoticeById = async (req, res) => {
+//   try {
+//     const { noticeId } = req.params;
+//     const notice = await Notice.findByPk(noticeId);
+//     if (!notice) {
+//       return sendErrorResponse(res, "Notice not found", 404);
+//     }
+
+//     await notice.destroy();
+//     return sendSuccessResponse(res, "Notice deleted successfully");
+//   } catch (error) {
+//     console.error("Delete Error:", error);
+//     return sendErrorResponse(res, "Internal server error", 500, error.message);
+//   }
+// };
