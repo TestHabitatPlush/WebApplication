@@ -28,12 +28,13 @@ const Notice = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    senderId: {
+   userId: {
       type: DataTypes.INTEGER,
       references: {
         model: User,
         key: "userId",
       },
+      allowNull: true,
     },
     noticeExpireDate: {
       type: DataTypes.DATE,

@@ -62,8 +62,17 @@ const createEmergencyContactByUserId = async (req, res) => {
 
 const createEmergencyContactBySocietyId = async (req, res) => {
   try {
-    const {  userId, societyId } = req.params;
-    const { name, econtactNo1, econtactNo2, emergencyContactType, address, state, city, pin } = req.body;
+    const { userId, societyId } = req.params;
+    const {
+      name,
+      econtactNo1,
+      econtactNo2,
+      emergencyContactType,
+      address,
+      state,
+      city,
+      pin
+    } = req.body;
 
     const user = await User.findByPk(userId);
     if (!user) return sendErrorResponse(res, "User not found", 404);
@@ -81,6 +90,7 @@ const createEmergencyContactBySocietyId = async (req, res) => {
     }
 
     const contact = await Emergency_Contact.create({
+      userId, 
       societyId,
       name,
       econtactNo1,
@@ -98,6 +108,7 @@ const createEmergencyContactBySocietyId = async (req, res) => {
     return sendErrorResponse(res, "Internal Server Error", 500, error.message);
   }
 };
+
 
 const updateEmergencyContact = async (req, res) => {
   try {
