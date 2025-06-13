@@ -95,7 +95,7 @@ const createSocietyResident = async (req, res) => {
       primaryContact: true,
       isManagementCommittee: false,
       managementDesignation,
-      status: "active",
+      status: "pending",
       addressId,
       societyId,
      unitId: unit ? unit.unitId : null,
@@ -199,7 +199,7 @@ const bulkCreateResidents = async (req, res) => {
         primaryContact: true,
         inManagementCommittee: false,
         managementDesignation: "Resident",
-        status: "active",
+        status: "pending",
       });
 
       created.push(user);

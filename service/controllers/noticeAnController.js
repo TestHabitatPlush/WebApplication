@@ -38,8 +38,6 @@ exports.createNotice = async (req, res) => {
       societyId,
       senderId,
     } = req.body;
-
-    // Validate all required fields, including societyId
     if (
       !noticeHeading ||
       !noticeDescription ||
@@ -52,8 +50,6 @@ exports.createNotice = async (req, res) => {
     }
 
     const result = await Notice.create(req.body);
-    // console.log(result);
-
     return sendSuccessResponse(res, "Notice created successfully", result, 201);
   } catch (err) {
     console.error("Error creating notice:", err);
@@ -71,15 +67,13 @@ exports.getNotice = async (req, res) => {
     if (!societyId) {
       return sendErrorResponse(res, "Enter Socity Id", 400);
     }
-
-    //   pagination handler
     const pagination = {
       page: parseInt(req.query.page) || 0,
       pageSize: parseInt(req.query.pageSize) || 10,
     };
     const whereClause = {};
     if (disscussionheading) {
-      whereClause.noticeHeading = { [Op.like]: `%${disscussionheading}%` }; // Case-insensitive search
+      whereClause.noticeHeading = { [Op.like]: `%${disscussionheading}%` };
     }
     if (societyId) {
       whereClause.societyId = societyId;
@@ -108,14 +102,12 @@ exports.getNotice = async (req, res) => {
 
 exports.deleteNoticeById = async (req, res) => {
   console.log("delete handler is called");
-  // console.log(req.params);
   try {
     const { noticeId } = req.params;
     const notice = await Notice.findByPk(noticeId);
     if (!notice) {
       return res.status(404).json({ message: "Notice not found" });
     }
-
     await notice.destroy();
     res.status(200).json({ message: "Notice deleted successfully" });
   } catch (err) {
@@ -129,26 +121,17 @@ exports.deleteNoticeById = async (req, res) => {
 exports.updateNoticeById = async (req, res) => {
   try {
     const noticeId = req.params.noticeId;
-
-    // Perform the update operation using Sequelize
     const [updatedRows] = await Notice.update(req.body, {
       where: { noticeId },
     });
-
-    // Log how many rows were updated
     console.log("Number of updated rows:", updatedRows);
-
-    // Check if any rows were updated
     if (updatedRows === 0) {
       return res
         .status(404)
         .json({ error: "Notice not found or no changes were made." });
     }
-
-    // Send a success response if updated
     return res.status(201).json({ message: "Notice updated successfully." });
   } catch (error) {
-    // Handle any errors during the update process
     return res.status(400).json({ error: error.message });
   }
 };

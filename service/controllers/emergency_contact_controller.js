@@ -14,7 +14,7 @@ const createEmergencyContactByUserId = async (req, res) => {
       city,
       pin,
       societyId: inputSocietyId,
-      viewStatus = "pending", 
+      viewStatus 
     } = req.body;
 
     const user = await User.findByPk(userId);
@@ -60,8 +60,17 @@ const createEmergencyContactByUserId = async (req, res) => {
 
 const createEmergencyContactBySocietyId = async (req, res) => {
   try {
-    const {  userId, societyId } = req.params;
-    const { name, econtactNo1, econtactNo2, emergencyContactType, address, state, city, pin } = req.body;
+    const { userId, societyId } = req.params;
+    const {
+      name,
+      econtactNo1,
+      econtactNo2,
+      emergencyContactType,
+      address,
+      state,
+      city,
+      pin
+    } = req.body;
 
     const user = await User.findByPk(userId);
     if (!user) return sendErrorResponse(res, "User not found", 404);
@@ -79,6 +88,7 @@ const createEmergencyContactBySocietyId = async (req, res) => {
     }
 
     const contact = await Emergency_Contact.create({
+      userId, 
       societyId,
       name,
       econtactNo1,
@@ -96,6 +106,7 @@ const createEmergencyContactBySocietyId = async (req, res) => {
     return sendErrorResponse(res, "Internal Server Error", 500, error.message);
   }
 };
+
 
 const updateEmergencyContact = async (req, res) => {
   try {
@@ -140,14 +151,18 @@ const getEmergencyContactsByUserId = async (req, res) => {
 
     let contacts;
 
-    if (role.roleCategory === "super_admin") {
+    if (["super_admin", "super_admin_it"].includes(role.roleCategory)) {
+      // Super Admins can see all active contacts
       contacts = await Emergency_Contact.findAll();
     } else if (user.societyId) {
+      // Others can only see active contacts of their own society
       contacts = await Emergency_Contact.findAll({
-        where: { societyId: user.societyId },
+        where: {
+          societyId: user.societyId,
+        },
       });
     } else {
-      return sendErrorResponse(res, "User has no associated society", 403);
+      return sendErrorResponse(res, "Unauthorized to view contacts", 403);
     }
 
     return sendSuccessResponse(res, "Emergency contacts retrieved", contacts);
@@ -156,6 +171,7 @@ const getEmergencyContactsByUserId = async (req, res) => {
     return sendErrorResponse(res, "Internal Server Error", 500, error.message);
   }
 };
+
 
 const deleteEmergencyContact = async (req, res) => {
   try {
