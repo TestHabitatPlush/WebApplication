@@ -52,6 +52,16 @@ export const createSocietyResidentService = async (societyId, token, data) => {
   });
 };
 
+export const createBulkSocietyUserService = async (societyId, token, data) => {
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/bulk-create/${societyId}`;
+  return axios.post(url, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "multipart/form-data",
+    },
+  });
+}
+
 
 
 export const getAllUserDataService = (data, token) => {

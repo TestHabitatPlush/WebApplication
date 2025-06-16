@@ -58,6 +58,11 @@ const SideBarMenu = {
           path: ["user", "add"],
         },
         {
+          name: "Add Bulk User",
+          url: "user/bulkuser",
+          path: ["user", "BulkUser"],
+        },
+        {
           name: "Approved Users",
           url: "user/approved",
           path: ["user", "unapproved"],

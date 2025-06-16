@@ -58,6 +58,7 @@ import ContactDetails from './emerencyContact/ContactDetails';
 import EmergencyList from './emerencyContact/emergencyList/EmergencyList'; 
 import DocumentUploadFacility from "./documentmanagement/documentuploadfacility/DocumentUploadFacility";
 import DocumentList from "./documentmanagement/documentlist/DocumentList";
+import BulkUserCreation from "./usermanagement/bulkusercreation/BulkUserCreation";
 
 // import CreateResident from "./resident/create/CreateResident";
 // import CreateFloorInformation from "./floorinformation/create/CreateFloorInformation";
@@ -111,6 +112,7 @@ const Admincontent = () => {
       <Route path="/user/unapproved" element={<UnapprovedUser />} />
       <Route path="/user/adduser" element={<AddUser />} />
       <Route path="/user/approved" element={<ApprovedUser />} />
+      <Route path="/user/bulkuser" element = {<BulkUserCreation/>} />
       <Route path="/user/deactivated" element={<DeactivateUser />} />
       <Route path="/user/setting" element={<GeneralSetting />} />
       <Route path="/user/setting" element={<GeneralSetting />} />

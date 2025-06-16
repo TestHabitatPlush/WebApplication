@@ -2,6 +2,7 @@ import toast from 'react-hot-toast';
 import {
   createSocietyModeratorService,
   createSocietyResidentService,
+  createBulkSocietyUserService,
   getResidentBySocietyIdService,
   getUserByIdService,
   getAllUserDataService,getAllApprovedUserDataService,getAllDeactiveUserDataService,updateUsersForApprovedAndRejectService
@@ -39,6 +40,17 @@ const createSocietyResidentUserHandler = async (societyId, formData) => {
     toast.error(error?.response?.data?.message || "An error occurred. Please try again.");
   }
 };
+
+const createBulkSocietyUserHandler = async (societyId, formData) => {
+  try {
+    const response = await createBulkSocietyUserService(societyId, token, formData)
+    if (response.status === 201) {
+      toast.success("Society Resident users created Success!");
+    }
+  } catch (error) {
+    console.error("Error creating resident:", error);
+  }
+}
 
 
 
@@ -168,6 +180,7 @@ const updateUserForApprovedAndRejectHandler= async (data) => {
   return {
     createSocietyModeratorHandler,
     createSocietyResidentUserHandler,
+    createBulkSocietyUserHandler,
     getResidentBySocietyIdHandler,
     getUserByIdHandler,
     getAllUserDataHandler,
