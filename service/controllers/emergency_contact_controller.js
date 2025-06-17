@@ -152,10 +152,8 @@ const getEmergencyContactsByUserId = async (req, res) => {
     let contacts;
 
     if (["super_admin", "super_admin_it"].includes(role.roleCategory)) {
-      // Super Admins can see all active contacts
       contacts = await Emergency_Contact.findAll();
     } else if (user.societyId) {
-      // Others can only see active contacts of their own society
       contacts = await Emergency_Contact.findAll({
         where: {
           societyId: user.societyId,

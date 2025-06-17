@@ -1,7 +1,7 @@
 // const { Notice } = require("../models");
-const { Op } = require("sequelize");
-const { Notice } = require("../models");
-const { sendErrorResponse, sendSuccessResponse } = require("../utils/response");
+// const { Op } = require("sequelize");
+// const { Notice } = require("../models");
+// const { sendErrorResponse, sendSuccessResponse } = require("../utils/response");
 
 // exports.createNotice = async (req, res) => {
 //   try {
@@ -25,6 +25,10 @@ const { sendErrorResponse, sendSuccessResponse } = require("../utils/response");
 //   }
 // };
 
+
+const { Op } = require("sequelize");
+const { Notice } = require("../models");
+const { sendErrorResponse, sendSuccessResponse } = require("../utils/response");
 exports.createNotice = async (req, res) => {
   try {
     console.log("Notice Announcement is working");

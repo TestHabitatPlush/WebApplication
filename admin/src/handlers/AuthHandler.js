@@ -79,7 +79,6 @@
 
 // export default AuthHandler;
 
-
 "use client";
 import { useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
@@ -93,35 +92,42 @@ const AuthHandler = () => {
 
   const loginHandler = async (token) => {
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_PUBLIC_API_URL}/auth/token-signin`,
-        { token }
-      );
-
-      console.log(response);
-      setReduxAuthState(response.data);
-      setLocalStorage(response.data);
-      toast.success("Successfully logged in!");
-      customNavigation('/');
+      await axios
+        .post(`${process.env.REACT_APP_PUBLIC_API_URL}/auth/token-signin`, { token })
+        .then((res) => {
+          console.log(res);
+          setReduxAuthState(res.data);
+          setLocalStorage(res.data);
+          toast.success("Successfully logged in!");
+          customNavigation('/');
+          return;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      console.log("end f catch block");
     } catch (error) {
-      console.error(error);
-      toast.error("Login failed. Please try again.");
+      console.log(error.message);
+      toast.error("An error occurred. Please try again.");
     }
   };
 
   const setLocalStorage = ({ user, token }) => {
+    console.log("set local storage!");
     const storageData = { token, user };
     localStorage.setItem("authData", JSON.stringify(storageData));
   };
 
-  const getLocalStorage = () => {
-    const storageData = localStorage.getItem("authData");
-    return storageData ? JSON.parse(storageData) : null;
-  };
-
   const setReduxAuthState = ({ user, token }) => {
+    console.log("set redux storage!");
     dispatch(setUser(user));
     dispatch(setToken(token));
+  };
+
+  const getLocalStorage = () => {
+    const storageData = localStorage.getItem("authData");
+    if (storageData) return JSON.parse(storageData);
+    else return null;
   };
 
   const setIntitalReduxState = () => {
@@ -139,7 +145,7 @@ const AuthHandler = () => {
   const logoutHandler = () => {
     clearLocalStorage();
     dispatch(clearAuth());
-    window.location.href = process.env.REACT_APP_PUBLIC_FRONTEND_URL || '/';
+    window.location.href = process.env.REACT_APP_PUBLIC_BASE_URL;
   };
 
   return {
