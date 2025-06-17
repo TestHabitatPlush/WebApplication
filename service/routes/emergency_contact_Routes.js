@@ -14,7 +14,7 @@ const {
 router.post("/:userId", createEmergencyContactByUserId);
 router.post("/:societyId/:userId", createEmergencyContactBySocietyId);
 router.get("/:userId", getEmergencyContactsByUserId);
-router.get("/:userId/:societyId", getEmergencyContactsBySocietyId);
+router.get("/society/:societyId", getEmergencyContactsBySocietyId);
 router.put("/:userId/:contactId", updateEmergencyContact);
 router.delete("/:userId/:contactId", deleteEmergencyContact);
 

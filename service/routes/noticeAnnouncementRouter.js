@@ -23,20 +23,16 @@ const {
   updateNoticeById,
   deleteNoticeById,
   getNotices,
+  getNoticesByUserId,
+  getNoticeBySocietyId,
 } = require("../controllers/noticeAnController");
 
-// CREATE notice by userId
 noticeAnnouncementRouter.post("/create/:userId", createNoticeByUserId);
-
 noticeAnnouncementRouter.post('/create/:userId/:societyId', createNoticeBySocietyId);
-
-// UPDATE notice by noticeId and userId
 noticeAnnouncementRouter.put("/update/:noticeId/:userId", updateNoticeById);
-
-// DELETE notice by noticeId and userId
 noticeAnnouncementRouter.delete("/delete/:noticeId/:userId", deleteNoticeById);
+noticeAnnouncementRouter.get("/:userId", getNoticesByUserId);
+noticeAnnouncementRouter.get("/society/:societyId", getNoticeBySocietyId);
 
-// GET notices for a user with optional filters
-noticeAnnouncementRouter.get("/list/:userId", getNotices);
 
 module.exports = noticeAnnouncementRouter;
