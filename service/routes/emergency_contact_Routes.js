@@ -13,7 +13,6 @@ const {
 
 router.post("/:userId", createEmergencyContactByUserId);
 router.post("/:societyId/:userId", createEmergencyContactBySocietyId);
-// ✅ GET Contacts
 router.get("/:userId", getEmergencyContactsByUserId);
 router.get("/:userId/:societyId", getEmergencyContactsBySocietyId);
 router.put("/:userId/:contactId", updateEmergencyContact);
