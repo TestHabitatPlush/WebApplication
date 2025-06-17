@@ -131,6 +131,10 @@
 // };
 
 
+
+
+
+
 const { Notice, User, Role } = require("../models");
 const { sendSuccessResponse, sendErrorResponse } = require("../utils/response");
 const { Op } = require("sequelize");
@@ -233,8 +237,6 @@ const createNoticeBySocietyId = async (req, res) => {
     return sendErrorResponse(res, "Internal server error", 500, err.message);
   }
 };
-
-
 
 
 // UPDATE NOTICE

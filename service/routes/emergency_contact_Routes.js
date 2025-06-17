@@ -8,11 +8,14 @@ const {
   getEmergencyContactsByUserId,
   updateEmergencyContact,
   deleteEmergencyContact,
-} = require("../controllers/energencycontactController");
+  getEmergencyContactsBySocietyId,
+} = require("../controllers/emergency_Contact_Controller");
 
 router.post("/:userId", createEmergencyContactByUserId);
 router.post("/:societyId/:userId", createEmergencyContactBySocietyId);
+// ✅ GET Contacts
 router.get("/:userId", getEmergencyContactsByUserId);
+router.get("/:userId/:societyId", getEmergencyContactsBySocietyId);
 router.put("/:userId/:contactId", updateEmergencyContact);
 router.delete("/:userId/:contactId", deleteEmergencyContact);
 

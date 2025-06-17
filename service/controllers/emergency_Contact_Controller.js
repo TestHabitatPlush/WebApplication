@@ -2,7 +2,7 @@
 
 const { Emergency_Contact, User, Role } = require("../models");
 const { sendSuccessResponse, sendErrorResponse } = require("../utils/response");
-
+const { Op } = require("sequelize");
 const createEmergencyContactByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -62,7 +62,7 @@ const createEmergencyContactByUserId = async (req, res) => {
 
 const createEmergencyContactBySocietyId = async (req, res) => {
   try {
-    const { userId, societyId } = req.params;
+    const { userId,societyId } = req.params;
     const {
       name,
       econtactNo1,
@@ -141,6 +141,33 @@ const updateEmergencyContact = async (req, res) => {
   }
 };
 
+// const getEmergencyContactsByUserId = async (req, res) => {
+//   try {
+//     const { userId } = req.params;
+
+//     const user = await User.findByPk(userId);
+//     if (!user) return sendErrorResponse(res, "User not found", 404);
+
+//     const role = await Role.findByPk(user.roleId);
+//     if (!role) return sendErrorResponse(res, "Role not found", 404);
+
+//     let contacts;
+
+//     if (["super_admin", "super_admin_it"].includes(role.roleCategory)) {
+//       // Super Admins can see all active contacts
+//       contacts = await Emergency_Contact.findAll();
+    
+//     } else {
+//       return sendErrorResponse(res, "Unauthorized to view contacts", 403);
+//     }
+
+//     return sendSuccessResponse(res, "Emergency contacts retrieved", contacts);
+//   } catch (error) {
+//     console.error("Get contacts error:", error);
+//     return sendErrorResponse(res, "Internal Server Error", 500, error.message);
+//   }
+// };
+
 const getEmergencyContactsByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -149,30 +176,88 @@ const getEmergencyContactsByUserId = async (req, res) => {
     if (!user) return sendErrorResponse(res, "User not found", 404);
 
     const role = await Role.findByPk(user.roleId);
-    if (!role) return sendErrorResponse(res, "Role not found", 404);
-
-    let contacts;
-
-    if (["super_admin", "super_admin_it"].includes(role.roleCategory)) {
-      // Super Admins can see all active contacts
-      contacts = await Emergency_Contact.findAll();
-    } else if (user.societyId) {
-      // Others can only see active contacts of their own society
-      contacts = await Emergency_Contact.findAll({
-        where: {
-          societyId: user.societyId,
-        },
-      });
-    } else {
-      return sendErrorResponse(res, "Unauthorized to view contacts", 403);
+    if (!role || !["super_admin", "super_admin_it"].includes(role.roleCategory)) {
+      return sendErrorResponse(res, "Access denied: Not a super admin", 403);
     }
 
-    return sendSuccessResponse(res, "Emergency contacts retrieved", contacts);
+    const superAdminRoles = await Role.findAll({
+      where: { roleCategory: ["super_admin", "super_admin_it"] },
+      attributes: ["roleId"]
+    });
+
+    const roleIds = superAdminRoles.map(r => r.roleId);
+
+    const superAdminUsers = await User.findAll({
+      where: { roleId: { [Op.in]: roleIds } },
+      attributes: ["userId"]
+    });
+
+    const userIds = superAdminUsers.map(u => u.userId);
+
+    const contacts = await Emergency_Contact.findAll({
+      where: { userId: { [Op.in]: userIds } }
+    });
+
+    return sendSuccessResponse(res, "Super Admin emergency contacts retrieved", contacts);
   } catch (error) {
-    console.error("Get contacts error:", error);
+    console.error("Error fetching super admin contacts:", error);
     return sendErrorResponse(res, "Internal Server Error", 500, error.message);
   }
 };
+
+
+const getEmergencyContactsBySocietyId = async (req, res) => {
+  try {
+    const { userId, societyId } = req.params;
+
+    const user = await User.findByPk(userId);
+    if (!user || !user.societyId) {
+      return sendErrorResponse(res, "User not found or not linked to a society", 404);
+    }
+
+    const role = await Role.findByPk(user.roleId);
+    if (!role || !["society_moderator", "management_committee"].includes(role.roleCategory)) {
+      return sendErrorResponse(res, "Access denied: Not an Admin", 403);
+    }
+
+    if (user.societyId.toString() !== societyId.toString()) {
+      return sendErrorResponse(res, "Unauthorized access to this society's data", 403);
+    }
+
+    const adminRoles = await Role.findAll({
+      where: {
+        roleCategory: {
+          [Op.in]: ["society_moderator", "management_committee"],
+        },
+      },
+      attributes: ["roleId"],
+    });
+
+    const adminRoleIds = adminRoles.map((r) => r.roleId);
+
+    const adminUsers = await User.findAll({
+      where: {
+        roleId: { [Op.in]: adminRoleIds },
+        societyId: societyId,
+      },
+      attributes: ["userId"],
+    });
+
+    const adminUserIds = adminUsers.map((u) => u.userId);
+
+    const contacts = await Emergency_Contact.findAll({
+      where: {
+        userId: { [Op.in]: adminUserIds },
+      },
+    });
+
+    return sendSuccessResponse(res, "Admin emergency contacts retrieved", contacts);
+  } catch (error) {
+    console.error("Error fetching admin contacts:", error);
+    return sendErrorResponse(res, "Internal Server Error", 500, error.message);
+  }
+};
+
 
 
 const deleteEmergencyContact = async (req, res) => {
@@ -209,6 +294,7 @@ module.exports = {
   createEmergencyContactByUserId,
   createEmergencyContactBySocietyId,
   getEmergencyContactsByUserId,
+  getEmergencyContactsBySocietyId,
   updateEmergencyContact,
   deleteEmergencyContact,
 };

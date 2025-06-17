@@ -34,11 +34,11 @@ const Emergency_Contact = sequelize.define(
     },
     econtactNo1: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     econtactNo2: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     emergencyContactType: {
       type: DataTypes.STRING,

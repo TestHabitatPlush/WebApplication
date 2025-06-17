@@ -39,7 +39,7 @@ const floorRouter = require("./routes/floorRoutes");
 const facilityManagement = require("./routes/facilityManagementRoutes");
 const unitTypeRouter = require("./routes/unitTypeRoutes");
 const gateRouter = require("./routes/gateRouter"); // Corrected variable name
-const contactRouter = require("./routes/contactRoutes.js");
+const emergencyContactrouter = require("./routes/emergency_contact_Routes.js");
 
 const {
   User,
@@ -158,7 +158,7 @@ app.use("/api", passwordReset);
 app.use("/api/documents", documentRouter);
 
 //emergencyContactrouter
-app.use("/api/contacts", contactRouter);
+app.use("/api/contacts", emergencyContactrouter);
 // discussionForum
 app.use("/api/discussionForum",discussionRouter);
 module.exports = app;
