@@ -60,6 +60,7 @@ const Customer = sequelize.define(
       allowNull:true,
     }
   },
+  
   {
     tableName: "customers",
   }
