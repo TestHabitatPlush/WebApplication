@@ -1,7 +1,8 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 const Customer = require("./Customer");
-const UserGroup = require("./UserGroup");
+// const UserGroup = require("./UserGroup");
+const Role = require("./RoleModel");
 const User = require("./User");
 
 const Document = sequelize.define("Document", {
@@ -26,12 +27,18 @@ const Document = sequelize.define("Document", {
         },
         allowNull: true,
     },
-    userGroupId: {
+    roleId: {
         type: DataTypes.INTEGER,
         references: {
-          model: UserGroup,
-          key: "userGroupId",
+          model: Role,
+          key: "roleId",
         },
+        allowNull: true,
+      },
+      roleCategories: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: [],
       },
     documentName: {
         type: DataTypes.STRING,
