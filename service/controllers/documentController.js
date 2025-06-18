@@ -120,6 +120,8 @@ const createDocumentBySocietyId = async (req, res) => {
 //     }
 //   };
 
+
+// this gate for specific role categories like ( society_owner, society_tenant, society_moderator, management_committee );
 const getDocumentBySocietyId = async (req, res) => {
     try {
       const { societyId, userId } = req.params;
