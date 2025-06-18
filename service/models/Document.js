@@ -37,8 +37,7 @@ const Document = sequelize.define("Document", {
       },
       roleCategories: {
         type: DataTypes.JSON,
-        allowNull: false,
-        defaultValue: [],
+        allowNull: true,
       },
     documentName: {
         type: DataTypes.STRING,
