@@ -27,6 +27,9 @@ const ref_ticket_status = require("./ref_ticket_status");
 const ref_ticket_catagorisation = require("./ref_ticket_catagorisation");
 const Socity_HelpDesk_Access_Management = require("./Socity_HelpDesk_Access_Management");
 const Emergency_Contact = require("./Emergency_Contact");
+const Country = require("./Country");
+const State = require("./State");
+const City = require("./City");
 
 Address.hasMany(Customer, { foreignKey: "addressId" });
 Customer.belongsTo(Address, { foreignKey: "addressId" });
@@ -96,4 +99,7 @@ module.exports = {
   ref_ticket_status,
   ref_ticket_catagorisation,
   Socity_HelpDesk_Access_Management,
+  Country,
+  State,
+  City
 };

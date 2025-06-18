@@ -7,7 +7,8 @@
     "start": "nodemon index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "test": "cross-env NODE_ENV=test nodemon index.js",
-    "prod": "cross-env NODE_ENV=production node index.js"
+    "prod": "cross-env NODE_ENV=production node index.js",
+    "seed": "node seeder.js"
   },
   "keywords": [],
   "author": "",
@@ -18,6 +19,7 @@
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "country-state-city": "^3.2.1",
     "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
     "express": "^4.20.0",

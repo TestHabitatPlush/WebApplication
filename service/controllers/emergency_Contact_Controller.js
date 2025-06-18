@@ -149,10 +149,12 @@ const getEmergencyContactsByUserId = async (req, res) => {
     const user = await User.findByPk(userId);
     if (!user) return sendErrorResponse(res, "User not found", 404);
     
+     if (user.societyId !== null) {
+      return sendErrorResponse(res, "User is not a Super Admin", 403);
+    }
     const contacts = await Emergency_Contact.findAll({
       where: { 
         userId: userId,
-        societyId: null 
        }
     });
     return sendSuccessResponse(res, "Super Admin emergency contacts retrieved", contacts);
