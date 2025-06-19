@@ -31,6 +31,7 @@ const customerRoutes = require("./routes/customerRoutes");
 const parkingRoutes = require("./routes/parkingRoutes");
 const emergencyContact_router = require("./routes/emergency_contact_Routes");
 const gateAllocationRoutes = require("./routes/gateAllocationRoutes.js");
+const locationRouter = require("./routes/locationRoutes");
 const subscriptionPlanRoutes = require("./routes/subscriptionPlanRoutes");
 const roleRouter = require("./routes/roleRoutes");
 const adminRouter = require("./routes/adminRoutes");
@@ -161,5 +162,7 @@ app.use("/api/discussionForum",discussionRouter);
 
 // emergencyContact
 app.use("/api/emergencyContact", emergencyContact_router);
+
+app.use("/api/location", locationRouter);
 
 module.exports = app;
