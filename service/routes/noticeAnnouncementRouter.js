@@ -14,25 +14,15 @@
 
 // module.exports = noticeAnnouncementRouter;
 
-
 const express = require("express");
-const noticeAnnouncementRouter = express.Router();
-const {
-  createNoticeByUserId,
-  createNoticeBySocietyId,
-  updateNoticeById,
-  deleteNoticeById,
-  getNotices,
-  getNoticesByUserId,
-  getNoticeBySocietyId,
-} = require("../controllers/noticeAnController");
+const router = express.Router();
+const noticeController = require("../controllers/noticeAnController");
 
-noticeAnnouncementRouter.post("/create/:userId", createNoticeByUserId);
-noticeAnnouncementRouter.post('/create/:userId/:societyId', createNoticeBySocietyId);
-noticeAnnouncementRouter.put("/update/:noticeId/:userId", updateNoticeById);
-noticeAnnouncementRouter.delete("/delete/:noticeId/:userId", deleteNoticeById);
-noticeAnnouncementRouter.get("/:userId", getNoticesByUserId);
-noticeAnnouncementRouter.get("/society/:societyId", getNoticeBySocietyId);
+router.post("/society/:societyId/user/:userId", noticeController.createNoticeBySocietyId);
+router.post("/user/:userId", noticeController.createNoticeByUserId);
+router.put("/:noticeId/user/:userId", noticeController.updateNoticeById);
+router.delete("/:noticeId/user/:userId", noticeController.deleteNoticeById)
+router.get("/society/:societyId/user/:userId", noticeController.getNoticesBySocietyId);
+router.get("/user/:userId", noticeController.getNoticesByUserId);
 
-
-module.exports = noticeAnnouncementRouter;
+module.exports = router;

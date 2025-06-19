@@ -158,7 +158,7 @@ app.use("/api", passwordReset);
 app.use("/api/documents", documentRouter);
 
 //emergencyContactrouter
-app.use("/api/contacts", emergencyContactrouter);
+app.use("/api/emergencyContacts", emergencyContactrouter);
 // discussionForum
 app.use("/api/discussionForum",discussionRouter);
 module.exports = app;

@@ -129,135 +129,91 @@
 //     return res.status(400).json({ error: error.message });
 //   }
 // };
-
 const { Notice, User, Role } = require("../models");
 const { sendSuccessResponse, sendErrorResponse } = require("../utils/response");
 
-// CREATE NOTICE
+// Create Notice by Society ID (Admin/Moderator)
+const createNoticeBySocietyId = async (req, res) => {
+  try {
+    const { societyId, userId } = req.params;
+    const { noticeHeading, noticeDescription, noticeExpireDate, visibilityOption } = req.body;
+
+    if (!societyId || !userId || !noticeHeading || !noticeDescription || !noticeExpireDate || !visibilityOption) {
+      return sendErrorResponse(res, "Missing required fields", 400);
+    }
+
+    const user = await User.findByPk(userId);
+    if (!user) return sendErrorResponse(res, "User not found", 404);
+
+    const role = await Role.findByPk(user.roleId);
+    if (!role) return sendErrorResponse(res, "Role not found", 404);
+
+    if (user.societyId?.toString() !== societyId.toString()) {
+      return sendErrorResponse(res, "You can only create notices for your own society", 403);
+    }
+
+    const allowedRoles = ["society_moderator", "management_committee"];
+    if (!allowedRoles.includes(role.roleCategory)) {
+      return sendErrorResponse(res, "Permission denied", 403);
+    }
+
+    const visibilityMap = {
+      owner: ["society_owner", "society_owner_family"],
+      tenant: ["society_tenant", "society_tenant_family"],
+      all: ["society_owner", "society_owner_family", "society_tenant", "society_tenant_family"],
+      primary: ["primary_member"]
+    };
+
+    const roleCategories = visibilityMap[visibilityOption];
+    if (!roleCategories) {
+      return sendErrorResponse(res, "Invalid visibility option", 400);
+    }
+
+    const notice = await Notice.create({
+      noticeHeading,
+      noticeDescription,
+      noticeExpireDate,
+      societyId,
+      userId,
+      roleId: user.roleId,
+      roleCategories
+    });
+
+    return sendSuccessResponse(res, "Notice created successfully", notice, 201);
+  } catch (err) {
+    console.error("Error creating notice:", err);
+    return sendErrorResponse(res, "Internal server error", 500, err.message);
+  }
+};
+
 const createNoticeByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
-    const {
-      noticeHeading,
-      noticeDescription,
-      noticeExpireDate,
-      userGroupId,
-      societyId: inputSocietyId,
-    } = req.body;
+    const { noticeHeading, noticeDescription, noticeExpireDate, societyId } = req.body;
 
-    const user = await User.findByPk(userId);
-    if (!user) return sendErrorResponse(res, "User not found", 404);
-
-    const role = await Role.findByPk(user.roleId);
-    if (!role) return sendErrorResponse(res, "Role not found", 404);
-
-    if (
-      !noticeHeading ||
-      !noticeDescription ||
-      !noticeExpireDate ||
-      !userGroupId
-    ) {
-      return sendErrorResponse(res, "Missing required fields", 400);
-    }
-
-    let societyIdToUse = null;
-
-    if (["super_admin", "super_admin_it"].includes(role.roleCategory)) {
-      societyIdToUse = inputSocietyId || null;
-    } else if (
-      ["society_moderator", "management_committee"].includes(role.roleCategory)
-    ) {
-      if (
-        inputSocietyId &&
-        inputSocietyId.toString() !== user.societyId?.toString()
-      ) {
-        return sendErrorResponse(
-          res,
-          "You can only create notice for your own society",
-          403
-        );
-      }
-      societyIdToUse = user.societyId;
-    } else {
-      return sendErrorResponse(
-        res,
-        "You do not have permission to create notices",
-        403
-      );
-    }
-
-    const notice = await Notice.create({
-      noticeHeading,
-      noticeDescription,
-      noticeExpireDate,
-      userGroupId,
-      societyId: societyIdToUse,
-      userId: user.userId,
-    });
-
-    return sendSuccessResponse(res, "Notice created successfully", notice, 201);
-  } catch (err) {
-    console.error("Error creating notice:", err);
-    return sendErrorResponse(res, "Internal server error", 500, err.message);
-  }
-};
-
-const createNoticeBySocietyId = async (req, res) => {
-  try {
-    const { userId, societyId } = req.params;
-    const { noticeHeading, noticeDescription, noticeExpireDate, userGroupId } =
-      req.body;
-
-    if (
-      !noticeHeading ||
-      !noticeDescription ||
-      !noticeExpireDate ||
-      !userGroupId
-    ) {
+    if (!noticeHeading || !noticeDescription || !noticeExpireDate) {
       return sendErrorResponse(res, "Missing required fields", 400);
     }
 
     const user = await User.findByPk(userId);
     if (!user) return sendErrorResponse(res, "User not found", 404);
 
-    const role = await Role.findByPk(user.roleId);
-    if (!role) return sendErrorResponse(res, "Role not found", 404);
-
-    if (
-      !["society_moderator", "management_committee"].includes(role.roleCategory)
-    ) {
-      return sendErrorResponse(
-        res,
-        "You do not have permission to create notices",
-        403
-      );
-    }
-
-    if (!user.societyId || user.societyId.toString() !== societyId) {
-      return sendErrorResponse(
-        res,
-        "You can only create notice for your own society",
-        403
-      );
-    }
-
     const notice = await Notice.create({
       noticeHeading,
       noticeDescription,
       noticeExpireDate,
-      userGroupId,
-      societyId: user.societyId,
+      societyId: societyId || user.societyId || null,
       userId: user.userId,
+      roleId: user.roleId
     });
 
     return sendSuccessResponse(res, "Notice created successfully", notice, 201);
   } catch (err) {
-    console.error("Error creating notice:", err);
+    console.error("Error creating user notice:", err);
     return sendErrorResponse(res, "Internal server error", 500, err.message);
   }
 };
 
-// UPDATE NOTICE
 const updateNoticeById = async (req, res) => {
   try {
     const { noticeId, userId } = req.params;
@@ -272,31 +228,21 @@ const updateNoticeById = async (req, res) => {
     const notice = await Notice.findByPk(noticeId);
     if (!notice) return sendErrorResponse(res, "Notice not found", 404);
 
-    const isSuperAdmin = ["super_admin", "super_admin_it"].includes(
-      role.roleCategory
-    );
-    const isSameSocietyAdmin =
-      ["society_moderator", "management_committee"].includes(
-        role.roleCategory
-      ) && notice.societyId?.toString() === user.societyId?.toString();
+    const isSuperAdmin = ["super_admin", "super_admin_it"].includes(role.roleCategory);
+    const isSameSocietyAdmin = ["society_moderator", "management_committee"].includes(role.roleCategory) && notice.societyId?.toString() === user.societyId?.toString();
 
     if (isSuperAdmin || isSameSocietyAdmin) {
       await notice.update(updateData);
       return sendSuccessResponse(res, "Notice updated successfully", notice);
     }
 
-    return sendErrorResponse(
-      res,
-      "You do not have permission to update this notice",
-      403
-    );
+    return sendErrorResponse(res, "You do not have permission to update this notice", 403);
   } catch (err) {
     console.error("Error updating notice:", err);
     return sendErrorResponse(res, "Internal server error", 500, err.message);
   }
 };
 
-// DELETE NOTICE
 const deleteNoticeById = async (req, res) => {
   try {
     const { noticeId, userId } = req.params;
@@ -310,27 +256,65 @@ const deleteNoticeById = async (req, res) => {
     const notice = await Notice.findByPk(noticeId);
     if (!notice) return sendErrorResponse(res, "Notice not found", 404);
 
-    const isSuperAdmin = ["super_admin", "super_admin_it"].includes(
-      role.roleCategory
-    );
-    const isSameSocietyAdmin =
-      ["society_moderator", "management_committee"].includes(
-        role.roleCategory
-      ) && notice.societyId?.toString() === user.societyId?.toString();
+    const isSuperAdmin = ["super_admin", "super_admin_it"].includes(role.roleCategory);
+    const isSameSocietyAdmin = ["society_moderator", "management_committee"].includes(role.roleCategory) && notice.societyId?.toString() === user.societyId?.toString();
 
     if (isSuperAdmin || isSameSocietyAdmin) {
       await notice.destroy();
       return sendSuccessResponse(res, "Notice deleted successfully");
     }
 
-    return sendErrorResponse(
-      res,
-      "You do not have permission to delete this notice",
-      403
-    );
+    return sendErrorResponse(res, "You do not have permission to delete this notice", 403);
   } catch (err) {
     console.error("Error deleting notice:", err);
     return sendErrorResponse(res, "Internal server error", 500, err.message);
+  }
+};
+
+const getNoticesBySocietyId = async (req, res) => {
+  try {
+    const { societyId, userId } = req.params;
+
+    if (!societyId || !userId) {
+      return sendErrorResponse(res, "societyId and userId are required", 400);
+    }
+
+    const user = await User.findByPk(userId);
+    if (!user) return sendErrorResponse(res, "User not found", 404);
+
+    const role = await Role.findByPk(user.roleId);
+    if (!role) return sendErrorResponse(res, "User role not found", 404);
+
+    if (user.societyId?.toString() !== societyId.toString()) {
+      return sendErrorResponse(res, "You can only view notices from your own society", 403);
+    }
+
+    const userCategory = role.roleCategory?.toLowerCase();
+    const isPrimary = user.primaryMember === true;
+
+    const allowedCategories = ["society_owner", "society_tenant", "society_moderator", "management_committee"];
+    if (!allowedCategories.includes(userCategory)) {
+      return sendErrorResponse(res, "Permission denied", 403);
+    }
+
+    const allNotices = await Notice.findAll({
+      where: { societyId },
+    });
+
+    const matchedNotices = allNotices.filter(notice => {
+      const categories = Array.isArray(notice.roleCategories) ? notice.roleCategories : [];
+
+      if (categories.includes("primary_member") && isPrimary) return true;
+      if (categories.includes(userCategory)) return true;
+      if (categories.length === 0) return true;
+
+      return false;
+    });
+
+    return sendSuccessResponse(res, "Notices fetched successfully", matchedNotices);
+  } catch (err) {
+    console.error("Error fetching society notices:", err);
+    return sendErrorResponse(res, "Internal Server Error", 500, err.message);
   }
 };
 
@@ -353,27 +337,11 @@ const getNoticesByUserId = async (req, res) => {
   }
 };
 
-const getNoticeBySocietyId = async (req, res) => {
-  try {
-    const { societyId } = req.params;
-
-    const notices = await Notice.findAll({
-      where: { societyId },
-      order: [["createdAt", "DESC"]],
-    });
-
-    return sendSuccessResponse(res, "Society notices retrieved", notices);
-  } catch (error) {
-    console.error("Error fetching society notices:", error);
-    return sendErrorResponse(res, "Internal Server Error", 500, error.message);
-  }
-};
-
 module.exports = {
   createNoticeByUserId,
   createNoticeBySocietyId,
   updateNoticeById,
   deleteNoticeById,
-  getNoticesByUserId,
-  getNoticeBySocietyId,
+  getNoticesBySocietyId,
+  getNoticesByUserId
 };

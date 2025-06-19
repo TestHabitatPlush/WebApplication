@@ -2,6 +2,7 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 const Customer = require("./Customer");
 const User = require("./User");
+const Role = require("./RoleModel");
 
 const Emergency_Contact = sequelize.define(
   "Emergency_Contact",
@@ -27,7 +28,19 @@ const Emergency_Contact = sequelize.define(
       },
       allowNull: true,
     },
-
+ roleId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: Role,
+        key: "roleId",
+      },
+      allowNull: true,
+    },
+    roleCategories: {
+      type: DataTypes.JSON,
+      allowNull: false,
+      defaultValue: [],
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
