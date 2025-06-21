@@ -59,5 +59,7 @@ const Notice = sequelize.define(
   }
 );
 
+Notice.belongsTo(Role, { foreignKey: "roleId" });
+Role.hasMany(Notice, { foreignKey: "roleId" });
 
 module.exports = Notice;

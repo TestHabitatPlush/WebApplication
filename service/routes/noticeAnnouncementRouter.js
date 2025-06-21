@@ -1,28 +1,38 @@
+const {
+  createNotice,
+  getNotice,
+  deleteNoticeById,
+  updateNoticeById,
+} = require("../controllers/noticeAnController");
+
+const noticeAnnouncementRouter = require("express").Router();
+
+noticeAnnouncementRouter.post("/", createNotice).get("/", getNotice);
+
+noticeAnnouncementRouter.delete("/:noticeId", deleteNoticeById);
+noticeAnnouncementRouter.put("/:noticeId", updateNoticeById);
+
+module.exports = noticeAnnouncementRouter;
+
+
+// const express = require("express");
+// const router = express.Router();
+
 // const {
-//   createNotice,
-//   getNotice,
-//   deleteNoticeById,
+//   createNoticeByUserId,
+//   createNoticeBySocietyId,
+//   getNoticesBySocietyId,
+//   getNoticesByUserId,
 //   updateNoticeById,
+//   deleteNoticeById,
 // } = require("../controllers/noticeAnController");
 
-// const noticeAnnouncementRouter = require("express").Router();
 
-// noticeAnnouncementRouter.post("/", createNotice).get("/", getNotice);
+// router.post("/create/user/:userId", createNoticeByUserId);
+// router.get("/user/:userId", getNoticesByUserId);
+// router.post("/create/:societyId/:userId", createNoticeBySocietyId);
+// router.get("/:societyId/:userId", getNoticesBySocietyId);
+// router.put("/update/:noticeId", updateNoticeById);
+// router.delete("/delete/:noticeId", deleteNoticeById);
 
-// noticeAnnouncementRouter.delete("/:noticeId", deleteNoticeById);
-// noticeAnnouncementRouter.put("/:noticeId", updateNoticeById);
-
-// module.exports = noticeAnnouncementRouter;
-
-const express = require("express");
-const router = express.Router();
-const noticeController = require("../controllers/noticeAnController");
-
-router.post("/society/:societyId/user/:userId", noticeController.createNoticeBySocietyId);
-router.post("/user/:userId", noticeController.createNoticeByUserId);
-router.put("/:noticeId/user/:userId", noticeController.updateNoticeById);
-router.delete("/:noticeId/user/:userId", noticeController.deleteNoticeById)
-router.get("/society/:societyId/user/:userId", noticeController.getNoticesBySocietyId);
-router.get("/user/:userId", noticeController.getNoticesByUserId);
-
-module.exports = router;
+// module.exports = router;

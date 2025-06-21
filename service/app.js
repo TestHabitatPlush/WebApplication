@@ -116,7 +116,7 @@ app.use("/api/jobProfile", jobProfileRouter);
 app.use("/api/refusergroup", refUserGroupRouter);
 
 // notice announcement
-app.use("/api/noticeAnnouncement", noticeAnnouncementRouter);
+app.use("/api/notice", noticeAnnouncementRouter);
 
 // visitor management
 app.use("/api/visitormanagement", visitorManagementRouter);

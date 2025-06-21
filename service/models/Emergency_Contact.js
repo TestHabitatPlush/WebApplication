@@ -28,7 +28,7 @@ const Emergency_Contact = sequelize.define(
       },
       allowNull: true,
     },
- roleId: {
+    roleId: {
       type: DataTypes.INTEGER,
       references: {
         model: Role,
