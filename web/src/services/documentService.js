@@ -104,7 +104,7 @@ export const getDocumentBySocietyService = (societyId, userId, token) => {
 };
 
 export const getDocumentByUserService = (userId, token) => {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/documents/list/${userId}`;
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/documents/user/${userId}`;
   console.log("url hvfhkgfye", url);
   return axios.get(url, {
     headers: {
