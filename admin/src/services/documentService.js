@@ -123,7 +123,6 @@ export const getDocumentByUserService = (userId, token) => {
   });
 };
 
-// ⚠️ This endpoint expects a userId, not a documentId
 export const getAllDocumentsService = (userId, token) => {
   const url = `${API}/documents/${userId}`;
   return axios.get(url, {
