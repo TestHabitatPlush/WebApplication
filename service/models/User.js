@@ -280,9 +280,9 @@ const User = sequelize.define(
       allowNull: true,
     },
     status: {
-      type: DataTypes.ENUM("active", "inactive","pending"),
+      type: DataTypes.ENUM("pending", "active", "inactive"),
       allowNull: false,
-      defaultValue: "active",
+      defaultValue: "pending",
     },
     isDeleted: {
       type: DataTypes.BOOLEAN,
@@ -315,6 +315,8 @@ User.belongsTo(Address, { foreignKey: "addressId" });
 
 Customer.hasMany(User, { foreignKey: "societyId" });
 User.belongsTo(Customer, { foreignKey: "societyId" });
+
+
 
 // Unit.hasMany(User, { foreignKey: "unitId" });
 // User.belongsTo(Unit, { foreignKey: "unitId" });

@@ -3,6 +3,10 @@ import { Route, Routes } from "react-router-dom";
 import CreateSociety from "./society/create/CreateSociety";
 import SocietyList from "./society/view_society/SocietyList";
 import CreateSocietyModerator from "./society/society_user/CreateSocietyModerator";
+import CreateEmergencyDetails from "./EmergencyContact/CreateEmergencyDetails";
+import EmergencyListSuperAdmin from "../super/EmergencyContact/EmergencyListSuperAdmin/EmergencyListSuperAdmin";
+import UserList from "./society/society_user/UserList";
+
 
 const SuperAdminContents = () => {
   return (
@@ -10,7 +14,10 @@ const SuperAdminContents = () => {
       <Route path="/" element={<div>Admin Dashboard home</div>} />
       <Route path="/society/create" element={<CreateSociety />} />
       <Route path="/society/view" element={<SocietyList />} />
+      <Route path="/society/user" element={<UserList />} />
       <Route path="/society/createuser" element={<CreateSocietyModerator />} />
+      <Route path="/emergencycontact/ContactDetails" element={<CreateEmergencyDetails />} />
+      <Route path="/emerencycontact/EmergencyList" element={<EmergencyListSuperAdmin />} />
     </Routes>
   );
 };

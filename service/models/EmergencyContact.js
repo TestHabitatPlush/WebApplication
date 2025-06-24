@@ -2,30 +2,46 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 const Customer = require("./Customer");
 const User = require("./User");
+const Role = require("./RoleModel");
 
-const Emergency_Contact = sequelize.define(
-  "Emergency_Contact",
-  {
+
+
+const EmergencyContact = sequelize.define(
+  "EmergencyContact",
+ {
     contactId: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    // userId: {
-    //   type: DataTypes.INTEGER,
-    //   references: {
-    //     model: User,
-    //     key: "userId",
-    //   },
-    //   allowNull: true,
-    // },
     societyId: {
       type: DataTypes.INTEGER,
       references: {
         model: Customer,
         key: "customerId",
       },
+      allowNull: true,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: User,
+        key: "userId",
+      },
+      allowNull: true,
+    },
+ roleId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: Role,
+        key: "roleId",
+      },
+      allowNull: true,
+    },
+    roleCategories: {
+      type: DataTypes.JSON,
       allowNull: false,
+      defaultValue: [],
     },
     name: {
       type: DataTypes.STRING,
@@ -33,14 +49,14 @@ const Emergency_Contact = sequelize.define(
     },
     econtactNo1: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     econtactNo2: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     emergencyContactType: {
-      type: DataTypes.ENUM("hospital", "police", "fire", "ambulance", "others"),
+      type: DataTypes.STRING,
       allowNull: true,
     },
     address: {
@@ -59,11 +75,17 @@ const Emergency_Contact = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    viewStatus: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "active",
+    },
   },
   {
-    tableName: "Emergency_Contact",
+    tableName: "EmergencyContact",
     timestamps: true,
   }
 );
 
-module.exports = Emergency_Contact;
+module.exports = EmergencyContact;
+

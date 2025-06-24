@@ -1,20 +1,19 @@
-// components/EmergencyList.jsx
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { FaEdit, FaEye, FaTrashAlt } from "react-icons/fa";
 import { MdKeyboardDoubleArrowLeft, MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
+
 import UrlPath from "../../../../components/shared/UrlPath";
 import PageHeading from "../../../../components/shared/PageHeading";
 import EmergencyContactHandler from "../../../../handlers/EmergencyContactHandler";
-import UpdateEmergencyDetailsModal from "./UpdateEmergencyDetailsModal";
 import ViewEmergencyDetailsModal from "./ViewEmergencyDetailsModal";
+import UpdateEmergencyDetailsModal from "./UpdateEmergencyDetailsModal";
 
-const EmergencyList = () => {
+const EmergencyListSuperAdmin = () => {
   const paths = ["Emergency Contact", "Emergency Contact List"];
   const Heading = ["Emergency Contact List"];
 
-  const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
   const userId = useSelector((state) => state.auth.user?.userId);
 
   const [emergency, setEmergency] = useState([]);
@@ -29,7 +28,7 @@ const EmergencyList = () => {
   const [selectedEmergencyData, setSelectedEmergencyData] = useState(null);
 
   const {
-    getEmergencyContactSocietyHandler,
+    getEmergencyContactUserHandler,
     deleteEmergencyContactByIdHandler,
     updateEmergencyContactHandler,
   } = EmergencyContactHandler();
@@ -37,21 +36,21 @@ const EmergencyList = () => {
   const fetchEmergency = async () => {
     try {
       const params = { page, pageSize, searchTerm };
-      const result = await getEmergencyContactSocietyHandler(societyId, userId, params);
+      const result = await getEmergencyContactUserHandler(userId, params);
       const items = Array.isArray(result?.data) ? result.data : [];
       setEmergency(items);
-      setTotalEmergency(result?.total || 0);
+      setTotalEmergency(result?.total || items.length);
     } catch (err) {
       console.error("Failed to fetch emergency contacts:", err.message);
     }
   };
 
   useEffect(() => {
-    fetchEmergency();
-  }, [page, pageSize, searchTerm]);
+    if (userId) fetchEmergency();
+  }, [page, pageSize, searchTerm, userId]);
 
   useEffect(() => {
-    if (selectedEmergencyId) {
+    if (selectedEmergencyId && emergency.length) {
       const found = emergency.find((el) => el.contactId === selectedEmergencyId);
       if (found) setSelectedEmergencyData({ ...found });
     }
@@ -63,8 +62,8 @@ const EmergencyList = () => {
   };
 
   const handleDelete = async (id) => {
-    const success = await deleteEmergencyContactByIdHandler(id);
-    if (success) {
+    const res = await deleteEmergencyContactByIdHandler(id);
+    if (res?.data?.success) {
       setEmergency((prev) => prev.filter((el) => el.contactId !== id));
       setTotalEmergency((prev) => prev - 1);
     }
@@ -81,11 +80,14 @@ const EmergencyList = () => {
   };
 
   const onSubmitEdit = async (formData) => {
-    const updatedData = { ...formData, societyId };
-    const res = await updateEmergencyContactHandler(updatedData);
-    if (res) {
-      setShowUpdateModal(false);
-      fetchEmergency();
+    try {
+      const res = await updateEmergencyContactHandler(formData);
+      if (res?.status === 200 || res?.status === 201) {
+        setShowUpdateModal(false);
+        fetchEmergency();
+      }
+    } catch (err) {
+      console.error("Update error:", err.message);
     }
   };
 
@@ -118,9 +120,18 @@ const EmergencyList = () => {
             <div className="relative flex flex-col p-4 bg-gray-100 rounded-lg shadow-md">
               <div className="text-xl font-semibold text-gray-800">{el.name}</div>
               <div className="absolute flex gap-2 right-2 top-2">
-                <FaEye className="text-lg text-yellow-600 cursor-pointer" onClick={() => openViewModal(el.contactId)} />
-                <FaEdit className="text-lg text-green-500 cursor-pointer" onClick={() => openEditModal(el.contactId)} />
-                <FaTrashAlt className="text-lg text-red-500 cursor-pointer" onClick={() => handleDelete(el.contactId)} />
+                <FaEye
+                  className="text-lg text-yellow-600 cursor-pointer hover:text-yellow-700"
+                  onClick={() => openViewModal(el.contactId)}
+                />
+                <FaEdit
+                  className="text-lg text-green-500 cursor-pointer hover:text-green-700"
+                  onClick={() => openEditModal(el.contactId)}
+                />
+                <FaTrashAlt
+                  className="text-lg text-red-500 cursor-pointer hover:text-red-700"
+                  onClick={() => handleDelete(el.contactId)}
+                />
               </div>
             </div>
           </div>
@@ -137,9 +148,11 @@ const EmergencyList = () => {
             </>
           )}
         </div>
+
         <div>
           Showing {(page - 1) * pageSize + 1} - {Math.min(page * pageSize, totalEmergency)} of {totalEmergency}
         </div>
+
         <div>
           {page < totalPages && (
             <>
@@ -148,6 +161,7 @@ const EmergencyList = () => {
             </>
           )}
         </div>
+
         <select
           value={pageSize}
           onChange={(e) => {
@@ -161,6 +175,7 @@ const EmergencyList = () => {
         </select>
       </div>
 
+      {/* Modals */}
       {showUpdateModal && selectedEmergencyData && (
         <UpdateEmergencyDetailsModal
           isOpen={showUpdateModal}
@@ -181,4 +196,4 @@ const EmergencyList = () => {
   );
 };
 
-export default EmergencyList;
+export default EmergencyListSuperAdmin;

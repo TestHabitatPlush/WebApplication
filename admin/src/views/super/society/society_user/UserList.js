@@ -6,38 +6,37 @@ import {
   setPageSize,
   setFilters,
 } from "../../../../redux/slices/societySlice";
-import CustomerHandler from "../../../../handlers/superadmin/CustomerHandler";
-import ViewSocietyDetailsModal from "./components/ViewSocietyDetailsModal";
 import {
   resetCustomerFormOperationType,
   setCustomerId,
   setFormOperationType,
 } from "../../../../redux/slices/customerSlice";
-
-import Button from "../../../../components/ui/Button";
+import ViewSocietyDetailsModal from "../view_society/components/ViewSocietyDetailsModal";
 import Dialog from "../../../../components/ui/Dialog";
-import UserHandler from "../../../../handlers/UserHandler";
+import Button from "../../../../components/ui/Button";
+import CustomerHandler from "../../../../handlers/superadmin/CustomerHandler";
 
-// ✅ ActionData component
 const ActionData = ({ data, openModal, refreshList }) => {
   const dispatch = useDispatch();
+  const { updateCustomerStatusHandler } = CustomerHandler();
+
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const { activateModeratorHandler, inactivateModeratorHandler } = UserHandler();
-const token = useSelector((state) => state.auth.token); 
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleActivateClick = async () => {
-   const newStatus = await activateModeratorHandler(data.customerId, token); 
-    if (newStatus) refreshList(); // ✅ refetch data from backend
+    setIsLoading(true);
+    const newStatus = await updateCustomerStatusHandler(data.customerId, "active");
+    if (newStatus === "active") refreshList();
+    setIsLoading(false);
   };
 
   const confirmInactivate = async () => {
-    const newStatus = await inactivateModeratorHandler(data.customerId,token);
-    if (newStatus) refreshList(); // ✅ refetch data from backend
+    setIsLoading(true);
+    const newStatus = await updateCustomerStatusHandler(data.customerId, "inactive");
+    if (newStatus === "inactive") refreshList();
     setShowConfirmModal(false);
+    setIsLoading(false);
   };
-
-  const openInactivateModal = () => setShowConfirmModal(true);
-  const closeInactivateModal = () => setShowConfirmModal(false);
 
   return (
     <div className="flex gap-2">
@@ -66,58 +65,64 @@ const token = useSelector((state) => state.auth.token);
       {data.status !== "active" && (
         <Button
           onClick={handleActivateClick}
-          className="px-2 py-1 text-xs text-white bg-green-600 rounded hover:bg-green-700 w-fit"
+          className="px-2 py-1 text-xs text-white bg-green-600 rounded hover:bg-green-700"
+          disabled={isLoading}
         >
-          Active
+          Activate
         </Button>
       )}
 
       {data.status === "active" && (
-        <Button
-          onClick={openInactivateModal}
-          className="px-2 py-1 text-xs text-white bg-red-600 rounded hover:bg-red-700 w-fit"
-        >
-          Inactive
-        </Button>
-      )}
+        <>
+          <Button
+            onClick={() => setShowConfirmModal(true)}
+            className="px-2 py-1 text-xs text-white bg-red-600 rounded hover:bg-red-700"
+            disabled={isLoading}
+          >
+            Inactivate
+          </Button>
 
-      {/* Confirmation Modal */}
-      <Dialog isOpen={showConfirmModal} onClose={closeInactivateModal}>
-        <div className="p-4 bg-white">
-          <h2 className="mb-2 text-lg font-bold">Confirm Inactivation</h2>
-          <p>Are you sure you want to inactivate this moderator?</p>
-          <div className="flex justify-end gap-2 mt-4">
-            <Button className="bg-gray-400 hover:bg-gray-500" onClick={closeInactivateModal}>
-              Cancel
-            </Button>
-            <Button className="bg-red-600 hover:bg-red-700" onClick={confirmInactivate}>
-              Confirm
-            </Button>
-          </div>
-        </div>
-      </Dialog>
+          <Dialog isOpen={showConfirmModal} onClose={() => setShowConfirmModal(false)}>
+            <div className="p-4 bg-white">
+              <h2 className="mb-2 text-lg font-bold">Confirm Inactivation</h2>
+              <p>Are you sure you want to inactivate this moderator?</p>
+              <div className="flex justify-end gap-2 mt-4">
+                <Button
+                  className="bg-gray-400 hover:bg-gray-500"
+                  onClick={() => setShowConfirmModal(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="bg-red-600 hover:bg-red-700"
+                  onClick={confirmInactivate}
+                >
+                  Confirm
+                </Button>
+              </div>
+            </div>
+          </Dialog>
+        </>
+      )}
     </div>
   );
 };
 
-// ✅ SocietyList component
-const SocietyList = () => {
+const UserList = () => {
   const dispatch = useDispatch();
   const { getCustomerHandler } = CustomerHandler();
   const { data, page, pageSize, total, totalPages, columns, status, filters } =
     useSelector((state) => state.society);
   const [viewModal, setViewModal] = useState(false);
 
-  const openModal = () => {
-    setViewModal(true);
-  };
+  const openModal = () => setViewModal(true);
 
   const closeModal = () => {
     setViewModal(false);
     dispatch(resetCustomerFormOperationType());
   };
 
-  const fetchSocietiesData = async () => {
+  const fetchUserList = async () => {
     try {
       const result = await getCustomerHandler({
         page,
@@ -139,7 +144,7 @@ const SocietyList = () => {
             <ActionData
               data={item}
               openModal={openModal}
-              refreshList={fetchSocietiesData} 
+              refreshList={fetchUserList}
             />
           ),
         })),
@@ -152,21 +157,19 @@ const SocietyList = () => {
         payload: transformedData,
       });
     } catch (error) {
-      console.error("Failed to fetch societies data:", error);
+      console.error("Failed to fetch user list:", error);
     }
   };
 
   useEffect(() => {
-    fetchSocietiesData();
+    fetchUserList();
   }, [dispatch, page, pageSize, filters]);
 
-  if (status === "loading") {
-    return <div>Loading...</div>;
-  }
+  if (status === "loading") return <div>Loading...</div>;
 
   return (
     <div>
-      <h1>Customer List</h1>
+      <h1>User List</h1>
 
       <ReusableTable
         columns={columns}
@@ -186,4 +189,4 @@ const SocietyList = () => {
   );
 };
 
-export default SocietyList;
+export default UserList;

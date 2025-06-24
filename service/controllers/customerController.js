@@ -1,6 +1,9 @@
-const { Customer, Address } = require("../models");
+const { Customer, Address, User } = require("../models");
 const { validationResult, query } = require("express-validator");
 const customerService = require("../services/customerService");
+// const { Op } = require("sequelize");
+ const sequelize = require("../config/database");
+// const User = require("../models/User");
 
 // 
 const createCustomer = async (req, res) => {
@@ -57,7 +60,7 @@ const getAllCustomers = async (req, res) => {
 
     const whereClause = {};
     if (filters.name)
-      whereClause.customerName = { [Op.iLike]: `%${filters.name}%` }; // Case-insensitive search
+      whereClause.customerName = { [Op.iLike]:` %${filters.name}% `}; // Case-insensitive search
     if (filters.type) whereClause.customerType = filters.type;
     if (filters.email) whereClause.email = { [Op.iLike]: `%${filters.email}%` };
     if (filters.phone) whereClause.phone = filters.phone;
@@ -109,6 +112,7 @@ const getCustomerById = async (req, res) => {
   }
 };
 
+
 const updateCustomer = async (req, res) => {
   try {
     const customerId = req.params.id;
@@ -136,6 +140,73 @@ const updateCustomer = async (req, res) => {
   }
 };
 
+
+// const updateCustomerStatus = async (req, res) => {
+//   try {
+//     const customerId = req.params.id;
+//     const { status } = req.body;
+
+//     if (!status) {
+//       return res.status(400).json({ error: "Status is required." });
+//     }
+
+//     const [updated] = await Customer.update(
+//       { status },
+//       { where: { customerId } }
+//     );
+
+//     if (updated) {
+//       return res.status(200).json({
+//         message: "Customer status updated successfully",
+//         data: { customerId, status },
+//       });
+//     }
+
+//     return res.status(404).json({ error: "Customer not found" });
+//   } catch (error) {
+//     return res.status(400).json({ error: error.message });
+//   }
+// };
+
+const updateCustomerStatus = async (req, res) => {
+  const { status } = req.body;
+  const customerId = req.params.id;
+
+  if (!status) {
+    return res.status(400).json({ error: "Status is required." });
+  }
+
+  const t = await sequelize.transaction();
+  try {
+    // 1. Update customer status
+    const [updatedCustomer] = await Customer.update(
+      { status },
+      { where: {id: customerId }, transaction: t }
+    );
+
+    if (!updatedCustomer) {
+      await t.rollback();
+      return res.status(404).json({ error: "Customer not found" });
+    }
+
+    // 2. Update all users where societyId = customerId
+    await User.update(
+      { status },
+      { where: { societyId: customerId }, transaction: t }
+    );
+
+    await t.commit();
+    return res.status(200).json({
+      message: "Customer and related user statuses updated successfully",
+      data: { customerId, status },
+    });
+  } catch (error) {
+    await t.rollback();
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+
 const deleteCustomer = async (req, res) => {
   try {
     await customerService.deleteCustomer(req.params.id);
@@ -151,5 +222,6 @@ module.exports = {
   getAllCustomers,
   getCustomerById,
   updateCustomer,
+  updateCustomerStatus,
   deleteCustomer,
 };

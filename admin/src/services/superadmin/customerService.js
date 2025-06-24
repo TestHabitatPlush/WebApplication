@@ -40,3 +40,15 @@ export const updateCustomerDetailsByIdService = (id, data, token) => {
   });
 };
 
+export const updateCustomerStatusService = async (id, status, token) => {
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/customers/${id}`;
+  const payload = { status }; 
+
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json',
+  };
+
+  const response = await axios.put(url, payload, { headers });
+  return response.data;
+};

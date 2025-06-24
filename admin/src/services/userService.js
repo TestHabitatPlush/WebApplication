@@ -107,3 +107,15 @@ export const updateUsersForApprovedAndRejectService = (data, token) => {
     },
   });
 };
+
+
+export const updateModeratorStatusService = async (id, payload, token) => {
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/moderators/${id}`;
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+
+  const response = await axios.put(url, payload, { headers });
+  return response.data;
+};

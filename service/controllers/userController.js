@@ -1,3 +1,4 @@
+
 const { User, Unit, Role } = require("../models");
 const { getAllUsersService, getUserByIdService } = require("../services/userService");
 //const { createUnit, getUnit, getAllUnits } = require("../controllers/unitController.js");
@@ -6,9 +7,50 @@ const XLSX = require("xlsx");
 const fs = require("fs");
 const bcrypt = require("bcrypt");
 
+// const createSocietyModerator = async (req, res) => {
+//   try {
+//     const { address, email, roleId, ...customerData } = req.body;
+
+//     const existingUser = await User.findOne({ where: { email } });
+//     if (existingUser) {
+//       return res.status(400).json({ message: "Email already in use" });
+//     }
+
+//     const addressData = await addressService.createAddress(address);
+//     const addressId = addressData.addressId;
+
+//     const role = await Role.findByPk(roleId);
+//     if (!role) {
+//       return res.status(400).json({ message: "Invalid role ID" });
+//     }
+
+//     const managementDesignation = role.roleName;
+
+//     const password = "admin"; 
+//     const result = await User.create({
+//       ...customerData,
+//       email,
+//       roleId,
+//       addressId,
+//       password,
+//       livesHere: true,
+//       primaryContact: true,
+//       isManagementCommittee: true,
+//       managementDesignation,
+//     });
+
+//     res.status(201).json({
+//       message: "Society Moderator created successfully",
+//       result,
+//     });
+//   } catch (error) {
+//     console.error("Error creating society moderator:", error);
+//     res.status(500).json({ error: error.message });
+//   }
+// };
 const createSocietyModerator = async (req, res) => {
   try {
-    const { address, email, ...customerData } = req.body;
+    const { address, email, roleId, ...customerData } = req.body;
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
@@ -18,17 +60,25 @@ const createSocietyModerator = async (req, res) => {
     const addressData = await addressService.createAddress(address);
     const addressId = addressData.addressId;
 
-    const password = "admin";
+    const role = await Role.findByPk(roleId);
+    if (!role) {
+      return res.status(400).json({ message: "Invalid role ID" });
+    }
+
+    const password = "admin"; // Default password
+    const managementDesignation = role.roleName;
 
     const result = await User.create({
       ...customerData,
       email,
+      roleId,
       addressId,
       password,
       livesHere: true,
       primaryContact: true,
       isManagementCommittee: true,
-      managementDesignation: "admin",
+      managementDesignation,
+      status: "pending", // ensure default status
     });
 
     res.status(201).json({
@@ -40,6 +90,69 @@ const createSocietyModerator = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+const updateSocietyStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { address, roleId, status, ...updateData } = req.body;
+
+    const moderator = await User.findByPk(id);
+    if (!moderator) {
+      return res.status(404).json({ message: "Moderator not found" });
+    }
+
+    if (address) {
+      const updatedAddress = await addressService.updateAddress(moderator.addressId, address);
+      updateData.addressId = updatedAddress.addressId;
+    }
+
+    let newRole = null;
+    if (roleId) {
+      newRole = await Role.findByPk(roleId);
+      if (!newRole) {
+        return res.status(400).json({ message: "Invalid roleId" });
+      }
+      updateData.roleId = roleId;
+      updateData.managementDesignation = newRole.roleName;
+    }
+
+    if (status && ["pending", "inactive", "active"].includes(status)) {
+      updateData.status = status;
+      const currentRole = await Role.findByPk(moderator.roleId);
+      const currentCategory = currentRole?.roleCategory;
+      if (["society_moderator", "society_facility_manager"].includes(currentCategory)) {
+        const residentRoles = await Role.findAll({
+          where: {
+            roleCategory: ["society_owner", "society_owner_family", "society_tenant", "society_tenant_family"],
+          },
+        });
+        const residentRoleIds = residentRoles.map((r) => r.roleId);
+
+        await User.update(
+          { status },
+          {
+            where: {
+              societyId: moderator.societyId,
+              roleId: residentRoleIds,
+            },
+          }
+        );
+      }
+    }
+
+    await moderator.update(updateData);
+
+    res.status(200).json({
+      message: "Moderator updated successfully",
+      updatedModerator: moderator,
+    });
+  } catch (err) {
+    console.error("Error updating moderator:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
 const createSocietyResident = async (req, res) => {
   try {
     const { address, email, salutation, firstName, lastName, mobileNumber, alternateNumber, roleId, unitId } = req.body;
@@ -57,16 +170,22 @@ const createSocietyResident = async (req, res) => {
     const addressData = await addressService.createAddress(address);
     const addressId = addressData.addressId;
 
-    const password = "Himansu"; // Replace with a secure password strategy
+    const password = "Himansu";
 
     let unit = null;
-    if(unitId) {
+    if (unitId) {
       unit = await Unit.findByPk(unitId);
-      if(!unit){
+      if (!unit) {
         return res.status(400).json({ message: "Invalid unit ID" });
       }
     }
 
+    const role = await Role.findByPk(roleId);
+    if (!role) {
+      return res.status(400).json({ message: "Invalid role ID" });
+    }
+
+    const managementDesignation = role.roleName;
     const residentDetails = {
       salutation,
       firstName,
@@ -80,11 +199,11 @@ const createSocietyResident = async (req, res) => {
       livesHere: true,
       primaryContact: true,
       isManagementCommittee: false,
-      managementDesignation: "Resident",
+      managementDesignation,
       status: "pending",
       addressId,
       societyId,
-     unitId: unit ? unit.unitId : null,
+      unitId: unit ? unit.unitId : null,
     };
 
     const result = await User.create(residentDetails);
@@ -185,7 +304,7 @@ const bulkCreateResidents = async (req, res) => {
         primaryContact: true,
         inManagementCommittee: false,
         managementDesignation: "Resident",
-        status: "active",
+        status: "pending",
       });
 
       created.push(user);
@@ -204,11 +323,11 @@ const bulkCreateResidents = async (req, res) => {
   }
 };
 
-      ///////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////
 
 const getResidentBySocietyId = async (req, res) => {
   try {
-   const { societyId } = req.params;
+    const { societyId } = req.params;
     if (!societyId) {
       return res.status(400).json({ message: "Society ID is required" });
     }
@@ -217,8 +336,8 @@ const getResidentBySocietyId = async (req, res) => {
       where: {
         societyId,
         isManagementCommittee: false,
-         isDeleted:0,
-        status: "pending",
+        isDeleted: 0,
+        status: ["active", "pending", "inactive"],
       },
       attributes: [
         "userId",
@@ -245,8 +364,8 @@ const getResidentBySocietyId = async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching residents:", error);
-    res.status(500).json({ error: error.message });
-  }
+    res.status(500).json({ error: error.message });
+  }
 };
 
 const updateResidentBySocietyId = async (req, res) => {
@@ -379,12 +498,12 @@ const getUserById = async (req, res) => {
 // }
 
 const getManagement_committee = async (req, res) => {
-  try{
+  try {
     const societyId = req.params.societyId;
-    if(!societyId) {
+    if (!societyId) {
       return res.status(400).json({ message: "Society ID is required" });
     }
-    const allowedCategories = ["management_committee","society_moderator"];
+    const allowedCategories = ["management_committee", "society_moderator"];
     const roles = await Role.findAll({
       where: {
         roleCategory: allowedCategories,
@@ -398,7 +517,7 @@ const getManagement_committee = async (req, res) => {
         roleId: roleIds,
       },
       include: [
-        {model: Role, as:"role"},
+        { model: Role, as: "role" },
         // {model: Address, as: "address"},
       ],
     });
@@ -410,7 +529,7 @@ const getManagement_committee = async (req, res) => {
   catch (error) {
     console.error("Error fetching management committee:", error);
     res.status(500).json({ error: error.message });
-}
+  }
 }
 const getAllApprovedUsers = async (req, res) => {
   try {
@@ -488,6 +607,7 @@ module.exports = {
   getAllUsers,
   getUserById,
   createSocietyModerator,
+  updateSocietyStatus,
   createSocietyResident,
   bulkCreateResidents,
   getResidentBySocietyId,

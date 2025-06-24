@@ -5,6 +5,8 @@ import { useSelector } from "react-redux";
 const ManagementCommitteeHandler = () => {
   const token = useSelector((state) => state.auth.token);
   const societyId = useSelector((state) => state.society?.societyId) || 2;
+ 
+
 
   const getAllCommitteeHandler = async () => {
     try {
