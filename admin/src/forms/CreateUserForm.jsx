@@ -24,18 +24,20 @@ const CreateUserForm = () => {
 
   const getUserRoles = async () => {
     const result = await getUserRolesHandler();
-    const moderatorRole = result.data.find(el => el.roleCategory === "society_moderator");
   
-    if (moderatorRole) {
-      dispatch({
-        type: "society_moderator",
-        payload: [{ label: moderatorRole.roleCategory, value: moderatorRole.roleId }],
-      });
-      dispatch({
-        type: "society_moderator",
-        payload: { roleId: moderatorRole.roleId },
-      });
+    if (!result || !result.data) {
+      console.warn("No data received from getUserRolesHandler");
+      return;
     }
+  
+    const newData = result.data
+      .filter((el) => el.roleCategory === "society_moderator")
+      .map((el) => ({ label: el.roleCategory, value: el.roleId }));
+  
+    dispatch({
+      type: "societyModeratorForm/setUserRoleOptions",
+      payload: newData,
+    });
   };
     useEffect(() => {
     getUserRoles();

@@ -58,7 +58,12 @@ const Customer = sequelize.define(
     builderSocialLink :{
       type:DataTypes.STRING,
       allowNull:true,
-    }
+    },
+    status: {
+      type: DataTypes.ENUM("active", "inactive","pending"),
+      allowNull: false,
+      defaultValue: "pending",
+    },
   },
   
   {

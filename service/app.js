@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 const errorHandler = require("./middleware/errorHandler");
 
 // router paths
-const passwordReset = require("./routes/resetPasswordRoutes");
+// const passwordReset = require("./routes/resetPasswordRoutes");
 
 const userRouter = require("./routes/userRoutes");
 const familyRouter = require("./routes/userFamilyRoutes.js");
@@ -152,7 +152,7 @@ app.use("/api", parkingRoutes);
 
 // passwordReset
 
-app.use("/api", passwordReset);
+// app.use("/api", passwordReset);
 
 // documentReset
 app.use("/api/document", documentRouter);

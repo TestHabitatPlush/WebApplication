@@ -6,6 +6,7 @@ router.post("/customers", customerController.createCustomer);
 router.get("/customers", customerController.getAllCustomers);
 router.get("/customers/:id", customerController.getCustomerById);
 router.put("/customers/:id", customerController.updateCustomer);
+router.put("/customers/status/:id", customerController.updateCustomerStatus);
 router.delete("/customers/:id", customerController.deleteCustomer);
 
 

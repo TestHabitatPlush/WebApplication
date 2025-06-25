@@ -145,7 +145,7 @@ const AuthHandler = () => {
   const logoutHandler = () => {
     clearLocalStorage();
     dispatch(clearAuth());
-    window.location.href = process.env.REACT_APP_PUBLIC_BASE_URL;
+    window.location.href = process.env.REACT_APP_PUBLIC_FRONTEND_URL;
   };
 
   return {

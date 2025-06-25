@@ -1,169 +1,131 @@
+// handlers/UserHandler.js
 import toast from 'react-hot-toast';
 import {
   createSocietyModeratorService,
   createSocietyResidentService,
   getResidentBySocietyIdService,
   getUserByIdService,
-  getAllUserDataService,getAllApprovedUserDataService,getAllDeactiveUserDataService,updateUsersForApprovedAndRejectService
+  getAllUserDataService,
+  getAllApprovedUserDataService,
+  getAllDeactiveUserDataService,
+  updateUsersForApprovedAndRejectService,
+  updateModeratorStatusService,
 } from '../services/userService';
 import { useSelector } from 'react-redux';
-
 
 const UserHandler = () => {
   const token = useSelector((state) => state.auth.token);
 
-///const userId = useSelector((state) => state.auth.user?.userId);
-
-  // Create Society Moderator Handler
   const createSocietyModeratorHandler = async (formData) => {
     try {
       const response = await createSocietyModeratorService(formData, token);
       if (response.status === 201) {
-        toast.success("Society Moderator created successfully!");
+        toast.success('Society Moderator created successfully!');
+        return response.data;
       }
     } catch (error) {
-      console.error("Error creating moderator:", error);
-      toast.error(error.response?.data?.message || error.message);
+      console.error('Error creating moderator:', error);
+      toast.error(error.response?.data?.message || 'Moderator creation failed.');
     }
   };
 
-  // Create Society Resident User Handler
-const createSocietyResidentUserHandler = async (societyId, formData) => {
-  try {
-    const response = await createSocietyResidentService(societyId, token, formData);
-    if (response.status === 201) {
-      toast.success("Society Resident created successfully!");
+  const createSocietyResidentUserHandler = async (societyId, formData) => {
+    try {
+      const response = await createSocietyResidentService(societyId, token, formData);
+      if (response.status === 201) {
+        toast.success('Society Resident created successfully!');
+        return response.data;
+      }
+    } catch (error) {
+      console.error('Error creating resident:', error);
+      toast.error(error?.response?.data?.message || 'Resident creation failed.');
     }
-  } catch (error) {
-    console.error("Error creating resident:", error);
-    toast.error(error?.response?.data?.message || "An error occurred. Please try again.");
-  }
-};
+  };
 
+  const getResidentBySocietyIdHandler = async (societyId, { page, pageSize }) => {
+    try {
+      const response = await getResidentBySocietyIdService(societyId, token, { page, pageSize });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching residents:', error);
+      toast.error('Failed to fetch residents.');
+    }
+  };
 
-
-const getResidentBySocietyIdHandler = async (societyId, token, { page, pageSize }) => {
-  try {
-    // Call the service with the appropriate parameters
-    const response = await getResidentBySocietyIdService(societyId, token, { page, pageSize });
-
-    return response.data;  // Return the response data
-  } catch (error) {
-    console.error("Error fetching user data:", error);
-  }
-};
-
-  // Get All User Data Handler
-  const getAllUserDataHandler = async (token) => {
+  const getAllUserDataHandler = async () => {
     try {
       const response = await getAllUserDataService(token);
       return response.data;
     } catch (error) {
-      console.error("Error fetching user data:", error);
+      console.error('Error fetching all user data:', error);
+      toast.error('Failed to fetch all users.');
     }
   };
 
- const getUserByIdHandler = async (id, token) => {
+  const getUserByIdHandler = async (id) => {
     try {
-      const response = await getUserByIdService(id, token);  
-      console.log(response);
+      const response = await getUserByIdService(id, token);
       return response.data;
     } catch (error) {
-      console.error("Error fetching user by ID:", error);
-      return null;
+      console.error('Error fetching user by ID:', error);
+      toast.error('Failed to fetch user.');
     }
   };
 
-// const approveUserHandler = async (userId, unitId) => {
-//   try {
-//     const response = await approveUserService(userId, unitId, token);
-//     if (response.status === 200) {
-//       toast.success("User approved successfully!");
-  
-//     }
-//   } catch (error) {
-//     console.error("Error approving user:", error);
-//     toast.error(error.response?.data?.message || error.message);
-//   }
-// };
+  const getAllApprovedUserDataHandler = async (societyId, filters) => {
+    try {
+      const response = await getAllApprovedUserDataService(societyId, token, filters);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching approved users:', error);
+      toast.error('Failed to fetch approved users.');
+    }
+  };
 
-// const approveUserHandler = async (userId) => {
-//   try {
-//     const response = await approveUserService(userId, token);
-//     if (response.status === 200) {
-//       toast.success("User approved successfully!");
-//     }
-//   } catch (error) {
-//     console.error("Error details:", error.response?.data || error.message);
-//     toast.error(error.response?.data?.message || error.message);
-//   }
-// };
+  const getAllDeactiveUserDataHandler = async (societyId, { page, pageSize }) => {
+    try {
+      const response = await getAllDeactiveUserDataService(societyId, token, { page, pageSize });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching deactivated users:', error);
+      toast.error('Failed to fetch deactivated users.');
+    }
+  };
 
+  const updateUserForApprovedAndRejectHandler = async (data) => {
+    try {
+      const response = await updateUsersForApprovedAndRejectService(data, token);
+      toast.success('User status updated.');
+      return response.data;
+    } catch (error) {
+      console.error('Error updating user status:', error);
+      toast.error('Failed to update user status.');
+    }
+  };
 
+  const activateModeratorHandler = async (userId) => {
+    try {
+      const payload = { status: 'active' };
+      const res = await updateModeratorStatusService(userId, payload, token);
+      toast.success('Moderator activated successfully');
+      return res.updatedModerator?.status;
+    } catch (error) {
+      console.error('Error activating moderator:', error);
+      toast.error(error?.response?.data?.message || 'Activation failed');
+    }
+  };
 
-//   const rejectUserHandler = async (userId) => {
-//     try {
-//       const response = await rejectUserService(userId, token);
-//       if (response.status === 200) {
-//         toast.success("User rejected successfully!");
-//       }
-//     } catch (error) {
-//       console.error("Error rejecting user:", error);
-//       toast.error(error.response?.data?.message || error.message);
-//     }
-//   };
-
-  // Get All User Data Handler
-  // const getAllApprovedUserDataHandler = async (token) => {
-  //   try {
-  //     const response = await getAllApprovedUserDataService(token);
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error("Error fetching user data:", error);
-  //   }
-  // };
-//  const getAllApprovedUserDataHandler = async (data) => {
-//     console.log("visitor list table", data);
-//     return await getAllApprovedUserDataService({ ...data, userId }, token)
-//       .then((res) => {
-//         return res;
-//       })
-//       .catch((err) => {
-//         console.log(err);
-//       });
-//   };
-
-const getAllApprovedUserDataHandler = async (societyId, token, data) => {
-  try {
-    const response = await getAllApprovedUserDataService(societyId, token, data);
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching approved user data:", error);
-    return null;
-  }
-};
-
-const getAllDeactiveUserDataHandler = async (societyId, token, { page, pageSize }) => {
-  try {
-    const response = await getAllDeactiveUserDataService(societyId, token, { page, pageSize });
-    return response.data; // Return the response data
-  } catch (error) {
-    console.error("Error fetching deactivate user data:", error);
-    return null;
-  }
-};
-
-const updateUserForApprovedAndRejectHandler= async (data) => {
-  console.log("update user handler", data);
-
-  return await updateUsersForApprovedAndRejectService(data, token)
-    .then((res) => {
-      return res;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-};
+  const inactivateModeratorHandler = async (userId) => {
+    try {
+      const payload = { status: 'inactive' };
+      const res = await updateModeratorStatusService(userId, payload, token);
+      toast.success('Moderator inactivated successfully');
+      return res.updatedModerator?.status;
+    } catch (error) {
+      console.error('Error inactivating moderator:', error);
+      toast.error(error?.response?.data?.message || 'Inactivation failed');
+    }
+  };
 
   return {
     createSocietyModeratorHandler,
@@ -171,10 +133,11 @@ const updateUserForApprovedAndRejectHandler= async (data) => {
     getResidentBySocietyIdHandler,
     getUserByIdHandler,
     getAllUserDataHandler,
-
     getAllApprovedUserDataHandler,
     getAllDeactiveUserDataHandler,
-    updateUserForApprovedAndRejectHandler
+    updateUserForApprovedAndRejectHandler,
+    activateModeratorHandler,
+    inactivateModeratorHandler,
   };
 };
 
