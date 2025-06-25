@@ -1,4 +1,4 @@
-import { React, useState, useEffect, useRef } from "react";
+import { React, useState, useEffect, useRef, useMemo } from "react";
 import { IoIosNotifications } from "react-icons/io";
 import { IoChatbubble } from "react-icons/io5";
 import Logo from "../../assets/logo/logo.png";
@@ -13,6 +13,7 @@ const Header = () => {
   const dropdownRef = useRef(null);
 
   const user = useSelector((state) => state.auth.user);
+
   const { logoutHandler } = AuthHandler();
   const { getCustomerHandler } = CustomerHandler();
 
@@ -57,11 +58,9 @@ const Header = () => {
     };
   }, []);
 
+  // const ViewProfileDetails=async () => {
 
-  
-// const ViewProfileDetails=async () => {
-  
-// };
+  // };
 
   return (
     <div>
@@ -92,8 +91,8 @@ const Header = () => {
           {isopen && (
             <div className="absolute w-48 mt-1 bg-white rounded-md shadow-lg top-full ring-1 ring-black ring-opacity-5">
               <div className="py-1">
-                <span className="block px-4 py-2 text-base text-gray-700 hover:bg-gray-200" >
-                {/* onClick={ViewProfileDetails} */}
+                <span className="block px-4 py-2 text-base text-gray-700 hover:bg-gray-200">
+                  {/* onClick={ViewProfileDetails} */}
                   Profile
                 </span>
                 <span className="block px-4 py-2 text-base text-gray-700 hover:bg-gray-200">
