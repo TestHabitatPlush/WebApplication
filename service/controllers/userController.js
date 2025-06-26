@@ -257,69 +257,186 @@ const updateSocietyStatus = async (req, res) => {
 };
 
 
+// const createSocietyResident = async (req, res) => {
+//   upload.fields([{name:"photo"}])( req,res,async(err) =>{
+//     if(err){
+//       return res.status(400).json({
+//         message:"file upload error",error: err.message
+//       })
+//     };
+//   })
+//   try {
+//     const { address, email, salutation, firstName, lastName, mobileNumber, alternateNumber, roleId, unitId } = req.body;
+//     const { societyId } = req.params;
+
+//     if (!societyId) {
+//       return res.status(400).json({ message: "Society ID is required in the URL" });
+//     }
+
+//     const existingUser = await User.findOne({ where: { email } });
+//     if (existingUser) {
+//       return res.status(400).json({ message: "Email already in use" });
+//     }
+
+//     const addressData = await addressService.createAddress(address);
+//     const addressId = addressData.addressId;
+
+//     const password = "Himansu";
+
+//     let unit = null;
+//     if (unitId) {
+//       unit = await Unit.findByPk(unitId);
+//       if (!unit) {
+//         return res.status(400).json({ message: "Invalid unit ID" });
+//       }
+//     }
+
+//     const role = await Role.findByPk(roleId);
+//     if (!role) {
+//       return res.status(400).json({ message: "Invalid role ID" });
+//     }
+//     const photoPath= req.files?.photo?.[0]?.path || null;
+//     const managementDesignation = role.roleName;
+//     const residentDetails = {
+//       salutation,
+//       firstName,
+//       lastName,
+//       password,
+//       countryCode: address.countryCode || 91,
+//       mobileNumber,
+//       alternateNumber,
+//       email,
+//       roleId,
+//       photo:photoPath,
+//       livesHere: true,
+//       primaryContact: true,
+//       isManagementCommittee: false,
+//       managementDesignation,
+//       status: "pending",
+//       addressId,
+//       societyId,
+//       unitId: unit ? unit.unitId : null,
+//     };
+
+//     const result = await User.create(residentDetails);
+
+//     res.status(201).json({
+//       message: "Society Resident created successfully",
+//       result,
+//     });
+//   } catch (error) {
+//     console.error("Error creating society resident:", error);
+//     res.status(500).json({ error: error.message });
+//   }
+// };
 const createSocietyResident = async (req, res) => {
-  try {
-    const { address, email, salutation, firstName, lastName, mobileNumber, alternateNumber, roleId, unitId } = req.body;
-    const { societyId } = req.params;
-
-    if (!societyId) {
-      return res.status(400).json({ message: "Society ID is required in the URL" });
+  upload.fields([{ name: "photo" }])(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({ message: "File upload error", error: err.message });
     }
 
-    const existingUser = await User.findOne({ where: { email } });
-    if (existingUser) {
-      return res.status(400).json({ message: "Email already in use" });
-    }
+    try {
+      let {
+        address,
+        email,
+        salutation,
+        firstName,
+        lastName,
+        mobileNumber,
+        alternateNumber,
+        roleId,
+        unitId
+      } = req.body;
 
-    const addressData = await addressService.createAddress(address);
-    const addressId = addressData.addressId;
+      const { societyId } = req.params;
 
-    const password = "Himansu";
-
-    let unit = null;
-    if (unitId) {
-      unit = await Unit.findByPk(unitId);
-      if (!unit) {
-        return res.status(400).json({ message: "Invalid unit ID" });
+      if (!societyId) {
+        return res.status(400).json({ message: "Society ID is required in the URL" });
       }
+
+      // Parse address if it's a JSON string
+      if (typeof address === "string") {
+        try {
+          address = JSON.parse(address);
+        } catch (e) {
+          return res.status(400).json({ message: "Invalid address format" });
+        }
+      }
+
+      // Address validation
+      if (!address?.city || !address?.state || !address?.zipCode) {
+        return res.status(400).json({
+          message: "Address must include city, state, and zipCode",
+        });
+      }
+
+      // Email validation
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+
+      const existingUser = await User.findOne({ where: { email } });
+      if (existingUser) {
+        return res.status(400).json({ message: "Email already in use" });
+      }
+
+      // Create address
+      const addressData = await addressService.createAddress(address);
+      const addressId = addressData.addressId;
+
+      // Set default password
+      const password = "Himansu";
+
+      // Validate unit (if provided)
+      let unit = null;
+      if (unitId) {
+        unit = await Unit.findByPk(unitId);
+        if (!unit) {
+          return res.status(400).json({ message: "Invalid unit ID" });
+        }
+      }
+
+      // Validate role
+      const role = await Role.findByPk(roleId);
+      if (!role) {
+        return res.status(400).json({ message: "Invalid role ID" });
+      }
+
+      const photoPath = req.files?.photo?.[0]?.path || null;
+      const managementDesignation = role.roleName;
+
+      const residentDetails = {
+        salutation,
+        firstName,
+        lastName,
+        password,
+        countryCode: address.countryCode || 91,
+        mobileNumber,
+        alternateNumber,
+        email,
+        roleId,
+        photo: photoPath,
+        livesHere: true,
+        primaryContact: true,
+        isManagementCommittee: false,
+        managementDesignation,
+        status: "pending",
+        addressId,
+        societyId,
+        unitId: unit ? unit.unitId : null,
+      };
+
+      const result = await User.create(residentDetails);
+
+      res.status(201).json({
+        message: "Society Resident created successfully",
+        result,
+      });
+    } catch (error) {
+      console.error("Error creating society resident:", error);
+      res.status(500).json({ error: error.message });
     }
-
-    const role = await Role.findByPk(roleId);
-    if (!role) {
-      return res.status(400).json({ message: "Invalid role ID" });
-    }
-
-    const managementDesignation = role.roleName;
-    const residentDetails = {
-      salutation,
-      firstName,
-      lastName,
-      password,
-      countryCode: address.countryCode || 91,
-      mobileNumber,
-      alternateNumber,
-      email,
-      roleId,
-      livesHere: true,
-      primaryContact: true,
-      isManagementCommittee: false,
-      managementDesignation,
-      status: "pending",
-      addressId,
-      societyId,
-      unitId: unit ? unit.unitId : null,
-    };
-
-    const result = await User.create(residentDetails);
-
-    res.status(201).json({
-      message: "Society Resident created successfully",
-      result,
-    });
-  } catch (error) {
-    console.error("Error creating society resident:", error);
-    res.status(500).json({ error: error.message });
-  }
+  });
 };
 
 //BulkCreateResidents
@@ -472,48 +589,110 @@ const getResidentBySocietyId = async (req, res) => {
   }
 };
 
+// const updateResidentBySocietyId = async (req, res) => {
+//   upload.fields([{ name: "photo" }])(req, res, async (err) => {
+//     if(err){
+//       return res.status(400).json({ message: "File upload error", error: err.messag});
+//     }
+//   try {
+//     const { societyId } = req.params;
+//     const { userId, salutation, firstName, lastName, mobileNumber, alternateNumber, roleId, unitId, status } = req.body;
+
+//     if (!societyId) {
+//       return res.status(400).json({ message: "Society ID is required in the URL" });
+//     }
+//     if (!userId) {
+//       return res.status(400).json({ message: "User ID is required in the request body" });
+//     }
+
+//     const resident = await User.findOne({ where: { userId, societyId, isManagementCommittee: false } });
+
+//     if (!resident) {
+//       return res.status(404).json({ message: "Resident not found in the given society" });
+//     }
+
+//     let unit = null;
+//     if (unitId) {
+//       unit = await Unit.findByPk(unitId);
+//       if (!unit) {
+//         return res.status(400).json({ message: "Invalid unit ID" });
+//       }
+//     }
+
+//     const photoPath = req.files?.photo?.[0]?.path|| resident.photo;
+
+//     await resident.update({
+//       salutation,
+//       firstName,
+//       lastName,
+//       mobileNumber,
+//       photo:photoPath,
+//       alternateNumber,
+//       roleId,
+//       status,
+//       unitId: unit ? unit.unitId : resident.unitId,
+//     });
+
+//     res.status(200).json({ message: "Resident updated successfully", resident });
+//   } catch (error) {
+//     console.error("Error updating resident:", error);
+//     res.status(500).json({ error: error.message });
+//   }
+// })
+// };
+
 const updateResidentBySocietyId = async (req, res) => {
-  try {
-    const { societyId } = req.params;
-    const { userId, salutation, firstName, lastName, mobileNumber, alternateNumber, roleId, unitId, status } = req.body;
-
-    if (!societyId) {
-      return res.status(400).json({ message: "Society ID is required in the URL" });
-    }
-    if (!userId) {
-      return res.status(400).json({ message: "User ID is required in the request body" });
+  upload.fields([{ name: "photo" }])(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({ message: "File upload error", error: err.message });
     }
 
-    const resident = await User.findOne({ where: { userId, societyId, isManagementCommittee: false } });
+    try {
+      const { societyId } = req.params;
+      const { userId, salutation, firstName, lastName, mobileNumber, alternateNumber, roleId, unitId, status } = req.body;
 
-    if (!resident) {
-      return res.status(404).json({ message: "Resident not found in the given society" });
-    }
-
-    let unit = null;
-    if (unitId) {
-      unit = await Unit.findByPk(unitId);
-      if (!unit) {
-        return res.status(400).json({ message: "Invalid unit ID" });
+      if (!societyId) {
+        return res.status(400).json({ message: "Society ID is required in the URL" });
       }
+
+      if (!userId) {
+        return res.status(400).json({ message: "User ID is required in the request body" });
+      }
+
+      const resident = await User.findOne({ where: { userId, societyId, isManagementCommittee: false } });
+
+      if (!resident) {
+        return res.status(404).json({ message: "Resident not found in the given society" });
+      }
+
+      let unit = null;
+      if (unitId) {
+        unit = await Unit.findByPk(unitId);
+        if (!unit) {
+          return res.status(400).json({ message: "Invalid unit ID" });
+        }
+      }
+
+      const photoPath = req.files?.photo?.[0]?.path || resident.photo;
+
+      await resident.update({
+        salutation,
+        firstName,
+        lastName,
+        mobileNumber,
+        photo: photoPath,
+        alternateNumber,
+        roleId,
+        status,
+        unitId: unit ? unit.unitId : resident.unitId,
+      });
+
+      res.status(200).json({ message: "Resident updated successfully", resident });
+    } catch (error) {
+      console.error("Error updating resident:", error);
+      res.status(500).json({ error: error.message });
     }
-
-    await resident.update({
-      salutation,
-      firstName,
-      lastName,
-      mobileNumber,
-      alternateNumber,
-      roleId,
-      status,
-      unitId: unit ? unit.unitId : resident.unitId,
-    });
-
-    res.status(200).json({ message: "Resident updated successfully", resident });
-  } catch (error) {
-    console.error("Error updating resident:", error);
-    res.status(500).json({ error: error.message });
-  }
+  });
 };
 
 
@@ -716,9 +895,9 @@ module.exports = {
   updateSocietyModerator,
   updateSocietyStatus,
   createSocietyResident,
+  updateResidentBySocietyId,
   bulkCreateResidents,
   getResidentBySocietyId,
-  updateResidentBySocietyId,
   //getSocietyModerator,
   getManagement_committee,
   getAllApprovedUsers,
