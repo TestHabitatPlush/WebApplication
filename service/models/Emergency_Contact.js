@@ -85,4 +85,9 @@ const Emergency_Contact = sequelize.define(
   }
 );
 
+
+Emergency_Contact.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
+Emergency_Contact.belongsTo(Role, { foreignKey: 'roleId', as: 'role' });
+
 module.exports = Emergency_Contact;

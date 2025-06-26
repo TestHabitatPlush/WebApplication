@@ -51,11 +51,13 @@ router.post("/society/:societyId/:userId", emergencyContactController.createEmer
 router.get("/society/:societyId/:userId", emergencyContactController.getEmergencyContactsBySocietyId);
 
 // Resident creates emergency contact
-router.post("/resident/:userId", emergencyContactController.createEmergencyContactByResident);
-router.get("/resident/:userId", emergencyContactController.getEmergencyContactsByResident);
+// router.post("/resident/:userId", emergencyContactController.createEmergencyContactByResident);
+// router.get("/resident/:userId", emergencyContactController.getEmergencyContactsByResident);
 
 // COMMON ROUTES
 router.put("/:contactId", emergencyContactController.updateEmergencyContacts);
 router.delete("/:contactId", emergencyContactController.deleteEmergencyContacts);
+
+
 
 module.exports = router;
