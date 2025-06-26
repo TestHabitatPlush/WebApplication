@@ -7,6 +7,8 @@ documentRouter.post("/user/:userId", documentController.createDocumentByUserId);
 
 documentRouter.get("/society/:societyId", documentController.getDocumentBySocietyId);
 documentRouter.get("/user/:userId", documentController.getDocumentByUserId);
+documentRouter.get("/:documentId", documentController.getDocumentById);
+
 
 documentRouter.put("/society/:documentId",documentController.updateDocumentBySocietyId);
 documentRouter.put("/user/:documentId",documentController.updateDocumentByUserId);

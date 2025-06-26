@@ -39,6 +39,7 @@ const floorRouter = require("./routes/floorRoutes");
 const facilityManagement = require("./routes/facilityManagementRoutes");
 const unitTypeRouter = require("./routes/unitTypeRoutes");
 const gateRouter = require("./routes/gateRouter"); // Corrected variable name
+const emergencyContactRouter = require("./routes/emergency_contact_Routes");
 const {
   User,
   Customer,
@@ -154,6 +155,10 @@ app.use("/api", passwordReset);
 
 // documentReset
 app.use("/api/document", documentRouter);
+
+// Emergency Contact
+
+app.use("/api/emergencyContact", emergencyContactRouter);
 
 // discussionForum
 app.use("/api/discussionForum",discussionRouter);

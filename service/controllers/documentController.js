@@ -175,12 +175,25 @@ const deleteDocument = async (req, res) => {
         return res.status(500).json({ message: "Failed to delete document", error: err.message });
     }
 }
+// Get Document by Document ID
+const getDocumentById = async (req, res) => {
+    try {
+        const { documentId } = req.params;
+        const document = await Document.findOne({ where: { documentId } });
+
+        if (!document) return res.status(404).json({ message: "Document not found" });
+
+        return res.status(200).json({ message: "Document fetched successfully", data: { document } });
+    } catch (err) {
+        return res.status(500).json({ message: "Failed to fetch document by ID", error: err.message });
+    }
+};
 
 module.exports = {
     createDocumentBySocietyId, createDocumentByUserId,
     getDocumentBySocietyId, getDocumentByUserId,
     updateDocumentBySocietyId, updateDocumentByUserId,
-    deleteDocument
+    deleteDocument,getDocumentById
 };
 
 

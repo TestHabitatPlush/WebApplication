@@ -8,9 +8,13 @@ discussionRouter.post("/user/:userId",discussionController.createDiscussionByUse
 discussionRouter.get("/society/:societyId",discussionController.getDiscussionBySocietyId);
 discussionRouter.get("/user/:userId",discussionController.getDiscussionByUserId);
 
+discussionRouter.get("/:discussionId",discussionController.getDiscussionById);
+
 discussionRouter.put("/society/:discussionId",discussionController.updateDiscussionBySocietyId);
 discussionRouter.put("/user/:discussionId",discussionController.updateDiscussionByUserId);
 
 discussionRouter.delete("/:discussionId",discussionController.deleteDiscussion);
+
+
 
 module.exports = discussionRouter;

@@ -282,7 +282,7 @@ const User = sequelize.define(
     status: {
       type: DataTypes.ENUM("active", "inactive","pending"),
       allowNull: false,
-      defaultValue: "active",
+      defaultValue: "pending",
     },
     isDeleted: {
       type: DataTypes.BOOLEAN,

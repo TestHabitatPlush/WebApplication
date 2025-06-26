@@ -1,8 +1,8 @@
-
 import axios from "axios";
 
+
 export const createDocumentBySocietyService = (formData, societyId, token) => {
-  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/documents/society/${societyId}`;
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/document/society/${societyId}`;
   return axios.post(url, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -10,9 +10,10 @@ export const createDocumentBySocietyService = (formData, societyId, token) => {
     },
   });
 };
+
 
 export const createDocumentByUserService = (formData, userId, token) => {
-  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/documents/user/${userId}`;
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/document/user/${userId}`;
   return axios.post(url, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -21,8 +22,9 @@ export const createDocumentByUserService = (formData, userId, token) => {
   });
 };
 
+
 export const getDocumentBySocietyService = (societyId, token) => {
-  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/documents/society/${societyId}`;
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/document/society/${societyId}`;
   return axios.get(url, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -31,7 +33,7 @@ export const getDocumentBySocietyService = (societyId, token) => {
 };
 
 export const getDocumentByUserService = (userId, token) => {
-  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/documents/user/${userId}`;
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/document/user/${userId}`;
   return axios.get(url, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -39,8 +41,9 @@ export const getDocumentByUserService = (userId, token) => {
   });
 };
 
+
 export const updateDocumentBySocietyService = (formData, documentId, token) => {
-  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/documents/society/${documentId}`;
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/document/society/${documentId}`;
   return axios.put(url, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -50,7 +53,7 @@ export const updateDocumentBySocietyService = (formData, documentId, token) => {
 };
 
 export const updateDocumentByUserService = (formData, documentId, token) => {
-  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/documents/user/${documentId}`;
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/document/user/${documentId}`;
   return axios.put(url, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -59,8 +62,9 @@ export const updateDocumentByUserService = (formData, documentId, token) => {
   });
 };
 
+
 export const deleteDocumentService = (documentId, token) => {
-  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/documents/${documentId}`;
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/document/${documentId}`;
   return axios.delete(url, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -70,8 +74,7 @@ export const deleteDocumentService = (documentId, token) => {
 
 
 export const getDocumentByIdService = (documentId, token) => {
-  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/documents/${documentId}`;
-
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/document/${documentId}`;
   return axios.get(url, {
     headers: {
       Authorization: `Bearer ${token}`,
