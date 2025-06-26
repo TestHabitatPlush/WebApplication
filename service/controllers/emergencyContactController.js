@@ -1,6 +1,9 @@
 const EmergencyContact = require("../models/EmergencyContact");
 const {User, Role}=require("../models");
+<<<<<<< HEAD
 const {Op}=require("sequelize");
+=======
+>>>>>>> 1b600f60a0553fb6d17f5061ff37aacd30049d47
 
 const { sendSuccessResponse, sendErrorResponse } = require("../utils/response");
 
@@ -149,7 +152,10 @@ const createEmergencyContactBySocietyId = async (req, res) => {
     }
 
     const contact = await EmergencyContact.create({
+<<<<<<< HEAD
       userId: user.userId,
+=======
+>>>>>>> 1b600f60a0553fb6d17f5061ff37aacd30049d47
       roleId: user.roleId,
       roleCategories: [role.roleCategory],
       societyId,
@@ -171,6 +177,7 @@ const createEmergencyContactBySocietyId = async (req, res) => {
 };
 
 // Society-based contact retrieval
+<<<<<<< HEAD
 // const getEmergencyContactsBySocietyId = async (req, res) => {
 //   try {
 //     const { societyId, userId } = req.params;
@@ -230,6 +237,8 @@ const createEmergencyContactBySocietyId = async (req, res) => {
 //     return sendErrorResponse(res, "Internal Server Error", 500, error.message);
 //   }
 // };
+=======
+>>>>>>> 1b600f60a0553fb6d17f5061ff37aacd30049d47
 const getEmergencyContactsBySocietyId = async (req, res) => {
   try {
     const { societyId, userId } = req.params;
@@ -244,7 +253,11 @@ const getEmergencyContactsBySocietyId = async (req, res) => {
     const role = await Role.findByPk(user.roleId);
     if (!role) return sendErrorResponse(res, "User role not found", 404);
 
+<<<<<<< HEAD
     const allowedRoles = [
+=======
+    const allowedRoles = [  
+>>>>>>> 1b600f60a0553fb6d17f5061ff37aacd30049d47
       "super_admin",
       "super_admin_it",
       "society_moderator",
@@ -266,6 +279,7 @@ const getEmergencyContactsBySocietyId = async (req, res) => {
       );
     }
 
+<<<<<<< HEAD
     const contacts = await EmergencyContact.findAll({
       include: [
         {
@@ -282,6 +296,21 @@ const getEmergencyContactsBySocietyId = async (req, res) => {
       ],
     });
 
+=======
+  if (user.societyId && user.societyId.toString() !== societyId.toString()) {
+  return sendErrorResponse(res, "Unauthorized society access", 403);
+}
+
+
+    const contacts = await EmergencyContact.findAll({
+      where: { userId },
+    });
+
+  if (contacts.length === 0) {
+      return sendSuccessResponse(res, "No emergency contacts found", [], 200);
+    }
+
+>>>>>>> 1b600f60a0553fb6d17f5061ff37aacd30049d47
     return sendSuccessResponse(
       res,
       "Society emergency contacts retrieved",

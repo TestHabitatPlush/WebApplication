@@ -420,7 +420,11 @@ const SideBarMenu = {
         {
           name: "Create Society User",
           url: "society/createuser",
-        },
+        },{
+            name: "User List", 
+            url: "society/user",
+          }
+
       ],
     },
     {

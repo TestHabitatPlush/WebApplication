@@ -63,6 +63,7 @@ export const updateDocumentByUserService = (formData, documentId, token) => {
 };
 
 
+
 export const deleteDocumentService = (documentId, token) => {
   const url = `${process.env.REACT_APP_PUBLIC_API_URL}/document/${documentId}`;
   return axios.delete(url, {
@@ -74,6 +75,7 @@ export const deleteDocumentService = (documentId, token) => {
 
 
 export const getDocumentByIdService = (documentId, token) => {
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/document/${documentId}`;
   const url = `${process.env.REACT_APP_PUBLIC_API_URL}/document/${documentId}`;
   return axios.get(url, {
     headers: {

@@ -25,6 +25,7 @@ const CustomerHandler = () => {
       "address.zipCode",
       "address.street",
       "address.address1",
+      "status"
     ];
 
     const missingFields = requiredFields.filter((field) => {
@@ -84,6 +85,20 @@ const CustomerHandler = () => {
         toast.error(err.message);
       });
   };
+ 
+  const updateCustomerStatusHandler = async (id, status, token) => {
+  try {
+    const response = await updateCustomerStatusService(id, status, token);
+    
+    // ✅ Fix: Check response.data not response.updatedCustomer
+    toast.success("Status updated successfully.");
+    return response.data.status; // correct
+  } catch (err) {
+    console.error("Update updateCustomerStatusHandlerstatus error:", err);
+    toast.error(err?.response?.data?.error || "Update failed");
+    return null;
+  }
+};
 
 const updateCustomerStatusHandler = async (id, status, token) => {
   try {

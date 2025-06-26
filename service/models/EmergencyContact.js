@@ -86,6 +86,10 @@ const EmergencyContact = sequelize.define(
     timestamps: true,
   }
 );
+<<<<<<< HEAD
 EmergencyContact.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+=======
+
+>>>>>>> 1b600f60a0553fb6d17f5061ff37aacd30049d47
 module.exports = EmergencyContact;
 

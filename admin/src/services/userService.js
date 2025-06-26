@@ -109,6 +109,7 @@ export const updateUsersForApprovedAndRejectService = (data, token) => {
 };
 
 
+<<<<<<< HEAD
 export const updateModeratorStatusService = async ( data, token) => {
   const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/moderators/${data.id}`;
   return axios.put(url, data, {
@@ -117,4 +118,15 @@ export const updateModeratorStatusService = async ( data, token) => {
       "Content-Type": "application/json",
     },
   });
+=======
+export const updateModeratorStatusService = async (id, payload, token) => {
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/moderators/${id}`;
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+
+  const response = await axios.put(url, payload, { headers });
+  return response.data;
+>>>>>>> 1b600f60a0553fb6d17f5061ff37aacd30049d47
 };

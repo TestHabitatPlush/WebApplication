@@ -14,8 +14,6 @@ import {
 const DocumentHandler = () => {
   const token = useSelector((state) => state.auth.token);
   const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
-  console.log("societyId hdevk", useSelector((state) => state.auth.user?.Customer?.customerId));
-
   const userId = useSelector((state) => state.auth.user?.userId);
 
 
@@ -23,8 +21,10 @@ const DocumentHandler = () => {
   const buildFormData = (data) => {
     const formData = new FormData();
     if (data.documentName) formData.append("documentName", data.documentName);
-    if (data.userGroupId) formData.append("userGroupId", data.userGroupId);
+    if (data.visibilityOption) formData.append("visibilityOption", data.visibilityOption);
+    if (data.societyId) formData.append("societyId", data.societyId);
     if (data.document) formData.append("document", data.document);
+    // if (data.picture) formData.append("picture", data.picture);
     return formData;
   };
 
@@ -32,7 +32,7 @@ const DocumentHandler = () => {
   const createDocumentBySocietyHandler = async (data) => {
     try {
       const formData = buildFormData(data);
-      const res = await createDocumentBySocietyService(formData, societyId, token);
+      const res = await createDocumentBySocietyService(formData, societyId, userId, token);
 
       if (res.status === 201) {
         toast.success("Document created for society.");
@@ -47,11 +47,8 @@ const DocumentHandler = () => {
 
   const getDocumentBySocietyHandler = async () => {
     try {
-      const res = await getDocumentBySocietyService(societyId, token);
-
-      if (res.status === 200) {
-        return res.data;
-      }
+      const res = await getDocumentBySocietyService(societyId, userId, token);
+      if (res.status === 200) return res.data;
     } catch (err) {
       toast.error("Failed to fetch society documents.");
       console.error(err);
@@ -78,10 +75,7 @@ const DocumentHandler = () => {
   const getDocumentByUserHandler = async () => {
     try {
       const res = await getDocumentByUserService(userId, token);
-
-      if (res.status === 200) {
-        return res.data;
-      }
+      if (res.status === 200) return res.data;
     } catch (err) {
       toast.error("Failed to fetch user documents.");
       console.error(err);

@@ -1,5 +1,4 @@
-
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import ReusableTable from "../../../../components/shared/ReusableTable";
 import {
@@ -12,64 +11,32 @@ import {
   setCustomerId,
   setFormOperationType,
 } from "../../../../redux/slices/customerSlice";
-import Button from "../../../../components/ui/Button";
-import Dialog from "../../../../components/ui/Dialog";
 import ViewSocietyDetailsModal from "../view_society/components/ViewSocietyDetailsModal";
+import Dialog from "../../../../components/ui/Dialog";
+import Button from "../../../../components/ui/Button";
 import CustomerHandler from "../../../../handlers/superadmin/CustomerHandler";
-
-<<<<<<< HEAD
 
 const ActionData = ({ data, openModal, refreshList }) => {
   const dispatch = useDispatch();
   const { updateCustomerStatusHandler } = CustomerHandler();
-  const token = useSelector((state) => state.auth.token);
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleActivateClick = async () => {
     setIsLoading(true);
-    const newStatus = await updateCustomerStatusHandler(data.customerId, "active", token);
-    if (newStatus === "active") {
-      refreshList();
-    }
+    const newStatus = await updateCustomerStatusHandler(data.customerId, "active");
+    if (newStatus === "active") refreshList();
     setIsLoading(false);
   };
 
   const confirmInactivate = async () => {
     setIsLoading(true);
-    const newStatus = await updateCustomerStatusHandler(data.customerId, "inactive", token);
-    if (newStatus === "inactive") {
-      refreshList();
-    }
+    const newStatus = await updateCustomerStatusHandler(data.customerId, "inactive");
+    if (newStatus === "inactive") refreshList();
     setShowConfirmModal(false);
     setIsLoading(false);
-=======
-import Button from "../../../../components/ui/Button";
-import Dialog from "../../../../components/ui/Dialog";
-import UserHandler from "../../../../handlers/UserHandler";
-
-// ✅ ActionData component
-const ActionData = ({ data, openModal, refreshList }) => {
-  const dispatch = useDispatch();
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const { activateModeratorHandler, inactivateModeratorHandler } = UserHandler();
-const token = useSelector((state) => state.auth.token); 
-
-  const handleActivateClick = async () => {
-   const newStatus = await activateModeratorHandler(data.customerId, token); 
-    if (newStatus) refreshList(); // ✅ refetch data from backend
   };
-
-  const confirmInactivate = async () => {
-    const newStatus = await inactivateModeratorHandler(data.customerId,token);
-    if (newStatus) refreshList(); // ✅ refetch data from backend
-    setShowConfirmModal(false);
->>>>>>> 1b600f60a0553fb6d17f5061ff37aacd30049d47
-  };
-
-  const openInactivateModal = () => setShowConfirmModal(true);
-  const closeInactivateModal = () => setShowConfirmModal(false);
 
   return (
     <div className="flex gap-2">
@@ -98,21 +65,14 @@ const token = useSelector((state) => state.auth.token);
       {data.status !== "active" && (
         <Button
           onClick={handleActivateClick}
-<<<<<<< HEAD
           className="px-2 py-1 text-xs text-white bg-green-600 rounded hover:bg-green-700"
           disabled={isLoading}
         >
           Activate
-=======
-          className="px-2 py-1 text-xs text-white bg-green-600 rounded hover:bg-green-700 w-fit"
-        >
-          Active
->>>>>>> 1b600f60a0553fb6d17f5061ff37aacd30049d47
         </Button>
       )}
 
       {data.status === "active" && (
-<<<<<<< HEAD
         <>
           <Button
             onClick={() => setShowConfirmModal(true)}
@@ -125,7 +85,7 @@ const token = useSelector((state) => state.auth.token);
           <Dialog isOpen={showConfirmModal} onClose={() => setShowConfirmModal(false)}>
             <div className="p-4 bg-white">
               <h2 className="mb-2 text-lg font-bold">Confirm Inactivation</h2>
-              <p>Are you sure you want to inactivate this customer?</p>
+              <p>Are you sure you want to inactivate this moderator?</p>
               <div className="flex justify-end gap-2 mt-4">
                 <Button
                   className="bg-gray-400 hover:bg-gray-500"
@@ -144,65 +104,25 @@ const token = useSelector((state) => state.auth.token);
           </Dialog>
         </>
       )}
-=======
-        <Button
-          onClick={openInactivateModal}
-          className="px-2 py-1 text-xs text-white bg-red-600 rounded hover:bg-red-700 w-fit"
-        >
-          Inactive
-        </Button>
-      )}
-
-      {/* Confirmation Modal */}
-      <Dialog isOpen={showConfirmModal} onClose={closeInactivateModal}>
-        <div className="p-4 bg-white">
-          <h2 className="mb-2 text-lg font-bold">Confirm Inactivation</h2>
-          <p>Are you sure you want to inactivate this moderator?</p>
-          <div className="flex justify-end gap-2 mt-4">
-            <Button className="bg-gray-400 hover:bg-gray-500" onClick={closeInactivateModal}>
-              Cancel
-            </Button>
-            <Button className="bg-red-600 hover:bg-red-700" onClick={confirmInactivate}>
-              Confirm
-            </Button>
-          </div>
-        </div>
-      </Dialog>
->>>>>>> 1b600f60a0553fb6d17f5061ff37aacd30049d47
     </div>
   );
 };
 
-// ✅ SocietyList component
-const SocietyList = () => {
+const UserList = () => {
   const dispatch = useDispatch();
   const { getCustomerHandler } = CustomerHandler();
-<<<<<<< HEAD
-  const {
-    data,
-    page,
-    pageSize,
-    total,
-    totalPages,
-    columns,
-    status,
-    filters,
-  } = useSelector((state) => state.society);
-
-  const [tableData, setTableData] = useState([]);
-=======
   const { data, page, pageSize, total, totalPages, columns, status, filters } =
     useSelector((state) => state.society);
->>>>>>> 1b600f60a0553fb6d17f5061ff37aacd30049d47
   const [viewModal, setViewModal] = useState(false);
 
   const openModal = () => setViewModal(true);
+
   const closeModal = () => {
     setViewModal(false);
     dispatch(resetCustomerFormOperationType());
   };
 
-  const fetchUserList = useCallback(async () => {
+  const fetchUserList = async () => {
     try {
       const result = await getCustomerHandler({
         page,
@@ -210,19 +130,6 @@ const SocietyList = () => {
         ...filters,
       });
 
-<<<<<<< HEAD
-      if (!result?.data?.data) {
-        console.error("Invalid response shape:", result);
-        return;
-      }
-
-      const rawData = result.data.data;
-
-      const transformed = rawData.map((item) => ({
-        ...item,
-        actions: null, // avoid storing components in Redux
-      }));
-=======
       const transformedData = {
         data: result.data.data.map((item) => ({
           customerId: item.customerId,
@@ -237,62 +144,36 @@ const SocietyList = () => {
             <ActionData
               data={item}
               openModal={openModal}
-              refreshList={fetchSocietiesData} 
+              refreshList={fetchUserList}
             />
           ),
         })),
         total: result.data.total,
         totalPages: result.data.totalPages,
       };
->>>>>>> 1b600f60a0553fb6d17f5061ff37aacd30049d47
 
       dispatch({
         type: "society/updateData",
-        payload: {
-          data: transformed,
-          total: result.data.total,
-          totalPages: result.data.totalPages,
-        },
+        payload: transformedData,
       });
-
-      // Assign actions outside Redux
-      const enrichedData = transformed.map((item) => ({
-        ...item,
-        actions: (
-          <ActionData
-            key={`action-${item.customerId}`}
-            data={item}
-            openModal={openModal}
-            refreshList={fetchUserList}
-          />
-        ),
-      }));
-
-      setTableData(enrichedData);
     } catch (error) {
       console.error("Failed to fetch user list:", error);
     }
-  }, [dispatch, getCustomerHandler, page, pageSize, filters]);
+  };
 
   useEffect(() => {
     fetchUserList();
-  }, [fetchUserList]);
+  }, [dispatch, page, pageSize, filters]);
 
-<<<<<<< HEAD
   if (status === "loading") return <div>Loading...</div>;
-=======
-  if (status === "loading") {
-    return <div>Loading...</div>;
-  }
->>>>>>> 1b600f60a0553fb6d17f5061ff37aacd30049d47
 
   return (
     <div>
-      <h1 className="mb-4 text-xl font-bold">User List</h1>
+      <h1>User List</h1>
 
       <ReusableTable
         columns={columns}
-        data={tableData}
+        data={data}
         pageIndex={page}
         pageSize={pageSize}
         totalCount={total}
@@ -308,5 +189,4 @@ const SocietyList = () => {
   );
 };
 
-
-export default SocietyList;
+export default UserList;

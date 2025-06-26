@@ -60,7 +60,11 @@ const getAllCustomers = async (req, res) => {
 
     const whereClause = {};
     if (filters.name)
+<<<<<<< HEAD
       whereClause.customerName = `{ [Op.iLike]: %${filters.name}% }`; // Case-insensitive search
+=======
+      whereClause.customerName = { [Op.iLike]:` %${filters.name}% `}; // Case-insensitive search
+>>>>>>> 1b600f60a0553fb6d17f5061ff37aacd30049d47
     if (filters.type) whereClause.customerType = filters.type;
     if (filters.email) whereClause.email = `{ [Op.iLike]: %${filters.email}% }`;
     if (filters.phone) whereClause.phone = filters.phone;
@@ -181,7 +185,11 @@ const updateCustomerStatus = async (req, res) => {
     // 1. Update customer status
     const [updatedCustomer] = await Customer.update(
       { status },
+<<<<<<< HEAD
       { where: { customerId }, transaction: t }
+=======
+      { where: {id: customerId }, transaction: t }
+>>>>>>> 1b600f60a0553fb6d17f5061ff37aacd30049d47
     );
 
     if (!updatedCustomer) {
