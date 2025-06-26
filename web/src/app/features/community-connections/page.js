@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import Footer from "@/views/Footer/Footer";
+import Footer from "@/views/footer/Footer";
 import Navbar from "@/views/navbar/Navbar";
 import FeatureCard from "@/components/shared/FeatureCard";
 import communityImg from "../../../../assets/images/login-background.jpg";

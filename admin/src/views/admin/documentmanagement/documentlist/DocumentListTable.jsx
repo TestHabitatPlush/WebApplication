@@ -104,10 +104,10 @@ const DocumentListTable = () => {
 const onViewHandler = async (documentId) => {
   try {
     const res = await getDocumentByIdHandler(documentId);
-    const docData = res?.data?.data.document; // Safely extract the first (and expected only) document
+    const docData = res?.data?.document;
 
     if (docData) {
-      setShowViewFormData(docData); // ✅ Pass just the document data to the modal
+      setShowViewFormData(docData);
       setViewModal(true);
     } else {
       console.error("Document not found");
@@ -164,13 +164,15 @@ const onViewHandler = async (documentId) => {
 
   const columns = useMemo(
     () => [
-      {
-        Header: "S.No",
-        Cell: ({ row }) =>
-          documents.length - (pageIndex * pageSize + row.index),
+        {
+        
+          Header: "Sl No.",
+          Cell: ({ row }) => pageIndex * pageSize + row.index + 1,
+          className: "text-center",
 
-        className: "text-center",
+
       },
+
       {
         Header: "Document Name",
         accessor: "documentName",
@@ -230,14 +232,14 @@ const onViewHandler = async (documentId) => {
            
 
             </a> */}
-             <button
-             
-              title="View"
-              className="text-orange-600 hover:text-orange-800"
-            >
-              <FiEye size={18} onClick={() => onViewHandler(row.original.documentId)} />
+           <button
+                onClick={() => onViewHandler(row.original.documentId)} 
+                title="View"
+                className="text-orange-600 hover:text-orange-800"
+              >
+                <FiEye size={18} />
+              </button>
 
-            </button>
              
             <button
               onClick={() => handleDownload(row.original.document)}

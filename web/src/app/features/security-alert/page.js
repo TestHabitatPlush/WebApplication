@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import Footer from "@/views/Footer/Footer";
+import Footer from "@/views/footer/Footer";
 import Navbar from "@/views/navbar/Navbar";
 import FeatureCard from "@/components/shared/FeatureCard";
 import img from "../../../../assets/images/login-background.jpg";

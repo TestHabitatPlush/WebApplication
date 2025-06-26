@@ -22,27 +22,27 @@ const CreateUserForm = () => {
 
   const { getUserRolesHandler } = UserRoleHandler();
 
-  const getUserRoles = async () => {
-    const result = await getUserRolesHandler();
-  
-    if (!result || !result.data) {
-      console.warn("No data received from getUserRolesHandler");
-      return;
-    }
-  
-    const newData = result.data
-      .filter((el) => el.roleCategory === "society_moderator")
-      .map((el) => ({ label: el.roleCategory, value: el.roleId }));
-  
-    dispatch({
-      type: "societyModeratorForm/setUserRoleOptions",
-      payload: newData,
-    });
-  };
-    useEffect(() => {
+ const getUserRoles = async () => {
+  const result = await getUserRolesHandler();
+
+  if (!result || !result.data) {
+    console.warn("No data received from getUserRolesHandler");
+    return;
+  }
+
+  const newData = result.data
+    .filter((el) => el.roleCategory === "society_moderator")
+    .map((el) => ({ label: el.roleCategory, value: el.roleId }));
+
+  dispatch({
+    type: "societyModeratorForm/setUserRoleOptions",
+    payload: newData,
+  });
+};
+
+  useEffect(() => {
     getUserRoles();
   }, []);
-  
 const validateForm = () => {
     const requiredFields = [
       "salutation",

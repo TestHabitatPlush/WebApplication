@@ -97,14 +97,8 @@
 
 // export default MyUnitInfo;
 
-import { FaCar, FaUserTie , FaUsers , FaUserPlus } from "react-icons/fa6";
-import PaymentDueReminder from "./components/payment/PaymentDueReminder";
-import Document from "./components/document/Document";
-import CreatePost from "./components/post/CreatePost";
-import Visitor from "./components/visitor/Visitor";
-import Tenant from "./components/tenant/Tenant";
+import { FaCar, FaUserTie , FaUsers,FaUsersGear } from "react-icons/fa6";
 import { useSelector } from "react-redux";
-import PaymentHistory from "../payments/PaymentHistory";
 
 const Info = () => {
   return (
@@ -117,7 +111,7 @@ const Info = () => {
         </span>
         <div className="">
           <h3 className="text-sm font-semibold md:text-md lg:text-lg">
-            Add Members
+            <a href="/tenant">Add Members</a>
           </h3>
         </div>
       </div>
@@ -130,7 +124,8 @@ const Info = () => {
         </span>
         <div className="">
           <h3 className="text-sm font-semibold md:text-md lg:text-lg">
-          Add Vehicles
+          <a href="/vehicle"> Add Vehicles</a>
+         
           </h3>
         </div>
       </div>
@@ -139,11 +134,11 @@ const Info = () => {
     <div className="bg-blue-100 hover:bg-blue-200 transition-all duration-300 p-5 rounded-xl cursor-pointer hover:scale-[102%] ">
       <div className="flex items-center gap-4">
         <span className="p-2 border rounded-full md:p-3 lg:p-4 border-turquoise">
-          <FaUserPlus className="text-lg md:text-2xl lg:text-3xl text-turquoise" />
+          <FaUsersGear   className="text-lg md:text-2xl lg:text-3xl text-turquoise" />
         </span>
         <div className="">
           <h3 className="text-sm font-semibold md:text-md lg:text-lg">
-            Add Tenants
+          <a href="/tenant"> Add Tenants</a>
           </h3>
         </div>
       </div>
@@ -177,6 +172,7 @@ const UnitInfo = ({ user }) => {
 
 const MyUnitInfo = () => {
   const user = useSelector((state) => state.auth.user);
+ 
   console.log(user);
   return (
     <section className="space-y-10">
@@ -188,7 +184,7 @@ const MyUnitInfo = () => {
       /> */}
       {/* <PaymentHistory /> */}
       {/* <Document /> */}
-      <Visitor />
+      {/* <Visitor /> */}
       {/* <CreatePost /> */}
       {/* <Tenant /> */}
     </section>

@@ -16,17 +16,17 @@ const AddVisitor = () => {
         Add Visitor
       </SectionHeading>
       <SectionContainer>
-        <div className="flex gap-10 items-center">
+        <div className="flex items-center gap-10">
           <ProfilePhoto src={photo} slt={"profile_image"} size="large" />
           <div className="">
-            <SectionHeading size="lg">
+            {/* <SectionHeading size="lg">
               Chinmaya Kumar Behera
               <br />
               <span className="text-lg font-normal">Flat Number</span>
-            </SectionHeading>
+            </SectionHeading> */}
           </div>
         </div>
-        <div className="grid grid-col-1 md:grid-cols-2 lg:grid-cols-3 mt-5 gap-2">
+        <div className="grid gap-2 mt-5 grid-col-1 md:grid-cols-2 lg:grid-cols-3">
           <Input
             label="Date"
             type="date"
@@ -62,7 +62,7 @@ const AddVisitor = () => {
             isFalse={false}
           />
         </div>
-        <div className="w-full grid gap-2 grid-col-1 md:grid-cols-2 lg:grid-cols-3 mt-10">
+        <div className="grid w-full gap-2 mt-10 grid-col-1 md:grid-cols-2 lg:grid-cols-3">
           <Button
             className="text-black"
             color="success"

@@ -1,9 +1,9 @@
+// components/EmergencyList.jsx
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { FaEdit, FaEye, FaTrashAlt } from "react-icons/fa";
 import { MdKeyboardDoubleArrowLeft, MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
-
 import UrlPath from "../../../../components/shared/UrlPath";
 import PageHeading from "../../../../components/shared/PageHeading";
 import EmergencyContactHandler from "../../../../handlers/EmergencyContactHandler";
@@ -13,9 +13,9 @@ import ViewEmergencyDetailsModal from "./ViewEmergencyDetailsModal";
 const EmergencyList = () => {
   const paths = ["Emergency Contact", "Emergency Contact List"];
   const Heading = ["Emergency Contact List"];
-  
+
   const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
-  const token = useSelector((state) => state.auth.token);
+  const userId = useSelector((state) => state.auth.user?.userId);
 
   const [emergency, setEmergency] = useState([]);
   const [page, setPage] = useState(1);
@@ -29,25 +29,18 @@ const EmergencyList = () => {
   const [selectedEmergencyData, setSelectedEmergencyData] = useState(null);
 
   const {
-    getEmergencyContactHandler,
+    getEmergencyContactSocietyHandler,
     deleteEmergencyContactByIdHandler,
     updateEmergencyContactHandler,
   } = EmergencyContactHandler();
 
-  // Fix fetchEmergency based on your API response structure
   const fetchEmergency = async () => {
     try {
-      const params = { page, pageSize, discussionHeading: searchTerm };
-      const result = await getEmergencyContactHandler(params, null, token);
-      console.log("API response:", result);
-
-      // Your actual data is in result.data (array)
+      const params = { page, pageSize, searchTerm };
+      const result = await getEmergencyContactSocietyHandler(societyId, userId, params);
       const items = Array.isArray(result?.data) ? result.data : [];
-      // Total count is the length of the data array
-      const total = items.length;
-
       setEmergency(items);
-      setTotalEmergency(total);
+      setTotalEmergency(result?.total || 0);
     } catch (err) {
       console.error("Failed to fetch emergency contacts:", err.message);
     }
@@ -60,17 +53,18 @@ const EmergencyList = () => {
   useEffect(() => {
     if (selectedEmergencyId) {
       const found = emergency.find((el) => el.contactId === selectedEmergencyId);
-      if (found) {
-        setSelectedEmergencyData({ ...found });
-      }
+      if (found) setSelectedEmergencyData({ ...found });
     }
   }, [selectedEmergencyId, emergency]);
 
-  const handleSearchChange = (e) => setSearchTerm(e.target.value);
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setPage(1);
+  };
 
   const handleDelete = async (id) => {
-    const res = await deleteEmergencyContactByIdHandler(id);
-    if (res?.data?.success) {
+    const success = await deleteEmergencyContactByIdHandler(id);
+    if (success) {
       setEmergency((prev) => prev.filter((el) => el.contactId !== id));
       setTotalEmergency((prev) => prev - 1);
     }
@@ -87,26 +81,15 @@ const EmergencyList = () => {
   };
 
   const onSubmitEdit = async (formData) => {
-    try {
-      const updatedData = {
-        ...formData,
-        societyId, // Inject societyId from Redux
-      };
-
-      const res = await updateEmergencyContactHandler(updatedData);
-      if (res?.status === 200 || res?.status === 201) {
-        setShowUpdateModal(false);
-        fetchEmergency();
-      }
-    } catch (err) {
-      console.error("Update error:", err.message);
+    const updatedData = { ...formData, societyId };
+    const res = await updateEmergencyContactHandler(updatedData);
+    if (res) {
+      setShowUpdateModal(false);
+      fetchEmergency();
     }
   };
 
   const totalPages = Math.ceil(totalEmergency / pageSize);
-
-  // Calculate paginated items manually since API does not return paginated data
-  const paginatedEmergency = emergency.slice((page - 1) * pageSize, page * pageSize);
 
   return (
     <div className="relative p-5">
@@ -127,55 +110,41 @@ const EmergencyList = () => {
         />
       </div>
 
-      {paginatedEmergency.map((el) => (
-        <div key={el.contactId} className="flex flex-col mt-4 space-y-2">
-          <div className="relative flex flex-col p-4 bg-gray-100 rounded-lg shadow-md">
-            <div className="text-xl font-semibold text-gray-800">{el.name}</div>
-            <div className="absolute flex gap-2 right-2 top-2">
-              <FaEye
-                className="text-lg text-yellow-600 cursor-pointer hover:text-yellow-700"
-                onClick={() => openViewModal(el.contactId)}
-              />
-              <FaEdit
-                className="text-lg text-green-500 cursor-pointer hover:text-green-700"
-                onClick={() => openEditModal(el.contactId)}
-              />
-              <FaTrashAlt
-                className="text-lg text-red-500 cursor-pointer hover:text-red-700"
-                onClick={() => handleDelete(el.contactId)}
-              />
+      {emergency.length === 0 ? (
+        <div className="mt-6 text-center text-gray-500">No emergency contacts found.</div>
+      ) : (
+        emergency.map((el) => (
+          <div key={el.contactId} className="flex flex-col mt-4 space-y-2">
+            <div className="relative flex flex-col p-4 bg-gray-100 rounded-lg shadow-md">
+              <div className="text-xl font-semibold text-gray-800">{el.name}</div>
+              <div className="absolute flex gap-2 right-2 top-2">
+                <FaEye className="text-lg text-yellow-600 cursor-pointer" onClick={() => openViewModal(el.contactId)} />
+                <FaEdit className="text-lg text-green-500 cursor-pointer" onClick={() => openEditModal(el.contactId)} />
+                <FaTrashAlt className="text-lg text-red-500 cursor-pointer" onClick={() => handleDelete(el.contactId)} />
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))
+      )}
 
       {/* Pagination */}
       <div className="flex items-center justify-between mt-4">
         <div>
           {page > 1 && (
             <>
-              <button onClick={() => setPage(1)}>
-                <MdKeyboardDoubleArrowLeft />
-              </button>
-              <button onClick={() => setPage((prev) => prev - 1)}>
-                <SlArrowLeft />
-              </button>
+              <button onClick={() => setPage(1)}><MdKeyboardDoubleArrowLeft /></button>
+              <button onClick={() => setPage((prev) => prev - 1)}><SlArrowLeft /></button>
             </>
           )}
         </div>
         <div>
-          Showing {(page - 1) * pageSize + 1} -{" "}
-          {Math.min(page * pageSize, totalEmergency)} of {totalEmergency}
+          Showing {(page - 1) * pageSize + 1} - {Math.min(page * pageSize, totalEmergency)} of {totalEmergency}
         </div>
         <div>
           {page < totalPages && (
             <>
-              <button onClick={() => setPage((prev) => prev + 1)}>
-                <SlArrowRight />
-              </button>
-              <button onClick={() => setPage(totalPages)}>
-                <MdKeyboardDoubleArrowRight />
-              </button>
+              <button onClick={() => setPage((prev) => prev + 1)}><SlArrowRight /></button>
+              <button onClick={() => setPage(totalPages)}><MdKeyboardDoubleArrowRight /></button>
             </>
           )}
         </div>
@@ -183,7 +152,7 @@ const EmergencyList = () => {
           value={pageSize}
           onChange={(e) => {
             setPageSize(Number(e.target.value));
-            setPage(1); // Reset page to 1 on pageSize change
+            setPage(1);
           }}
         >
           <option value={5}>5</option>

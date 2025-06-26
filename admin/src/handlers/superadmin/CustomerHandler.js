@@ -5,6 +5,7 @@ import {
   getCustomerDetailsByIdService,
   getCustomerService,
   updateCustomerDetailsByIdService,
+  updateCustomerStatusService
 } from "../../services/superadmin/customerService";
 
 const CustomerHandler = () => {
@@ -84,11 +85,24 @@ const CustomerHandler = () => {
       });
   };
 
+const updateCustomerStatusHandler = async (id, status, token) => {
+  try {
+    const response = await updateCustomerStatusService(id, status, token);
+    toast.success("Status updated successfully.");
+    return response.data.data.status; 
+  } catch (err) {
+    console.error("Update Customer Status Error:", err);
+    return null;
+  }
+};
+
+
   return {
     createCustomerHandler,
     getCustomerHandler,
     getCustomerDetailsByIdHandler,
     updateCustomerDetailsByIdHandler,
+    updateCustomerStatusHandler
   };
 };
 

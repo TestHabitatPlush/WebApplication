@@ -123,16 +123,17 @@ const DocumentHandler = () => {
     }
   };
 
-  const getDocumentByIdHandler = async (id) => {
-      try {
-        const response = await getDocumentByIdService(id, token);
-        console.log(response);
-        return response.data;  
-      } catch (err) {
-        console.error("Error Document by ID:", err);
-        toast.error("Error Document details.");
-      }
-    };
+const getDocumentByIdHandler = async (id) => {
+  try {
+    const response = await getDocumentByIdService(id, token);
+    console.log(response); 
+    return response.data; 
+  } catch (err) {
+    console.error("Error Document by ID:", err);
+    toast.error("Error Document details.");
+  }
+};
+
 
   return {
     createDocumentBySocietyHandler,

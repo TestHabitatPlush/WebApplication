@@ -1,4 +1,4 @@
-import Footer from "@/views/Footer/Footer";
+import Footer from "@/views/footer/Footer";
 import Navbar from "@/views/navbar/Navbar";
 import Image from "next/image";
 import Link from "next/link";

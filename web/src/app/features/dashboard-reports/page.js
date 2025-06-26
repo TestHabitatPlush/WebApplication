@@ -2,7 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import Navbar from "@/views/navbar/Navbar";
-import Footer from "@/views/Footer/Footer";
+import Footer from "@/views/footer/Footer";
 import FeatureCard from "@/components/shared/FeatureCard";
 import dashboardImg from "../../../../assets/images/login-background.jpg";
 

@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "../navbar/Navbar";
-import Footer from "../Footer/Footer";
+import Footer from "../footer/Footer";
 import FAQ from "./FAQ";
 import HeroSection from "./HeroSection";
 import WhyHabitatPlush from "./WhyHabitatPlush";

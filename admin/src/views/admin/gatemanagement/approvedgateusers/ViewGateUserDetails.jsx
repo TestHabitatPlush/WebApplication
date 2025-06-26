@@ -4,77 +4,108 @@ import ProfileHandler from "../../../../handlers/ProfileHandler";
 import { GoAlertFill } from "react-icons/go";
 
 function ViewGateUserDetails({ deleteButton, isOpen, onClose, formData }) {
-    const [noticeViewForm, setNoticeViewForm] = useState(formData);
-    const { removeGuardUser } = ProfileHandler();
+  const [noticeViewForm, setNoticeViewForm] = useState(formData);
+  const { removeGuardUser } = ProfileHandler();
 
-    useEffect(() => {
-        setNoticeViewForm(formData); // Set the form data when component mounts or formData changes
-    }, [formData]);
+  useEffect(() => {
+    setNoticeViewForm(formData);
+  }, [formData]);
 
-    // String Modification
-    function formatString(inputString) {
-        if (!inputString) {
-            return ""; // Handle empty or null input
-        }
-        const words = inputString.split('_');
-        const capitalizedWords = words.map(word => {
-            if (!word) {
-                return ""; // Handle empty words after splitting
-            }
-            return word.charAt(0).toUpperCase() + word.slice(1);
-        });
-        return capitalizedWords.join(' ');
-    }
+  const getImageUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith("http")) return path;
+    return `${process.env.REACT_APP_PUBLIC_BASE_URL}/${path}`;
+  };
 
-    function removeGateUser(profileId) {
-        // console.log("Profile ID triggerred", profileId);
-        removeGuardUser(profileId);
-    }
+  const imageUrl = getImageUrl(noticeViewForm?.profilePhoto);
 
+  const formatString = (inputString) => {
+    if (!inputString) return "";
+    return inputString
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
 
-    return (
-        <>
-            <Dialog isOpen={isOpen} onClose={onClose} className="h-full w-full overflow-auto p-10" contentClassName={`w-full h-full bg-white lg:max-w-6xl rounded-lg overflow-auto scrollbar p-5`} overlayClassName="backdrop-blur">
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-IN", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
 
+  const removeGateUser = (profileId) => {
+    removeGuardUser(profileId);
+  };
 
-                {deleteButton && (
-                    <div className="flex justify-center mt-10 gap-4">
-                    <GoAlertFill className="text-3xl mt-3 text-red-500"/>
-                    <button className="bg-yellow-500 p-3 rounded-lg">
-                        <h3 className="text-2xl text-black">
-                            Are you Sure ?
-                        </h3>
-                    </button >
-                    <GoAlertFill className="text-3xl mt-3 text-red-500"/>
-                </div>
-                )}
+  return (
+    <Dialog
+      isOpen={isOpen}
+      onClose={onClose}
+      className="w-full h-full p-10 overflow-auto"
+      contentClassName="w-full h-full bg-white lg:max-w-6xl rounded-lg overflow-auto scrollbar p-5"
+      overlayClassName="backdrop-blur"
+    >
+      {/* Delete Confirmation Section */}
+      {deleteButton && (
+        <div className="flex justify-center gap-4 mt-10">
+          <GoAlertFill className="mt-3 text-3xl text-red-500" />
+          <button
+            className="p-3 bg-yellow-500 rounded-lg"
+            onClick={() => removeGateUser(noticeViewForm?.id)}
+          >
+            <h3 className="text-2xl text-black">Are you sure?</h3>
+          </button>
+          <GoAlertFill className="mt-3 text-3xl text-red-500" />
+        </div>
+      )}
 
+      {/* Profile Image + Details Side by Side */}
+      <div className="flex flex-col items-center justify-center gap-10 mt-20 lg:flex-row">
+        {/* Profile Image */}
+        {imageUrl && (
+          <div className="flex-shrink-0">
+            <img
+              src={imageUrl}
+              alt="Profile"
+              className="object-cover border border-gray-300 rounded-lg shadow-md w-80 h-80"
+            />
+          </div>
+        )}
 
-                <div className="flex mt-28 justify-center">
-
-                    <div className="flex">
-                        <img className="h-56 w-44 border-2 rounded-md" src={noticeViewForm?.profilePhoto} alt="No Photo Available." />
-                    </div>
-
-
-                    <div className="flex-col ml-40 space-y-4 text-gray-800">
-                        <p className="text-xl">Name: &nbsp; {noticeViewForm?.firstName} {noticeViewForm?.lastName}</p>
-                        <p className="text-xl">Status: &nbsp; {noticeViewForm?.status}</p>
-                        <p className="text-xl">Job Role: {formatString(noticeViewForm?.roleCategory)}</p>
-                        <p className="text-xl">Email: {noticeViewForm?.email}</p>
-                        <p className="text-xl">Mobile Number: {noticeViewForm?.mobileNo}</p>
-                    </div>
-                </div>
-
-
-                {deleteButton && (<div className=" flex justify-center mt-8">
-                    <button onClick={() => removeGateUser(noticeViewForm?.profileId)} className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none">Remove User</button>
-                </div>)}
-
-
-            </Dialog>
-        </>
-    )
+        {/* Profile Details */}
+        <div className="w-full max-w-md space-y-4 text-base text-justify text-gray-800">
+          <p>
+            <span className="font-semibold">Name:</span>{" "}
+            {noticeViewForm?.firstName} {noticeViewForm?.lastName}
+          </p>
+          <p>
+            <span className="font-semibold">Email:</span>{" "}
+            {noticeViewForm?.email}
+          </p>
+          <p>
+            <span className="font-semibold">Mobile Number:</span>{" "}
+            {noticeViewForm?.mobileNo}
+          </p>
+          <p>
+            <span className="font-semibold">Status:</span>{" "}
+            {noticeViewForm?.status}
+          </p>
+          <p>
+            <span className="font-semibold">Job Role:</span>{" "}
+            {formatString(noticeViewForm?.roleCategory)}
+          </p>
+          <p>
+            <span className="font-semibold">Last Working Date:</span>{" "}
+            {formatDate(noticeViewForm?.updatedAt)}
+          </p>
+        </div>
+      </div>
+    </Dialog>
+  );
 }
 
-export default ViewGateUserDetails
+export default ViewGateUserDetails;

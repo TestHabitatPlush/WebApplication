@@ -1,116 +1,62 @@
-// import { createvisitorEntryService } from "@/services/visitorService";
-// import { useSelector } from "react-redux";
-// import toast from "react-hot-toast";
-
-// const VisitHandler = () => {
-//   const token = useSelector((state) => state.auth.token);
-//  const societyId = useSelector((state) => state.auth.user.Customer);
-//  // console.log(societyId);
-//   const senderId = useSelector((state) => state.auth.user.userId);
-
-//   const createNewVisitorEntry = async (data) => {
-//     return await createvisitorEntryService({ ...data, societyId, senderId }, token)
-//       .then((res) => {
-//         if (res.status === 201) {
-//           toast.success("Visitor created successfully.");
-//         }
-//       })
-//       .catch((error) => {
-//         toast.error("Error creating visitor entry: " + error.message);
-//       });
-//   };
-
-//   return { createNewVisitorEntry };
-// };
-
-// export default VisitHandler;
-
-
-
-// import { createvisitorEntryService } from "@/services/visitorService";
-// import { useSelector } from "react-redux";
-// import toast from "react-hot-toast";
-
-// const VisitHandler = () => {
-//   const token = useSelector((state) => state.auth.token);
-//   // const societyId = useSelector((state) => state.auth.user?.Customer);  
-//   const societyId = useSelector((state) => state.auth.user?.Customer) || 1; 
-
-//   const senderId = useSelector((state) => state.auth.user?.userId);
-
-
-//   // console.log("Redux state:", useSelector((state) => state.auth));  // Debugging log
-
-//   const createNewVisitorEntry = async (data) => {
-//     if (!societyId) {
-//       toast.error("Society ID is missing. Please log in again.");
-//       return;
-//     }
-
-//     return await createvisitorEntryService({ ...data, societyId, senderId }, token)
-//       .then((res) => {
-//         if (res.status === 201) {
-//           toast.success("Visitor created successfully.");
-//         }
-//       })
-//       .catch((error) => {
-//         toast.error("Error creating visitor entry: " + error.message);
-//       });
-//   };
-
-//   return { createNewVisitorEntry };
-// };
-
-// export default VisitHandler;
-
-
 import {
-  createVisitorEntryService,
+  createvisitorEntryService,
   getVisitorRelationshipService,
   getVisitorListForResidentService,
   getQrCodeByIdService,
   deleteVisitorService,
-  getVisitorEntryByIdService,
-  getVisitorEntryTableService ,
+  getvisitorEntryByIdService,
+  getVisitorEntryTableService,
 } from "@/services/visitorService";
+
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-// import { useState } from "react";
 
 const VisitHandler = () => {
-  // const [qrCodeData, setQrCodeData] = useState(null); // Define state for QR Code data
+  const authState = useSelector((state) => state.auth);
+  const societyState = useSelector((state) => state.society);
+  const customerState = useSelector((state) => state.customer); // ⬅️ added
 
-  const token = useSelector((state) => state.auth.token);
-  const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
-  console.log(societyId);
- 
+  // Log full redux state for debugging
+  console.log("Auth State:", authState);
+  console.log("Society State:", societyState);
+  console.log("Customer State:", customerState); // ⬅️ added
 
-const senderId = useSelector((state) => state.auth.user.userId);
-console.log(senderId);
-  // const societyId = 2;
+  // Get sender and society IDs
+  const senderId =
+    authState?.user?._id || authState?.user?.userId || null;
+
+  //const societyId = authState?.user?.Customer?.customerId ;
+  const societyId =2;
+  const token = authState.token;
+
+  if (!senderId || !societyId) {
+    console.warn("Missing senderId or societyId", { senderId, societyId });
+  }
+
   // Fetch visitor relationships
-
   const fetchVisitorRelationship = async () => {
     try {
       const response = await getVisitorRelationshipService({ societyId }, token);
-      if (response.status === 200) {
-        return response.data;
+      if (response.status === 200 && Array.isArray(response.data.data)) {
+        return response.data.data;
+      } else {
+        console.warn("Invalid response or empty data.");
+        return [];
       }
-      console.error("Unexpected response status:", response.status);
-      return [];
     } catch (err) {
       console.error("Error fetching visitor relationships:", err.message);
       return [];
     }
   };
 
-  
-
   // Create new visitor entry
   const createNewVisitorEntry = async (data) => {
     try {
-      const response = await createVisitorEntryService({...data, societyId, senderId}, token);
-     if (response.status === 201) {
+      const response = await createvisitorEntryService(
+        { ...data, societyId, senderId },
+        token
+      );
+      if (response.status === 201) {
         toast.success("Visitor created successfully.");
         return response.data;
       }
@@ -119,34 +65,6 @@ console.log(senderId);
       throw error;
     }
   };
- 
-  
-  // const createNewVisitorEntry = async (data) => {
-  //   try {
-  //     console.log("Sending visitor data:", { ...data, societyId, senderId });
-  
-  //     if (!societyId) {
-  //       console.error("societyId is missing in VisitHandler!");
-  //       toast.error("Society ID is missing. Please log in again.");
-  //       return;
-  //     }
-  
-  //     const response = await createVisitorEntryService(
-  //       { ...data, societyId, senderId },
-  //       token
-  //     );
-  
-  //     if (response.status === 201) {
-  //       toast.success("Visitor created successfully.");
-  //       return response.data;
-  //     }
-  //   } catch (error) {
-  //     toast.error("Failed to create visitor.");
-  //     console.error("Error creating visitor:", error);
-  //     throw error;
-  //   }
-  // };
-  
 
   // Delete visitor by ID
   const deleteVisitorById = async (id) => {
@@ -167,7 +85,7 @@ console.log(senderId);
   // Get visitor details by ID
   const getVisitorById = async (id) => {
     try {
-      const response = await getVisitorEntryByIdService(id, token);
+      const response = await getvisitorEntryByIdService(id, token);
       return response.data;
     } catch (err) {
       console.error("Error fetching visitor by ID:", err);
@@ -193,10 +111,8 @@ console.log(senderId);
   // Get visitor list for resident
   const getVisitorListBySenderId = async (data) => {
     try {
-      const response = await getVisitorListForResidentService(
-        { ...data, senderId },
-        token
-      );
+      console.log("Fetching visitor list with senderId:", senderId);
+      const response = await getVisitorListForResidentService(senderId, token, data);
       return response;
     } catch (err) {
       console.error("Error fetching visitor list:", err);
@@ -229,5 +145,3 @@ console.log(senderId);
 };
 
 export default VisitHandler;
-
-
