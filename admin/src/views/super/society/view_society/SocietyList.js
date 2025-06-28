@@ -6,7 +6,7 @@ import ReusableTable from "../../../../components/shared/ReusableTable";
 import {
   setPage,
   setPageSize,
-  setFilters,
+ 
 } from "../../../../redux/slices/societySlice";
 import {
   resetCustomerFormOperationType,
