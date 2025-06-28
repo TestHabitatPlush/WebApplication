@@ -1,0 +1,119 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+
+  /* Tailwind-compatible custom scrollbar */
+.scrollbar-custom::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background-color: white;
+  border-radius: 9999px;
+}
+
+  /* Custom scrollbar styles */
+  .scrollbar {
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #993131 #181616; /* Firefox */
+  }
+
+  .scrollbar::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    background: #912f2f;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background-color: #c41717;
+    border-radius: 6px;
+    border: 3px solid #f1f1f1;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #c41a1a;
+  }
+}
+
+
+.no-scrollbar {
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Opera */
+}
+
+
+/* ---------------  dialog css -------------------  */
+
+.dialog {
+    outline: none;
+    @apply absolute flex items-center justify-center min-w-full min-h-full ;
+}
+
+@screen sm {
+    .dialog {
+        @apply max-w-xl;
+    }
+}
+
+@screen md {
+    .dialog {
+        @apply max-w-2xl;
+    }
+}
+
+@screen lg {
+    .dialog {
+        @apply max-w-4xl;
+    }
+}
+
+@screen xl {
+    .dialog {
+        @apply max-w-6xl;
+    }
+}
+
+.dialog-content {
+    @apply relative h-full shadow-xl;
+}
+
+.dialog-overlay {
+    transition: all 0.15s ease-in-out;
+    @apply fixed inset-0 z-30 ;
+}
+
+.dialog-overlay-after-open {
+    opacity: 1;
+}
+
+.dialog-overlay-before-close {
+    opacity: 0;
+}
+
+
+/* -------  skeleton css -------  */
+     
+@keyframes waveAnimation {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-wave {
+  animation: waveAnimation 2s linear infinite;
+}

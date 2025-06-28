@@ -1,0 +1,13 @@
+export { default as Visitor } from "./visitor/Visitor";
+export { default as Post } from "./post/Posts";
+export { default as Payment } from "./payments/Payment";
+export { default as Vendor } from "./vendors/Vendor";
+export { default as Tenant } from "./tenant/Tenant";
+export { default as Setting } from "./setting/Setting";
+export { default as Service } from "./service/Service";
+// export { default as Parking } from "./parking/Parking";
+export { default as Notice } from "./notice/Notice";
+// export { default as Member } from "./Member/members";
+export { default as Email } from "./email/Email";
+export { default as Documents } from "./documents/Documents";
+export {default as Vehicle} from "./vehicle/Vehicle";
