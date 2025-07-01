@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = `${process.env.REACT_APP_PUBLIC_API_URL}/emergencyContacts`;
+const BASE_URL = `${process.env.REACT_APP_PUBLIC_API_URL}/emergencyContact`;
 
 // For Super Admin based creation
 

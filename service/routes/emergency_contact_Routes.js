@@ -67,8 +67,8 @@ router.post("/:userId", emergencyContactController.createEmergencyContactByUserI
 router.get("/:userId", emergencyContactController.getEmergencyContactsByUserId);
 
 // SOCIETY ADMIN ROUTES (societyId and roleId based)
-router.post("/society/:societyId/:userId", emergencyContactController.createEmergencyContactBySocietyId);
-router.get("/society/:societyId/:userId", emergencyContactController.getEmergencyContactsBySocietyId);
+router.post("/:societyId/:userId", emergencyContactController.createEmergencyContactBySocietyId);
+router.get("/:societyId/:userId", emergencyContactController.getEmergencyContactsBySocietyId);
 
 // Resident creates emergency contact
 // router.post("/resident/:userId", emergencyContactController.createEmergencyContactByResident);
