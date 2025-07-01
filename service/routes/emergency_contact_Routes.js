@@ -40,7 +40,7 @@
 
 const express = require("express");
 const router = express.Router();
-const emergencyContactController = require("../controllers/emergency_Contact_Controller");
+const emergencyContactController = require("../controllers/emergency_contact_Controller");
 
 // SUPER ADMIN ROUTES (userId based)
 router.post("/:userId", emergencyContactController.createEmergencyContactByUserId);

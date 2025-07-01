@@ -22,10 +22,9 @@ userRouter.post("/bulk-create/:societyId",upload.single("file"),userController.b
 userRouter.get("/management/:societyId", userController.getManagement_committee);
 
 // userRouter.post("/resident/approve", userController.approveUser);
-// userRouter.get('/resident/approvedUser/:societyId', userController.getAllApprovedUsers);
+ userRouter.get('/resident/approvedUser/:societyId', userController.getAllApprovedUsers);
 // 
 // 
 // userRouter.post("/resident/reject", userController.rejectUser);
-// userRouter.get('/resident/deactive/:societyId', userController.getAllDeactiveUsers);
-
+ userRouter.get('/resident/deactive/:societyId', userController.getAllDeactiveUsers);
 module.exports = userRouter;

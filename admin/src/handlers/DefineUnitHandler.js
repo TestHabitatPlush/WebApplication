@@ -12,12 +12,12 @@ const DefineUnitHandler = () => {
   console.log("User State:", userState);
 
   const CreateDefineUnitHandler = async (data) => {
-    const requiredFields = ["unitName", "buildingId", "floorId", "unitTypeId", "unitNumber", "unitsize"];
-    const missingField = requiredFields.find((field) => !data[field]);
+   // const requiredFields = ["unitName", "buildingId", "floorId", "unitTypeId", "unitNumber"];
+    // const missingField = requiredFields.find((field) => !data[field]);
 
-    if (missingField) {
-      return toast.error(`${missingField} is missing`);
-    }
+    // if (missingField) {
+    //   return toast.error(`${missingField} is missing`);
+    // }
 
     if (!societyId) {
       return toast.error("Invalid society ID. Please check your login status.");
