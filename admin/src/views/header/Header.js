@@ -1,4 +1,4 @@
-import { React, useState, useEffect, useRef, useMemo } from "react";
+import { React, useState, useEffect, useRef } from "react";
 import { IoIosNotifications } from "react-icons/io";
 import { IoChatbubble } from "react-icons/io5";
 import Logo from "../../assets/logo/logo.png";
@@ -98,12 +98,19 @@ const Header = () => {
                 <span className="block px-4 py-2 text-base text-gray-700 hover:bg-gray-200">
                   Contact Us
                 </span>
-                <span
+                {/* <span
                   onClick={logoutHandler}
                   className="block px-4 py-2 text-base text-red-500 hover:bg-gray-200"
                 >
                   Logout
-                </span>
+                </span> */}
+
+                <button
+                  onClick={logoutHandler}
+                  className="block px-4 py-2 text-base text-red-500 hover:bg-gray-200"
+                >
+                  Logout
+                </button>
               </div>
             </div>
           )}
@@ -115,5 +122,3 @@ const Header = () => {
 };
 
 export default Header;
-
-

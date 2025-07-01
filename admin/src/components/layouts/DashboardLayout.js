@@ -1,4 +1,3 @@
-"use client";
 import React, { useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
