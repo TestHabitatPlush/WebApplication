@@ -161,7 +161,7 @@ app.use("/api/document", documentRouter);
 app.use("/api/discussionForum",discussionRouter);
 
 // emergencyContact
-app.use("/api/emergencyContact", emergencyContact_router);
+app.use("/api/emergencyContacts", emergencyContact_router);
 
 app.use("/api/location", locationRouter);
 
