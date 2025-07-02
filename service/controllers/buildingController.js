@@ -129,3 +129,4 @@ exports.deleteBuilding = async (req, res) => {
 
 
 // Get Building by ID
+// This function retrieves a building by its ID and returns it in the response.
