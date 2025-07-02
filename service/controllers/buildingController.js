@@ -126,3 +126,6 @@ exports.deleteBuilding = async (req, res) => {
     return sendErrorResponse(res, "Internal server error", 500, err.message);
   }
 };
+
+
+// Get Building by ID
