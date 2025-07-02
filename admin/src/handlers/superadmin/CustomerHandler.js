@@ -1,13 +1,15 @@
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 import {
   createCustomerService,
   getCustomerDetailsByIdService,
   getCustomerService,
   updateCustomerDetailsByIdService,
-  updateCustomerStatusService,
 } from "../../services/superadmin/customerService";
 
 const CustomerHandler = () => {
+  const token = useSelector((state) => state.auth.token);
+
   const validateCustomerData = (data) => {
     const requiredFields = [
       "customerType",
@@ -16,7 +18,6 @@ const CustomerHandler = () => {
       "establishedYear",
       "subscriptionId",
       "phone",
-      "status",
       "email",
       "address.city",
       "address.state",
@@ -38,7 +39,7 @@ const CustomerHandler = () => {
     return missingFields;
   };
 
-  const createCustomerHandler = async (data, token) => {
+  const createCustomerHandler = (data) => {
     const missingFields = validateCustomerData(data);
     if (missingFields.length > 0) {
       missingFields.forEach((field) => {
@@ -46,54 +47,41 @@ const CustomerHandler = () => {
       });
       return;
     }
-    try {
-      const res = await createCustomerService(data, token);
+    console.log("Customer data is valid:", data);
+    createCustomerService(data).then((res) => {
       if (res.status === 201) {
         toast.success("Customer created successfully.");
       }
-    } catch (error) {
-      toast.error("Error creating customer.");
-      console.error(error);
-    }
+    });
   };
 
-  const getCustomerHandler = async (params, token) => {
-    try {
-      return await getCustomerService(params, token);
-    } catch (err) {
-      console.error("Error getting customer:", err);
-    }
-  };
-
-  const getCustomerDetailsByIdHandler = async (id, token) => {
-    try {
-      return await getCustomerDetailsByIdService(id, token);
-    } catch (err) {
-      console.error("Error fetching customer by ID:", err);
-    }
-  };
-
-  const updateCustomerDetailsByIdHandler = async (id, data, token) => {
-    try {
-      const res = await updateCustomerDetailsByIdService(id, data, token);
-      if (res.status === 200) {
-        toast.success("Customer updated successfully!");
+  const getCustomerHandler = async (data, token) => {
+    return await getCustomerService(data, token)
+      .then((res) => {
         return res;
-      }
-    } catch (err) {
-      console.error("Error updating customer:", err);
-      toast.error(err.message || "Error updating customer.");
-    }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
-  const updateCustomerStatusHandler = async (id, status, token) => {
-    try {
-      const response = await updateCustomerStatusService(id, status, token);
-      toast.success("Status updated successfully.");
-      return response.data.data.status;
-    } catch (err) {
-      console.error("Error updating customer status:", err);
-    }
+  const getCustomerDetailsByIdHandler = async (id) => {
+    return await getCustomerDetailsByIdService(id, token);
+  };
+
+  const updateCustomerDetailsByIdHandler = async (id, data) => {
+    return await updateCustomerDetailsByIdService(id, data, token)
+      .then((res) => {
+        if (res.status === 200) {
+          toast.success("Customer updated successfully !");
+          console.log(res.data);
+          return res;
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(err.message);
+      });
   };
 
   return {
@@ -101,7 +89,6 @@ const CustomerHandler = () => {
     getCustomerHandler,
     getCustomerDetailsByIdHandler,
     updateCustomerDetailsByIdHandler,
-    updateCustomerStatusHandler,
   };
 };
 

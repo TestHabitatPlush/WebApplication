@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaSearch, FaFilter, FaEdit, FaEye, FaTimes } from "react-icons/fa";
+import { FaSearch, FaFilter, FaEdit, FaEye, FaTrashAlt } from "react-icons/fa";
 import UrlPath from "../../../../components/shared/UrlPath";
 import { IoPersonOutline } from "react-icons/io5";
 import PageHeading from "../../../../components/shared/PageHeading";
@@ -193,15 +193,15 @@ const ApprovedGateUser = () => {
         <div className="flex space-x-4">
           <FaEye
             onClick={() => onViewHandler(value)}
-            className="text-lg text-yellow-600 cursor-pointer hover:text-yellow-700"
+            className="text-lg text-yellow-600 hover:text-yellow-700 cursor-pointer"
           />
           <FaEdit
             onClick={() => onEditHandler(value)}
-            className="text-lg text-green-500 cursor-pointer hover:text-green-700"
+            className="text-lg text-green-500 hover:text-green-700 cursor-pointer"
           />
-          <FaTimes
+          <FaTrashAlt
             onClick={() => onDeleteHandler(value)}
-            className="text-lg text-red-500 cursor-pointer hover:text-red-700"
+            className="text-lg text-red-500 hover:text-red-700 cursor-pointer"
           />
         </div>
       )
@@ -225,9 +225,9 @@ const ApprovedGateUser = () => {
               <input
                 type="text"
                 placeholder="Search by Gate/Users..."
-                className="w-full px-4 py-4 border border-gray-300 rounded-md focus:outline-none"
+                className="px-4 py-4 border w-full border-gray-300 rounded-md focus:outline-none"
               />
-              <FaSearch className="absolute text-lg text-gray-500 right-7 top-5" />
+              <FaSearch className="absolute right-7 top-5 text-lg text-gray-500" />
             </div>
           </div>
           <div className="flex flex-col mt-[35px] space-y-3">

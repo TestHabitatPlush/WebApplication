@@ -45,7 +45,7 @@ const AddUser = () => {
     floorId: "",
     unitTypeId: "",
     unitNumber: "",
-  //  unitsize: "",
+    unitsize: "",
   });
 
   const [formData, setFormData] = useState({
@@ -99,7 +99,7 @@ const AddUser = () => {
     society_owner: "Owner",
     society_tenant: "Tenant",
     society_tenant_family: "Tenant Family",
- 
+    management_committee:"Managment Committee"
   };
 
   useEffect(() => {
@@ -151,7 +151,7 @@ const AddUser = () => {
               "society_tenant",
               "society_owner",
               "society_tenant_family",
-             
+              "management_committee"
             ].includes(el.roleCategory)
           )
           .map((el) => ({
@@ -233,21 +233,21 @@ const AddUser = () => {
  const handleRadioChange = (roleId) => {
   setSelectedRoleId(roleId);
 
-  // const managementCommitteeRole = roles.find(
-  //   (role) => role.label.toLowerCase() === "managment committee"
-  // );
+  const managementCommitteeRole = roles.find(
+    (role) => role.label.toLowerCase() === "managment committee"
+  );
 
-  // if (managementCommitteeRole && roleId === managementCommitteeRole.value) {
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     ismaemberofassociationcommite: true,
-  //   }));
-  // } else {
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     ismaemberofassociationcommite: false,
-  //   }));
-  // }
+  if (managementCommitteeRole && roleId === managementCommitteeRole.value) {
+    setFormData((prev) => ({
+      ...prev,
+      ismaemberofassociationcommite: true,
+    }));
+  } else {
+    setFormData((prev) => ({
+      ...prev,
+      ismaemberofassociationcommite: false,
+    }));
+  }
 };
 
 
@@ -296,7 +296,7 @@ const AddUser = () => {
       floorId: "",
       unitTypeId: "",
       unitNumber: "",
-     // unitsize: "",
+      unitsize: "",
     });
     setUnitName({
       buildingId: "",
@@ -591,18 +591,6 @@ const AddUser = () => {
               onChange={handleInputChange}
             />
           </div>
-          <div className="flex flex-row items-center gap-3">
-            <div>Is Member Of Association Committee?</div>
-            <div>
-              <input
-                type="checkbox"
-                name="ismaemberofassociationcommite"
-                checked={formData.ismaemberofassociationcommite}
-                onChange={handleInputChange}
-              />
-            </div>
-          </div>
-
           {/* <div className="flex flex-row items-center gap-3">
             <div>Is Member Of Association Committee?</div>
             <div>
@@ -614,6 +602,18 @@ const AddUser = () => {
               />
             </div>
           </div> */}
+
+          <div className="flex flex-row items-center gap-3">
+            <div>Is Member Of Association Committee?</div>
+            <div>
+              <input
+                type="checkbox"
+                name="ismaemberofassociationcommite"
+                checked={formData.ismaemberofassociationcommite}
+                onChange={handleInputChange}
+              />
+            </div>
+          </div>
 
 
           <div className="max-w-sm">
@@ -713,7 +713,7 @@ const AddUser = () => {
                   value={defineUnit.unitNumber}
                   onChange={onUnitNumberChange}
                 /> */}
-                {/* <Input
+                <Input
                   label= {
                       <div>
                        Unit Size (Sq.feet)<span className="text-red-500">*</span>
@@ -726,7 +726,7 @@ const AddUser = () => {
                   value={defineUnit.unitsize}
                   onChange={handleChange}
                 />
-         */}
+        
                 {/* <div>
                   <h3 className="">
                     <strong>Unit Name</strong> :{" "}
@@ -742,7 +742,7 @@ const AddUser = () => {
                   onClick={submitHandler}
                   size="lg"
                 >
-                  Add Unit
+                  Submit
                 </Button>
                 
               </div>

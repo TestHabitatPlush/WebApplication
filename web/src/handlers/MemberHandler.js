@@ -4,25 +4,29 @@ import toast from "react-hot-toast";
 import { createMemberService } from "@/services/memberService";
 
 const MemberHandler = () => {
-  const token = useSelector((state) => state.auth.token);
+  const token = useSelector((state) => state.auth.token); // ✅ Redux token
 
-  const createMemberHandler = async (formData) => {
+  const createMemberHandler = async (data) => {
     if (!token) {
-      toast.error("You are not authenticated!");
+      toast.error("Authentication token missing. Please log in again.");
       return;
     }
 
     try {
-      const response = await createMemberService(formData, token);
-      toast.success("Member created successfully!");
-      return response;
-    } catch (error) {
-      console.error("API Error:", error);
-      toast.error(error?.response?.data?.message || "Failed to create member");
+      const res = await createMemberService(data, token);
+      if (res.status === 201) {
+        toast.success("Member created successfully.");
+        return res;
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Error creating member.");
+      console.error("API Error:", err);
     }
   };
 
-  return { createMemberHandler };
+  return {
+    createMemberHandler,
+  };
 };
 
 export default MemberHandler;

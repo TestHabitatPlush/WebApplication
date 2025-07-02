@@ -1,11 +1,28 @@
+// // services/memberService.js
+// import axios from "axios";
+
+// export const createMemberService = (data, token) => {
+//   console.log("Calling API with token:", token); // debug
+
+//   const url = `${process.env.NEXT_PUBLIC_API_URL}/family/create`;
+
+//   return axios.post(url, data, {
+//     headers: {
+//    Authorization: `Bearer ${localStorage.getItem('token')}`,
+
+//       "Content-Type": "application/json",
+//     },
+//   });
+// };
+// services/memberService.js
 import axios from "axios";
 
-const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/family`;
+export const createMemberService = (data, token) => {
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/family/create`;
 
-export const createMemberService = async (data, token) => {
-  return axios.post(`${BASE_URL}/create`, data, {
+  return axios.post(url, data, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`, // ✅ use passed token
       "Content-Type": "application/json",
     },
   });

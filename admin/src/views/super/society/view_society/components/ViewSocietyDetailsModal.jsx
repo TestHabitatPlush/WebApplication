@@ -78,7 +78,7 @@ const ViewSocietyDetailsModal = ({ onClose, isOpen }) => {
         <Dialog
             isOpen={isOpen}
             onClose={onClose}
-            className="w-full h-full p-10 overflow-auto"
+            className="h-full w-full overflow-auto p-10"
             contentClassName={`w-full h-full bg-white lg:max-w-6xl rounded-lg overflow-auto scrollbar p-5`}
             overlayClassName="backdrop-blur"
         >

@@ -1,66 +1,39 @@
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import {
-  createEmergencyContactByUserIdService,
-  getEmergencyContactsByUserIdService,
-  createEmergencyContactBySocietyService,
-  getEmergencyContactBySocietyIdService,
-  updateEmergencyContactService,
+  createEmergencyContactService,
+  getEmergencyContactService,
   deleteEmergencyContactService,
-} from "../services/emerencyContactService"; 
+  updateEmergencyContactService,
+} from "../services/emerencyContactService";
 
 const EmergencyContactHandler = () => {
   const token = useSelector((state) => state.auth.token);
-  const userId = useSelector((state) => state.auth.user.userId);
+  const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
 
-  // Super Admin
-  const createEmergencyContactBySuperAdminHandler = async ({ userId, data }) => {
+  const createEmergencyContactHandler = async (data) => {
     try {
-      const response = await createEmergencyContactByUserIdService(userId, token, data);
+      if (!societyId) {
+        toast.error("Society ID is missing. Cannot create emergency contact.");
+        return;
+      }
+      const response = await createEmergencyContactService(societyId, token, data);
       if (response.status === 200 || response.status === 201) {
-        toast.success("Emergency contact created successfully by Super Admin.");
+        toast.success("Emergency contact created successfully.");
         return response.data;
       }
     } catch (error) {
-      toast.error("Super Admin Error: " + (error.response?.data?.message || error.message));
+      toast.error("Error: " + (error.response?.data?.message || error.message));
     }
   };
 
-  // Society Admin
-  const createEmergencyContactBySocietyAdminHandler = async ({ societyId, userId, data }) => {
+  const getEmergencyContactHandler = async (params = {}) => {
     try {
-      if (!userId || !societyId) {
-        toast.error("Missing userId or societyId.");
+      if (!societyId) {
+        toast.error("Society ID is missing. Cannot fetch emergency contacts.");
         return null;
       }
-
-      const response = await createEmergencyContactBySocietyService(societyId, userId, data, token);
-      if (response.status === 200 || response.status === 201) {
-        toast.success("Emergency contact created successfully by Society Admin.");
-        return response.data;
-      } else {
-        toast.error("Unexpected response status: " + response.status);
-        return null;
-      }
-    } catch (error) {
-      toast.error("Society Admin Error: " + (error.response?.data?.message || error.message));
-      return null;
-    }
-  };
-
-  const getEmergencyContactUserHandler = async (userId, params = {}) => {
-    try {
-      const response = await getEmergencyContactsByUserIdService(userId, params, token); // ✅ corrected
-      return response.data;
-    } catch (error) {
-      toast.error("Error fetching Emergency Contacts: " + (error.response?.data?.message || error.message));
-      return null;
-    }
-  };
-
-  const getEmergencyContactSocietyHandler = async (societyId, userId, params = {}) => {
-    try {
-      const response = await getEmergencyContactBySocietyIdService(societyId, userId, params, token);
+      const response = await getEmergencyContactService(societyId, params, token);
       return response.data;
     } catch (error) {
       toast.error("Error fetching Emergency Contacts: " + (error.response?.data?.message || error.message));
@@ -70,43 +43,47 @@ const EmergencyContactHandler = () => {
 
   const deleteEmergencyContactByIdHandler = async (contactId) => {
     try {
-      const response = await deleteEmergencyContactService( contactId, token);
+      const response = await deleteEmergencyContactService(contactId, token);
       if (response.status === 200) {
         toast.success("Emergency Contact deleted successfully.");
-        return true;
       }
-    } catch (error) {
-      toast.error("Failed to delete Emergency Contact: " + (error.response?.data?.message || error.message));
-      return false;
-    }
-  };
-
-  const updateEmergencyContactHandler = async (data) => {
-    try {
-      const response = await updateEmergencyContactService(
-        {
-          ...data,
-        
-          contactId: data.contactId,
-        },
-        token
-      );
-
-      if (response.status === 200 || response.status === 201) {
-        toast.success("Emergency Contact updated successfully.");
-        return response.data;
-      }
-    } catch (error) {
-      toast.error("Failed to update Emergency Contact: " + (error.response?.data?.message || error.message));
+      return response;
+    } catch (err) {
+      toast.error("Failed to delete Emergency Contact.");
       return null;
     }
   };
+const updateEmergencyContactHandler = async (data) => {
+  try {
+    const response = await updateEmergencyContactService(
+      {
+        ...data,
+        societyId: data.societyId,
+        contactId: data.contactId, // ensure this is present
+      },
+      token
+    );
+
+    if (response && (response.status === 200 || response.status === 201)) {
+      toast.success("Emergency Contact Updated successfully.");
+      return response;
+    } else {
+      toast.error("Failed to update Emergency Contact.");
+      return null;
+    }
+  } catch (err) {
+    toast.error(
+      "Failed to update Emergency Contact: " +
+        (err.response?.data?.message || err.message)
+    );
+    return null;
+  }
+};
+
 
   return {
-    createEmergencyContactBySuperAdminHandler,
-    createEmergencyContactBySocietyAdminHandler,
-    getEmergencyContactUserHandler,
-    getEmergencyContactSocietyHandler,
+    createEmergencyContactHandler,
+    getEmergencyContactHandler,
     deleteEmergencyContactByIdHandler,
     updateEmergencyContactHandler,
   };

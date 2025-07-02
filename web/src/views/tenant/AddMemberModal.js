@@ -1,4 +1,5 @@
-// components/AddMemberModal.js
+// components/modals/AddMemberModal.js
+
 import React, { useState } from "react";
 import Input from "@/components/shared/Input";
 import Button from "@/components/ui/Button";
@@ -32,6 +33,7 @@ const AddMemberModal = ({ onClose, refreshMembers }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     if (name in formData.address) {
       setFormData((prev) => ({
         ...prev,
@@ -47,16 +49,10 @@ const AddMemberModal = ({ onClose, refreshMembers }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const isAddressValid = Object.values(formData.address).every((val) => val.trim() !== "");
-    if (!isAddressValid) {
-      toast.error("Please fill in all address fields.");
-      return;
-    }
-
     const res = await createMemberHandler(formData);
     if (res?.status === 201) {
       onClose();
-      refreshMembers?.();
+      refreshMembers?.(); // optional refresh
     }
   };
 
@@ -70,6 +66,11 @@ const AddMemberModal = ({ onClose, refreshMembers }) => {
           <Input name="email" label="Email" type="email" value={formData.email} onChange={handleChange} required />
           <Input name="mobileNumber" label="Phone" value={formData.mobileNumber} onChange={handleChange} required />
           <Input name="alternateNumber" label="Alternate Number" value={formData.alternateNumber} onChange={handleChange} />
+          <Input name="street" label="Street" value={formData.address.street} onChange={handleChange} />
+          <Input name="city" label="City" value={formData.address.city} onChange={handleChange} />
+          <Input name="state" label="State" value={formData.address.state} onChange={handleChange} />
+          <Input name="zipCode" label="ZIP Code" value={formData.address.zipCode} onChange={handleChange} />
+          <Input name="country" label="Country" value={formData.address.country} onChange={handleChange} />
 
           <div className="md:col-span-2">
             <label className="block mb-1 text-sm font-medium text-gray-700">Role Category</label>
@@ -86,12 +87,6 @@ const AddMemberModal = ({ onClose, refreshMembers }) => {
               ))}
             </select>
           </div>
-
-          <Input name="street" label="Street" value={formData.address.street} onChange={handleChange} required />
-          <Input name="city" label="City" value={formData.address.city} onChange={handleChange} required />
-          <Input name="state" label="State" value={formData.address.state} onChange={handleChange} required />
-          <Input name="country" label="Country" value={formData.address.country} onChange={handleChange} required />
-          <Input name="zipCode" label="Zip Code" value={formData.address.zipCode} onChange={handleChange} required />
 
           <div className="flex justify-end col-span-1 gap-3 mt-6 md:col-span-2">
             <Button type="button" onClick={onClose} className="bg-gray-300 hover:bg-gray-400">

@@ -58,7 +58,6 @@ import ContactDetails from './emerencyContact/ContactDetails';
 import EmergencyList from './emerencyContact/emergencyList/EmergencyList'; 
 import DocumentUploadFacility from "./documentmanagement/documentuploadfacility/DocumentUploadFacility";
 import DocumentList from "./documentmanagement/documentlist/DocumentList";
-import DeactivateGateUsers from "./gatemanagement/deactivategateusers/DeactivateGateUsers";
 
 // import CreateResident from "./resident/create/CreateResident";
 // import CreateFloorInformation from "./floorinformation/create/CreateFloorInformation";
@@ -139,7 +138,6 @@ const Admincontent = () => {
       <Route path="/gate/guardCreation" element={<GuardUserCreation />} />
       <Route path="/gate/view" element={<GateList />} />
       <Route path="/gate/approvedusers" element={<ApprovedGateUser/>} />
-      <Route path="/gate/deactivatedusers" element={<DeactivateGateUsers/>} />
       <Route path="/document/upload" element={<DocumentUploadFacility />} />
       <Route path="/document/view" element={<DocumentList/>} />
 

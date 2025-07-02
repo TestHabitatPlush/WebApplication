@@ -16,7 +16,6 @@ const societySlice = createSlice({
       { Header: 'Phone', accessor: 'phone' },
       { Header: 'Established Year', accessor: 'establishedYear' },
       { Header: 'Society Type', accessor: 'societyType' },
-       { Header: 'Status', accessor: 'status' },
       { Header: 'Actions', accessor: 'actions' },
     ],
     status: 'idle',

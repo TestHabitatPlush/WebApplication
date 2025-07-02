@@ -263,6 +263,22 @@ exports.getVehicleBySocietyId = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+exports.getVehicleDataByIdForview = async (req, res) => {
+  try {
+    const { vehicleId } = req.params;
+    const vehicle = await Vehicle.findOne({ where: { vehicleId } });
+
+    if (!vehicle) {
+      return res.status(404).json({ message: "vehicle not found" });
+    }
+
+    return res.status(200).json(vehicle);
+  } catch (err) {
+    console.error("Error fetching vehicle by ID:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
 exports.getVehicleByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
