@@ -255,6 +255,7 @@ exports.getVehicleBySocietyId = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 exports.getVehicleByUserId = async (req, res) => {
   try {
     const { userId } = req.params;

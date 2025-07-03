@@ -886,6 +886,7 @@ const getAllApprovedUsers = async (req, res) => {
     res.status(500).json({ error: "Failed to retrieve deactivated users", details: err.message });
   }
 };
+
 module.exports = {
   createUser,
   getAllUsers,
