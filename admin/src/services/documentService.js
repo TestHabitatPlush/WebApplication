@@ -158,4 +158,4 @@ export const deleteDocumentService = (documentId, token) => {
       Authorization: `Bearer ${token}`,
     },
   });
-}
+};

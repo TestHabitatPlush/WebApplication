@@ -220,8 +220,8 @@
 
 //   return (
 //     <div className="relative px-4 py-6">
-//       <div className="flex justify-between items-center mt-4">
-//         <div className="font-medium text-gray-700 text-lg">
+//       <div className="flex items-center justify-between mt-4">
+//         <div className="text-lg font-medium text-gray-700">
 //           TOTAL {documents.length} DOCUMENTS
 //         </div>
 //         <div>
@@ -229,7 +229,7 @@
 //             name="userGroupId"
 //             value={userGroupId}
 //             onChange={(e) => setUserGroupId(e.target.value)}
-//             className="py-2 px-3 border border-gray-300 rounded-md uppercase text-sm"
+//             className="px-3 py-2 text-sm uppercase border border-gray-300 rounded-md"
 //           >
 //             <option value="">All Groups</option>
 //             <option value={MY_DOCUMENTS_ID}>Self</option>
@@ -243,7 +243,7 @@
 //       </div>
 
 //       {userGroupId && (
-//         <div className="text-sm text-gray-600 mt-2">
+//         <div className="mt-2 text-sm text-gray-600">
 //           Showing documents for:{" "}
 //           <span className="font-semibold">{activeGroupName}</span>
 //         </div>
@@ -487,8 +487,8 @@
 
 //   return (
 //     <div className="relative px-4 py-6">
-//       <div className="flex justify-between items-center mt-4">
-//         <div className="font-medium text-gray-700 text-lg">
+//       <div className="flex items-center justify-between mt-4">
+//         <div className="text-lg font-medium text-gray-700">
 //           TOTAL {documents.length} DOCUMENTS
 //         </div>
 //       </div>
@@ -699,8 +699,8 @@ const DocumentList = () => {
 
   return (
     <div className="relative px-4 py-6">
-      <div className="flex justify-between items-center mt-4">
-        <div className="font-medium text-gray-700 text-lg">
+      <div className="flex items-center justify-between mt-4">
+        <div className="text-lg font-medium text-gray-700">
           TOTAL {documents.length} DOCUMENTS
         </div>
         <Button onClick={fetchDocuments}>Refresh</Button>
@@ -728,7 +728,3 @@ const DocumentList = () => {
 export default DocumentList;
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/priyanka

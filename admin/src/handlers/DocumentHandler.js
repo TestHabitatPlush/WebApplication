@@ -1,6 +1,3 @@
-
-
-
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import {
@@ -11,7 +8,7 @@ import {
   updateDocumentBySocietyService,
   updateDocumentByUserService,
   deleteDocumentService,
-} from "../services/documentService"
+} from ".//../services/documentService";
 
 const DocumentHandler = () => {
   const token = useSelector((state) => state.auth.token);
@@ -254,3 +251,5 @@ export default DocumentHandler;
 //     deleteDocumentHandler,
 //   };
 // };
+
+// export default DocumentHandler;
