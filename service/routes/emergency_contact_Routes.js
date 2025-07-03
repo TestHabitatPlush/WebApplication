@@ -8,6 +8,26 @@
 //   getEmergencyContactsByUserId,
 //   updateEmergencyContact,
 //   deleteEmergencyContact,
+// } = require("../controllers/emergency_contact_controller");
+
+// router.post("/:userId", createEmergencyContactByUserId);
+// router.post("/:societyId/:userId", createEmergencyContactBySocietyId);
+// router.get("/:userId", getEmergencyContactsByUserId);
+// router.put("/:userId/:contactId", updateEmergencyContact);
+// router.delete("/:userId/:contactId", deleteEmergencyContact);
+
+// module.exports = router;
+
+
+
+// const express = require("express");
+// const router = express.Router();
+// const {
+//   createEmergencyContactByUserId,
+//   createEmergencyContactBySocietyId,
+//   getEmergencyContactsByUserId,
+//   updateEmergencyContact,
+//   deleteEmergencyContact,
 //   // getEmergencyContactsBySocietyId,
 //   getEmergencyContactsBySocietyAdmin,
 //   getEmergencyContactsForOtherUsers
@@ -40,15 +60,15 @@
 
 const express = require("express");
 const router = express.Router();
-const emergencyContactController = require("../controllers/emergency_Contact_Controller");
+const emergencyContactController = require("../controllers/emergency_contact_controller");
 
 // SUPER ADMIN ROUTES (userId based)
 router.post("/:userId", emergencyContactController.createEmergencyContactByUserId);
 router.get("/:userId", emergencyContactController.getEmergencyContactsByUserId);
 
 // SOCIETY ADMIN ROUTES (societyId and roleId based)
-router.post("/society/:societyId/:userId", emergencyContactController.createEmergencyContactBySocietyId);
-router.get("/society/:societyId/:userId", emergencyContactController.getEmergencyContactsBySocietyId);
+router.post("/:societyId/:userId", emergencyContactController.createEmergencyContactBySocietyId);
+router.get("/:societyId/:userId", emergencyContactController.getEmergencyContactsBySocietyId);
 
 // Resident creates emergency contact
 // router.post("/resident/:userId", emergencyContactController.createEmergencyContactByResident);

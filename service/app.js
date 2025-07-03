@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 const errorHandler = require("./middleware/errorHandler");
 
 // router paths
-const passwordReset = require("./routes/resetPasswordRoutes");
+// const passwordReset = require("./routes/resetPasswordRoutes");
 
 const userRouter = require("./routes/userRoutes");
 const familyRouter = require("./routes/userFamilyRoutes.js");
@@ -29,7 +29,9 @@ const discussionRouter = require("./routes/discussion_forum_Routes");
 const jobProfileRouter = require("./routes/jobProfileRoutes");
 const customerRoutes = require("./routes/customerRoutes");
 const parkingRoutes = require("./routes/parkingRoutes");
+const emergencyContact_router = require("./routes/emergency_contact_Routes");
 const gateAllocationRoutes = require("./routes/gateAllocationRoutes.js");
+const locationRouter = require("./routes/locationRoutes");
 const subscriptionPlanRoutes = require("./routes/subscriptionPlanRoutes");
 const roleRouter = require("./routes/roleRoutes");
 const adminRouter = require("./routes/adminRoutes");
@@ -39,8 +41,6 @@ const floorRouter = require("./routes/floorRoutes");
 const facilityManagement = require("./routes/facilityManagementRoutes");
 const unitTypeRouter = require("./routes/unitTypeRoutes");
 const gateRouter = require("./routes/gateRouter"); // Corrected variable name
-const emergencyContactrouter = require("./routes/emergency_contact_Routes.js");
-
 const {
   User,
   Customer,
@@ -116,7 +116,7 @@ app.use("/api/jobProfile", jobProfileRouter);
 app.use("/api/refusergroup", refUserGroupRouter);
 
 // notice announcement
-app.use("/api/notice", noticeAnnouncementRouter);
+app.use("/api/noticeAnnouncement", noticeAnnouncementRouter);
 
 // visitor management
 app.use("/api/visitormanagement", visitorManagementRouter);
@@ -152,13 +152,17 @@ app.use("/api", parkingRoutes);
 
 // passwordReset
 
-app.use("/api", passwordReset);
+// app.use("/api", passwordReset);
 
 // documentReset
 app.use("/api/documents", documentRouter);
 
-//emergencyContactrouter
-app.use("/api/emergencyContacts", emergencyContactrouter);
 // discussionForum
 app.use("/api/discussionForum",discussionRouter);
+
+// emergencyContact
+app.use("/api/emergencyContact", emergencyContact_router);
+
+app.use("/api/location", locationRouter);
+
 module.exports = app;

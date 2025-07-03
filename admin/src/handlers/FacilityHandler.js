@@ -6,7 +6,7 @@ const FacilityHandler = () => {
   const token = useSelector((state) => state.auth.token);
   const societyId = useSelector((state) => state.auth.user.Customer.customerId);
 
-  ;
+  
 
   const getFacilityHandler = async () => {
     try {

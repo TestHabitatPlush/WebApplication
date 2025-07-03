@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
 import { loginService } from "@/services/authServices";
 import { setUser, setToken, clearAuth } from "@/redux/slices/authSlice";
-import NavigationHandler from "@/handlers/NavigationHandler";
+import NavigationHandler from "./NavigationHandler";
 
 const AuthHandler = () => {
   const { navigateToHomePage } = NavigationHandler();

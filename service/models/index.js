@@ -11,6 +11,7 @@ const Document = require("./Document");
 const Role = require("./RoleModel");
 const Building = require("./Building");
 const Gate = require("./Gate");
+const Emergency_Contact = require("./Emergency_Contact");
 const Floor = require("./Floor");
 const Facility = require("./FacilityManagement");
 const UnitType = require("./UnitType");
@@ -26,10 +27,6 @@ const Ticket_Summery = require("./Ticket_Summery");
 const ref_ticket_status = require("./ref_ticket_status");
 const ref_ticket_catagorisation = require("./ref_ticket_catagorisation");
 const Socity_HelpDesk_Access_Management = require("./Socity_HelpDesk_Access_Management");
-const Emergency_Contact = require("./Emergency_Contact");
-const Country = require("./Country");
-const State = require("./State");
-const City = require("./City");
 
 Address.hasMany(Customer, { foreignKey: "addressId" });
 Customer.belongsTo(Address, { foreignKey: "addressId" });
@@ -75,7 +72,6 @@ module.exports = {
   SubscriptionPlan,
   Customer,
   Document,
-  Emergency_Contact,
   DiscussionForum,
   GateAllocation,
   Parking,
@@ -84,6 +80,7 @@ module.exports = {
   Building,
   JobProfile,
   Gate,
+  Emergency_Contact,
   Floor,
   Facility,
   UnitType,
@@ -99,7 +96,4 @@ module.exports = {
   ref_ticket_status,
   ref_ticket_catagorisation,
   Socity_HelpDesk_Access_Management,
-  Country,
-  State,
-  City
 };

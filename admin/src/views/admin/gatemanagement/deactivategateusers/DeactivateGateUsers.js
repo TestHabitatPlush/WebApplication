@@ -10,7 +10,7 @@ import ViewGateUserDetails from "./ViewGateUserDetails";
 import ProfileHandler from "../../../../handlers/ProfileHandler";
 import GateHandler from "../../../../handlers/GateHandler";
 
-const ApprovedGateUser = () => {
+const DeactivateGateUsers = () => {
   const paths = ["Gate Management", "Unapproved Gate Users"];
   const Heading = ["Unapproved Gate Users"];
 
@@ -21,38 +21,31 @@ const ApprovedGateUser = () => {
   const [guardProfile, setGuardProfile] = useState([]);
   const [gateAllocations, setGateAllocations] = useState([]);
   const [gateList, setGateList] = useState([]);
-
-  // on View Handler
   const [viewmodal, setViewModal] = useState(false);
   const [showViewFormData, setShowViewFormData] = useState(null);
   const toggleViewNoticeDetailModal = () => {
-    setViewModal((prev) => !prev); // Toggle modal visibility
+    setViewModal((prev) => !prev); 
   };
-
-
 
   const transformSecurityUserData = (response) => {
     if (!response || !Array.isArray(response)) return [];
 
     return response.map(element => ({
-      profileId: element.profileId, // Keep profileId if needed
-      firstName: element.firstName || '', // Default to empty string if undefined
+      profileId: element.profileId, 
+      firstName: element.firstName || '', 
       lastName: element.lastName || '',
       email: element.email || '',
-      mobileNo: element.mobileNumber || '', // Include mobile number if needed
-      profilePhoto: element.profilePhoto || null, // Handle profile photo
-      idProof: element.idProof || null, // Handle ID proof
-      roleId: element.roleId || null, // Include roleId
+      mobileNo: element.mobileNumber || '', 
+      profilePhoto: element.profilePhoto || null, 
+      idProof: element.idProof || null, 
+      roleId: element.roleId || null, 
       roleCategory: element.roleCategory || null,
-      status: element.status || 'inactive', // Default status if needed
-      createdAt: element.createdAt || null, // Include createdAt
-      updatedAt: element.updatedAt || null // Include updatedAt
+      status: element.status || 'inactive', 
+      createdAt: element.createdAt || null, 
+      updatedAt: element.updatedAt || null 
     }));
   };
 
-  // console.log(guardProfile);
-
-  // Pagination states
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
@@ -93,12 +86,6 @@ const ApprovedGateUser = () => {
 
   }, [])
 
-  // console.log(totalCount);
-  // console.log("Guard Profile: ", guardProfile);
-  // console.log("Gate Allocation Details: ",gateAllocations);
-  // console.log("Gate List: ", gateList);
-
-
   // Combining Data
   const combineData = ({ guardProfile, gateAllocations, gateList }) => {
     if (!Array.isArray(guardProfile) || !Array.isArray(gateAllocations) || !Array.isArray(gateList)) {
@@ -136,8 +123,6 @@ const ApprovedGateUser = () => {
     };
 
     const foundGuard = findGuardById(guardProfile, idValue);
-    // console.log("Found Guard",foundGuard);
-    // console.log(typeof (foundGuard));
     setShowViewFormData(foundGuard);
     setViewModal(true);
   }
@@ -158,7 +143,7 @@ const ApprovedGateUser = () => {
         <div className="flex space-x-4">
         <FaEye 
         onClick={() => onViewHandler(value)}
-        className="text-lg text-yellow-600 hover:text-yellow-700 cursor-pointer"/>
+        className="text-lg text-yellow-600 cursor-pointer hover:text-yellow-700"/>
         </div>
       )
     }
@@ -170,9 +155,7 @@ const ApprovedGateUser = () => {
       <div className="flex">
         <div className="w-full">
           <PageHeading heading={Heading} />
-          {/* <div className="flex flex-row font-sans text-2xl font-bold">
-            Approved Users
-          </div> */}
+       
           <div className="flex flex-row font-sans text-lg font-medium text-gray-700">
             TOTAL {totalGate} GATES AND {totalCount} USERS
           </div>
@@ -181,9 +164,9 @@ const ApprovedGateUser = () => {
               <input
                 type="text"
                 placeholder="Search by Gate/Users..."
-                className="px-4 py-4 border w-full border-gray-300 rounded-md focus:outline-none"
+                className="w-full px-4 py-4 border border-gray-300 rounded-md focus:outline-none"
               />
-              <FaSearch className="absolute right-7 top-5 text-lg text-gray-500" />
+              <FaSearch className="absolute text-lg text-gray-500 right-7 top-5" />
             </div>
           </div>
           <div className="flex flex-col mt-[35px] space-y-3">
@@ -205,13 +188,13 @@ const ApprovedGateUser = () => {
 
 
       {setViewModal && (<ViewGateUserDetails
-        isOpen={viewmodal} // Modal open state
-        onClose={toggleViewNoticeDetailModal} // Close modal handler
-        formData={showViewFormData} // The data to display in the modal
+        isOpen={viewmodal} 
+        onClose={toggleViewNoticeDetailModal} 
+        formData={showViewFormData} 
       />)}
 
     </div>
   );
 };
 
-export default ApprovedGateUser;
+export default DeactivateGateUsers;

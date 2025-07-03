@@ -149,18 +149,3 @@ exports.deleteFacilityRecord = async (req, res) => {
         return sendErrorResponse(res, "Internal server error", 500, error.message);
     }
 };
-exports.getFacilityDataById = async (req, res) => {
-    try {
-      const { facilityId } = req.params;
-      const facility = await Facility.findOne({ where: { facilityId } });
-  
-      if (!facility) {
-        return res.status(404).json({ message: "Facility not found" });
-      }
-  
-      return res.status(200).json(facility);
-    } catch (err) {
-      console.error("Error fetching Facility by ID:", err);
-      return res.status(500).json({ message: "Server error" });
-    }
-  };

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import Input from "../../../../components/shared/Input";
 import Button from "../../../../components/ui/Button";
 import DefineUnitHandler from "../../../../handlers/DefineUnitHandler";
@@ -9,7 +10,6 @@ import UnitTypeHandler from "../../../../handlers/building_management/UnitTypeHa
 
 const DefineUnitForm = () => {
   const { CreateDefineUnitHandler } = DefineUnitHandler();
-
   const { getFloorHandler } = FloorHandler();
   const { getUnitTypeHandler } = UnitTypeHandler();
   const { getBuildingshandler } = BuildingHandler();
@@ -24,60 +24,15 @@ const DefineUnitForm = () => {
     unitNumber: "",
   });
 
-  const getBuildings = () => {
-    getBuildingshandler()
-      .then((res) => {
-        console.log(res);
-        const optionData = res.data.data.map((el) => ({
-          label: el.buildingName,
-          value: el.buildingId,
-        }));
-        console.log(optionData);
-        setBuildingOptions([
-          { label: "Select Building", value: "" },
-          ...optionData,
-        ]);
-      })
-      .catch((error) => {
-        console.error("Error fetching buildings:", error);
-      });
-  };
+  const [defineUnit, setDefineUnit] = useState({
+    buildingId: "",
+    floorId: "",
+    unitTypeId: "",
+    unitNumber: "",
+    unitsize: "",
+  });
 
-  const getFloors = () => {
-    getFloorHandler()
-      .then((res) => {
-        console.log(res);
-        const optionData = res.data.data.map((el) => ({
-          label: `${el.floorName} (${el.shortForm})`,
-          value: el.floorId,
-          shortForm: el.shortForm,
-        }));
-
-        setFloorOptions([{ label: "Select Floor", value: "" }, ...optionData]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const getUnitTypes = () => {
-    getUnitTypeHandler()
-      .then((res) => {
-        console.log(res);
-        const optionData = res.data.data.map((el) => ({
-          label: el.unitTypeName,
-          value: el.unitTypeId,
-        }));
-
-        setUnitTypeOptions([
-          { label: "Select Unit Type", value: "" },
-          ...optionData,
-        ]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     getBuildings();
@@ -85,8 +40,51 @@ const DefineUnitForm = () => {
     getUnitTypes();
   }, []);
 
+  const getBuildings = () => {
+    getBuildingshandler()
+      .then((res) => {
+        const optionData = res.data.data.map((el) => ({
+          label: el.buildingName,
+          value: el.buildingId,
+        }));
+        setBuildingOptions([{ label: "Select Building", value: "" }, ...optionData]);
+      })
+      .catch((error) => {
+        console.error("Error fetching buildings:", error);
+        toast.error("Failed to load buildings");
+      });
+  };
 
-  const [errors, setErrors] = useState({}); // State to hold validation errors
+  const getFloors = () => {
+    getFloorHandler()
+      .then((res) => {
+        const optionData = res.data.data.map((el) => ({
+          label: `${el.floorName} (${el.shortForm})`,
+          value: el.floorId,
+          shortForm: el.shortForm,
+        }));
+        setFloorOptions([{ label: "Select Floor", value: "" }, ...optionData]);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Failed to load floors");
+      });
+  };
+
+  const getUnitTypes = () => {
+    getUnitTypeHandler()
+      .then((res) => {
+        const optionData = res.data.data.map((el) => ({
+          label: el.unitTypeName,
+          value: el.unitTypeId,
+        }));
+        setUnitTypeOptions([{ label: "Select Unit Type", value: "" }, ...optionData]);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Failed to load unit types");
+      });
+  };
 
   const validateFields = () => {
     const newErrors = {};
@@ -94,28 +92,32 @@ const DefineUnitForm = () => {
     if (!defineUnit.buildingId) newErrors.buildingId = "Building is required.";
     if (!defineUnit.floorId) newErrors.floorId = "Floor is required.";
     if (!defineUnit.unitTypeId) newErrors.unitTypeId = "Unit Type is required.";
+
     if (!defineUnit.unitNumber) {
       newErrors.unitNumber = "Unit Number is required.";
     } else if (!/^\d+$/.test(defineUnit.unitNumber)) {
       newErrors.unitNumber = "Unit Number must be digits only.";
     }
-    if (!defineUnit.unitsize) newErrors.unitsize = "Unit Size is required.";
+
+    if (!defineUnit.unitsize) {
+      newErrors.unitsize = "Unit Size is required.";
+    } else if (!/^\d+(\.\d+)?$/.test(defineUnit.unitsize)) {
+      newErrors.unitsize = "Unit Size must be a valid number (e.g., 1000 or 1000.5).";
+    }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+
+    const errorMessages = Object.values(newErrors);
+    if (errorMessages.length > 0) {
+      toast.error(errorMessages[0]); // show only the first error
+      return false;
+    }
+
+    return true;
   };
 
-  const [defineUnit, setDefineUnit] = useState({
-    buildingId: "",
-    floorId: "",
-    unitTypeId: "",
-    unitNumber: "",
-    unitsize:"",
-  });
-
-  const handleChange = (e, data) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
     setDefineUnit({
       ...defineUnit,
       [name]: value,
@@ -135,145 +137,97 @@ const DefineUnitForm = () => {
       floorId: "",
       unitNumber: "",
     });
+    setErrors({});
   };
 
-  const submitHandler = async() => {
-    console.log("define unit", defineUnit);
-      //  if (!validateFields()) return;
-    const un = unitName.buildingId + unitName.floorId + unitName.unitNumber;
-    await CreateDefineUnitHandler({ unitName: un, ...defineUnit }).then((res) => {
+  const submitHandler = async () => {
+    if (!validateFields()) return;
+
+    const unitNameStr = unitName.buildingId + unitName.floorId + unitName.unitNumber;
+    try {
+      const res = await CreateDefineUnitHandler({ unitName: unitNameStr, ...defineUnit });
       if (res.status === 201) {
-        console.log(res);
+        toast.success("Unit created successfully!");
         resetFormData();
-      };
-    }).catch(err=>{})
+      }
+    } catch (err) {
+      console.error("Error submitting form:", err);
+      toast.error("Failed to create unit. Please try again.");
+    }
   };
 
   const onBuildingChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
-    setDefineUnit({
-      ...defineUnit,
-      [name]: value,
-    });
-    const id = parseInt(value);
-    const bName = buildingOptions.find((el) => el.value === id);
-    setUnitName((prev) => ({ ...prev, buildingId: bName.label.toUpperCase() }));
+    setDefineUnit({ ...defineUnit, [name]: value });
+    const selected = buildingOptions.find((el) => el.value === parseInt(value));
+    setUnitName((prev) => ({ ...prev, buildingId: selected?.label?.toUpperCase() || "" }));
   };
 
-  function onFloorChange(e) {
+  const onFloorChange = (e) => {
     const { name, value } = e.target;
-    setDefineUnit({
-      ...defineUnit,
-      [name]: value,
-    });
-    const id = parseInt(value);
-    const bName = floorOptions.find((el) => el.value === id);
-    setUnitName((prev) => ({
-      ...prev,
-      floorId: bName.shortForm.toUpperCase(),
-    }));
-  }
+    setDefineUnit({ ...defineUnit, [name]: value });
+    const selected = floorOptions.find((el) => el.value === parseInt(value));
+    setUnitName((prev) => ({ ...prev, floorId: selected?.shortForm?.toUpperCase() || "" }));
+  };
 
-  function onUnitNumberChange(e) {
+  const onUnitNumberChange = (e) => {
     const { name, value } = e.target;
-    setDefineUnit({
-      ...defineUnit,
-      [name]: value,
-    });
-    setUnitName((prev) => ({
-      ...prev,
-      unitNumber: value,
-    }));
-  }
+    setDefineUnit({ ...defineUnit, [name]: value });
+    setUnitName((prev) => ({ ...prev, unitNumber: value }));
+  };
 
   return (
-    <div className="p-10 my-5 border rounded-lg bg-gray-100">
-      <div className="grid grid-cols-3 gap-5 items-center py-6">
+    <div className="p-10 my-5 bg-gray-100 border rounded-lg">
+      <div className="grid items-center grid-cols-3 gap-5 py-6">
         <Select
-          label={
-              <div>
-                Tower / Building (Name / No.) <span className="text-red-500">*</span>
-              </div>
-            }
+          label={<div>Tower / Building (Name / No.) <span className="text-red-500">*</span></div>}
           options={buildingOptions}
           value={defineUnit.buildingId}
           onChange={onBuildingChange}
           name="buildingId"
-          color="blue"
-          size="md"
-          className="py-[14px]"
+          error={errors.buildingId}
         />
-        <Select 
-          label={
-              <div>
-                Select Floor<span className="text-red-500">*</span>
-              </div>
-            }
+        <Select
+          label={<div>Select Floor<span className="text-red-500">*</span></div>}
           options={floorOptions}
           value={defineUnit.floorId}
           onChange={onFloorChange}
           name="floorId"
-          color="blue"
-          size="md"
-          className="py-[14px]"
+          error={errors.floorId}
         />
         <Select
-          label={
-              <div>
-                Unit Type<span className="text-red-500">*</span>
-              </div>
-            }
+          label={<div>Unit Type<span className="text-red-500">*</span></div>}
           options={unitTypeOptions}
           value={defineUnit.unitTypeId}
           onChange={handleChange}
           name="unitTypeId"
-          color="blue"
-          size="md"
-          className="py-[14px]"
+          error={errors.unitTypeId}
         />
         <Input
-          label={
-              <div>
-               Unit Number<span className="text-red-500">*</span>
-              </div>
-            }
+          label={<div>Unit Number<span className="text-red-500">*</span></div>}
           type="text"
           name="unitNumber"
           placeholder="Enter Unit No"
-          size="lg"
           value={defineUnit.unitNumber}
           onChange={onUnitNumberChange}
+          error={errors.unitNumber}
         />
         <Input
-          label= {
-              <div>
-               Unit Size (Sq.feet)<span className="text-red-500">*</span>
-              </div>
-            }
+          label={<div>Unit Size (Sq.feet)<span className="text-red-500">*</span></div>}
           type="text"
           name="unitsize"
           placeholder="Enter Super Built-up Area"
-          size="lg"
           value={defineUnit.unitsize}
           onChange={handleChange}
+          error={errors.unitsize}
         />
-
         <div>
-          <h3 className="">
-            <strong>Unit Name</strong> :{" "}
-            {`${unitName.buildingId}${unitName.floorId}${unitName.unitNumber}`}{" "}
-          </h3>
+          <h3><strong>Unit Name</strong>: {`${unitName.buildingId}${unitName.floorId}${unitName.unitNumber}`}</h3>
         </div>
       </div>
 
       <div className="flex justify-center mt-5">
-        <Button
-          className="max-w-sm"
-          type="submit"
-          onClick={submitHandler}
-          size="lg"
-        >
+        <Button className="max-w-sm" type="submit" onClick={submitHandler}>
           Submit
         </Button>
       </div>

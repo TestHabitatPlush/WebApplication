@@ -1,4 +1,4 @@
-import NavigationHandler from "../handlers/NavigationHandler";
+import NavigationHandler from "@/handlers/NavigationHandler";
 import { FaEllipsisH, FaSearch, FaUserAlt } from "react-icons/fa";
 import { FaBuilding, FaUsers } from "react-icons/fa6";
 

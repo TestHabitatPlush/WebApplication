@@ -7,69 +7,57 @@ import Button from "../../../components/ui/Button";
 import EmergencyContactHandler from "../../../handlers/EmergencyContactHandler";
 
 const ContactDetails = () => {
-  const { createEmergencyContactBySocietyAdminHandler } = EmergencyContactHandler();
+  const { createEmergencyContactBySuperAdminHandler } = EmergencyContactHandler();
 
-  const token = useSelector((state) => state.auth.token);
-  const userId = useSelector((state) => state.auth.user.userId);
-  const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
-
-  const paths = ["Emergency Contact", "Contact Details"];
-  const Heading = ["Add Contact Information"];
-
-  const [formData, setFormData] = useState({
-    name: "",
-    econtactNo1: "",
-    econtactNo2: "",
-    emergencyContactType: "hospital",
-    customContactType: "", // used only when "others" selected
-    address: "",
-    state: "",
-    city: "",
-    pin: ""
-  });
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const preparedData = {
-      ...formData,
-      emergencyContactType:
-        formData.emergencyContactType === "others"
-          ? formData.customContactType
-          : formData.emergencyContactType,
-    };
-
-    delete preparedData.customContactType; // remove temporary field before submission
-
-    const result = await createEmergencyContactBySocietyAdminHandler({
-      societyId,
-      userId,
-      token,
-      data: preparedData,
+  
+    const paths = ["Emergency Contact", "Contact Details"];
+    const Heading = ["Add Contact Information"];
+  
+    const userId = useSelector((state) => state.auth.user?.userId); // ✅ Ensure not undefined
+    const token = useSelector((state) => state.auth.token);
+  
+    const [formData, setFormData] = useState({
+      name: "",
+      econtactNo1: "",
+      econtactNo2: "",
+      emergencyContactType: "hospital",
+      address: "",
+      state: "",
+      city: "",
+      pin: ""
     });
-
-    if (result) {
+  
+    const handleInputChange = (e) => {
+      const { name, value } = e.target;
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+  
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+  
+      if (!userId || !token) {
+        console.error("Missing userId or token");
+        return;
+      }
+  
+      await createEmergencyContactBySuperAdminHandler({
+        userId,
+        token,
+        data: formData,
+      });
+  
       setFormData({
         name: "",
         econtactNo1: "",
         econtactNo2: "",
         emergencyContactType: "hospital",
-        customContactType: "",
         address: "",
         state: "",
         city: "",
         pin: ""
       });
-    }
-  };
+    };
+  
 
   return (
     <div className="px-5 py-6">
