@@ -155,7 +155,7 @@ app.use("/api", parkingRoutes);
 // app.use("/api", passwordReset);
 
 // documentReset
-app.use("/api/document", documentRouter);
+app.use("/api/documents", documentRouter);
 
 // discussionForum
 app.use("/api/discussionForum",discussionRouter);
