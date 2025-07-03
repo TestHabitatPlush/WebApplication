@@ -1,4 +1,4 @@
-// 
+
 // import axios from "axios";
 
 // export const createDocumentBySocietyService = (formData, societyId, token) => {
@@ -158,4 +158,4 @@ export const deleteDocumentService = (documentId, token) => {
       Authorization: `Bearer ${token}`,
     },
   });
-};
+}

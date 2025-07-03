@@ -728,3 +728,7 @@ const DocumentList = () => {
 export default DocumentList;
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/priyanka

@@ -254,5 +254,3 @@ export default DocumentHandler;
 //     deleteDocumentHandler,
 //   };
 // };
-
-// export default DocumentHandler;
