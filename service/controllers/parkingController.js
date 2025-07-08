@@ -150,6 +150,7 @@ exports.updateParking = async (req, res) => {
     return sendErrorResponse(res, "Internal server error", 500, error.message);
   }
 };
+<<<<<<< HEAD
 exports.getParkingDataById = async (req, res) => {
   try {
     const { parkingId } = req.params;
@@ -165,6 +166,8 @@ exports.getParkingDataById = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+=======
+>>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 
 exports.createVehicleBySocietyId = async (req, res) => {
   try {
@@ -270,6 +273,7 @@ exports.getVehicleBySocietyId = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+<<<<<<< HEAD
 exports.getVehicleDataByIdForview = async (req, res) => {
   try {
     const { vehicleId } = req.params;
@@ -285,6 +289,9 @@ exports.getVehicleDataByIdForview = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+=======
+
+>>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 exports.getVehicleByUserId = async (req, res) => {
   try {
     const { userId } = req.params;

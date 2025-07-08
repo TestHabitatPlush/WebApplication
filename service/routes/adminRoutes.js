@@ -1,6 +1,6 @@
 
 const express = require("express");
-const { createSocietyModerator } = require("../controllers/userController");
+const { createSocietyModerator,updateSocietyModerator } = require("../controllers/userController");
 const multer = require('multer');
 const path = require('path');
 
@@ -20,5 +20,6 @@ const upload = multer({ storage });
 
 // adminRouter.post("/create-society-user",upload.any(), createSocietyModerator);
 adminRouter.post("/create-society-user", createSocietyModerator);
+adminRouter.put("/moderator/:userId", updateSocietyModerator);
 
 module.exports = adminRouter;

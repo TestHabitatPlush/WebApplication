@@ -16,38 +16,29 @@ import {
 import Button from "../../../../components/ui/Button";
 import Dialog from "../../../../components/ui/Dialog";
 import ViewSocietyDetailsModal from "../view_society/components/ViewSocietyDetailsModal";
+import Dialog from "../../../../components/ui/Dialog";
+import Button from "../../../../components/ui/Button";
 import CustomerHandler from "../../../../handlers/superadmin/CustomerHandler";
 
-const customerHandlerInstance = CustomerHandler();
-
-const ActionData = ({ data, openModal, refreshList, token }) => {
+const ActionData = ({ data, openModal, refreshList }) => {
   const dispatch = useDispatch();
+  const { updateCustomerStatusHandler } = CustomerHandler();
+  const token = useSelector((state) => state.auth.token); // ✅ get token from Redux
+
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleActivateClick = async () => {
     setIsLoading(true);
-    const newStatus = await customerHandlerInstance.updateCustomerStatusHandler(
-      data.customerId,
-      "active",
-      token
-    );
-    if (newStatus === "active") {
-      refreshList();
-    }
+    const newStatus = await updateCustomerStatusHandler(data.customerId, "active", token); // ✅ pass token
+    if (newStatus === "active") refreshList();
     setIsLoading(false);
   };
 
   const confirmInactivate = async () => {
     setIsLoading(true);
-    const newStatus = await customerHandlerInstance.updateCustomerStatusHandler(
-      data.customerId,
-      "inactive",
-      token
-    );
-    if (newStatus === "inactive") {
-      refreshList();
-    }
+    const newStatus = await updateCustomerStatusHandler(data.customerId, "inactive", token); // ✅ pass token
+    if (newStatus === "inactive") refreshList();
     setShowConfirmModal(false);
     setIsLoading(false);
   };
@@ -139,57 +130,67 @@ const SocietyList = () => {
   const [viewModal, setViewModal] = useState(false);
 
   const openModal = () => setViewModal(true);
+
   const closeModal = () => {
     setViewModal(false);
     dispatch(resetCustomerFormOperationType());
   };
 
-  const fetchUserList = useCallback(async () => {
-    try {
-      const result = await customerHandlerInstance.getCustomerHandler(
-        { page, pageSize, ...filters },
-        token
-      );
+  const fetchUserList = async () => {
+  try {
+    const result = await getCustomerHandler({
+      page,
+      pageSize,
+      ...filters,
+    });
 
-      const rawData = result?.data?.data || [];
+    if (!result?.data?.data) {
+      console.error("Invalid response shape:", result);
+      return;
+    }
 
-      dispatch({
-        type: "society/updateData",
-        payload: {
-          data: rawData,
-          total: result.data.total,
-          totalPages: result.data.totalPages,
-        },
-      });
-
-      const enrichedData = rawData.map((item) => ({
-        ...item,
+    const transformedData = {
+      data: result.data.data.map((item) => ({
+        customerId: item.customerId,
+        customerName: item.customerName,
+        customerType: item.customerType,
+        email: item.email,
+        phone: item.phone,
+        establishedYear: item.establishedYear,
+        societyType: item.societyType,
+        status: item.status,
         actions: (
           <ActionData
-            key={`action-${item.customerId}`}
             data={item}
             openModal={openModal}
             refreshList={fetchUserList}
-            token={token}
           />
         ),
-      }));
+      })),
+      total: result.data.total,
+      totalPages: result.data.totalPages,
+    };
 
-      setTableData(enrichedData);
-    } catch (error) {
-      console.error("Failed to fetch user list:", error);
-    }
-  }, [page, pageSize, filters, token, dispatch]);
+    dispatch({
+      type: "society/updateData",
+      payload: transformedData,
+    });
+
+  } catch (error) {
+    console.error("Failed to fetch user list:", error);
+  }
+};
+
 
   useEffect(() => {
     fetchUserList();
-  }, [fetchUserList]);
+  }, [dispatch, page, pageSize, filters]);
 
   if (status === "loading") return <div>Loading...</div>;
 
   return (
     <div>
-      <h1 className="mb-4 text-xl font-bold">User List</h1>
+      <h1>User List</h1>
 
       <ReusableTable
         columns={columns}

@@ -139,7 +139,11 @@ const Unit = sequelize.define(
     },
     unitsize: {
       type: DataTypes.STRING,
+<<<<<<< HEAD
       allowNull: true,
+=======
+      allowNull: true, 
+>>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
     },
   },
   {

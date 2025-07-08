@@ -18,6 +18,7 @@
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "country-state-city": "^3.2.1",
     "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
     "express": "^4.20.0",
@@ -29,13 +30,13 @@
     "qrcode": "^1.5.4",
     "sequelize": "^6.37.3",
     "socket.io": "^4.8.1",
-    "update": "^0.7.4",
+    "update": "^0.4.2",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
     "mysql2": "^3.11.0",
-    "nodemon": "^3.1.4",
+    "nodemon": "^3.1.10",
     "sequelize-cli": "^6.6.2"
   }
 }
