@@ -150,24 +150,6 @@ exports.updateParking = async (req, res) => {
     return sendErrorResponse(res, "Internal server error", 500, error.message);
   }
 };
-<<<<<<< HEAD
-exports.getParkingDataById = async (req, res) => {
-  try {
-    const { parkingId } = req.params;
-    const parking = await Parking.findOne({ where: { parkingId } });
-
-    if (!parking) {
-      return res.status(404).json({ message: "Parking not found" });
-    }
-
-    return res.status(200).json(parking);
-  } catch (err) {
-    console.error("Error fetching Parking by ID:", err);
-    return res.status(500).json({ message: "Server error" });
-  }
-};
-=======
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 
 exports.createVehicleBySocietyId = async (req, res) => {
   try {
@@ -273,25 +255,7 @@ exports.getVehicleBySocietyId = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-<<<<<<< HEAD
-exports.getVehicleDataByIdForview = async (req, res) => {
-  try {
-    const { vehicleId } = req.params;
-    const vehicle = await Vehicle.findOne({ where: { vehicleId } });
 
-    if (!vehicle) {
-      return res.status(404).json({ message: "vehicle not found" });
-    }
-
-    return res.status(200).json(vehicle);
-  } catch (err) {
-    console.error("Error fetching vehicle by ID:", err);
-    return res.status(500).json({ message: "Server error" });
-  }
-};
-=======
-
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 exports.getVehicleByUserId = async (req, res) => {
   try {
     const { userId } = req.params;

@@ -301,7 +301,6 @@ exports.getQRCode = async (req, res) => {
     console.error("Error fetching QR Code:", err);
     return sendErrorResponse(res, "Internal server error", 500, err.message);
   }
-<<<<<<< HEAD
 };
 exports.getVisitorEntriesBySender = async (req, res) => {
   try {
@@ -358,6 +357,4 @@ exports.getVisitorEntriesBySender = async (req, res) => {
     console.error("Error fetching visitor entries:", err);
     return sendErrorResponse(res, "Internal server error", 500, err.message);
   }
-=======
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 };

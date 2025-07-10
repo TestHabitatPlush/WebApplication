@@ -171,9 +171,6 @@ const loginToken = async (req, res) => {
   }
 };
 
-<<<<<<< HEAD
-module.exports = { loginUser, tokenSignIn, jobProfileLogin, loginToken };
-=======
  module.exports = { loginUser, tokenSignIn, jobProfileLogin, loginToken };
 
 // require("dotenv").config();
@@ -388,4 +385,3 @@ module.exports = { loginUser, tokenSignIn, jobProfileLogin, loginToken };
 //   jobProfileLogin,
 //   loginToken,
 // };
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384

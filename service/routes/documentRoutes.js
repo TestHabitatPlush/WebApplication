@@ -25,12 +25,7 @@ documentRouter.post("/user/:userId", documentController.createDocumentByUserId);
 
 documentRouter.get("/society/:societyId/:userId", documentController.getDocumentBySocietyId);
 documentRouter.get("/user/:userId", documentController.getDocumentByUserId);
-<<<<<<< HEAD
-documentRouter.get("/:documentId", documentController.getDocumentById);
-
-=======
 documentRouter.get("/:userId", documentController.getAllDocuments);
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 
 documentRouter.put("/society/:documentId",documentController.updateDocumentBySocietyId);
 documentRouter.put("/user/:documentId",documentController.updateDocumentByUserId);

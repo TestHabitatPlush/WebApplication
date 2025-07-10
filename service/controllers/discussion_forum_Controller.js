@@ -121,17 +121,10 @@ const getDiscussionByUserId = async (req, res) => {
         });
     }
 };
-<<<<<<< HEAD
-//Update discussion by society ID
-const updateDiscussionBySocietyId = async (req, res) => {
-    //upload.fields([{ name: 'document' }])(req, res, async (err) => {
-      //  if (err) return res.status(400).json({ message: "File upload error", error: err.message });
-=======
 // Update discussion by society ID
 const updateDiscussionBySocietyId = async (req, res) => {
     upload.fields([{ name: 'document' }])(req, res, async (err) => {
         if (err) return res.status(400).json({ message: "File upload error", error: err.message });
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 
         try {
             const { discussionId } = req.params;
@@ -141,20 +134,6 @@ const updateDiscussionBySocietyId = async (req, res) => {
                 return res.status(404).json({ message: "Discussion not found" });
             }
 
-<<<<<<< HEAD
-          //  const { discussionTitle, discussionDescription, userGroupId } = req.body;
-            const {  discussionDescription } = req.body;
-
-            // let document = existingDoc.document;
-
-            // if (req.files?.document) {
-            //     if (document && fs.existsSync(document)) fs.unlinkSync(document);
-            //     document = req.files.document[0].path;
-            // }
-            await existingDoc.update({  discussionDescription});
-
-            //await existingDoc.update({ discussionTitle, discussionDescription, userGroupId, document });
-=======
             const { discussionTitle, discussionDescription, userGroupId } = req.body;
             let document = existingDoc.document;
 
@@ -164,24 +143,14 @@ const updateDiscussionBySocietyId = async (req, res) => {
             }
 
             await existingDoc.update({ discussionTitle, discussionDescription, userGroupId, document });
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 
             return res.status(200).json({ message: "Discussion updated successfully", data: existingDoc });
         } catch (err) {
             return res.status(500).json({ message: "Failed to update discussion", error: err.message });
         }
-<<<<<<< HEAD
-   
-};
-
-
-
-  
-=======
     });
 };
 
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 // Update discussion by user ID
 const updateDiscussionByUserId = async (req, res) => {
     upload.fields([{ name: 'document' }])(req, res, async (err) => {
@@ -237,26 +206,6 @@ const deleteDiscussion = async (req, res) => {
         });
     }
 };
-<<<<<<< HEAD
-//View data by Id
-const getDiscussionById = async (req, res) => {
-    try {
-    
-      const { discussionId } = req.params;
-      const discussion = await DiscussionForum.findOne({ where: { discussionId } });
-      
-      if (!discussion) {
-        return res.status(404).json({ message: "Discussion not found" });
-      }
-  
-      return res.status(200).json(discussion);
-    } catch (err) {
-      console.error("Error fetching Discussion by ID:", err);
-      return res.status(500).json({ message: "Server error" });
-    }
-  };
-=======
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 
 module.exports = {
     createDiscussionBySocietyId,
@@ -265,10 +214,5 @@ module.exports = {
     getDiscussionByUserId,
     updateDiscussionBySocietyId,
     updateDiscussionByUserId,
-<<<<<<< HEAD
-    deleteDiscussion,
-    getDiscussionById
-=======
     deleteDiscussion
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 };

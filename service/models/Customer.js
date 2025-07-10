@@ -71,9 +71,6 @@ const Customer = sequelize.define(
   }
 );
 // 
-<<<<<<< HEAD
-module.exports = Customer;
-=======
 module.exports = Customer;
 
 // const { DataTypes } = require("sequelize");
@@ -155,4 +152,3 @@ module.exports = Customer;
 // 
 // module.exports = Customer;
 // 
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384

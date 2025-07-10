@@ -41,10 +41,6 @@ const floorRouter = require("./routes/floorRoutes");
 const facilityManagement = require("./routes/facilityManagementRoutes");
 const unitTypeRouter = require("./routes/unitTypeRoutes");
 const gateRouter = require("./routes/gateRouter"); // Corrected variable name
-<<<<<<< HEAD
-const emergencyContactRouter = require("./routes/emergency_contact_Routes");
-=======
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 const {
   User,
   Customer,
@@ -161,13 +157,6 @@ app.use("/api", parkingRoutes);
 // documentReset
 app.use("/api/documents", documentRouter);
 
-<<<<<<< HEAD
-// Emergency Contact
-
-app.use("/api/emergencyContact", emergencyContactRouter);
-
-=======
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 // discussionForum
 app.use("/api/discussionForum",discussionRouter);
 

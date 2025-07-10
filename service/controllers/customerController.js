@@ -60,15 +60,9 @@ const getAllCustomers = async (req, res) => {
 
     const whereClause = {};
     if (filters.name)
-<<<<<<< HEAD
-      whereClause.customerName = `{ [Op.iLike]: %${filters.name}% }`; // Case-insensitive search
-    if (filters.type) whereClause.customerType = filters.type;
-    if (filters.email) whereClause.email = `{ [Op.iLike]: %${filters.email}% }`;
-=======
       whereClause.customerName = { [Op.iLike]: `%${filters.name}%` }; // Case-insensitive search
     if (filters.type) whereClause.customerType = filters.type;
     if (filters.email) whereClause.email = { [Op.iLike]: `%${filters.email}%` };
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
     if (filters.phone) whereClause.phone = filters.phone;
     if (filters.subscriptionId)
       whereClause.subscriptionId = filters.subscriptionId;
@@ -230,8 +224,4 @@ module.exports = {
   updateCustomer,
   updateCustomerStatus,
   deleteCustomer,
-<<<<<<< HEAD
 };
-=======
-};
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384

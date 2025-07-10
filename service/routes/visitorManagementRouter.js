@@ -17,12 +17,8 @@ const {
   deleteVisitorController,
   getVisiterEntry,
   getVisitorById,
-<<<<<<< HEAD
   getQRCode,getVisitorEntriesBySender
   
-=======
-  getQRCode
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 } = require("../controllers/visitorNewVisitEntryController");
 const {
   createVisitorRelation,
@@ -59,10 +55,6 @@ visitorManagementRouter.post(
   createVisitorNewVisitEntryController
 );
 
-<<<<<<< HEAD
-
-=======
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 // Delete a visitor by ID
 visitorManagementRouter.delete("/visitor-list/:visit_entry_Id", deleteVisitorController);
 //Get data by ID
@@ -81,13 +73,10 @@ visitorManagementRouter.get("/visitorapprovalmatrix", visitorapprovalmatrix);
 // Qr Code View By Id
 visitorManagementRouter.get("/:visit_entry_Id", getVisiterEntry);
 
-<<<<<<< HEAD
 // Correct route for fetching visitor entries by senderId
 visitorManagementRouter.get(
   "/visitor-entries/sender/:senderId",
   getVisitorEntriesBySender
 );
 
-=======
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 module.exports = visitorManagementRouter;

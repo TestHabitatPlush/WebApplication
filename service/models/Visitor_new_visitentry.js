@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 // const { DataTypes } = require("sequelize");
 // const sequelize = require("../config/database");
 // const Customer = require("./Customer");
@@ -96,7 +94,6 @@
 
 // model visitor_new_visitentry.js
 
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 const Customer = require("./Customer");

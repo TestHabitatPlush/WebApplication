@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 const express = require("express");
 const userRouter = express.Router();
 const userController = require("../controllers/userController")
@@ -27,24 +23,16 @@ userRouter.get("/management/:societyId", userController.getManagement_committee)
 
 userRouter.put("/moderators/:id", userController.updateSocietyStatus);
 
-<<<<<<< HEAD
 userRouter.get('/resident/approvedUser/:societyId', userController.getAllApprovedUsers);
 userRouter.get('/resident/deactive/:societyId', userController.getAllDeactiveUsers);
-=======
-// userRouter.post("/resident/approve", userController.approveUser);
- userRouter.get('/resident/approvedUser/:societyId', userController.getAllApprovedUsers);
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 // 
 // 
 // userRouter.post("/resident/reject", userController.rejectUser);
  userRouter.get('/resident/deactive/:societyId', userController.getAllDeactiveUsers);
 module.exports = userRouter;
-<<<<<<< HEAD
 
 
 
 
 
 
-=======
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384

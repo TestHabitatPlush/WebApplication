@@ -265,8 +265,4 @@ const ApprovedGateUser = () => {
   );
 };
 
-<<<<<<< HEAD
 export default ApprovedGateUser;
-=======
-export default ApprovedGateUser;
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384

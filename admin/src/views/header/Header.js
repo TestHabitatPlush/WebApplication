@@ -128,7 +128,7 @@ import CustomerHandler from "../../handlers/superadmin/CustomerHandler";
 
 const Header = () => {
   const [isopen, setIsopen] = useState(false);
-  const [customerName, setCustomerName] = useState(""); // Store name based on societyId
+  const [customerName, setCustomerName] = useState("");
   const dropdownRef = useRef(null);
 
   const user = useSelector((state) => state.auth.user);
@@ -138,8 +138,6 @@ const Header = () => {
   const toggleDropdown = () => {
     setIsopen(!isopen);
   };
-
-  // Fetch customer name using user.societyId
   const fetchSocietiesData = async () => {
     try {
       const result = await getCustomerHandler();
@@ -180,28 +178,28 @@ const Header = () => {
         <div className="font-sans font-bold text-[19px] text-slate">
           {customerName || "Loading..."}
         </div>
-        <div className="flex flex-row items-center space-x-3">
-          <div>
-            <IoChatbubble className="text-[20px] text-slate" />
-          </div>
-          <div>
-            <IoIosNotifications className="text-[30px] text-slate" />
-          </div>
-          <div className="relative inline-block text-left" ref={dropdownRef}>
-            <img
-              src={Image1}
-              alt="profile"
-              height={40}
-              width={52}
-              className="rounded-full"
-              onClick={toggleDropdown}
-            />
-          </div>
+      </div>
+
+      <div className="flex flex-row items-center space-x-3">
+        <IoChatbubble className="text-[20px] text-slate" />
+        <IoIosNotifications className="text-[30px] text-slate" />
+
+        <div className="relative" ref={dropdownRef}>
+          <img
+            src={Image1}
+            alt="profile"
+            height={40}
+            width={52}
+            className="rounded-full cursor-pointer"
+            onClick={toggleDropdown}
+          />
+
           {isopen && (
-            <div className="absolute w-48 mt-1 bg-white rounded-md shadow-lg top-full ring-1 ring-black ring-opacity-5">
+            <div className="absolute right-0 z-50 w-48 mt-2 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
               <div className="py-1">
-                <span className="block px-4 py-2 text-base text-gray-700 hover:bg-gray-200" >
-                {/* onClick={ViewProfileDetails} */}
+                <span
+                  className="block px-4 py-2 text-base text-gray-700 cursor-pointer hover:bg-gray-200"
+                >
                   Profile
                 </span>
                 <span
@@ -209,19 +207,15 @@ const Header = () => {
                 >
                   Contact Us
                 </span>
-                 <div
-                 className="flex items-center w-full gap-2 p-2 text-red-500 bg-red-100 rounded-md cursor-pointer"
-                    onClick={logoutHandler}
-                  >
-            {/* {<FiLogOut className="text-base text-red-500" />} */}
-            logout
-          </div>
-                {/* <span
-                  onClick={logoutHandler}
-                  className="block px-4 py-2 text-base text-red-500 hover:bg-gray-200"
+                <span
+                  onClick={() => {
+                    console.log("Logging out clicked");
+                    logoutHandler();
+                  }}
+                  className="block px-4 py-2 text-base text-red-500 cursor-pointer hover:bg-gray-200"
                 >
                   Logout
-                </span> */}
+                </span>
               </div>
             </div>
           )}

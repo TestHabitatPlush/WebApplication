@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 const { User, Unit, Role } = require("../models");
 const { getAllUsersService, getUserByIdService } = require("../services/userService");
 //const { createUnit, getUnit, getAllUnits } = require("../controllers/unitController.js");
@@ -97,18 +93,9 @@ const { Op } = require("sequelize");
 //  };
 
 const createSocietyModerator = async (req, res) => {
-<<<<<<< HEAD
-  try {
-    const { address, email, roleId, ...customerData } = req.body;
-
-    const existingUser = await User.findOne({ where: { email } });
-    if (existingUser) {
-      return res.status(400).json({ message: "Email already in use" });
-=======
   upload.fields([{ name: "photo" }])(req, res, async (err) => {
     if (err) {
       return res.status(400).json({ message: "File upload error", error: err.message });
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
     }
 
     try {
@@ -126,37 +113,6 @@ const createSocietyModerator = async (req, res) => {
       }
       const photoPath = req.files?.photo?.[0]?.path || null;
 
-<<<<<<< HEAD
-    const role = await Role.findByPk(roleId);
-    if (!role) {
-      return res.status(400).json({ message: "Invalid role ID" });
-    }
-
-    const password = "admin"; // Default password
-    const managementDesignation = role.roleName;
-
-    const result = await User.create({
-      ...customerData,
-      email,
-      roleId,
-      addressId,
-      password,
-      livesHere: true,
-      primaryContact: true,
-      isManagementCommittee: true,
-      managementDesignation,
-      status: "pending", // ensure default status
-    });
-
-    res.status(201).json({
-      message: "Society Moderator created successfully",
-      result,
-    });
-  } catch (error) {
-    console.error("Error creating society moderator:", error);
-    res.status(500).json({ error: error.message });
-  }
-=======
       const password = "admin";
       const managementDesignation = role.roleName;
 
@@ -183,7 +139,6 @@ const createSocietyModerator = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   });
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 };
 
 const updateSocietyModerator = async (req, res) => {
@@ -302,8 +257,6 @@ const updateSocietyStatus = async (req, res) => {
 };
 
 
-<<<<<<< HEAD
-=======
 // const createSocietyResident = async (req, res) => {
 //   upload.fields([{name:"photo"}])( req,res,async(err) =>{
 //     if(err){
@@ -376,7 +329,6 @@ const updateSocietyStatus = async (req, res) => {
 //     res.status(500).json({ error: error.message });
 //   }
 // };
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 const createSocietyResident = async (req, res) => {
   upload.fields([{ name: "photo" }])(req, res, async (err) => {
     if (err) {
@@ -398,18 +350,8 @@ const createSocietyResident = async (req, res) => {
 
       const { societyId } = req.params;
 
-<<<<<<< HEAD
-    const password = "Himansu";
-
-    let unit = null;
-    if (unitId) {
-      unit = await Unit.findByPk(unitId);
-      if (!unit) {
-        return res.status(400).json({ message: "Invalid unit ID" });
-=======
       if (!societyId) {
         return res.status(400).json({ message: "Society ID is required in the URL" });
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
       }
 
       // Parse address if it's a JSON string
@@ -494,47 +436,7 @@ const createSocietyResident = async (req, res) => {
       console.error("Error creating society resident:", error);
       res.status(500).json({ error: error.message });
     }
-<<<<<<< HEAD
-
-    const role = await Role.findByPk(roleId);
-    if (!role) {
-      return res.status(400).json({ message: "Invalid role ID" });
-    }
-
-    const managementDesignation = role.roleName;
-    const residentDetails = {
-      salutation,
-      firstName,
-      lastName,
-      password,
-      countryCode: address.countryCode || 91,
-      mobileNumber,
-      alternateNumber,
-      email,
-      roleId,
-      livesHere: true,
-      primaryContact: true,
-      isManagementCommittee: false,
-      managementDesignation,
-      status: "pending",
-      addressId,
-      societyId,
-      unitId: unit ? unit.unitId : null,
-    };
-
-    const result = await User.create(residentDetails);
-
-    res.status(201).json({
-      message: "Society Resident created successfully",
-      result,
-    });
-  } catch (error) {
-    console.error("Error creating society resident:", error);
-    res.status(500).json({ error: error.message });
-  }
-=======
   });
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 };
 
 //BulkCreateResidents
@@ -984,34 +886,20 @@ const getAllApprovedUsers = async (req, res) => {
     res.status(500).json({ error: "Failed to retrieve deactivated users", details: err.message });
   }
 };
-<<<<<<< HEAD
-=======
 
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 module.exports = {
   createUser,
   getAllUsers,
   getUserById,
   createSocietyModerator,
-<<<<<<< HEAD
-=======
   updateSocietyModerator,
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
   updateSocietyStatus,
   createSocietyResident,
   updateResidentBySocietyId,
   bulkCreateResidents,
   getResidentBySocietyId,
-<<<<<<< HEAD
-  updateResidentBySocietyId,
-  //getSocietyModerator,
-  getManagement_committee,
-  getAllApprovedUsers,
-  getAllDeactiveUsers
-=======
   //getSocietyModerator,
   getManagement_committee,
   getAllApprovedUsers,
   getAllDeactiveUsers,
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 };

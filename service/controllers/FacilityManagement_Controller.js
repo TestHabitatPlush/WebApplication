@@ -149,7 +149,6 @@ exports.deleteFacilityRecord = async (req, res) => {
         return sendErrorResponse(res, "Internal server error", 500, error.message);
     }
 };
-<<<<<<< HEAD
 exports.getFacilityDataById = async (req, res) => {
     try {
       const { facilityId } = req.params;
@@ -165,5 +164,3 @@ exports.getFacilityDataById = async (req, res) => {
       return res.status(500).json({ message: "Server error" });
     }
   };
-=======
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
