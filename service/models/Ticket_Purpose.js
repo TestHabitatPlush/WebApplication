@@ -38,7 +38,7 @@ const Ticket_Purpose = sequelize.define(
   },
   {
     tableName: "Ticket_Purpose",
-    timestamps: true, // Disable default timestamps if you're using custom ones
+    timestamps: true, 
   }
 );
 

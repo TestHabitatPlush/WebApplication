@@ -1,65 +1,86 @@
-const subscriptionPlanService = require("../services/subscriptionPlanService");
+const subscriptionService = require("../services/subscriptionPlanService");
 
-const createSubscriptionPlan = async (req, res) => {
+const createSubscription = async (req, res) => {
   try {
-    const plan = await subscriptionPlanService.createSubscriptionPlan(req.body);
-    res
-      .status(201)
-      .json({ message: "Subscription created successfully", plan });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+    const subscription = await subscriptionService.createSubscription(req.body);
+    res.status(201).json({ message: "Subscription created", subscription });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
 };
 
-const getAllSubscriptionPlans = async (req, res) => {
+const getAllSubscriptions = async (req, res) => {
   try {
-    const plans = await subscriptionPlanService.getAllSubscriptionPlans();
-    res.status(200).json(plans);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+    const subscriptions = await subscriptionService.getAllSubscriptions();
+    res.status(200).json(subscriptions);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
 };
 
-const getSubscriptionPlanById = async (req, res) => {
+const getSubscriptionById = async (req, res) => {
   try {
-    const plan = await subscriptionPlanService.getSubscriptionPlanById(
-      req.params.id
-    );
-    if (plan) {
-      res.status(200).json(plan);
-    } else {
-      res.status(404).json({ error: "Subscription Plan not found" });
+    const subscription = await subscriptionService.getSubscriptionById(req.params.id);
+    if (!subscription) {
+      return res.status(404).json({ error: "Subscription not found" });
     }
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(200).json(subscription);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
 };
 
-const updateSubscriptionPlan = async (req, res) => {
+const updateSubscription = async (req, res) => {
   try {
-    const plan = await subscriptionPlanService.updateSubscriptionPlan(
-      req.params.id,
-      req.body
-    );
-    res.status(200).json(plan);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+    const subscription = await subscriptionService.updateSubscription(req.params.id, req.body);
+    if (!subscription) {
+      return res.status(404).json({ error: "Subscription not found" });
+    }
+    res.status(200).json({ message: "Subscription updated", subscription });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
 };
 
-const deleteSubscriptionPlan = async (req, res) => {
+const deleteSubscription = async (req, res) => {
   try {
-    await subscriptionPlanService.deleteSubscriptionPlan(req.params.id);
-    res.status(204).json();
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+    const deletedCount = await subscriptionService.deleteSubscription(req.params.id);
+    if (!deletedCount) {
+      return res.status(404).json({ error: "Subscription not found" });
+    }
+    res.status(200).json({
+      message: `Subscription with id ${req.params.id} deleted successfully`
+    });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+const getSubscriptionsExpiringSoon = async (req, res) => {
+  try {
+    const subscriptions = await subscriptionService.getSubscriptionsExpiringSoon();
+    res.status(200).json(subscriptions);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+const runExpiryCheck = async (req, res) => {
+  try {
+    const count = await subscriptionService.expireSubscriptions();
+    res.status(200).json({ message: `Marked ${count} subscriptions as expired.` });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
 };
 
 module.exports = {
-  createSubscriptionPlan,
-  getAllSubscriptionPlans,
-  getSubscriptionPlanById,
-  updateSubscriptionPlan,
-  deleteSubscriptionPlan,
+  createSubscription,
+  getAllSubscriptions,
+  getSubscriptionById,
+  updateSubscription,
+  deleteSubscription,
+  getSubscriptionsExpiringSoon,
+  runExpiryCheck,
+
 };

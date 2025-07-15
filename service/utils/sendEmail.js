@@ -25,5 +25,12 @@ const sendEmail = async (to, subject, text) => {
     throw new Error('Failed to send email');
   }
 };
+const twilio = require("twilio")(accountSid, authToken);
+
+await twilio.messages.create({
+  body: `Your subscription has expired.`,
+  from: "+1234567890",
+  to: "+911234567890"
+});
 
 module.exports = sendEmail;
