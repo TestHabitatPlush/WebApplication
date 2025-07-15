@@ -45,15 +45,24 @@ const DocumentHandler = () => {
     }
   };
 
-  const getDocumentBySocietyHandler = async () => {
-    try {
-      const res = await getDocumentBySocietyService(societyId, userId, token);
-      if (res.status === 200) return res.data;
-    } catch (err) {
-      toast.error("Failed to fetch society documents.");
-      console.error(err);
-    }
-  };
+  // const getDocumentBySocietyHandler = async () => {
+  //   try {
+  //     const res = await getDocumentBySocietyService(societyId, userId, token);
+  //     if (res.status === 200) return res;
+  //   } catch (err) {
+  //     toast.error("Failed to fetch society documents.");
+  //     console.error(err);
+  //   }
+  // };
+const getDocumentBySocietyHandler = async (societyId, userId, params = { page: 0, pageSize: 1000 }) => {
+  try {
+    const res = await getDocumentBySocietyService(societyId, userId, token, params);
+    if (res.status === 200) return res;
+  } catch (err) {
+    toast.error("Failed to fetch society documents.");
+    console.error(err);
+  }
+};
 
   // ===== USER =====
   const createDocumentByUserHandler = async (data) => {

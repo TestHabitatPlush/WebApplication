@@ -52,7 +52,7 @@ const UpdateParkingDetailsModal = ({ isOpen, onClose, formData, handleEditParkin
               onChange={handleInput}
             />
           </div>
-          <div>
+          {/* <div>
             <Input
               label="Parking Slot Allocation (Unit Name):"
               value={parkingForm?.unitName || ""}
@@ -62,7 +62,7 @@ const UpdateParkingDetailsModal = ({ isOpen, onClose, formData, handleEditParkin
               size="lg"
               onChange={handleInput}
             />
-          </div>
+          </div> */}
           <div>
             <Input
               label="  Add Vehicle Details:"

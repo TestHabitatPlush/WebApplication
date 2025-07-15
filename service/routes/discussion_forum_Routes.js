@@ -10,6 +10,7 @@ discussionRouter.get("/user/:userId",discussionController.getDiscussionByUserId)
 
 discussionRouter.put("/society/:discussionId",discussionController.updateDiscussionBySocietyId);
 discussionRouter.put("/user/:discussionId",discussionController.updateDiscussionByUserId);
+discussionRouter.get("/:discussionId",discussionController.getDiscussionById);
 
 discussionRouter.delete("/:discussionId",discussionController.deleteDiscussion);
 
