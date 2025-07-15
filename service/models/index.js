@@ -23,10 +23,10 @@ const ref_visitor_type = require("./ref_visitor_type");
 const Visitor_new_visitentry = require("./Visitor_new_visitentry");
 const Ticket_Details = require("./Ticket_Details");
 const Ticket_Purpose = require("./Ticket_Purpose");
-const Ticket_Summery = require("./Ticket_Summery");
+const Ticket_Summary = require("./Ticket_Summary");
 const ref_ticket_status = require("./ref_ticket_status");
 const ref_ticket_catagorisation = require("./ref_ticket_catagorisation");
-const Socity_HelpDesk_Access_Management = require("./Socity_HelpDesk_Access_Management");
+const Society_HelpDesk_Access_Management = require("./Society_HelpDesk_Access_Management");
 
 Address.hasMany(Customer, { foreignKey: "addressId" });
 Customer.belongsTo(Address, { foreignKey: "addressId" });
@@ -92,8 +92,8 @@ module.exports = {
   Visitor_new_visitentry,
   Ticket_Details,
   Ticket_Purpose,
-  Ticket_Summery,
+  Ticket_Summary,
   ref_ticket_status,
   ref_ticket_catagorisation,
-  Socity_HelpDesk_Access_Management,
+  Society_HelpDesk_Access_Management,
 };

@@ -20,7 +20,7 @@ parkingRoutes.put("/parking/:societyId/:parkingId", updateParking);
 parkingRoutes.post("/vehicle/:societyId", createVehicleBySocietyId);
 parkingRoutes.post("/vehicle/user/:userId",createVehicleByUserId);
 
-parkingRoutes.get("/society/:societyId/vehicles", getVehicleBySocietyId);
-parkingRoutes.get("/user/:userId/vehicles", getVehicleByUserId);
+parkingRoutes.get("/society/:societyId", getVehicleBySocietyId);
+parkingRoutes.get("/user/:userId", getVehicleByUserId);
 
 module.exports = parkingRoutes;

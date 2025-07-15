@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // "use client";
 
 // import { useEffect, useState, useRef } from "react";
@@ -215,8 +214,6 @@
 // };
 
 // export default AddDocument;
-=======
->>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
 
 
 
