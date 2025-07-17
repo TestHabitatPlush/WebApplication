@@ -1,4 +1,3 @@
-
 import React, { useEffect, useMemo, useState } from "react";
 import DocumentHandler from "../../../../handlers/DocumentHandler";
 import {
@@ -79,8 +78,6 @@ const DocumentListTable = () => {
     fetchDocuments();
   }, [visibilityFilter, pageSize]);
 
-
-  
   const pagedDocs = useMemo(() => {
     const reversed = [...documents].reverse();
     const start = pageIndex * pageSize;
@@ -193,6 +190,40 @@ const DocumentListTable = () => {
         className: "text-left",
       },
       {
+        Header: "Applicable For",
+        accessor: "roleCategories",
+        Cell: ({ value }) => {
+          if (!Array.isArray(value) || value.length === 0) return "All";
+
+          const labelMap = {
+            society_owner: "Owner",
+            society_owner_family: "Owner",
+            society_tenant: "Tenant",
+            society_tenant_family: "Tenant",
+            primary_member: "Primary Member",
+           // management_committee: "Management Committee",
+           // society_moderator: "Moderator",
+          };
+
+          const allRoles = [
+            "society_owner",
+            "society_owner_family",
+            "society_tenant",
+            "society_tenant_family",
+          ];
+
+          const isAll =
+            allRoles.every((role) => value.includes(role)) && value.length === allRoles.length;
+
+          if (isAll) return "All";
+
+          const uniqueLabels = [...new Set(value.map((v) => labelMap[v] || v))];
+
+          return uniqueLabels.join(", ");
+        },
+        className: "text-left",
+      },
+      {
         Header: "Uploaded On",
         accessor: "createdAt",
         Cell: ({ value }) => new Date(value).toLocaleDateString(),
@@ -289,4 +320,3 @@ const DocumentListTable = () => {
 };
 
 export default DocumentListTable;
-

@@ -20,13 +20,21 @@ const VisitHandler = () => {
   console.log("Auth State:", authState);
   console.log("Society State:", societyState);
   console.log("Customer State:", customerState); // ⬅️ added
-
-  // Get sender and society IDs
+ // Get sender and society IDs
   const senderId =
     authState?.user?._id || authState?.user?.userId || null;
 
-  //const societyId = authState?.user?.Customer?.customerId ;
-  const societyId =2;
+
+  // const societyId = societyState?.society?.id
+  // ||customerState?.customer?.customerId
+  //  ||authState?.user?.Customer?.customerId 
+  //  ||authState?.user?.customerId||
+  //  null;
+
+ 
+
+
+  const societyId =3;
   const token = authState.token;
 
   if (!senderId || !societyId) {

@@ -58,24 +58,15 @@ const EmergencyContactHandler = () => {
     }
   };
 
-//   const getEmergencyContactSocietyHandler = async (societyId, userId, params = {}) => {
-//     try {
-//       const response = await getEmergencyContactBySocietyIdService(societyId, userId, params, token);
-//       return response.data;
-//     } catch (error) {
-//       toast.error("Error fetching Emergency Contacts: " + (error.response?.data?.message || error.message));
-//       return null;
-//     }
-//   };
-const getEmergencyContactSocietyHandler = async (societyId, userId, params = {}) => {
-  try {
-    const response = await getEmergencyContactBySocietyIdService(societyId, userId, params, token);
-    return response; // ✅ Return full response
-  } catch (error) {
-    toast.error("Error fetching Emergency Contacts: " + (error.response?.data?.message || error.message));
-    return null;
-  }
-};
+  const getEmergencyContactSocietyHandler = async (societyId, userId, params = {}) => {
+    try {
+      const response = await getEmergencyContactBySocietyIdService(societyId, userId, params, token);
+      return response.data;
+    } catch (error) {
+      toast.error("Error fetching Emergency Contacts: " + (error.response?.data?.message || error.message));
+      return null;
+    }
+  };
 
   const deleteEmergencyContactByIdHandler = async (contactId) => {
     try {

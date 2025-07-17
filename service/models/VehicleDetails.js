@@ -36,12 +36,12 @@ const Vehicle = sequelize.define(
         len: [6, 12],
       },
     },
-    fastagNumber: {
+  fastagNumber: {
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
-        len: [12, 16],
-        isNumeric: true,
+        len: [12,16],    
+        is: /^[A-Z0-9]+$/i, 
       },
     },
     vehicleType: {

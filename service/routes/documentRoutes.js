@@ -24,6 +24,8 @@ documentRouter.post("/society/:societyId/:userId", documentController.createDocu
 documentRouter.post("/user/:userId", documentController.createDocumentByUserId);
 
 documentRouter.get("/society/:societyId/:userId", documentController.getDocumentBySocietyId);
+
+
 documentRouter.get("/user/:userId", documentController.getDocumentByUserId);
 documentRouter.get("/:userId", documentController.getAllDocuments);
 
