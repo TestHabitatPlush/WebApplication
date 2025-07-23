@@ -206,7 +206,23 @@ const deleteDiscussion = async (req, res) => {
         });
     }
 };
-
+//View data by Id
+const getDiscussionById = async (req, res) => {
+    try {
+    
+      const { discussionId } = req.params;
+      const discussion = await DiscussionForum.findOne({ where: { discussionId } });
+      
+      if (!discussion) {
+        return res.status(404).json({ message: "Discussion not found" });
+      }
+  
+      return res.status(200).json(discussion);
+    } catch (err) {
+      console.error("Error fetching Discussion by ID:", err);
+      return res.status(500).json({ message: "Server error" });
+    }
+  };
 module.exports = {
     createDiscussionBySocietyId,
     createDiscussionByUserId,
@@ -214,5 +230,6 @@ module.exports = {
     getDiscussionByUserId,
     updateDiscussionBySocietyId,
     updateDiscussionByUserId,
-    deleteDiscussion
+    deleteDiscussion,
+    getDiscussionById
 };

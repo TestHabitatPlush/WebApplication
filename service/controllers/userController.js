@@ -1,4 +1,4 @@
-const { User, Unit, Role } = require("../models");
+const { User, Unit, Role,Customer } = require("../models");
 const { getAllUsersService, getUserByIdService } = require("../services/userService");
 //const { createUnit, getUnit, getAllUnits } = require("../controllers/unitController.js");
 const addressService = require("../services/addressService");
@@ -195,6 +195,82 @@ const updateSocietyModerator = async (req, res) => {
     }
   })
   }
+// const updateSocietyStatus = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     // const {status} = req.body;
+//     const { address, roleId,status, ...updateData } = req.body;
+
+//     const moderator = await User.findByPk(id);
+//     if (!moderator) {
+//       await t.rollback();
+//       return res.status(404).json({ message: "Moderator not found" });
+//     }
+
+//     if (address) {
+//       const updatedAddress = await addressService.updateAddress(moderator.addressId, address);
+//       updateData.addressId = updatedAddress.addressId;
+//     }
+
+//     let newRole = null;
+//     if (roleId) {
+//       newRole = await Role.findByPk(roleId);
+//       if (!newRole) {
+//         return res.status(400).json({ message: "Invalid roleId" });
+//       }
+//       updateData.roleId = roleId;
+//       updateData.managementDesignation = newRole.roleName;
+//     }
+
+//     if (status && ["pending", "inactive", "active"].includes(status)) {
+//       updateData.status = status;
+
+//       const currentRole = await Role.findByPk(moderator.roleId);
+//       const currentCategory = currentRole?.roleCategory;
+
+//       if (["society_moderator", "society_facility_manager"].includes(currentCategory)) {
+//         const residentRoles = await Role.findAll({
+//           where: {
+//             roleCategory: ["society_owner", "society_owner_family", "society_tenant", "society_tenant_family"],
+//           },
+//         });
+//         const residentRoleIds = residentRoles.map((r) => r.roleId);
+
+//         await User.update(
+//           { status },
+//           {
+//             where: {
+//               societyId: moderator.societyId,
+//               roleId: residentRoleIds,
+//             },
+//             transaction:t,
+//           }
+//         );
+//         await Customer.update(
+//           { status },
+//           {
+//             where: {
+//               customerId: moderator.societyId,
+//             },
+//             transaction:t,
+//           }
+//         );
+//       }
+//     }
+
+//     await moderator.update(updateData, { transaction: t });
+//     await t.commit();
+//     res.status(200).json({
+//       message: "Moderator updated successfully",
+//       updatedModerator: moderator,
+//     });
+//   } catch (err) {
+//     await t.rollback();
+//     console.error("Error updating moderator:", err);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// };
+
 const updateSocietyStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -255,7 +331,6 @@ const updateSocietyStatus = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 // const createSocietyResident = async (req, res) => {
 //   upload.fields([{name:"photo"}])( req,res,async(err) =>{

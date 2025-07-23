@@ -19,10 +19,11 @@ const subscriptionController = require("../controllers/subscriptionPlanControlle
 
 router.post("/subscription-plans", subscriptionController.createSubscription);
 router.get("/subscription-plans", subscriptionController.getAllSubscriptions);
-router.get("/expiring-soon", subscriptionController.getSubscriptionsExpiringSoon);
 router.get("/subscription-plans/:id", subscriptionController.getSubscriptionById);
-router.get("/subscriptions/run-expiry-check", subscriptionController.runExpiryCheck);
 router.put("/subscription-plans/:id", subscriptionController.updateSubscription);
+router.put("/subscription-plans/status/:id", subscriptionController.updateSubscriptionStatus);
 router.delete("/subscription-plans/:id", subscriptionController.deleteSubscription);
+router.get("/expiring-soon", subscriptionController.getSubscriptionsExpiringSoon);
+router.get("/subscription-plans/expire-check", subscriptionController.runExpiryCheck);
 
 module.exports = router;

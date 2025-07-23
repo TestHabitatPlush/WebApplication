@@ -168,6 +168,44 @@ const updateCustomer = async (req, res) => {
 //   }
 // };
 
+// const updateCustomerStatus = async (req, res) => {
+//   const { status } = req.body;
+//   const customerId = req.params.id;
+
+//   if (!status) {
+//     return res.status(400).json({ error: "Status is required." });
+//   }
+
+//   const t = await sequelize.transaction();
+//   try {
+//     const [updatedCustomer] = await Customer.update(
+//       { status },
+//       { where: { customerId }, transaction: t }
+//     );
+//     const [updatedUsers] = await User.update(
+//       { status },
+//       { where: { societyId:customerId }, transaction: t }
+//     );
+
+//     if (updatedCustomer === 0 && updatedUsers === 0) {
+//       await t.rollback();
+//       return res.status(200).json({
+//         message: "Customer and related user statuses updated successfully",
+//         // data: { customerId, status },
+//       });
+//     }
+
+//     await t.commit();
+//     return res.status(200).json({
+//       message: "Customer and related user statuses updated successfully",
+//       data: { customerId, status },
+//     });
+//   } catch (error) {
+//     await t.rollback();
+//     return res.status(400).json({ error: error.message });
+//   }
+// };
+
 const updateCustomerStatus = async (req, res) => {
   const { status } = req.body;
   const customerId = req.params.id;
@@ -205,6 +243,7 @@ const updateCustomerStatus = async (req, res) => {
     return res.status(400).json({ error: error.message });
   }
 };
+
 
 
 const deleteCustomer = async (req, res) => {

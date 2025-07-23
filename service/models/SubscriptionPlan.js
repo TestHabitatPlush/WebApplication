@@ -8,7 +8,11 @@ const SubscriptionPlan = sequelize.define("SubscriptionPlan", {
     primaryKey: true,
   },
   planName: {
-    type: DataTypes.STRING,
+    type: DataTypes.ENUM("Silver", "Gold", "Platinum", "Custom"),
+    allowNull: false,
+  },
+  billingCycle: {
+    type: DataTypes.ENUM("monthly", "quarterly", "yearly", "half-yearly", "custom"),
     allowNull: false,
   },
   startDate: {
@@ -20,8 +24,11 @@ const SubscriptionPlan = sequelize.define("SubscriptionPlan", {
     allowNull: true,
   },
   price: {
-    type: DataTypes.DECIMAL(10,2),
+    type: DataTypes.DECIMAL(10, 2),
     allowNull: true,
+    validate: {
+      min: 0,
+    },
   },
   discountPercentage: {
     type: DataTypes.FLOAT,
@@ -29,7 +36,7 @@ const SubscriptionPlan = sequelize.define("SubscriptionPlan", {
     defaultValue: 0,
   },
   finalPrice: {
-    type: DataTypes.DECIMAL(10,2),
+    type: DataTypes.DECIMAL(10, 2),
     allowNull: true,
   },
   status: {

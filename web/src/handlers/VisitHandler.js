@@ -26,7 +26,7 @@ const VisitHandler = () => {
     authState?.user?._id || authState?.user?.userId || null;
 
   //const societyId = authState?.user?.Customer?.customerId ;
-  const societyId =2;
+  const societyId =3;
   const token = authState.token;
 
   if (!senderId || !societyId) {

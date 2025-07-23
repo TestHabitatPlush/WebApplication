@@ -139,8 +139,21 @@ exports.resetPassword = async (req, res) => {
       return res.status(400).json({ error: 'Invalid or expired token' });
     }
 
+<<<<<<< HEAD
+    // Hash the new password before storing
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    //Update the password and clear the resetToken fields
+    // await user.update({
+    // password: hashedPassword,
+    // resetToken: null,
+    // resetTokenExpiration: null,
+    // });
+
+=======
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+>>>>>>> e2eb08a5aec9899dc858dd234d25cf2815fa6384
     user.password = hashedPassword;
     user.resetToken = null;
     user.resetTokenExpiration = null;

@@ -6,7 +6,8 @@ import AddVehicle from "./AddVehicle";
 import VehicleList from "./VehicleList";
 
 const Vehicle = () => {
-  return (
+  return ( 
+  <main>
     <DashboardLayout
       header={<DashboardHeader />}
       leftContent={<DashboardLeftContents />}
@@ -18,6 +19,7 @@ const Vehicle = () => {
       }
       
     />
+  </main>
   );
 };
 export default Vehicle;

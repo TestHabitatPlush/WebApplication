@@ -1,5 +1,3 @@
-
-
 // import toast from "react-hot-toast";
 // import { useSelector } from "react-redux";
 // import {
@@ -14,28 +12,21 @@
 
 // const DocumentHandler = () => {
 //   const token = useSelector((state) => state.auth.token);
-//   // const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
-//   // console.log("societyId hdevk", useSelector((state) => state.auth.user?.Customer?.customerId));
-//   // const societyId = 2;
-
 //   const userId = useSelector((state) => state.auth.user?.userId);
-
-//   // console.log("userId kgchk", useSelector((state) => state.auth.user));
-
-
+//   // const societyId = useSelector((state) => state.auth.user?.Customer?.customerId); 
 
 //   const buildFormData = (data) => {
 //     const formData = new FormData();
 //     if (data.documentName) formData.append("documentName", data.documentName);
 //     if (data.document) formData.append("document", data.document);
+//     if (data.picture) formData.append("picture", data.picture);
 //     return formData;
 //   };
 
-//   // ===== SOCIETY =====
 //   const createDocumentBySocietyHandler = async (data) => {
 //     try {
 //       const formData = buildFormData(data);
-//       const res = await createDocumentBySocietyService(formData, societyId, token);
+//       const res = await createDocumentBySocietyService(formData, societyId, userId, token);
 
 //       if (res.status === 201) {
 //         toast.success("Document created for society.");
@@ -50,7 +41,7 @@
 
 //   const getDocumentBySocietyHandler = async () => {
 //     try {
-//       const res = await getDocumentBySocietyService(societyId, token);
+//       const res = await getDocumentBySocietyService(societyId, userId, token);
 
 //       if (res.status === 200) {
 //         return res.data;
@@ -61,7 +52,6 @@
 //     }
 //   };
 
-//   // ===== USER =====
 //   const createDocumentByUserHandler = async (data) => {
 //     try {
 //       const formData = buildFormData(data);
@@ -81,9 +71,10 @@
 //   const getDocumentByUserHandler = async () => {
 //     try {
 //       const res = await getDocumentByUserService(userId, token);
+//       console.log("hjwvwchkgvdkchg", res);
 
 //       if (res.status === 200) {
-//         return res.data.data;
+//         return res.data.documents;
 //       }
 //     } catch (err) {
 //       toast.error("Failed to fetch user documents.");
@@ -91,7 +82,6 @@
 //     }
 //   };
 
-//   // ===== COMMON =====
 //   const updateDocumentHandler = async (data, documentId, isSociety = true) => {
 //     try {
 //       const formData = buildFormData(data);
@@ -138,7 +128,6 @@
 
 // export default DocumentHandler;
 
-
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import {
@@ -154,7 +143,7 @@ import {
 const DocumentHandler = () => {
   const token = useSelector((state) => state.auth.token);
   const userId = useSelector((state) => state.auth.user?.userId);
-  // const societyId = useSelector((state) => state.auth.user?.Customer?.customerId); 
+  const societyId = useSelector((state) => state.auth.user?.Customer?.customerId); // uncomment if using
 
   const buildFormData = (data) => {
     const formData = new FormData();
@@ -168,11 +157,7 @@ const DocumentHandler = () => {
     try {
       const formData = buildFormData(data);
       const res = await createDocumentBySocietyService(formData, societyId, userId, token);
-
-      if (res.status === 201) {
-        toast.success("Document created for society.");
-      }
-
+      if (res.status === 201) toast.success("Document created for society.");
       return res;
     } catch (err) {
       toast.error("Failed to create society document.");
@@ -183,10 +168,7 @@ const DocumentHandler = () => {
   const getDocumentBySocietyHandler = async () => {
     try {
       const res = await getDocumentBySocietyService(societyId, userId, token);
-
-      if (res.status === 200) {
-        return res.data;
-      }
+      if (res.status === 200) return res.data;
     } catch (err) {
       toast.error("Failed to fetch society documents.");
       console.error(err);
@@ -197,11 +179,7 @@ const DocumentHandler = () => {
     try {
       const formData = buildFormData(data);
       const res = await createDocumentByUserService(formData, userId, token);
-
-      if (res.status === 201) {
-        toast.success("Document created for user.");
-      }
-
+      if (res.status === 201) toast.success("Document created for user.");
       return res;
     } catch (err) {
       toast.error("Failed to create user document.");
@@ -211,12 +189,13 @@ const DocumentHandler = () => {
 
   const getDocumentByUserHandler = async () => {
     try {
-      const res = await getDocumentByUserService(userId, token);
-      console.log("hjwvwchkgvdkchg", res);
-
-      if (res.status === 200) {
-        return res.data.documents;
+      if (!userId) {
+        toast.error("User not authenticated");
+        return;
       }
+      const res = await getDocumentByUserService(userId, token);
+      console.log("Documents fetched:", res);
+      if (res.status === 200) return res.data.documents;
     } catch (err) {
       toast.error("Failed to fetch user documents.");
       console.error(err);
@@ -226,15 +205,10 @@ const DocumentHandler = () => {
   const updateDocumentHandler = async (data, documentId, isSociety = true) => {
     try {
       const formData = buildFormData(data);
-
       const res = isSociety
         ? await updateDocumentBySocietyService(formData, documentId, token)
         : await updateDocumentByUserService(formData, documentId, token);
-
-      if (res.status === 200) {
-        toast.success("Document updated successfully.");
-      }
-
+      if (res.status === 200) toast.success("Document updated successfully.");
       return res;
     } catch (err) {
       toast.error("Failed to update document.");
@@ -245,11 +219,7 @@ const DocumentHandler = () => {
   const deleteDocumentHandler = async (documentId) => {
     try {
       const res = await deleteDocumentService(documentId, token);
-
-      if (res.status === 200) {
-        toast.success("Document Permanently Deleted.");
-      }
-
+      if (res.status === 200) toast.success("Document Permanently Deleted.");
       return res;
     } catch (err) {
       toast.error("Failed to delete document.");
