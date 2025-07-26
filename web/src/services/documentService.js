@@ -23,15 +23,22 @@ export const createDocumentByUserService = (formData, userId, token) => {
   });
 };
 
+// export const getDocumentBySocietyService = (societyId, userId, token) => {
+//   const url = `${process.env.NEXT_PUBLIC_API_URL}/documents/society/2/3`;
+//   return axios.get(url, {
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//     },
+//   });
+// };
 export const getDocumentBySocietyService = (societyId, userId, token) => {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/documents/society/2/3`;
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/documents/society/${societyId}/${userId}`;
   return axios.get(url, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
 };
-
 export const getDocumentByUserService = (userId, token) => {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/documents/user/${userId}`;
   console.log("url hvfhkgfye", url);

@@ -1,8 +1,8 @@
-// "use client";
+"use client";
 
-// import Parking from "@/views";
-// const Page = () => {
-//   return <main>{<Parking /> }</main>;
-// };
+import Parking from "@/views/parking";
+const Page = () => {
+  return <main><Parking /> </main>;
+};
 
-// export default Page;
+export default Page;

@@ -58,7 +58,7 @@ const ReusableTable = ({
 
   return (
     <div>
-      <table {...getTableProps()} className="min-w-full table-auto border-collapse border border-gray-300">
+      <table {...getTableProps()} className="min-w-full border border-collapse border-gray-300 table-auto">
         <thead className="bg-gray-200">
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
@@ -66,7 +66,7 @@ const ReusableTable = ({
                 <th
                   {...column.getHeaderProps()}
                   key={column.id}
-                  className="px-4 py-2 border-b border-gray-300 text-left text-sm font-medium text-gray-600"
+                  className="px-4 py-2 text-sm font-medium text-left text-gray-600 border-b border-gray-300"
                 >
                   {column.render('Header')}
                 </th>
@@ -83,7 +83,7 @@ const ReusableTable = ({
                   <td
                     {...cell.getCellProps()}
                     key={cell.column.id}
-                    className="px-4 py-2 border-b border-gray-300 text-sm text-gray-700"
+                    className="px-4 py-2 text-sm text-gray-700 border-b border-gray-300"
                   >
                     {cell.render('Cell')}
                   </td>
@@ -95,19 +95,19 @@ const ReusableTable = ({
       </table>
 
       {/* Pagination Controls */}
-      <div className="flex justify-between items-center mt-4">
+      <div className="flex items-center justify-between mt-4">
         <div>
           <button
             onClick={onPreviousPage}
             disabled={!canPreviousPage}
-            className="px-3 py-1 bg-blue-500 text-white rounded-md mr-2 disabled:opacity-50"
+            className="px-3 py-1 mr-2 text-white bg-blue-500 rounded-md disabled:opacity-50"
           >
             {'<'}
           </button>
           <button
             onClick={onNextPage}
             disabled={!canNextPage}
-            className="px-3 py-1 bg-blue-500 text-white rounded-md mr-2 disabled:opacity-50"
+            className="px-3 py-1 mr-2 text-white bg-blue-500 rounded-md disabled:opacity-50"
           >
             {'>'}
           </button>
@@ -128,7 +128,7 @@ const ReusableTable = ({
                 setPageIndex(page);
                 gotoPage(page);
               }}
-              className="ml-2 border rounded-md w-16 text-center"
+              className="w-16 ml-2 text-center border rounded-md"
             />
           </span>
         </div>
@@ -140,7 +140,7 @@ const ReusableTable = ({
             setPageSize(newSize);
             internalSetPageSize(newSize);
           }}
-          className="ml-4 border rounded-md p-1"
+          className="p-1 ml-4 border rounded-md"
         >
           {[10, 20, 30, 40, 50].map(size => (
             <option key={size} value={size}>

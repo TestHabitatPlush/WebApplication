@@ -4,7 +4,9 @@ import CommunityDirectories from "./components/directories/CommunityDirectories"
 import Cookies from "js-cookie";
 import { AnnoucementPreview } from "../announcement";
 import { FaCar, FaUserTie , FaUsers , FaUsersGear  } from "react-icons/fa6";
-const Dashboard = () => {
+import InitSocietySetter from "@/components/shared/InitSocietySetter";
+
+const Dashboard = ({ children }) => {
   useEffect(() => {
     console.log(Cookies.get("auth"));
     console.log(document.cookie);
@@ -69,6 +71,7 @@ const Dashboard = () => {
   
   return (
     <div className="space-y-10">
+      <InitSocietySetter />{ children } 
       {/* <PaymentDueReminder
         amountDue={4000}
         dueDate={new Date().toLocaleDateString()}
