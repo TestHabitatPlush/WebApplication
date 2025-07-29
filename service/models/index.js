@@ -21,11 +21,11 @@ const Notice = require("./Notice");
 const ref_visitor_type_of_entry = require("./ref_visitor_type_of_entry");
 const ref_visitor_type = require("./ref_visitor_type");
 const Visitor_new_visitentry = require("./Visitor_new_visitentry");
-const Ticket_Details = require("./Ticket_Details");
-const Ticket_Purpose = require("./Ticket_Purpose");
-const Ticket_Summary = require("./Ticket_Summary");
+const ref_ticket_categorisation = require("./ref_ticket_catagorisation");
 const ref_ticket_status = require("./ref_ticket_status");
-const ref_ticket_catagorisation = require("./ref_ticket_catagorisation");
+const Ticket_Details = require("./Ticket_Details");
+const Ticket_Summary = require("./Ticket_Summary");
+const Ticket_Purpose = require("./Ticket_Purpose");
 const Society_HelpDesk_Access_Management = require("./Society_HelpDesk_Access_Management");
 
 Address.hasMany(Customer, { foreignKey: "addressId" });
@@ -40,6 +40,7 @@ User.belongsTo(Role, { foreignKey: "roleId" });
 Address.hasMany(User, { foreignKey: "addressId" });
 User.belongsTo(Address, { foreignKey: "addressId" });
 
+
 // Unit can have many Users
 // UnitType.hasMany(Customer, { foreignKey: 'unitTypeId' });
 // Customer.belongsTo(UnitType, { foreignKey: "unitTypeId" });
@@ -49,6 +50,7 @@ User.belongsTo(Address, { foreignKey: "addressId" });
 
 // Unit.hasMany(Customer, { foreignKey: "societyId" });
 // Unit.hasMany(Building, { foreignKey: "buildingId" });
+
 Unit.hasMany(Floor, { foreignKey: "floorId" });
 Unit.hasMany(UnitType, { foreignKey: "unitTypeId" });
 
@@ -56,15 +58,18 @@ Building.belongsTo(UnitType, { foreignKey: "unitTypeId" });
 
 // ticket
 // Establish associations here
-ref_ticket_status.hasMany(Ticket_Details, {
-  foreignKey: "ticket_status_Id",
-  // as: "tickets",
-});
+// ref_ticket_status.hasMany(Ticket_Details, {
+//   foreignKey: "ticket_status_Id",
+//   // as: "tickets",
+// });
 
-Ticket_Details.belongsTo(ref_ticket_status, {
-  foreignKey: "ticket_status_Id",
-  // as: "status",
-});
+// Ticket_Details.belongsTo(ref_ticket_status, {
+//   foreignKey: "ticket_status_Id",
+//   // as: "status",
+// });
+
+
+
 
 module.exports = {
   User,
@@ -90,10 +95,10 @@ module.exports = {
   ref_visitor_type_of_entry,
   ref_visitor_type,
   Visitor_new_visitentry,
-  Ticket_Details,
-  Ticket_Purpose,
-  Ticket_Summary,
-  ref_ticket_status,
-  ref_ticket_catagorisation,
-  Society_HelpDesk_Access_Management,
+ ref_ticket_categorisation,
+ ref_ticket_status,
+ Ticket_Details,
+ Ticket_Summary,
+ Ticket_Purpose,
+ Society_HelpDesk_Access_Management
 };

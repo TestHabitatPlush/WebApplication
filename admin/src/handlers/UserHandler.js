@@ -1,4 +1,4 @@
-// ✅ Rectified UserHandler.js with added logic for both Activate and Inactivate
+//  Rectified UserHandler.js with added logic for both Activate and Inactivate
 
 import toast from 'react-hot-toast';
 import {
@@ -20,6 +20,7 @@ const UserHandler = () => {
   const createSocietyModeratorHandler = async (formData) => {
     try {
       const response = await createSocietyModeratorService(formData, token);
+      console.log("societymoderator",response)
       if (response.status === 201) {
         toast.success('Society Moderator created successfully!');
       }
@@ -32,14 +33,19 @@ const UserHandler = () => {
   const createSocietyResidentUserHandler = async (societyId, formData) => {
     try {
       const response = await createSocietyResidentService(societyId, token, formData);
+      console.log("society response",response);
       if (response.status === 201) {
         toast.success('Society Resident created successfully!');
       }
-    } catch (error) {
+    } catch (error) {https://chatgpt.com/c/68821588-ab24-800f-a924-89d69e6c37bc
       console.error('Error creating resident:', error);
       toast.error(error?.response?.data?.message || 'An error occurred. Please try again.');
     }
   };
+
+  
+ 
+
 
   const getResidentBySocietyIdHandler = async (societyId, token, { page, pageSize }) => {
     try {
@@ -138,3 +144,5 @@ const UserHandler = () => {
 };
 
 export default UserHandler;
+
+

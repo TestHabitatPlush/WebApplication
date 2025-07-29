@@ -35,15 +35,23 @@ const Vehicle = sequelize.define(
         len: [6, 12],
       },
     },
+    // fastagNumber: {
+    //   type: DataTypes.STRING,
+    //   allowNull: true,
+    //   validate: {
+    //     len: [8, 16],
+    //     // isNumeric: true,
+    //      isAlphanumeric: true,
+    //   },
+    // },
     fastagNumber: {
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
-        len: [8, 16],
-        // isNumeric: true,
-         isAlphanumeric: true,
-      },
-    },
+        len: [12, 16],
+        is: /^[A-Z0-9]+$/i, 
+      },
+    },
  
     vehicleType: {
       type: DataTypes.ENUM("Car", "Bike", "Truck", "Van", "Bus"),

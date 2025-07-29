@@ -22,7 +22,6 @@
 
 // module.exports = ref_ticket_status;
 
-
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
@@ -38,7 +37,9 @@ const ref_ticket_status = sequelize.define("ref_ticket_status", {
   },
 }, {
   tableName: "ref_ticket_status",
-  timestamps: false,
+  timestamps: true,
 });
+
+
 
 module.exports = ref_ticket_status;

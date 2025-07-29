@@ -32,32 +32,32 @@
 
 // module.exports = softwareHelpDeskRouter;
 
-
-
 const express = require("express");
 const router = express.Router();
-const helpDeskController = require("../controllers/softwareHelpDeskController");
-const statusController = require("../controllers/refTicketStatusController");
-// 1. Ticket Purpose
-router.post("/ticket-purpose", helpDeskController.createTicketPurpose);
-router.get("/ticket-purpose", helpDeskController.getTicketPurpose);
-router.put("/ticket-purpose/:ticket_purpose_Id", helpDeskController.updateTicketPurpose);
-router.get("/ticket-purpose/view", helpDeskController.getTicketListView);
+const helpdeskController = require("../controllers/softwareHelpDeskController");
 
-// 2. Ticket (Summary + Details)
-router.post("/ticket", helpDeskController.createTicket);
-router.get("/ticket-table", helpDeskController.getTicketTable);
+// 1. Ticket Purpose
+router.post("/ticket-purpose/:societyId/:userId", helpdeskController.createTicketPurpose);
+router.get("/ticket-purpose/:societyId", helpdeskController.getTicketPurpose);
+router.put("/ticket-purpose/:ticket_purpose_Id", helpdeskController.updateTicketPurpose);
+router.get("/ticket-purpose/dropdown/:societyId", helpdeskController.getTicketListView);
+
+// 2. Ticket Summary + Details
+router.post("/ticket", helpdeskController.createTicket);
+router.get("/ticket/:societyId", helpdeskController.getTicketTable);
 
 // 3. Request Type (Categorisation)
-router.post("/request-type", helpDeskController.createRequestType);
-router.get("/request-type", helpDeskController.getRequestType);
+router.post("/request-type/:societyId/:userId", helpdeskController.createRequestType);
+router.get("/request-type/:societyId", helpdeskController.getRequestType);
+
+
+// router.post("/request-type", helpdeskController.createRequestType);
+// router.get("/request-type", helpdeskController.getRequestType);
+
 
 // 4. Access Management
-router.get("/access-management", helpDeskController.getAccessManagementMember);
-router.post("/access-management", helpDeskController.createAccessManagementTable);
-
-// 5.Ticket Status Ref Table
-router.post("/ticket-status", statusController.createRefTicketStatus);
-router.get("/ticket-status", statusController.getRefTicketStatus);
+router.get("/access-management/members/:societyId", helpdeskController.getAccessManagementMember);
+router.post("/access-management/:societyId/:userId", helpdeskController.createAccessManagementTable);
+router.put("/access-management/:accessId", helpdeskController.updateAccessManagementTable);
 
 module.exports = router;

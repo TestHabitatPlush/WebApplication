@@ -1,17 +1,7 @@
-
 import React, { useEffect, useMemo, useState } from "react";
 import DocumentHandler from "../../../../handlers/DocumentHandler";
-import {
-  FaFilePdf,
-  FaFileImage,
-  FaTrashAlt,
-} from "react-icons/fa";
-import {
-  FiEye,
-  FiDownload,
-  FiFile,
-  FiFileText,
-} from "react-icons/fi";
+import { FaFilePdf, FaFileImage, FaTrashAlt } from "react-icons/fa";
+import { FiEye, FiDownload, FiFile, FiFileText } from "react-icons/fi";
 import ReusableTable from "../../../../components/shared/ReusableTable";
 import ViewDocumentModal from "./ViewDocumentModal";
 
@@ -79,8 +69,6 @@ const DocumentListTable = () => {
     fetchDocuments();
   }, [visibilityFilter, pageSize]);
 
-
-  
   const pagedDocs = useMemo(() => {
     const reversed = [...documents].reverse();
     const start = pageIndex * pageSize;
@@ -184,14 +172,38 @@ const DocumentListTable = () => {
             docx: <FiFileText className="inline mr-1 text-indigo-600" />,
           };
 
-          const icon =
-            iconMap[extension] || <FiFile className="inline mr-1 text-gray-400" />;
+          const icon = iconMap[extension] || (
+            <FiFile className="inline mr-1 text-gray-400" />
+          );
           const displayExt = extension ? `.${extension}` : "—";
 
-          return <span className="flex items-center">{icon} {displayExt}</span>;
+          return (
+            <span className="flex items-center">
+              {icon} {displayExt}
+            </span>
+          );
         },
         className: "text-left",
       },
+        {
+        Header: "Applicable For",
+        accessor: "visibilityOption",
+        Cell: ({ value }) => {
+          if (!Array.isArray(value) || value.length === 0) return "—";
+          const roleMap = {
+            owner: "Owner",
+            tenant: "Tenant",
+            primary: "Primary Member",
+            all: "All",
+          };
+          const readableRoles = value
+            .map((role) => roleMap[role] || role)
+            .join(", ");
+          return <span>{readableRoles}</span>;
+        },
+        className: "text-left",
+      },,
+
       {
         Header: "Uploaded On",
         accessor: "createdAt",
@@ -232,7 +244,8 @@ const DocumentListTable = () => {
   );
 
   const activeGroupName =
-    visibilityOptions.find((opt) => opt.value === visibilityFilter)?.label || "";
+    visibilityOptions.find((opt) => opt.value === visibilityFilter)?.label ||
+    "";
 
   return (
     <div className="relative px-4 py-6">
@@ -289,4 +302,3 @@ const DocumentListTable = () => {
 };
 
 export default DocumentListTable;
-

@@ -346,28 +346,27 @@
 //   }
 // };
 
-
-
-
-
+// Corrected Help Desk Controller & Router based on provided Sequelize Models
 
 const { Op } = require("sequelize");
 const {
   Ticket_Purpose,
   Ticket_Summary,
   Ticket_Details,
-  ref_ticket_catagorisation,
+  ref_ticket_categorisation,
   ref_ticket_status,
   User,
   Society_HelpDesk_Access_Management,
 } = require("../models");
 
+const upload = require("../middleware/upload");
 const { sendErrorResponse, sendSuccessResponse } = require("../utils/response");
 
 // 1. Create Ticket Purpose
 exports.createTicketPurpose = async (req, res) => {
   try {
-    const { purpose_Details, societyId, userId } = req.body;
+    const { purpose_Details} = req.body;
+    const { societyId, userId } = req.params;
     if (!purpose_Details || !societyId || !userId) {
       return sendErrorResponse(res, "Enter all details", 400);
     }
@@ -383,7 +382,8 @@ exports.createTicketPurpose = async (req, res) => {
 // 2. Get Ticket Purpose List
 exports.getTicketPurpose = async (req, res) => {
   try {
-    const { societyId, page = 0, pageSize = 10 } = req.query;
+    const { societyId } = req.params;
+    const { page = 0, pageSize = 10 } = req.query;
     if (!societyId) return sendErrorResponse(res, "Enter Society Id", 400);
 
     const { count, rows } = await Ticket_Purpose.findAndCountAll({
@@ -396,7 +396,7 @@ exports.getTicketPurpose = async (req, res) => {
       rows,
       total: count,
       totalPages: Math.ceil(count / pageSize),
-    }, 200);
+    });
   } catch (err) {
     console.error(err);
     return sendErrorResponse(res, "Internal server error", 500, err.message);
@@ -408,10 +408,12 @@ exports.updateTicketPurpose = async (req, res) => {
   try {
     const { ticket_purpose_Id } = req.params;
     const [updatedRows] = await Ticket_Purpose.update(req.body, {
-      where: { ticket_purpose_Id }
+      where: { ticket_purpose_Id },
     });
 
-    if (!updatedRows) return sendErrorResponse(res, "Ticket purpose not found or no changes made", 404);
+    if (!updatedRows)
+      return sendErrorResponse(res, "Ticket purpose not found or no changes made", 404);
+
     return sendSuccessResponse(res, "Ticket purpose updated successfully", null, 200);
   } catch (err) {
     console.error(err);
@@ -422,10 +424,14 @@ exports.updateTicketPurpose = async (req, res) => {
 // 4. Get Ticket Purpose for Dropdown
 exports.getTicketListView = async (req, res) => {
   try {
-    const { societyId } = req.query;
+    const { societyId } = req.params;
     if (!societyId) return sendErrorResponse(res, "Society ID is required", 400);
 
-    const purposes = await Ticket_Purpose.findAll({ where: { societyId } });
+    const purposes = await Ticket_Purpose.findAll({
+      where: { societyId, status: "active" },
+      attributes: ["ticket_purpose_Id", "purpose_Details"],
+    });
+
     return sendSuccessResponse(res, "Ticket list sent successfully", purposes, 200);
   } catch (err) {
     console.error(err);
@@ -433,86 +439,105 @@ exports.getTicketListView = async (req, res) => {
   }
 };
 
-// 5. Create Ticket (Summary + Details)
+// 5. Create Ticket
 exports.createTicket = async (req, res) => {
-  try {
-    const {
-      ticket_categorisation_Id, ticketPurpose, ticketTitle,
-      ticket_details_description, societyId, userId
-    } = req.body;
-
-    if (!ticket_categorisation_Id || !ticketPurpose || !ticketTitle || !ticket_details_description || !societyId || !userId) {
-      return sendErrorResponse(res, "Enter all details", 400);
+  upload.fields([{ name: "ticket_attachment_details" }])(req, res, async (err) => {
+    if (err) {
+      return sendErrorResponse(res, "File upload error", 400, err.message);
     }
 
-    const summary = await Ticket_Summary.create({
-      ticket_categorisation_Id,
-      ticketPurpose,
-      ticketTitle,
-      societyId,
-      userId,
-    });
+    try {
+      const {
+        societyId,
+        userId,
+        ticket_purpose_Id,
+        ticket_categorisation_Id,
+        request_type = "suggestion",
+        ticket_title,
+        ticket_description,
+      } = req.body;
 
-    const detail = await Ticket_Details.create({
-      ticket_desc_Id: 0, // or generate a meaningful ID if required
-      ticket_status_Id: 1, // default status
-      ticket_details_description,
-      ticket_Id: summary.ticket_Id,
-      societyId,
-      userId,
-    });
+      if (!societyId || !userId || !ticket_purpose_Id || !ticket_title || !ticket_description) {
+        return sendErrorResponse(res, "All required fields must be provided", 400);
+      }
 
-    return sendSuccessResponse(res, "Ticket created successfully", { summary, detail }, 201);
-  } catch (err) {
-    console.error(err);
-    return sendErrorResponse(res, "Internal server error", 500, err.message);
-  }
+      // Create ticket summary
+      const summary = await Ticket_Summary.create({
+        societyId,
+        userId,
+        ticket_purpose_Id,
+        ticket_categorisation_Id: ticket_categorisation_Id || null,
+        request_type,
+        ticket_title,
+        ticket_description,
+        ticket_attachment_details: req.files?.ticket_attachment_details?.[0]?.filename || null,
+      });
+
+      // Create first detail with NEW status
+      const detail = await Ticket_Details.create({
+        societyId,
+        userId,
+        ticket_Id: summary.ticket_Id,
+        ticket_status_Id: 1, // assuming 1 = NEW
+        ticket_details_description: ticket_description,
+        ticket_attachment_details: req.files?.ticket_attachment_details?.[0]?.filename || null,
+      });
+
+      // Update summary with latest detail reference
+      await summary.update({ ticket_description_max_Id: detail.ticket_details_Id });
+
+      return sendSuccessResponse(res, "Ticket created successfully", { ticketId: summary.ticket_Id }, 201);
+    } catch (error) {
+      console.error(error);
+      return sendErrorResponse(res, "Internal server error", 500, error.message);
+    }
+  });
 };
 
-// 6. Get Ticket Table View with Latest Detail
+
+// 6. Get Ticket Table View
 exports.getTicketTable = async (req, res) => {
   try {
-    const { societyId, page = 0, pageSize = 10 } = req.query;
-    if (!societyId) return sendErrorResponse(res, "Enter Society Id", 400);
+    const { societyId } = req.params;
+    const { page = 1, pageSize = 10 } = req.query;
+    const offset = (page - 1) * pageSize;
 
     const { count, rows } = await Ticket_Summary.findAndCountAll({
       where: { societyId },
-      limit: +pageSize,
-      offset: page * pageSize,
+      limit: parseInt(pageSize),
+      offset: parseInt(offset),
+      include: [
+        { model: Ticket_Purpose, attributes: ["purpose_Details"] },
+        { model: ref_ticket_categorisation, attributes: ["ticket_categorisation_type"] },
+        {
+          model: Ticket_Details,
+          as: "latestDetail",
+          include: [
+            { model: ref_ticket_status, attributes: ["ticket_status_description"] },
+            { model: User, as: "creator", attributes: ["userName"] },
+            { model: User, as: "assignedTo", attributes: ["userName"] },
+          ],
+        },
+      ],
     });
 
-    const result = await Promise.all(rows.map(async (ticket) => {
-      const [detail] = await Ticket_Details.findAll({
-        where: { ticket_Id: ticket.ticket_Id },
-        include: [{ model: ref_ticket_status }],
-        order: [['createdAt', 'DESC']],
-        limit: 1,
-      });
-
-      return {
-        ...ticket.dataValues,
-        ticketDetails: detail ? detail.dataValues : null,
-      };
-    }));
-
-    return sendSuccessResponse(res, "Ticket list fetched successfully", {
-      data: result,
+    return sendSuccessResponse(res, "Ticket list fetched", {
       total: count,
       totalPages: Math.ceil(count / pageSize),
-    }, 200);
+      rows,
+    });
   } catch (err) {
     console.error(err);
     return sendErrorResponse(res, "Internal server error", 500, err.message);
   }
 };
 
-// 7. Create Ticket Categorisation (Request Type)
+
+// 7. Create Ticket Categorisation
 exports.createRequestType = async (req, res) => {
   try {
     const { ticket_categorisation_type } = req.body;
-    if (!ticket_categorisation_type) {
-      return sendErrorResponse(res, "Categorisation type is required", 400);
-    }
+    if (!ticket_categorisation_type) return sendErrorResponse(res, "Categorisation type is required", 400);
 
     const exists = await ref_ticket_categorisation.findOne({ where: { ticket_categorisation_type } });
     if (exists) return sendErrorResponse(res, "Categorisation already exists", 409);
@@ -536,14 +561,15 @@ exports.getRequestType = async (req, res) => {
   }
 };
 
-// 9. Get Management Committee Members for Access
+// 9. Get Access Management Members
 exports.getAccessManagementMember = async (req, res) => {
   try {
-    const { societyId, page = 0, pageSize = 10 } = req.query;
+    const { societyId } = req.params;
+    const { page = 0, pageSize = 10 } = req.query;
     if (!societyId) return sendErrorResponse(res, "Enter Society Id", 400);
 
     const { count, rows } = await User.findAndCountAll({
-      where: { isManagementCommittee: true, societyId },
+      where: { societyId, isManagementCommittee: true },
       limit: +pageSize,
       offset: page * pageSize,
     });
@@ -552,7 +578,7 @@ exports.getAccessManagementMember = async (req, res) => {
       rows,
       total: count,
       totalPages: Math.ceil(count / pageSize),
-    }, 200);
+    });
   } catch (err) {
     console.error(err);
     return sendErrorResponse(res, "Internal server error", 500, err.message);
@@ -575,6 +601,28 @@ exports.createAccessManagementTable = async (req, res) => {
     });
 
     return sendSuccessResponse(res, "Access management entry created", result, 201);
+  } catch (err) {
+    console.error(err);
+    return sendErrorResponse(res, "Internal server error", 500, err.message);
+  }
+};
+
+// 11. Update Access Management Entry
+exports.updateAccessManagementTable = async (req, res) => {
+  try {
+    const { societyId, userId } = req.params;
+    const { module_Access, updaterId } = req.body;
+
+    if (!societyId || !userId || !module_Access || !updaterId) {
+      return sendErrorResponse(res, "All fields are required", 400);
+    }
+
+    const result = await Society_HelpDesk_Access_Management.update(
+      { module_Access, Update_User_Id: updaterId },
+      { where: { societyId, userId } }
+    );
+
+    return sendSuccessResponse(res, "Access management entry updated", result, 200);
   } catch (err) {
     console.error(err);
     return sendErrorResponse(res, "Internal server error", 500, err.message);

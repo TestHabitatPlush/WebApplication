@@ -87,25 +87,4 @@ const Society_HelpDesk_Access_Management = sequelize.define(
   }
 );
 
-Customer.hasMany(Society_HelpDesk_Access_Management, { foreignKey: "societyId" });
-Society_HelpDesk_Access_Management.belongsTo(Customer, { foreignKey: "societyId" });
-
-User.hasMany(Society_HelpDesk_Access_Management, {
-  foreignKey: "userId",
-  as: "accessUser",
-});
-Society_HelpDesk_Access_Management.belongsTo(User, {
-  foreignKey: "userId",
-  as: "accessUser",
-});
-
-User.hasMany(Society_HelpDesk_Access_Management, {
-  foreignKey: "Update_User_Id",
-  as: "updatedBy",
-});
-Society_HelpDesk_Access_Management.belongsTo(User, {
-  foreignKey: "Update_User_Id",
-  as: "updatedBy",
-});
-
 module.exports = Society_HelpDesk_Access_Management;
