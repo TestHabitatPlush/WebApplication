@@ -1,171 +1,4 @@
-// import React, { useEffect } from 'react';
-// import { useTable, usePagination } from 'react-table';
-// import PropTypes from 'prop-types';
-
-// const ReusableTable = ({
-//   columns,
-//   data,
-//   pageIndex,
-//   pageSize,
-//   totalCount,
-//   totalPages,
-//   setPageIndex,
-//   setPageSize
-// }) => {
-//   const {
-//     getTableProps,
-//     getTableBodyProps,
-//     headerGroups,
-//     page, // Instead of rows, we'll use page
-//     prepareRow,
-//     canPreviousPage,
-//     canNextPage,
-//     gotoPage,
-//     nextPage,
-//     previousPage,
-//     setPageSize: internalSetPageSize,
-//     state: { pageIndex: internalPageIndex, pageSize: internalPageSize }
-//   } = useTable(
-//     {
-//       columns,
-//       data,
-//       initialState: { pageIndex },
-//       manualPagination: true, // Use manual pagination
-//       pageCount: totalPages,
-//     },
-//     usePagination
-//   );
-
-//   useEffect(() => {
-//     gotoPage(pageIndex);
-//   }, [pageIndex, gotoPage]);
-
-//   useEffect(() => {
-//     internalSetPageSize(pageSize);
-//   }, [pageSize, internalSetPageSize]);
-
-//   const onNextPage = () => {
-//     setPageIndex(parseInt(pageIndex)+1)
-//   };
-
-//   const onPreviousPage = () => {
-//     setPageIndex(parseInt(pageIndex)-1)
-//   };
-
-//   return (
-//     <div>
-//       {/* Search and Export Buttons */}
-//       <div className="flex items-center justify-between mb-4">
-//         <div className="flex gap-2">
-//           <button onClick={handleCopy} className="px-3 py-1 text-white bg-gray-700 rounded">Copy</button>
-//           <CSVLink data={filteredData} filename="table_data.csv" className="px-3 py-1 text-white bg-green-600 rounded">CSV</CSVLink>
-//           <button onClick={handleExcelExport} className="px-3 py-1 text-white bg-blue-600 rounded">Excel</button>
-//           <button onClick={handlePDFExport} className="px-3 py-1 text-white bg-red-600 rounded">PDF</button>
-//           <button onClick={handlePrint} className="px-3 py-1 text-white bg-purple-600 rounded">Print</button>
-//         </div>
-
-//         {/* Search Input */}
-//         <input
-//           type="text"
-//           value={searchQuery}
-//           onChange={(e) => setSearchQuery(e.target.value)}
-//           placeholder="Search..."
-//           className="p-2 border rounded-md"
-//         />
-//       </div>
-
-//       {/* Table */}
-//       <div id="table-container">
-//         <table {...getTableProps()} className="min-w-full border border-collapse border-gray-300 table-auto">
-//           <thead className="bg-gray-200">
-//             {headerGroups.map(headerGroup => (
-//               <tr {...headerGroup.getHeaderGroupProps()}>
-//                 {headerGroup.headers.map(column => (
-//                   <th
-//                     {...column.getHeaderProps()}
-//                     className="px-4 py-2 text-sm font-medium text-left text-gray-600 border-b border-gray-300"
-//                   >
-//                     {cell.render('Cell')}
-//                   </td>
-//                 ))}
-//               </tr>
-//             );
-//           })}
-//         </tbody>
-//       </table>
-
-//       {/* Pagination Controls */}
-//       <div className="flex items-center justify-between mt-4">
-//         <div>
-//           <button
-//             onClick={onPreviousPage}
-//             disabled={!canPreviousPage}
-//             className="px-3 py-1 mr-2 text-white bg-blue-500 rounded-md disabled:opacity-50"
-//           >
-//             {'<'}
-//           </button>
-//           <button
-//             onClick={onNextPage}
-//             disabled={!canNextPage}
-//             className="px-3 py-1 mr-2 text-white bg-blue-500 rounded-md disabled:opacity-50"
-//           >
-//             {'>'}
-//           </button>
-//         </div>
-
-//         <div className="flex items-center">
-//           <span className="text-sm text-gray-700">
-//             Page <strong>{pageIndex + 1} of {totalPages}</strong>
-//           </span>
-//           <span className="ml-4 text-sm text-gray-700">
-//             | Go to page: 
-//             <input
-//               type="number"
-//               value={pageIndex + 1}
-//               onChange={e => {
-//                 const page = e.target.value ? Number(e.target.value) - 1 : 0;
-//                 setPageIndex(page);
-//                 gotoPage(page);
-//               }}
-//               className="w-16 ml-2 text-center border rounded-md"
-//             />
-//           </span>
-//         </div>
-
-//         <select
-//           value={internalPageSize}
-//           onChange={e => {
-//             const newSize = Number(e.target.value);
-//             setPageSize(newSize);
-//             internalSetPageSize(newSize);
-//           }}
-//           className="p-1 ml-4 border rounded-md"
-//         >
-//           {[10, 20, 30, 40, 50].map(size => (
-//             <option key={size} value={size}>
-//               Show {size}
-//             </option>
-//           ))}
-//         </select>
-//       </div>
-//     </div>
-//   );
-// };
-
-// ReusableTable.propTypes = {
-//   columns: PropTypes.array.isRequired,
-//   data: PropTypes.array.isRequired,
-//   pageIndex: PropTypes.number.isRequired,
-//   pageSize: PropTypes.number.isRequired,
-//   totalCount: PropTypes.number.isRequired,
-//   totalPages: PropTypes.number.isRequired,
-//   setPageIndex: PropTypes.func.isRequired,
-//   setPageSize: PropTypes.func.isRequired,
-// };
-
-// export default ReusableTable;
-
-
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import { useTable, usePagination } from 'react-table';
@@ -180,8 +13,6 @@ const ReusableTable = ({
   data,
   pageIndex,
   pageSize,
-  totalCount,
-  totalPages,
   setPageIndex,
   setPageSize
 }) => {
@@ -194,6 +25,11 @@ const ReusableTable = ({
       return cellValue && cellValue.toString().toLowerCase().includes(searchQuery.toLowerCase());
     });
   });
+
+  // Reset to page 0 when search query changes
+  useEffect(() => {
+    setPageIndex(0);
+  }, [searchQuery]);
 
   const {
     getTableProps,
@@ -210,11 +46,10 @@ const ReusableTable = ({
     state: { pageIndex: internalPageIndex, pageSize: internalPageSize }
   } = useTable(
     {
-      columns: enhancedColumns,
+      columns,
       data: filteredData,
       initialState: { pageIndex },
-      manualPagination: true,
-      pageCount: totalPages,
+      pageCount: Math.ceil(filteredData.length / pageSize),
     },
     usePagination
   );
@@ -300,11 +135,12 @@ const ReusableTable = ({
         <table {...getTableProps()} className="min-w-full border border-collapse border-gray-300 table-auto">
           <thead className="bg-gray-200">
             {headerGroups.map(headerGroup => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
+              <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
                 {headerGroup.headers.map(column => (
                   <th
                     {...column.getHeaderProps()}
                     className="px-4 py-2 text-sm font-medium text-left text-gray-600 border-b border-gray-300"
+                    key={column.id}
                   >
                     {column.render('Header')}
                   </th>
@@ -316,11 +152,12 @@ const ReusableTable = ({
             {page.map(row => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()}>
+                <tr {...row.getRowProps()} key={row.id}>
                   {row.cells.map(cell => (
                     <td
                       {...cell.getCellProps()}
                       className="px-4 py-2 text-sm text-gray-700 border-b border-gray-300"
+                      key={cell.column.id}
                     >
                       {cell.render('Cell')}
                     </td>
@@ -353,7 +190,7 @@ const ReusableTable = ({
 
         <div className="flex items-center">
           <span className="text-sm text-gray-700">
-            Page <strong>{pageIndex + 1} of {totalPages}</strong>
+            Page <strong>{pageIndex + 1} of {Math.ceil(filteredData.length / pageSize)}</strong>
           </span>
           <span className="ml-4 text-sm text-gray-700">
             | Go to page:
@@ -395,11 +232,8 @@ ReusableTable.propTypes = {
   data: PropTypes.array.isRequired,
   pageIndex: PropTypes.number.isRequired,
   pageSize: PropTypes.number.isRequired,
-  totalCount: PropTypes.number.isRequired,
-  totalPages: PropTypes.number.isRequired,
   setPageIndex: PropTypes.func.isRequired,
   setPageSize: PropTypes.func.isRequired,
 };
 
 export default ReusableTable;
-
