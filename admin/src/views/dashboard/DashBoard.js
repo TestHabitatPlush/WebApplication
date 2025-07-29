@@ -29,6 +29,8 @@ import Dashboardleftcontent from "../header/Dashboardleftcontent";
 import Admincontent from "../admin/Admincontent";
 import SuperAdminContents from "../super/SuperAdminContents";
 
+
+
 const DashBoard = () => {
   const user = useSelector((state) => state.auth.user);
   const roleCategory = user?.role?.roleCategory;
@@ -46,7 +48,9 @@ const DashBoard = () => {
         rightContent={
           roleCategory === "society_moderator" ? <Admincontent /> : <SuperAdminContents />
         }
+         
       />
+       
     </div>
   );
 };

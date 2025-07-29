@@ -54,30 +54,36 @@
 
 //   return (
 //     <div>
-//       <table {...getTableProps()} className="min-w-full border border-collapse border-gray-300 table-auto">
-//         <thead className="bg-gray-200">
-//           {headerGroups.map(headerGroup => (
-//             <tr {...headerGroup.getHeaderGroupProps()}>
-//               {headerGroup.headers.map(column => (
-//                 <th
-//                   {...column.getHeaderProps()}
-//                   className="px-4 py-2 text-sm font-medium text-left text-gray-600 border-b border-gray-300"
-//                 >
-//                   {column.render('Header')}
-//                 </th>
-//               ))}
-//             </tr>
-//           ))}
-//         </thead>
-//         <tbody {...getTableBodyProps()} className="bg-white divide-y divide-gray-200">
-//           {page.map(row => {
-//             prepareRow(row);
-//             return (
-//               <tr {...row.getRowProps()}>
-//                 {row.cells.map(cell => (
-//                   <td
-//                     {...cell.getCellProps()}
-//                     className="px-4 py-2 text-sm text-gray-700 border-b border-gray-300"
+//       {/* Search and Export Buttons */}
+//       <div className="flex items-center justify-between mb-4">
+//         <div className="flex gap-2">
+//           <button onClick={handleCopy} className="px-3 py-1 text-white bg-gray-700 rounded">Copy</button>
+//           <CSVLink data={filteredData} filename="table_data.csv" className="px-3 py-1 text-white bg-green-600 rounded">CSV</CSVLink>
+//           <button onClick={handleExcelExport} className="px-3 py-1 text-white bg-blue-600 rounded">Excel</button>
+//           <button onClick={handlePDFExport} className="px-3 py-1 text-white bg-red-600 rounded">PDF</button>
+//           <button onClick={handlePrint} className="px-3 py-1 text-white bg-purple-600 rounded">Print</button>
+//         </div>
+
+//         {/* Search Input */}
+//         <input
+//           type="text"
+//           value={searchQuery}
+//           onChange={(e) => setSearchQuery(e.target.value)}
+//           placeholder="Search..."
+//           className="p-2 border rounded-md"
+//         />
+//       </div>
+
+//       {/* Table */}
+//       <div id="table-container">
+//         <table {...getTableProps()} className="min-w-full border border-collapse border-gray-300 table-auto">
+//           <thead className="bg-gray-200">
+//             {headerGroups.map(headerGroup => (
+//               <tr {...headerGroup.getHeaderGroupProps()}>
+//                 {headerGroup.headers.map(column => (
+//                   <th
+//                     {...column.getHeaderProps()}
+//                     className="px-4 py-2 text-sm font-medium text-left text-gray-600 border-b border-gray-300"
 //                   >
 //                     {cell.render('Cell')}
 //                   </td>
@@ -204,7 +210,7 @@ const ReusableTable = ({
     state: { pageIndex: internalPageIndex, pageSize: internalPageSize }
   } = useTable(
     {
-      columns,
+      columns: enhancedColumns,
       data: filteredData,
       initialState: { pageIndex },
       manualPagination: true,
