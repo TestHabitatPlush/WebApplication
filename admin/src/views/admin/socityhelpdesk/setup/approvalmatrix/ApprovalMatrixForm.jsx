@@ -137,7 +137,7 @@ import UrlPath from "../../../../../components/shared/UrlPath";
 import PageHeading from "../../../../../components/shared/PageHeading";
 import Input from "../../../../../components/shared/Input";
 import Button from "../../../../../components/ui/Button";
-import SoftwareHelpDeskHandler from "../../../../../handlers/SoftwareHelpDesk";
+// import SoftwareHelpDeskHandler from "../../../../../handlers/SoftwareHelpDesk";
 import ReusableTable from "../../../../../components/shared/ReusableTable";
 
 const ApprovalMatrixForm = () => {
@@ -150,26 +150,26 @@ const ApprovalMatrixForm = () => {
   const [totalPages, setTotalPages] = useState(null);
   const [total, setTotal] = useState(null);
 
-  const { accessManagementTable, sendAccessManagementData } =
-    SoftwareHelpDeskHandler();
+  // const { accessManagementTable, sendAccessManagementData } =
+  //   SoftwareHelpDeskHandler();
 
-  const fetchAccessManagementTable = async () => {
-    try {
-      const result = await accessManagementTable({
-        page,
-        pageSize,
-      });
-      setTransformedData(result.data.data);
-      setTotal(result.data.total);
-      setTotalPages(result.data.totalPages);
-    } catch (err) {
-      console.error(err.message);
-    }
-  };
+  // const fetchAccessManagementTable = async () => {
+  //   try {
+  //     const result = await accessManagementTable({
+  //       page,
+  //       pageSize,
+  //     });
+  //     setTransformedData(result.data.data);
+  //     setTotal(result.data.total);
+  //     setTotalPages(result.data.totalPages);
+  //   } catch (err) {
+  //     console.error(err.message);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchAccessManagementTable();
-  }, [page, pageSize]);
+  // useEffect(() => {
+  //   fetchAccessManagementTable();
+  // }, [page, pageSize]);
 
   // Handle radio button state for each row
   const handleApprovalChange = (id, value) => {
@@ -180,9 +180,9 @@ const ApprovalMatrixForm = () => {
     );
   };
 
-  const refreshHandler = () => {
-    fetchAccessManagementTable();
-  };
+  // const refreshHandler = () => {
+  //   // fetchAccessManagementTable();
+  // };
 
   const columns = [
     { Header: "Management Committee", accessor: "firstName" },
@@ -219,7 +219,7 @@ const ApprovalMatrixForm = () => {
 
   const handleSubmit = () => {
     console.log("Submitting data:", transformedData);
-    sendAccessManagementData(transformedData);
+    // sendAccessManagementData(transformedData);
   };
 
   return (
@@ -231,14 +231,14 @@ const ApprovalMatrixForm = () => {
       <div className="p-10 my-5 border rounded-lg bg-gray-100">
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <div>Know your management committee member</div>
-          <Button
+          {/* <Button
             className="max-w-sm"
             onClick={refreshHandler}
             type="submit"
             size="lg"
           >
             Refresh
-          </Button>
+          </Button> */}
           <div className="p-10 my-5 border rounded-lg bg-gray-100">
             <ReusableTable
               columns={columns}

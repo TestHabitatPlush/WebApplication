@@ -37,7 +37,7 @@ const DocumentListTable = () => {
     deleteDocumentHandler,
   } = DocumentHandler();
 
-  const toggleViewDiscussionDetailModal = () => {
+  const toggleViewDocumentDetailModal = () => {
     setViewModal((prev) => !prev);
   };
 
@@ -297,7 +297,7 @@ const DocumentListTable = () => {
       {viewModal && (
         <ViewDocumentModal
           isOpen={viewModal}
-          onClose={toggleViewDiscussionDetailModal}
+          onClose={toggleViewDocumentDetailModal}
           formData={showViewFormData}
         />
       )}

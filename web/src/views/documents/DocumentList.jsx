@@ -394,7 +394,6 @@ const DocumentList = () => {
           <FiDownload
             className="text-green-600 cursor-pointer"
             onClick={() => handleDownload(row.original.document_url)}
-            title="Download"
           />
           <FaTrashAlt
             className="text-red-500 cursor-pointer"

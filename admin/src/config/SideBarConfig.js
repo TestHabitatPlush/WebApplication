@@ -324,66 +324,35 @@ const SideBarMenu = {
     //     },
     //   ],
     // },
-    // {
-    //   name: "Socity HelpDesk Management",
-    //   isAvailable: true,
-    //   icon:FaHeadset ,
-    //   children: [
-    //     {
-    //       name: "SetUp",
-    //       url: "socityhelpdesk/socityhelpdesksetup",
-    //       children: [
-    //         {
-    //           name: "Approval Matrix",
-    //           url: "socityhelpdesk/socityhelpdesksetup/socityapprovalmatrix",
-    //         },
-    //         {
-    //           name: "Define Purpose",
-    //           url: "socityhelpdesk/socityhelpdesksetup/socitydefinepurpose",
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       name: "Create Ticket",
-    //       url: "socityhelpdesk/socityhelpdeskcreateticket",
-    //     },
-    //     {
-    //       name: "Ticket List",
-    //       url: "socityhelpdesk/socityhelpdeskticketlist",
-    //     },
-    //   ],
-    // },
-    // {
-    //   name: "Software HelpDesk Management",
-    //   isAvailable: true,
-    //   icon:FaLaptopCode,
-    //   children: [
-    //     {
-    //       name: "SetUp",
-    //       url: "softwarehelpdesk/softwarehelpdesksetup",
-    //       children: [
-    //         {
-    //           name: "Approval Matrix",
-    //           url: "softwarehelpdesk/softwarehelpdesksetup/softwareapprovalmatrix",
-    //         },
-    //         {
-    //           name: "Define Purpose",
-    //           url: "softwarehelpdesk/softwarehelpdesksetup/softwaredefinepurpose",
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       name: "Create Ticket",
-    //       url: "softwarehelpdesk/softwarehelpdeskcreateticket",
-    //     },
-    //     {
-    //       name: "Ticket List",
-    //       url: "softwarehelpdesk/softwarehelpdeskticketlist",
-    //     },
-    //   ],
-    // },
-
-
+    {
+      name: "Socity HelpDesk Management",
+      isAvailable: true,
+      icon:FaHeadset ,
+      children: [
+        {
+          name: "SetUp",
+          url: "socityhelpdesk/socityhelpdesksetup",
+          children: [
+            {
+              name: "Approval Matrix",
+              url: "socityhelpdesk/socityhelpdesksetup/socityapprovalmatrix",
+            },
+            {
+              name: "Define Purpose",
+              url: "socityhelpdesk/socityhelpdesksetup/socitydefinepurpose",
+            },
+          ],
+        },
+        {
+          name: "Create Ticket",
+          url: "socityhelpdesk/socityhelpdeskcreateticket",
+        },
+        {
+          name: "Ticket List",
+          url: "socityhelpdesk/socityhelpdeskticketlist",
+        },
+      ],
+    },
 {
   name: "Emergency Contact",
   isAvailable: true,
@@ -951,3 +920,35 @@ export default SideBarMenu;
 
 
 
+
+
+
+    // {
+    //   name: "Software HelpDesk Management",
+    //   isAvailable: true,
+    //   icon:FaLaptopCode,
+    //   children: [
+    //     {
+    //       name: "SetUp",
+    //       url: "softwarehelpdesk/softwarehelpdesksetup",
+    //       children: [
+    //         {
+    //           name: "Approval Matrix",
+    //           url: "softwarehelpdesk/softwarehelpdesksetup/softwareapprovalmatrix",
+    //         },
+    //         {
+    //           name: "Define Purpose",
+    //           url: "softwarehelpdesk/softwarehelpdesksetup/softwaredefinepurpose",
+    //         },
+    //       ],
+    //     },
+    //     {
+    //       name: "Create Ticket",
+    //       url: "softwarehelpdesk/softwarehelpdeskcreateticket",
+    //     },
+    //     {
+    //       name: "Ticket List",
+    //       url: "softwarehelpdesk/softwarehelpdeskticketlist",
+    //     },
+    //   ],
+    // },
