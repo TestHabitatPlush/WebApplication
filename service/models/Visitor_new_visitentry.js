@@ -51,7 +51,7 @@
 //         key: "Visit_relation_Id",
 //       },
 //     },
-//     visit_porpous: {
+//     visit_purpose: {
 //       type: DataTypes.STRING,
 //       allowNull: false,
 //     },
@@ -146,7 +146,7 @@ const Visitor_new_visitentry = sequelize.define(
         key: "Visit_relation_Id",
       },
     },
-    visit_porpous: {
+    visit_purpose: {
       type: DataTypes.STRING,
       allowNull: false,
     },

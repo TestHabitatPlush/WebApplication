@@ -20,9 +20,7 @@ const createSubscription = async (req, res) => {
     if(!startDate) {
       return res.status(400).json({ error: "Start date is required" });
     }
-
     let endDate = userEndDate;
-
     if(billingCycle !== "custom") {
       endDate = computeEndDate(startDate, billingCycle);
     } else if (!userEndDate) {
