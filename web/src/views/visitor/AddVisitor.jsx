@@ -18,7 +18,7 @@ const AddVisitor = () => {
     visit_location: "",
     visit_expect_date_of_entry_date: new Date().toISOString().split("T")[0],
     visit_valid_till_date: new Date().toISOString().split("T")[0],
-    visit_porpous: "",
+    visit_purpose: "",
   });
 
   // Fetch visitor types when modal opens
@@ -65,7 +65,7 @@ const AddVisitor = () => {
       "visit_type_Id",
       "visit_mobileno",
       "visit_location",
-      "visit_porpous",
+      "visit_purpose",
     ];
     const newErrors = {};
 
@@ -117,7 +117,7 @@ const AddVisitor = () => {
       visit_location: "",
       visit_expect_date_of_entry_date: new Date().toISOString().split("T")[0],
       visit_valid_till_date: new Date().toISOString().split("T")[0],
-      visit_porpous: "",
+      visit_purpose: "",
     });
     setErrors({});
   };
@@ -188,7 +188,7 @@ const AddVisitor = () => {
                   { label: "Mobile Number", name: "visit_mobileno", type: "number" },
                   { label: "Expected Entry Date", name: "visit_expect_date_of_entry_date", type: "date" },
                   { label: "Valid Till Date", name: "visit_valid_till_date", type: "date" },
-                  { label: "Purpose of Visit", name: "visit_porpous", type: "text" },
+                  { label: "Purpose of Visit", name: "visit_purpose", type: "text" },
                   { label: "Address", name: "visit_location", type: "textarea" },
                 ].map((field, idx) => (
                   <div key={idx} className="mb-4">

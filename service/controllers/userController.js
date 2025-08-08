@@ -1,4 +1,4 @@
-const { User, Unit, Role,Customer } = require("../models");
+const { User, Unit, Role } = require("../models");
 const { getAllUsersService, getUserByIdService } = require("../services/userService");
 //const { createUnit, getUnit, getAllUnits } = require("../controllers/unitController.js");
 const addressService = require("../services/addressService");
@@ -79,7 +79,7 @@ const { Op } = require("sequelize");
 //       primaryContact: true,
 //       isManagementCommittee: true,
 //       managementDesignation,
-//       status: "pending", // ensure default status
+//       status: "pending", 
 //     });
 
 //     res.status(201).json({
@@ -869,46 +869,46 @@ const getUserById = async (req, res) => {
   }
 };
 
-// const getSocietyModerator = async (req, res) => {
-//   try {
-//     const societyId = req.params.societyId;
-//     if (!societyId) {
-//       return res.status(400).json({ message: "Society ID is required" });
-//     }
-//     const moderator = await User.findAll({
-//       where: {
-//         societyId,
-//         isManagementCommittee: true,
-//         isDeleted: 0,
-//         status: "active",
-//       },
-//       attributes: [
-//         "userId",
-//         "salutation",
-//         "firstName",
-//         "lastName",
-//         "email",
-//         "mobileNumber",
-//         "roleId",
-//         "status",
-//         "addressId",
-//         "primaryContact",
-//         "livesHere",
-//       ],
-//     })
-//     if (!moderator || moderator.length === 0) {
-//       return res.status(404).json({ message: "No society moderator found for the given Society ID" });
-//     }
-//     res.status(200).json({
-//       message: "Society Moderator fetched successfully",
-//       moderator,
-//     });
-//   }
-//   catch (error) {
-//     console.error("Error fetching society moderator:", error);
-//     res.status(500).json({ error: error.message });
-//   }
-// }
+const getSocietyModerator = async (req, res) => {
+  try {
+    const societyId = req.params.societyId;
+    if (!societyId) {
+      return res.status(400).json({ message: "Society ID is required" });
+    }
+    const moderator = await User.findAll({
+      where: {
+        societyId,
+        isManagementCommittee: true,
+        isDeleted: 0,
+        status: "active",
+      },
+      attributes: [
+        "userId",
+        "salutation",
+        "firstName",
+        "lastName",
+        "email",
+        "mobileNumber",
+        "roleId",
+        "status",
+        "addressId",
+        "primaryContact",
+        "livesHere",
+      ],
+    })
+    if (!moderator || moderator.length === 0) {
+      return res.status(404).json({ message: "No society moderator found for the given Society ID" });
+    }
+    res.status(200).json({
+      message: "Society Moderator fetched successfully",
+      moderator,
+    });
+  }
+  catch (error) {
+    console.error("Error fetching society moderator:", error);
+    res.status(500).json({ error: error.message });
+  }
+}
 
 const getManagement_committee = async (req, res) => {
   try {
@@ -1028,7 +1028,7 @@ module.exports = {
   updateResidentBySocietyId,
   bulkCreateResidents,
   getResidentBySocietyId,
-  //getSocietyModerator,
+  getSocietyModerator,
   getManagement_committee,
   getAllApprovedUsers,
   getAllDeactiveUsers,

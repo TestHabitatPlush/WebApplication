@@ -12,7 +12,7 @@ const AddVisitorForm = () => {
     visit_name: "",
     visit_type_Id: "",
     visit_mobileno: "",
-    visit_porpous: "",
+    visit_purpose: "",
     // relationship: "",
     visit_location: "", 
     visit_valid_till_date:"",
@@ -20,7 +20,7 @@ const AddVisitorForm = () => {
   const [errors, setErrors] = useState({
     visit_name: "",
     visit_mobileno: "",
-    visit_porpous: "",
+    visit_purpose: "",
     relationship: ""
   });
 
@@ -54,7 +54,7 @@ const AddVisitorForm = () => {
     const { name, value } = e.target;
     
     // Validation for specific fields
-    if (name === "visit_name" || name === "visit_porpous" ) {
+    if (name === "visit_name" || name === "visit_purpose" ) {
       // Only allow alphabets and spaces for these fields
       if (/^[a-zA-Z\s]*$/.test(value)) {
         setFromData({ ...formData, [name]: value });
@@ -72,7 +72,7 @@ const AddVisitorForm = () => {
   // Validation function
   const validateForm = () => {
     let isValid = true;
-  //  let tempErrors = { visit_name: "", visit_mobileno: "", visit_porpous: "", relationship: "" };
+  //  let tempErrors = { visit_name: "", visit_mobileno: "", visit_purpose: "", relationship: "" };
 
     // Name validation: should only contain alphabets
     if (!/^[a-zA-Z\s]+$/.test(formData.visit_name)) {
@@ -87,8 +87,8 @@ const AddVisitorForm = () => {
     }
 
     // Purpose of visit validation: should only contain alphabets
-    if (!/^[a-zA-Z\s]+$/.test(formData.visit_porpous)) {
-    //  tempErrors.visit_porpous = "Purpose of visit should contain only alphabets";
+    if (!/^[a-zA-Z\s]+$/.test(formData.visit_purpose)) {
+    //  tempErrors.visit_purpose = "Purpose of visit should contain only alphabets";
       isValid = false;
     }
 
@@ -127,7 +127,7 @@ const handleSubmit = async (e) => {
         visit_name: "",
         visit_type_Id: "",
         visit_mobileno: "",
-        visit_porpous: "",
+        visit_purpose: "",
         relationship: "",
         visit_location: "",
         visit_valid_till_date:new Date().toISOString().split("T")[0],
@@ -137,7 +137,7 @@ const handleSubmit = async (e) => {
       setErrors({
         visit_name: "",
         visit_mobileno: "",
-        visit_porpous: "",
+        visit_purpose: "",
         relationship: "",
       });
 
@@ -242,12 +242,12 @@ const handleSubmit = async (e) => {
             type="text"
             placeholder="Enter Purpose of Visit"
             size="lg"
-            name="visit_porpous"
-            value={formData.visit_porpous}
+            name="visit_purpose"
+            value={formData.visit_purpose}
             onChange={handleChange}
-          error={errors.visit_porpous} // Show validation error
+          error={errors.visit_purpose} // Show validation error
            />      
-         {errors.visit_porpous && <div className="text-red-500">{errors.visit_porpous}</div>}
+         {errors.visit_purpose && <div className="text-red-500">{errors.visit_purpose}</div>}
 
           <div>
             <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">

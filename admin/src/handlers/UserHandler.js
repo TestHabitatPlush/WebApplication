@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import {
   createSocietyModeratorService,
   createSocietyResidentService,
+  createBulkSocietyUserService,
   getResidentBySocietyIdService,
   getUserByIdService,
   getAllUserDataService,
@@ -122,10 +123,21 @@ const UserHandler = () => {
       return null;
     }
   };
+  const createBulkSocietyUserHandler = async (societyId, formData) => {
+    try {
+      const response = await createBulkSocietyUserService(societyId, token, formData)
+      if (response.status === 201) {
+        toast.success("Society Resident users created Success!");
+      }
+    } catch (error) {
+      console.error("Error creating resident:", error);
+    }
+  }
 
   return {
     createSocietyModeratorHandler,
     createSocietyResidentUserHandler,
+    createBulkSocietyUserHandler,
     getResidentBySocietyIdHandler,
     getUserByIdHandler,
     getAllUserDataHandler,
