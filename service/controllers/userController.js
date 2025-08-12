@@ -142,59 +142,59 @@ const createSocietyModerator = async (req, res) => {
 };
 
 const updateSocietyModerator = async (req, res) => {
-  upload.fields([{ name: "photo" }])(req, res, async (err) => {
-    if(err){
-      return res.status(400).json({ message: "File upload error", error: err.messag});
+  try {
+    const { userId } = req.params;
+    const { address, roleId, email, ...updateData } = req.body;
+
+    const existingUser = await User.findByPk(userId);
+    if (!existingUser) {
+      return res.status(404).json({ message: "User not found" });
     }
-    try{
-      const { userId} = req.params;
-      const { address, roleId,email, ...updateData } = req.body;
 
-      const existingUser = await User.findByPk(userId);
-      if (!existingUser) {
-        return res.status(404).json({ message: "User not found" });
+    // Address handling
+    if (address) {
+      const parsedAddress = typeof address === "string" ? JSON.parse(address) : address;
+      if (existingUser.addressId) {
+        await addressService.updateAddress(existingUser.addressId, parsedAddress);
+      } else {
+        const newAddress = await addressService.createAddress(parsedAddress);
+        updateData.addressId = newAddress.addressId;
       }
-
-      if(address){
-        const parsedAddress = typeof address === "string" ? JSON.parse(address) : address;
-        if(existingUser.adressId){
-          await addressService.updateAddress(existingUser.addressId, parsedAddress);
-        } else {
-          const newAdress = await addressService.createAddress(parsedAddress);
-          updateData.addressId = newAdress.addressId;
-        }
-      }
-
-      const photoPath = req.files?.photo?.[0]?.path;
-      if (photoPath) {
-        updateData.photo = photoPath;
-      }
-
-      if (roleId) {
-        const role = await Role.findByPk(roleId);
-        if (!role) {
-          return res.status(400).json({ message: "Invalid role ID" });
-        }
-        updateData.roleId = roleId;
-        updateData.managementDesignation = role.roleName;
-      }
-
-      if(email && email !== existingUser.email){
-        const emailExists = await User.findOne({ where: { email } });
-        if(emailExists){
-          return res.status(400).json({ message: "Email already in use" });
-        }
-        updateData.email = email;
-      }
-
-      await existingUser.update(updateData);
-
-    } catch(error){
-      console.error("Error updating society moderator:", error);
-      res.status(500).json({ error: error.message });
     }
-  })
+
+    // Photo upload
+    const photoPath = req.files?.photo?.[0]?.path;
+    if (photoPath) {
+      updateData.photo = photoPath;
+    }
+
+    // Role
+    if (roleId) {
+      const role = await Role.findByPk(roleId);
+      if (!role) {
+        return res.status(400).json({ message: "Invalid role ID" });
+      }
+      updateData.roleId = roleId;
+      updateData.managementDesignation = role.roleName;
+    }
+
+    // Email
+    if (email && email !== existingUser.email) {
+      const emailExists = await User.findOne({ where: { email } });
+      if (emailExists) {
+        return res.status(400).json({ message: "Email already in use" });
+      }
+      updateData.email = email;
+    }
+
+    await existingUser.update(updateData);
+
+    return res.status(200).json({ message: "User updated successfully" });
+  } catch (error) {
+    console.error("Error updating society moderator:", error);
+    return res.status(500).json({ error: error.message });
   }
+};
 const updateSocietyStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -412,7 +412,7 @@ const createSocietyResident = async (req, res) => {
         password,
         countryCode: address.countryCode || 91,
         mobileNumber,
-        alternateNumber,
+       // alternateNumber, //changes by subhashree
         email,
         roleId,
         photo: photoPath,
@@ -558,7 +558,8 @@ const getResidentBySocietyId = async (req, res) => {
         societyId,
         isManagementCommittee: false,
         isDeleted: 0,
-        status: ["active", "pending", "inactive"],
+       // status: ["active", "pending", "inactive"], changes by subhashree
+         status: ["pending"],
       },
       attributes: [
         "userId",
@@ -739,46 +740,46 @@ const getUserById = async (req, res) => {
   }
 };
 
-// const getSocietyModerator = async (req, res) => {
-//   try {
-//     const societyId = req.params.societyId;
-//     if (!societyId) {
-//       return res.status(400).json({ message: "Society ID is required" });
-//     }
-//     const moderator = await User.findAll({
-//       where: {
-//         societyId,
-//         isManagementCommittee: true,
-//         isDeleted: 0,
-//         status: "active",
-//       },
-//       attributes: [
-//         "userId",
-//         "salutation",
-//         "firstName",
-//         "lastName",
-//         "email",
-//         "mobileNumber",
-//         "roleId",
-//         "status",
-//         "addressId",
-//         "primaryContact",
-//         "livesHere",
-//       ],
-//     })
-//     if (!moderator || moderator.length === 0) {
-//       return res.status(404).json({ message: "No society moderator found for the given Society ID" });
-//     }
-//     res.status(200).json({
-//       message: "Society Moderator fetched successfully",
-//       moderator,
-//     });
-//   }
-//   catch (error) {
-//     console.error("Error fetching society moderator:", error);
-//     res.status(500).json({ error: error.message });
-//   }
-// }
+const getSocietyModerator = async (req, res) => {
+  try {
+    const societyId = req.params.societyId;
+    if (!societyId) {
+      return res.status(400).json({ message: "Society ID is required" });
+    }
+    const moderator = await User.findAll({
+      where: {
+        societyId,
+        isManagementCommittee: true,
+        isDeleted: 0,
+        status: "active",
+      },
+      attributes: [
+        "userId",
+        "salutation",
+        "firstName",
+        "lastName",
+        "email",
+        "mobileNumber",
+        "roleId",
+        "status",
+        "addressId",
+        "primaryContact",
+        "livesHere",
+      ],
+    })
+    if (!moderator || moderator.length === 0) {
+      return res.status(404).json({ message: "No society moderator found for the given Society ID" });
+    }
+    res.status(200).json({
+      message: "Society Moderator fetched successfully",
+      moderator,
+    });
+  }
+  catch (error) {
+    console.error("Error fetching society moderator:", error);
+    res.status(500).json({ error: error.message });
+  }
+}
 
 const getManagement_committee = async (req, res) => {
   try {
@@ -876,6 +877,7 @@ const getAllApprovedUsers = async (req, res) => {
         userId: user.userId,
         firstName: user.firstName,
         lastName: user.lastName,
+        email:user.email,//added by subhashree
         roleId: user.roleId,
         mobileNumber: user.mobileNumber,
         status: user.status,
@@ -898,7 +900,7 @@ module.exports = {
   updateResidentBySocietyId,
   bulkCreateResidents,
   getResidentBySocietyId,
-  //getSocietyModerator,
+  getSocietyModerator,
   getManagement_committee,
   getAllApprovedUsers,
   getAllDeactiveUsers,

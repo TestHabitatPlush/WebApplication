@@ -42,7 +42,7 @@ const { Sequelize } = require("sequelize");
 
 const DB_HOST = "127.0.0.1"; // or "localhost"
 const DB_USER = "root";
-const DB_PASSWORD = "pn21@mnbvcxz";
+const DB_PASSWORD = "manager";
 const DB_NAME = "habitatplush_dev";
 
 const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {

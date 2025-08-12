@@ -11,11 +11,15 @@ import {
   getAllDeactiveUserDataService,
   updateUsersForApprovedAndRejectService,
   updateModeratorStatusService,
+  updateSocietyModeratorService,
+  getSocietyModeratorService
 } from '../services/userService';
 import { useSelector } from 'react-redux';
 
 const UserHandler = () => {
   const token = useSelector((state) => state.auth.token);
+  const userId = useSelector((state) => state.auth.user.userId);
+
 
   const createSocietyModeratorHandler = async (formData) => {
     try {
@@ -29,17 +33,20 @@ const UserHandler = () => {
     }
   };
 
-  const createSocietyResidentUserHandler = async (societyId, formData) => {
-    try {
-      const response = await createSocietyResidentService(societyId, token, formData);
-      if (response.status === 201) {
-        toast.success('Society Resident created successfully!');
-      }
-    } catch (error) {
-      console.error('Error creating resident:', error);
-      toast.error(error?.response?.data?.message || 'An error occurred. Please try again.');
+const createSocietyResidentUserHandler = async (societyId, formData) => {
+  try {
+    const response = await createSocietyResidentService(societyId, token, formData);
+    if (response.status === 201) {
+      toast.success('Society Resident created successfully!');
     }
-  };
+    return response; // ✅ Add this line
+  } catch (error) {
+    console.error('Error creating resident:', error);
+    toast.error(error?.response?.data?.message || 'An error occurred. Please try again.');
+    return null; // ✅ Add fallback
+  }
+};
+
 
   const getResidentBySocietyIdHandler = async (societyId, token, { page, pageSize }) => {
     try {
@@ -122,6 +129,38 @@ const UserHandler = () => {
       return null;
     }
   };
+ const updateResidentBySocietyIdHandler = async ({ userId, residentData, token }) => {
+    try {
+      if (!token || !userId) throw new Error("Missing token or user ID");
+
+      const formData = new FormData();
+      formData.append("firstName", residentData.firstName);
+      formData.append("lastName", residentData.lastName);
+      formData.append("mobileNumber", residentData.mobileNumber);
+
+      if (residentData.photo instanceof File) {
+        formData.append("photo", residentData.photo);
+      }
+
+      const response = await updateSocietyModeratorService(userId, formData, token);
+      return response;
+    } catch (error) {
+      console.error("Error in updateResidentBySocietyIdHandler:", error);
+      throw error;
+    }
+  };
+
+
+const getSocietyModeratorHandler = async (societyId, token, params) => {
+  try {
+    const response = await getSocietyModeratorService(societyId, token, params);
+    console.log("API Full Response:", response);
+    return response.data?.moderator || [];
+  } catch (error) {
+    console.error("Error fetching society moderator:", error);
+    throw error;
+  }
+};
 
   return {
     createSocietyModeratorHandler,
@@ -134,6 +173,8 @@ const UserHandler = () => {
     updateUserForApprovedAndRejectHandler,
     activateModeratorHandler,
     inactivateModeratorHandler,
+    updateResidentBySocietyIdHandler,
+    getSocietyModeratorHandler
   };
 };
 
