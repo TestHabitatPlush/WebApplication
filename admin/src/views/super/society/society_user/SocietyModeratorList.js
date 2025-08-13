@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux"; // ✅ Added useDispatch
+import { useSelector, useDispatch } from "react-redux";
 import UserHandler from "../../../../handlers/UserHandler";
 import ReusableTable from "../../../../components/shared/ReusableTable";
 import {
-  setPage,
-  setPageSize,
+  setPage as setReduxPage,
+  setPageSize as setReduxPageSize,
 } from "../../../../redux/slices/societySlice";
 
 const SocietyModeratorList = () => {
-  const dispatch = useDispatch(); // ✅ Now we can use dispatch
+  const dispatch = useDispatch();
   const token = useSelector((state) => state.auth?.token || null);
   const societyId = useSelector((state) => state.auth?.user?.societyId);
 
@@ -18,44 +18,46 @@ const SocietyModeratorList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Pagination state
-  const [page, setLocalPage] = useState(1); // renamed to avoid conflict with Redux action
-  const [pageSize, setLocalPageSize] = useState(10);
+  // Local pagination state
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
   const fetchModerators = async () => {
     try {
       setLoading(true);
-      const moderatorList = await getSocietyModeratorHandler(societyId, token, {
+
+      const res = await getSocietyModeratorHandler(societyId, token, {
         page,
         pageSize,
       });
 
-      console.log("Raw API data:", moderatorList);
+      console.log("Raw API data:", res);
+if (res && Array.isArray(res)) {
+  const transformed = res.map((m, index) => ({
+    slNo: (page - 1) * pageSize + index + 1,
+    title: `${m.firstName || m.first_name || ""} ${m.lastName || m.last_name || ""}`.trim(),
+    firstName: m.firstName || m.first_name || "",
+    lastName: m.lastName || m.last_name || "",
+    email: m.email || m.emailId || "",
+    mobileNumber: m.mobileNumber || m.mobile || "",
+    roleId: m.roleId || m.role || "",
+    status: m.status || "",
+  }));
 
-      if (Array.isArray(moderatorList)) {
-        const transformed = moderatorList.map((m, index) => ({
-          slNo: (page - 1) * pageSize + index + 1,
-          title: `${m.firstName || ""} ${m.lastName || ""}`.trim(),
-          firstName: m.firstName || m.first_name,
-          lastName: m.lastName || m.last_name,
-          email: m.email || m.emailId,
-          mobileNumber: m.mobileNumber || m.mobile,
-          roleId: m.roleId || m.role,
-          status: m.status,
-        }));
+
 
         setModerators(transformed);
-        setTotal(transformed.length);
-        setTotalPages(1);
+        setTotal(res.total || transformed.length);
+        setTotalPages(res.totalPages || 1);
       } else {
         setModerators([]);
         setTotal(0);
         setTotalPages(0);
       }
-    } catch (error) {
-      console.error("Error fetching moderators:", error);
+    } catch (err) {
+      console.error("Error fetching moderators:", err);
       setError("Failed to load moderators");
     } finally {
       setLoading(false);
@@ -66,16 +68,16 @@ const SocietyModeratorList = () => {
     fetchModerators();
   }, [page, pageSize]);
 
-const columns = [
-  { Header: "Sl No", accessor: "slNo" },
-  { Header: "Title", accessor: "title" },
-  { Header: "First Name", accessor: "firstName" },
-  { Header: "Last Name", accessor: "lastName" },
-  { Header: "Email", accessor: "email" },
-  { Header: "Mobile", accessor: "mobileNumber" },
-  { Header: "Role", accessor: "roleId" },
-  { Header: "Status", accessor: "status" },
-];
+  const columns = [
+    { Header: "Sl No", accessor: "slNo" },
+    { Header: "Title", accessor: "title" },
+    { Header: "First Name", accessor: "firstName" },
+    { Header: "Last Name", accessor: "lastName" },
+    { Header: "Email", accessor: "email" },
+    { Header: "Mobile", accessor: "mobileNumber" },
+    { Header: "Role", accessor: "roleId" },
+    { Header: "Status", accessor: "status" },
+  ];
 
   return (
     <div>
@@ -92,12 +94,12 @@ const columns = [
         totalCount={total}
         totalPages={totalPages}
         setPageIndex={(index) => {
-          setLocalPage(index); // local update
-          dispatch(setPage(index)); // redux update
+          setPage(index);
+          dispatch(setReduxPage(index));
         }}
         setPageSize={(size) => {
-          setLocalPageSize(size);
-          dispatch(setPageSize(size));
+          setPageSize(size);
+          dispatch(setReduxPageSize(size));
         }}
       />
     </div>

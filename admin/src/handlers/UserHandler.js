@@ -149,7 +149,7 @@ const createSocietyResidentUserHandler = async (societyId, formData) => {
       throw error;
     }
   };
-
+ 
 
 const getSocietyModeratorHandler = async (societyId, token, params) => {
   try {
