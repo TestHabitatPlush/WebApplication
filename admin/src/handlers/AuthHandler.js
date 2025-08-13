@@ -90,25 +90,20 @@ const API_URL = process.env.REACT_APP_PUBLIC_API_URL || "http://localhost:5000/a
 const FRONTEND_URL = process.env.REACT_APP_PUBLIC_FRONTEND_URL || "http://localhost:3000";
 
 const AuthHandler = () => {
+  console.log("AuthHandler initialized with API_URL:", API_URL, "and FRONTEND_URL:", FRONTEND_URL);
   const dispatch = useDispatch();
   const { customNavigation } = NavigationHandler();
 
   const loginHandler = async (token) => {
+  console.log(`API_URL: ${API_URL}, FRONTEND_URL: ${FRONTEND_URL}`);
     try {
-      await axios
-        .post("http://localhost:5000/api/auth/token-signin", { token })
-        .then((res) => {
-          console.log(res);
-          setReduxAuthState(res.data);
-          setLocalStorage(res.data);
-          toast.success("Successfully logged in!");
-          customNavigation('/');
-          return;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      console.log("end f catch block");
+      console.log("Sending login request...");
+      const res = await axios.post(`${API_URL}/auth/token-signin`, { token });
+      console.log("Login response:", res.data);
+      setReduxAuthState(res.data);
+      setLocalStorage(res.data);
+      toast.success("Successfully logged in!");
+      customNavigation('/');
     } catch (error) {
       console.error("Login error:", error);
       toast.error("Login failed. Please try again.");
@@ -149,7 +144,7 @@ const AuthHandler = () => {
     console.log("Logging out...");
     clearLocalStorage();
     dispatch(clearAuth());
-    window.location.href = 'http://localhost:3000';
+    window.location.href = FRONTEND_URL;
   };
 
   return {

@@ -5,7 +5,7 @@ import { FaCheckCircle } from "react-icons/fa";
 import Navbar from "@/views/navbar/Navbar";
 import Footer from "@/views/footer/Footer";
 import Dialog from "../../components/ui/Dialog";
-import CustomerForm from "@/views/PricingSection/customerForm";
+import CustomerForm from "@/views/PricingSection/CustomerForm";
 
 
 const Page = () => {
