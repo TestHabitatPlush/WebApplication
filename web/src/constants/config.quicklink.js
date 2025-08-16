@@ -434,12 +434,12 @@ export const QuickLinks = {
           icon: vendorIcon, 
           linkOf: "myUnit",
         },
-        // {
-        //   name: "Society HelpDesk",
-        //   url: "/helpdesk",
-        //   icon: helpIcon, 
-        //   linkOf: "myUnit",
-        // },
+        {
+          name: "Society HelpDesk",
+          url: "/helpdesk",
+          icon: helpIcon, 
+          linkOf: "myUnit",
+        },
         {
           name: "My File",
           url: "/documents",

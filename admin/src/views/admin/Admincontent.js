@@ -8,6 +8,7 @@ import DashboardUser from "./usermanagement/dashboard/DashboardUser";
 import GeneralSetting from "./usermanagement/generalsetting/GeneralSetting";
 import UnitList from "./unitdetails/unitlist/UnitList";
 import DeactivateUser from "./usermanagement/deactivateuser/DeactivateUser";
+import BulkUserCreation from "./usermanagement/bulkusercreation/BulkUserCreation";
 import DefineUnit from "./unitdetails/defineunit/DefineUnit";
 import DefineStructer from "./unitdetails/definestructer/DefineStructer";
 import AddnewNotice from "./noticeannouncement/addnewnotice/AddnewNotice";
@@ -116,6 +117,7 @@ const Admincontent = () => {
       <Route path="/user/adduser" element={<AddUser />} />
       <Route path="/user/approved" element={<ApprovedUser />} />
       <Route path="/user/deactivated" element={<DeactivateUser />} />
+       <Route path="/user/bulkuser" element = {<BulkUserCreation/>} />
       <Route path="/user/setting" element={<GeneralSetting />} />
       <Route path="/user/setting" element={<GeneralSetting />} />
       <Route path="/unit/structer" element={<DefineStructer />} />

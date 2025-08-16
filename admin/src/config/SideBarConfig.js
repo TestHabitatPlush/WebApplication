@@ -67,6 +67,11 @@ const SideBarMenu = {
           url: "user/deactivated",
           path: ["user", "setting"],
         },
+           {
+          name: "Add Bulk User",
+          url: "user/bulkuser",
+          path: ["user", "BulkUser"],
+        },
         // {
         //   name: "User Access",
         //   url: "user/access",
