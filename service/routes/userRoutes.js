@@ -21,7 +21,6 @@ userRouter.post("/bulk-create/:societyId", upload.single("file"), userController
 userRouter.get("/moderator/:societyId", userController. getSocietyModerator);
 userRouter.get("/management/:societyId", userController.getManagement_committee);
 
-
 userRouter.put("/moderator/:userId", upload.fields([{ name: "photo", maxCount: 1 }]), userController.updateSocietyModerator);
 userRouter.put("/moderators/:id", userController.updateSocietyStatus);
 

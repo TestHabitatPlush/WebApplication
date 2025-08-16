@@ -39,7 +39,7 @@ const Vehicle = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
-        len: [12,16],    
+        len: [12, 16],
         is: /^[A-Z0-9]+$/i, 
       },
     },

@@ -1,7 +1,3 @@
-
-
-
-
 import { useState, useRef } from "react";
 import Button from "../../../../components/ui/Button";
 import DocumentHandler from "../../../../handlers/DocumentHandler";
@@ -97,11 +93,11 @@ const DocumentUploadFacilityForm = () => {
 
   return (
     <div className="px-5">
-      <div className="p-10 my-5 border rounded-lg bg-gray-100">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="p-10 my-5 bg-gray-100 border rounded-lg">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {/* Document Name & File Upload */}
           <div className="col-span-1 sm:col-span-2">
-            <label className="block font-semibold mb-1">Document Name</label>
+            <label className="block mb-1 font-semibold">Document Name</label>
             <div className="flex items-center gap-3">
               <input
                 type="text"
@@ -121,13 +117,13 @@ const DocumentUploadFacilityForm = () => {
                 accept=".pdf,.doc,.docx,image/*"
               />
             </div>
-            {errors.documentName && <p className="text-red-500 text-sm mt-1">{errors.documentName}</p>}
-            {errors.document && <p className="text-red-500 text-sm mt-1">{errors.document}</p>}
+            {errors.documentName && <p className="mt-1 text-sm text-red-500">{errors.documentName}</p>}
+            {errors.document && <p className="mt-1 text-sm text-red-500">{errors.document}</p>}
           </div>
 
           {/* Preview & Cancel */}
           {documentPreview && (
-            <div className="col-span-1 sm:col-span-2 mt-2 flex items-center gap-2">
+            <div className="flex items-center col-span-1 gap-2 mt-2 sm:col-span-2">
               <span className="text-sm truncate max-w-[180px]">{documentPreview}</span>
               <MdOutlineCancel
                 className="text-red-500 cursor-pointer"
@@ -160,7 +156,7 @@ const DocumentUploadFacilityForm = () => {
             </div>
           ))}
         </div>
-        {errors.visibilityOption && <p className="text-red-500 text-sm">{errors.visibilityOption}</p>}
+        {errors.visibilityOption && <p className="text-sm text-red-500">{errors.visibilityOption}</p>}
 
         {/* Submit */}
         <div className="flex justify-center mt-5">

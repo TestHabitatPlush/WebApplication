@@ -65,4 +65,10 @@ await twilio.messages.create({
   to: "+911234567890"
 });
 
+await twilio.messages.create({
+  body: `Your subscription has expired.`,
+  from: "+1234567890",
+  to: "+911234567890"
+});
+
 module.exports = sendEmail;

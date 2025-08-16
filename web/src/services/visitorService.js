@@ -1,21 +1,10 @@
-
 import axios from "axios";
 
-export const getVisitorRelationshipService = (data, token) => {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/visitormanagement/visitor-relationship`;
+const BASE_URL = `${process.env.REACT_APP_PUBLIC_API_URL}/visitormanagement`;
 
-  return axios.get(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    params: data,
-  });
-};
-
-export const createvisitorEntryService = (data, token) => {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/visitormanagement/new-visit-entry`;
-
-  return axios.post(url, data, {
+// Create Visitor Entry
+export const createVisitorEntryService = async (data, token) => {
+  return axios.post(`${BASE_URL}`, data, {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
@@ -23,74 +12,47 @@ export const createvisitorEntryService = (data, token) => {
   });
 };
 
-export const getvisitorEntryByIdService = (visit_entry_Id, token) => {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/visitormanagement/visitor/${visit_entry_Id}`;
-  return axios.get(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-};
-
-export const getVisitorEntryTableService = (data, token) => {
-  console.log("visitor table created");
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/visitormanagement/visitor-list`;
-
-  return axios.get(url, {
-    headers: {
-      Authorization:` Bearer ${token}`,
-    },
+// Get Visitor Relationships by SocietyId
+export const getVisitorRelationshipService = async (data, token) => {
+  return axios.get(`${BASE_URL}/relationship`, {
+    headers: { Authorization: `Bearer ${token}` },
     params: data,
   });
 };
-export const deleteVisitorService = async (visit_entry_Id, token) => {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/visitormanagement/visitor-list/${visit_entry_Id}`;
-  try {
-    const response = await axios.delete(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response;
-  } catch (err) {
-    console.error("Error in deleting visitor:", err);
-    throw err;
-  }
-};
-export const getQrCodeByIdService = (visit_entry_Id, token) => {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/visitormanagement/qrCode/${visit_entry_Id}`;
-  return axios.get(url, {
-      headers: { Authorization: `Bearer ${token}` },
+
+// Get Visitor List for Resident by senderId
+export const getVisitorListForResidentService = async (senderId, token, data = {}) => {
+  return axios.get(`${BASE_URL}/resident/${senderId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+    params: data,
   });
 };
 
+// Get QR Code by Visit Entry ID
+export const getQrCodeByIdService = async (visitEntryId, token) => {
+  return axios.get(`${BASE_URL}/qrcode/${visitEntryId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+};
 
+// Delete Visitor
+export const deleteVisitorService = async (id, token) => {
+  return axios.delete(`${BASE_URL}/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+};
 
-// export const getVisitorListForResidentService = (senderId, token) => {
- 
-//   const url = `${process.env.NEXT_PUBLIC_API_URL}/visitormanagement/visitor-entries/sender/${senderId}`;
+// Get Visitor Entry by ID
+export const getVisitorEntryByIdService = async (id, token) => {
+  return axios.get(`${BASE_URL}/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+};
 
-//   return axios.get(url, {
-//     headers: {
-//       Authorization:` Bearer ${token}`,
-//     },
-//   });
-// };
-
-// export const getVisitorListForResidentService = (senderId, token) => {
-//   const url = `${process.env.NEXT_PUBLIC_API_URL}/visitormanagement/visitor-entries/sender/${senderId}`;
-//   return axios.get(url, {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//     },
-//   });
-// };
-export const getVisitorListForResidentService = (senderId, token, params) => {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/visitormanagement/visitor-entries/sender/${senderId}`;
-  return axios.get(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    params, // Include pagination or filters
+// Get Visitor Entry Table
+export const getVisitorEntryTableService = async (data, token) => {
+  return axios.get(`${BASE_URL}/table`, {
+    headers: { Authorization: `Bearer ${token}` },
+    params: data,
   });
 };

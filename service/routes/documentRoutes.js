@@ -1,3 +1,4 @@
+
 // const express = require("express");
 // const documentRouter = express.Router();
 // const documentController = require("../controllers/documentController");
@@ -16,6 +17,7 @@
 // module.exports = documentRouter;
 
 
+
 const express = require("express");
 const documentRouter = express.Router();
 const documentController = require("../controllers/documentController");
@@ -27,6 +29,7 @@ documentRouter.get("/society/:societyId/:userId", documentController.getDocument
 
 
 documentRouter.get("/user/:userId", documentController.getDocumentByUserId);
+// documentRouter.get("/all/by-user/:userId", documentController.getAllDocuments);
 documentRouter.get("/:userId", documentController.getAllDocuments);
 
 documentRouter.put("/society/:documentId",documentController.updateDocumentBySocietyId);
@@ -35,3 +38,4 @@ documentRouter.put("/user/:documentId",documentController.updateDocumentByUserId
 documentRouter.delete("/:documentId",documentController.deleteDocument);
 
 module.exports = documentRouter;
+

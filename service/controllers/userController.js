@@ -1,4 +1,4 @@
-const { User, Unit, Role } = require("../models");
+const { User, Unit, Role,Customer } = require("../models");
 const { getAllUsersService, getUserByIdService } = require("../services/userService");
 //const { createUnit, getUnit, getAllUnits } = require("../controllers/unitController.js");
 const addressService = require("../services/addressService");
@@ -255,7 +255,6 @@ const updateSocietyStatus = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 // const createSocietyResident = async (req, res) => {
 //   upload.fields([{name:"photo"}])( req,res,async(err) =>{
