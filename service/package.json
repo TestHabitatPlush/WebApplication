@@ -9,6 +9,7 @@
     "test": "cross-env NODE_ENV=test nodemon index.js",
     "prod": "cross-env NODE_ENV=production node index.js"
   },
+
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -34,6 +35,7 @@
     "sequelize": "^6.37.3",
     "socket.io": "^4.8.1",
     "update": "^0.7.4",
+    "uuid": "^11.1.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

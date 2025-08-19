@@ -4,7 +4,6 @@ import toast from 'react-hot-toast';
 import {
   createSocietyModeratorService,
   createSocietyResidentService,
-  createBulkSocietyUserService,
   getResidentBySocietyIdService,
   getUserByIdService,
   getAllUserDataService,
@@ -13,14 +12,14 @@ import {
   updateUsersForApprovedAndRejectService,
   updateModeratorStatusService,
   updateSocietyModeratorService,
-  getSocietyModeratorService
+  getSocietyModeratorService,
+  createBulkSocietyUserService
 } from '../services/userService';
 import { useSelector } from 'react-redux';
 
 const UserHandler = () => {
   const token = useSelector((state) => state.auth.token);
-  const userId = useSelector((state) => state.auth.user.userId);
-
+  const userId = useSelector((state) => state.auth.user?.userId);
 
   const createSocietyModeratorHandler = async (formData) => {
     try {
@@ -28,33 +27,35 @@ const UserHandler = () => {
       if (response.status === 201) {
         toast.success('Society Moderator created successfully!');
       }
+      return response;
     } catch (error) {
       console.error('Error creating moderator:', error);
       toast.error(error.response?.data?.message || error.message);
+      return null;
     }
   };
 
-const createSocietyResidentUserHandler = async (societyId, formData) => {
-  try {
-    const response = await createSocietyResidentService(societyId, token, formData);
-    if (response.status === 201) {
-      toast.success('Society Resident created successfully!');
+  const createSocietyResidentUserHandler = async (societyId, formData) => {
+    try {
+      const response = await createSocietyResidentService(societyId, token, formData);
+      if (response.status === 201) {
+        toast.success('Society Resident created successfully!');
+      }
+      return response;
+    } catch (error) {
+      console.error('Error creating resident:', error);
+      toast.error(error?.response?.data?.message || 'An error occurred. Please try again.');
+      return null;
     }
-    return response; // ✅ Add this line
-  } catch (error) {
-    console.error('Error creating resident:', error);
-    toast.error(error?.response?.data?.message || 'An error occurred. Please try again.');
-    return null; // ✅ Add fallback
-  }
-};
+  };
 
-
-  const getResidentBySocietyIdHandler = async (societyId, token, { page, pageSize }) => {
+  const getResidentBySocietyIdHandler = async (societyId, { page, pageSize }) => {
     try {
       const response = await getResidentBySocietyIdService(societyId, token, { page, pageSize });
       return response.data;
     } catch (error) {
       console.error('Error fetching user data:', error);
+      return null;
     }
   };
 
@@ -64,6 +65,7 @@ const createSocietyResidentUserHandler = async (societyId, formData) => {
       return response.data;
     } catch (error) {
       console.error('Error fetching user data:', error);
+      return null;
     }
   };
 
@@ -77,7 +79,7 @@ const createSocietyResidentUserHandler = async (societyId, formData) => {
     }
   };
 
-  const getAllApprovedUserDataHandler = async (societyId, token, data) => {
+  const getAllApprovedUserDataHandler = async (societyId, data) => {
     try {
       const response = await getAllApprovedUserDataService(societyId, token, data);
       return response.data;
@@ -87,12 +89,12 @@ const createSocietyResidentUserHandler = async (societyId, formData) => {
     }
   };
 
-  const getAllDeactiveUserDataHandler = async (societyId, token, { page, pageSize }) => {
+  const getAllDeactiveUserDataHandler = async (societyId, { page, pageSize }) => {
     try {
       const response = await getAllDeactiveUserDataService(societyId, token, { page, pageSize });
       return response.data;
     } catch (error) {
-      console.error('Error fetching deactivate user data:', error);
+      console.error('Error fetching deactivated user data:', error);
       return null;
     }
   };
@@ -103,10 +105,11 @@ const createSocietyResidentUserHandler = async (societyId, formData) => {
       return response;
     } catch (error) {
       console.error('Error updating user:', error);
+      return null;
     }
   };
 
-  // ✅ ADDED: Two separate handlers for activating and inactivating moderators
+  // ✅ Separate handlers for activating and inactivating moderators
   const activateModeratorHandler = async (id) => {
     try {
       await updateModeratorStatusService({ id, status: 'active' }, token);
@@ -130,7 +133,8 @@ const createSocietyResidentUserHandler = async (societyId, formData) => {
       return null;
     }
   };
- const updateResidentBySocietyIdHandler = async ({ userId, residentData, token }) => {
+
+  const updateResidentBySocietyIdHandler = async (residentData) => {
     try {
       if (!token || !userId) throw new Error("Missing token or user ID");
 
@@ -147,34 +151,39 @@ const createSocietyResidentUserHandler = async (societyId, formData) => {
       return response;
     } catch (error) {
       console.error("Error in updateResidentBySocietyIdHandler:", error);
-      throw error;
+      return null;
     }
   };
- 
 
-const getSocietyModeratorHandler = async (societyId, token, params) => {
-  try {
-    const response = await getSocietyModeratorService(societyId, token, params);
-    console.log("API Full Response:", response);
-    return response.data?.moderator || [];
-  } catch (error) {
-    console.error("Error fetching society moderator:", error);
-    throw error;
-  }
-};
- const createBulkSocietyUserHandler = async (societyId, formData) => {
+  const getSocietyModeratorHandler = async (societyId, params) => {
     try {
-      const response = await createBulkSocietyUserService(societyId, token, formData)
-      if (response.status === 201) {
-        toast.success("Society Resident users created Success!");
-      }
+      const response = await getSocietyModeratorService(societyId, token, params);
+      console.log("API Full Response:", response);
+      return response.data?.moderator || [];
     } catch (error) {
-      console.error("Error creating resident:", error);
+      console.error("Error fetching society moderator:", error);
+      return [];
     }
+  };
+
+  const createBulkSocietyUserHandler = async (societyId, formData) => {
+    try {
+      const response = await createBulkSocietyUserService(societyId, token, formData);
+      if (response.status === 201) {
+        toast.success("Society Resident users created successfully!");
+      }
+      return response;
+    } catch (error) {
+      console.error("Error creating bulk users:", error);
+      toast.error(error?.response?.data?.message || "Failed to create bulk users");
+      return null;
+    }
+  };
+
+  // ✅ Properly closed and returned handlers
   return {
     createSocietyModeratorHandler,
     createSocietyResidentUserHandler,
-createBulkSocietyUserHandler,
     getResidentBySocietyIdHandler,
     getUserByIdHandler,
     getAllUserDataHandler,
@@ -184,7 +193,8 @@ createBulkSocietyUserHandler,
     activateModeratorHandler,
     inactivateModeratorHandler,
     updateResidentBySocietyIdHandler,
-    getSocietyModeratorHandler
+    getSocietyModeratorHandler,
+    createBulkSocietyUserHandler,
   };
 };
 
