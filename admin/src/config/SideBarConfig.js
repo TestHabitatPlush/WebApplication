@@ -376,25 +376,22 @@ const SideBarMenu = {
 },
 
 
-{
-  name: "Subcription Plan",
-  isAvailable: true,
-  icon: FaAddressBook,
-  children: [
-    {
-      name: "Subcription Plan Details",
-      url: "subcriptionPlan/PlanDetails",
-    },
-   {
-      name: "Subcription Plan List",
-      url: "/subcriptionPlan/PlanList",
-    },
-    
-  ],
-}
+
   ],
  
   super_admin: [
+    {
+      name: "Dashboard",
+      isAvailable: true,
+       icon: FaTachometerAlt ,
+      children: [
+        {
+          name: "Dashboard",
+          url: "dashboard",
+        },
+       
+      ],
+    },
     {
       name: "Society Management",
       isAvailable: true,
@@ -493,6 +490,22 @@ const SideBarMenu = {
    {
       name: "Emergency List",
       url: "/emerencycontact/EmergencyList",
+    },
+    
+  ],
+},
+{
+  name: "Subcription Plan",
+  isAvailable: true,
+  icon: FaAddressBook,
+  children: [
+    {
+      name: "Subcription Plan Details",
+      url: "/subscription-plan/details",
+    },
+   {
+      name: "Subcription Plan List",
+      url: "/subscription-plan/list",
     },
     
   ],

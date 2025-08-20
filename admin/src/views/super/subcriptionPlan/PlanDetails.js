@@ -4,54 +4,70 @@ import UrlPath from "../../../components/shared/UrlPath";
 import PageHeading from "../../../components/shared/PageHeading";
 import Input from "../../../components/shared/Input";
 import Button from "../../../components/ui/Button";
+import SubscriptionHandler from "../../../handlers/superadmin/SubscriptionHandler";
 
 const PlanDetails = () => {
   const token = useSelector((state) => state.auth.token);
-  const userId = useSelector((state) => state.auth.user.userId);
-  const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
 
   const [formData, setFormData] = useState({
     planName: "",
-    duration: "",
-    planDetails: "",
+    billingCycle: "",
     price: "",
-    discount: "",
-    discountPercent: "",
-    bookingFrom: "",
-    bookingTo: "",
+    discountPercentage: "",
+    startDate: "",
+    endDate: "", // used only if billingCycle === "custom"
   });
 
   const paths = ["Subscription Plan", "Plan Details"];
   const Heading = ["Add Subscription Plan"];
+  const { createPlanHandler } = SubscriptionHandler();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    setFormData((prev) => {
+      // 🔑 clear endDate if billing cycle != custom
+      if (name === "billingCycle" && value !== "custom") {
+        return {
+          ...prev,
+          [name]: value,
+          endDate: "",
+        };
+      }
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     console.log("Form Submitted: ", formData);
 
-    // TODO: Replace with actual API handler
-    // const result = await createPlanHandler({ societyId, userId, token, data: formData });
+    // ✅ send only what backend expects
+    const payload = {
+      planName: formData.planName,
+      billingCycle: formData.billingCycle,
+      price: formData.price,
+      discountPercentage: formData.discountPercentage,
+      startDate: formData.startDate,
+    };
 
-    const result = true; // mock response
+    if (formData.billingCycle === "custom") {
+      payload.endDate = formData.endDate;
+    }
+
+    const result = await createPlanHandler({ token, data: payload });
 
     if (result) {
       setFormData({
         planName: "",
-        duration: "",
-        planDetails: "",
+        billingCycle: "",
         price: "",
-        discount: "",
-        discountPercent: "",
-        bookingFrom: "",
-        bookingTo: "",
+        discountPercentage: "",
+        startDate: "",
+        endDate: "",
       });
     }
   };
@@ -67,7 +83,9 @@ const PlanDetails = () => {
       <div className="p-8 mt-6 bg-white border border-gray-200 shadow-lg rounded-2xl">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">Plan Name</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              Plan Name
+            </label>
             <select
               name="planName"
               value={formData.planName}
@@ -76,45 +94,56 @@ const PlanDetails = () => {
             >
               <option value="">Select Plan</option>
               <option value="Gold">Gold</option>
-              <option value="Sliver">Sliver</option>
+              <option value="Silver">Silver</option>
               <option value="Platinum">Platinum</option>
             </select>
 
-            <label className="block mt-4 mb-1 text-sm font-medium text-gray-700">Duration</label>
+            <label className="block mt-4 mb-1 text-sm font-medium text-gray-700">
+              Billing Cycle
+            </label>
             <select
-              name="duration"
-              value={formData.duration}
+              name="billingCycle"
+              value={formData.billingCycle}
               onChange={handleInputChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">Select Duration</option>
+              <option value="">Select Billing Cycle</option>
               <option value="monthly">Monthly</option>
               <option value="quarterly">Quarterly</option>
+              <option value="half-yearly">Half-Yearly</option>
               <option value="yearly">Yearly</option>
+              <option value="custom">Custom</option>
             </select>
           </div>
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div>
+            <Input
+              label={
+                <div>
+                  Start Date <span className="text-red-500">*</span>
+                </div>
+              }
+              type="date"
+              size="lg"
+              name="startDate"
+              value={formData.startDate}
+              onChange={handleInputChange}
+            />
+
+            {formData.billingCycle === "custom" && (
               <Input
-                label={<div>Booking From <span className="text-red-500">*</span></div>}
+                label={
+                  <div>
+                    End Date <span className="text-red-500">*</span>
+                  </div>
+                }
                 type="date"
                 size="lg"
-                name="bookingFrom"
-                value={formData.bookingFrom}
+                name="endDate"
+                value={formData.endDate}
                 onChange={handleInputChange}
               />
-            </div>
-            <div>
-              <Input
-                label={<div>Booking To <span className="text-red-500">*</span></div>}
-                type="date"
-                size="lg"
-                name="bookingTo"
-                value={formData.bookingTo}
-                onChange={handleInputChange}
-              />
-            </div>
+            )}
           </div>
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -125,21 +154,10 @@ const PlanDetails = () => {
               onChange={handleInputChange}
               placeholder="Enter price"
             />
-
             <Input
-              label="Discount"
-              name="discount"
-              value={formData.discount}
-              onChange={handleInputChange}
-              placeholder="Enter discount amount"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
-            <Input
-              label="Discount Percent"
-              name="discountPercent"
-              value={formData.discountPercent}
+              label="Discount Percentage"
+              name="discountPercentage"
+              value={formData.discountPercentage}
               onChange={handleInputChange}
               placeholder="Enter discount %"
             />

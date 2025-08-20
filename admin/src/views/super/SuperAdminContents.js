@@ -6,18 +6,25 @@ import CreateSocietyModerator from "./society/society_user/CreateSocietyModerato
 import CreateEmergencyDetails from "./EmergencyContact/CreateEmergencyDetails";
 import EmergencyListSuperAdmin from "../super/EmergencyContact/EmergencyListSuperAdmin/EmergencyListSuperAdmin";
 import SocietyModeratorList from "./society/society_user/SocietyModeratorList";
+import PlanDetails from "../super/subcriptionPlan/PlanDetails";
+import Dashboard from "../super/Dashboard/dashboard";
+import SubscriptionList from "./subcriptionPlan/planList/SubscriptionList";
+
+
 
 
 const SuperAdminContents = () => {
   return (
     <Routes>
-      <Route path="/" element={<div>Admin Dashboard home</div>} />
+      <Route path="/dashboard" element={<Dashboard/>} />
       <Route path="/society/create" element={<CreateSociety />} />
       <Route path="/society/view" element={<SocietyList />} />
       <Route path="/society/createuser" element={<CreateSocietyModerator />} />
       <Route path="/society/societyModeratorList" element={<SocietyModeratorList />} />
       <Route path="/emergencycontact/ContactDetails" element={<CreateEmergencyDetails />} />
       <Route path="/emerencycontact/EmergencyList" element={<EmergencyListSuperAdmin />} />
+      <Route path="/subscription-plan/details" element={<PlanDetails />} />
+      <Route path="/subscription-plan/list" element={<SubscriptionList/>} />
     </Routes>
   );
 };
