@@ -13,7 +13,8 @@ import {
   updateModeratorStatusService,
   updateSocietyModeratorService,
   getSocietyModeratorService,
-  createBulkSocietyUserService
+  createBulkSocietyUserService,
+  createMultipleSocietyUserService
 } from '../services/userService';
 import { useSelector } from 'react-redux';
 
@@ -166,17 +167,35 @@ const UserHandler = () => {
     }
   };
 
-  const createBulkSocietyUserHandler = async (societyId, formData) => {
+  // const createBulkSocietyUserHandler = async (societyId, formData) => {
+  //   try {
+  //     const response = await createBulkSocietyUserService(societyId, token, formData);
+  //     if (response.status === 201) {
+  //       toast.success("Society Resident users created successfully!");
+  //     }
+  //     return response;
+  //   } catch (error) {
+  //     console.error("Error creating bulk users:", error);
+  //     toast.error(error?.response?.data?.message || "Failed to create bulk users");
+  //     return null;
+  //   }
+  // };
+ // ✅ Manual Bulk Creation
+    const createBulkSocietyUserHandler = async (societyId, formData) => {
     try {
-      const response = await createBulkSocietyUserService(societyId, token, formData);
-      if (response.status === 201) {
-        toast.success("Society Resident users created successfully!");
-      }
-      return response;
+      return await createBulkSocietyUserService(societyId, formData);
     } catch (error) {
-      console.error("Error creating bulk users:", error);
-      toast.error(error?.response?.data?.message || "Failed to create bulk users");
-      return null;
+      console.error("Error in bulk upload:", error);
+      throw error;
+    }
+  };
+
+  const createMultipleSocietyUserHandler = async (societyId, data) => {
+    try {
+      return await createMultipleSocietyUserService(societyId, data);
+    } catch (error) {
+      console.error("Error in multiple user creation:", error);
+      throw error;
     }
   };
 
@@ -195,6 +214,7 @@ const UserHandler = () => {
     updateResidentBySocietyIdHandler,
     getSocietyModeratorHandler,
     createBulkSocietyUserHandler,
+    createMultipleSocietyUserHandler
   };
 };
 

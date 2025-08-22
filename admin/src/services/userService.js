@@ -147,12 +147,37 @@ export const getSocietyModeratorService = (societyId, token, params = {}) => {
 };
 
 
-export const createBulkSocietyUserService = async (societyId, token, data) => {
+// export const createBulkSocietyUserService = async (societyId, token, data) => {
+//   const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/bulk-create/${societyId}`;
+//   return axios.post(url, data, {
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//       "Content-Type": "multipart/form-data",
+//     },
+//   });
+// }
+
+// ✅ Manual Bulk Create (JSON array)
+export const createBulkSocietyUserService = async (societyId, token, users) => {
   const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/bulk-create/${societyId}`;
-  return axios.post(url, data, {
+  return axios.post(url, { users }, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+// ✅ File Upload Bulk Create (Excel/CSV)
+export const createMultipleSocietyUserService = async (societyId, token, file) => {
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/bulk-create/${societyId}`;
+  const formData = new FormData();
+  formData.append("file", file);
+
+  return axios.post(url, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "multipart/form-data",
     },
   });
-}
+};
