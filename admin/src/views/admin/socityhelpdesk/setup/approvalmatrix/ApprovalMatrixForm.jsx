@@ -135,41 +135,46 @@
 import React, { useEffect, useState } from "react";
 import UrlPath from "../../../../../components/shared/UrlPath";
 import PageHeading from "../../../../../components/shared/PageHeading";
-import Input from "../../../../../components/shared/Input";
+// import Input from "../../../../../components/shared/Input";
 import Button from "../../../../../components/ui/Button";
-// import SoftwareHelpDeskHandler from "../../../../../handlers/SoftwareHelpDesk";
+import SoftwareHelpDeskHandler from "../../../../../handlers/SoftwareHelpDesk";
 import ReusableTable from "../../../../../components/shared/ReusableTable";
 
 const ApprovalMatrixForm = () => {
   const paths = ["Socity HelpDesk Management", "Setup", "Approval Matrix"];
   const Heading = ["Approval Matrix"];
 
-  const [page, setPage] = useState(0); // Start from page 1
-  const [pageSize, setPageSize] = useState(5); // Default to 5 items per page
+  const [page, setPage] = useState(0); 
+  const [pageSize, setPageSize] = useState(5); 
   const [transformedData, setTransformedData] = useState([]);
   const [totalPages, setTotalPages] = useState(null);
   const [total, setTotal] = useState(null);
 
-  // const { accessManagementTable, sendAccessManagementData } =
-  //   SoftwareHelpDeskHandler();
+  const { accessManagementTable, sendAccessManagementData } =
+    SoftwareHelpDeskHandler();
 
-  // const fetchAccessManagementTable = async () => {
-  //   try {
-  //     const result = await accessManagementTable({
-  //       page,
-  //       pageSize,
-  //     });
-  //     setTransformedData(result.data.data);
-  //     setTotal(result.data.total);
-  //     setTotalPages(result.data.totalPages);
-  //   } catch (err) {
-  //     console.error(err.message);
-  //   }
-  // };
+const fetchAccessManagementTable = async () => {
+  try {
+    const result = await accessManagementTable({
+      page,
+      pageSize,
+    });
 
-  // useEffect(() => {
-  //   fetchAccessManagementTable();
-  // }, [page, pageSize]);
+    // Fix: result already is `res.data` from the handler
+    setTransformedData(result?.data || []);
+    setTotal(result?.total || 0);
+    setTotalPages(result?.totalPages || 0);
+    
+    console.log("access management list", result);
+  } catch (err) {
+    console.error("Error fetching access data:", err);
+  }
+};
+
+
+  useEffect(() => {
+    fetchAccessManagementTable();
+  }, [page, pageSize]);
 
   // Handle radio button state for each row
   const handleApprovalChange = (id, value) => {
@@ -181,7 +186,7 @@ const ApprovalMatrixForm = () => {
   };
 
   // const refreshHandler = () => {
-  //   // fetchAccessManagementTable();
+  //   fetchAccessManagementTable(); 
   // };
 
   const columns = [
@@ -191,6 +196,7 @@ const ApprovalMatrixForm = () => {
       Header: "Approval",
       accessor: "approval",
       Cell: ({ row }) => (
+        console.log("row", row),
         <div>
           <label>
             <input
@@ -219,8 +225,19 @@ const ApprovalMatrixForm = () => {
 
   const handleSubmit = () => {
     console.log("Submitting data:", transformedData);
-    // sendAccessManagementData(transformedData);
+    sendAccessManagementData(transformedData);
   };
+
+//   const handleSubmit = async () => {
+//   try {
+//     console.log("Submitting data:", transformedData);
+//     const result = await sendAccessManagementData(transformedData);
+//     console.log("Submission response:", result);
+//   } catch (err) {
+//     console.error("Submit error:", err);
+//   }
+// };
+
 
   return (
     <div className="px-5 ">
@@ -231,14 +248,7 @@ const ApprovalMatrixForm = () => {
       <div className="p-10 my-5 border rounded-lg bg-gray-100">
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <div>Know your management committee member</div>
-          {/* <Button
-            className="max-w-sm"
-            onClick={refreshHandler}
-            type="submit"
-            size="lg"
-          >
-            Refresh
-          </Button> */}
+        
           <div className="p-10 my-5 border rounded-lg bg-gray-100">
             <ReusableTable
               columns={columns}
@@ -284,3 +294,7 @@ const ApprovalMatrixForm = () => {
 };
 
 export default ApprovalMatrixForm;
+
+
+
+

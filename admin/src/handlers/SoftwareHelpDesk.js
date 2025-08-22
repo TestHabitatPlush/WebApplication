@@ -1,149 +1,175 @@
-import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
+
 import {
-  createTicketService,
-  defineTicketPurpousService,
-  getAccessManagementService,
-  getDefineTicketPurpousService,
-  getTicketListService,
-  getTicketStatusService,
-  getTicketTableService,
-  getTypeCatagorisationService,
-  sendAccessManagementService,
+  createRefTicketStatusService,
+  getRefTicketStatusService,
+  createTicketPurposeService,
+  getTicketPurposeService,
   updateTicketPurposeService,
+  getTicketPurposeDropdownService,
+  createTicketService,
+  getTicketTableService,
+  updateTicketStatusAndRemarksService,
+  getAssignableUsersService,
 } from "../services/softwarehelpdeskService";
 
 const SoftwareHelpDeskHandler = () => {
   const token = useSelector((state) => state.auth.token);
-  const societyId = useSelector((state) => state.auth.user.Customer.customerId);
-  const userId = useSelector((state) => state.auth.user.userId);
+  const societyId = useSelector(
+    (state) => state.auth.user?.Customer?.customerId
+  );
+  const userId = useSelector((state) => state.auth.user?.userId);
 
-  const ticketPurpous = async (data) => {
-    console.log("Ticket Purpose data handler", data);
-
-    return await defineTicketPurpousService(
-      { data, societyId, userId },
-      token
-    ).then((res) => {
-      if (res.status === 201) {
-        toast.success("Ticket Purpous created successfully.");
+  const createRefTicketStatus = async (data) => {
+    try {
+      const response = await createRefTicketStatusService(data, token);
+      if (response.status === 201) {
+        toast.success("Ticket status created successfully.");
       }
-    });
+      return response.data;
+    } catch (err) {
+      console.error("Error creating ticket status:", err);
+      toast.error(err.response?.data?.message || "Failed to create status.");
+    }
   };
 
-  const ticketPurpousTable = async (data) => {
-    return await getDefineTicketPurpousService({ ...data, societyId }, token)
-      .then((res) => {
-        return res;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const getRefTicketStatus = async () => {
+    try {
+      const response = await getRefTicketStatusService(token);
+      return response.data?.data || [];
+    } catch (err) {
+      console.error("Error fetching ticket statuses:", err);
+      toast.error("Unable to fetch ticket statuses.");
+      return [];
+    }
   };
 
-  const ticketPurpousListView = async () => {
-    console.log("ticketPurpousListView", societyId);
-
-    return await getTicketListService({ societyId }, token)
-      .then((res) => {
-        return res;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const createTicketPurpose = async (data) => {
+    try {
+      const response = await createTicketPurposeService(
+        societyId,
+        userId,
+        data,
+        token
+      );
+      if (response.status === 201) {
+        toast.success("Ticket purpose created.");
+      }
+      return response.data;
+    } catch (err) {
+      console.error("Error creating ticket purpose:", err);
+      toast.error("Failed to create ticket purpose.");
+    }
   };
 
-  const ticketStatusListView = async () => {
-    console.log("ticketStatusListView");
-    return await getTicketStatusService(token)
-      .then((res) => {
-        return res;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const getTicketPurposeList = async (params = {}) => {
+    try {
+      const response = await getTicketPurposeService(societyId, token, params);
+      return response.data;
+    } catch (err) {
+      console.error("Error fetching ticket purpose list:", err);
+      toast.error("Failed to fetch ticket purpose list.");
+    }
   };
 
-  const createTicket = async (data) => {
-    console.log("create ticket list handler data", data);
-    return await createTicketService({ ...data, societyId, userId }, token)
-      .then((res) => {
-        return res;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const updateTicketPurpose = async (ticket_purpose_Id, data) => {
+    try {
+      const response = await updateTicketPurposeService(
+        ticket_purpose_Id,
+        data,
+        token
+      );
+      toast.success("Ticket purpose updated.");
+      return response.data;
+    } catch (err) {
+      console.error("Error updating ticket purpose:", err);
+      toast.error("Failed to update ticket purpose.");
+    }
   };
 
-  const updateTicketPurpousById = async (data) => {
-    console.log("update define purpous by Id ", data);
-    return await updateTicketPurposeService(data, token)
-      .then((res) => {
-        return res;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const getTicketDropdown = async () => {
+    try {
+      const response = await getTicketPurposeDropdownService(societyId, token);
+      // console.log("getTicketDropdown",response)
+      return response.data?.data || [];
+    } catch (err) {
+      console.error("Error fetching ticket dropdown:", err);
+      toast.error("Failed to fetch dropdown values.");
+      return [];
+    }
   };
 
-  const getTicketListTable = async (data) => {
-    console.log("get Ticket List Table", data);
-    return await getTicketTableService({ ...data, societyId }, token)
-      .then((res) => {
-        return res;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const createTicket = async (formData) => {
+    try {
+      const result = await createTicketService(
+        userId,
+        societyId,
+        formData,
+        token
+      );
+      console.log("createTicket result", result);
+      toast.success("Ticket created successfully");
+      return result;
+    } catch (err) {
+      toast.error("Error creating ticket");
+      console.error(err);
+    }
   };
 
-  const getTicketCatagorisation = async () => {
-    return await getTypeCatagorisationService(token)
-      .then((res) => {
-        return res;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const getTicketTable = async (params = {}) => {
+    try {
+      const res = await getTicketTableService(userId, societyId, token, params);
+      // console.log("getTicketTable res", res);
+      if (res.status === 200) {
+        return res.data;
+      }
+    } catch (err) {
+      console.error("Error fetching tickets:", err);
+      toast.error("Failed to fetch ticket table.");
+    }
   };
 
-  const updateTicketListById = () => {
-    console.log("update Ticket By Id");
+  const updateTicketStatusAndRemarks = async (ticket_Id, data) => {
+    try {
+      const res = await updateTicketStatusAndRemarksService(
+        ticket_Id,
+        data,
+        token
+      );
+      if (res.status === 200) {
+        toast.success("Ticket updated.");
+        return res.data;
+      }
+    } catch (err) {
+      console.error("Error updating ticket:", err);
+      toast.error("Failed to update ticket.");
+    }
   };
 
-  const accessManagementTable = async (data) => {
-    console.log("It is Access Management Handler", data);
-    return await getAccessManagementService({ ...data, societyId }, token)
-      .then((res) => {
-        return res;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const getAssignableUsers = async (societyId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await getAssignableUsersService(societyId, token);
+      return response?.data?.data || []; 
+    } catch (error) {
+      console.error("Error fetching assignable users:", error);
+      return [];
+    }
   };
-  const sendAccessManagementData = async (data) => {
-    console.log("data handler", ...data);
-    return await sendAccessManagementService(...data, token)
-      .then((res) => {
-        return res;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+
 
   return {
-    ticketPurpous,
-    ticketPurpousTable,
-    ticketPurpousListView,
-    ticketStatusListView,
+    createRefTicketStatus,
+    getRefTicketStatus,
+    createTicketPurpose,
+    getTicketPurposeList,
+    updateTicketPurpose,
+    getTicketDropdown,
     createTicket,
-    updateTicketPurpousById,
-    getTicketListTable,
-    getTicketCatagorisation,
-    updateTicketListById,
-    accessManagementTable,
-    sendAccessManagementData,
+    getTicketTable,
+    updateTicketStatusAndRemarks,
+    getAssignableUsers,
   };
 };
 

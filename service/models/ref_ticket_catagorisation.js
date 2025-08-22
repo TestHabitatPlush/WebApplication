@@ -20,4 +20,5 @@ const ref_ticket_categorisation = sequelize.define(
   }
 );
 
+
 module.exports = ref_ticket_categorisation;

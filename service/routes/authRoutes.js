@@ -3,6 +3,7 @@ const { loginUser, tokenSignIn,jobProfileLogin,loginToken } = require("../contro
 const authRouter = express.Router();
 
 authRouter.post("/login", loginUser);
+
 authRouter.post("/token-signin", tokenSignIn);
 
 authRouter.post("/job-profile-login", jobProfileLogin);

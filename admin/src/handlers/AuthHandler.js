@@ -96,7 +96,7 @@ const AuthHandler = () => {
   const loginHandler = async (token) => {
     try {
       await axios
-        .post("http://localhost:5000/api/auth/token-signin", { token })
+        .post(`${API_URL}/auth/token-signin`, { token })
         .then((res) => {
           console.log(res);
           setReduxAuthState(res.data);
@@ -149,7 +149,7 @@ const AuthHandler = () => {
     console.log("Logging out...");
     clearLocalStorage();
     dispatch(clearAuth());
-    window.location.href = 'http://localhost:3000';
+    window.location.href = FRONTEND_URL;
   };
 
   return {

@@ -152,11 +152,18 @@ const Ticket_Details = sequelize.define(
       allowNull: false,
       references: { model: Customer, key: "customerId" },
     },
+    ticket_comment: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
   },
   {
     tableName: "Ticket_Details",
     timestamps: true,
   }
 );
+
+Ticket_Details.belongsTo(User, { as: "assignedUser", foreignKey: "assigned_to" });
+Ticket_Details.belongsTo(User, { as: "updatedUser", foreignKey: "updated_by_user_id" });
 
 module.exports = Ticket_Details;

@@ -572,6 +572,7 @@ const getResidentBySocietyId = async (req, res) => {
         "addressId",
         "primaryContact",
         "livesHere",
+        "societyId", 
       ],
     });
 
