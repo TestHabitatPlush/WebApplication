@@ -4,6 +4,8 @@ const Customer = require("./Customer");
 const DiscussionForum = require("./Discussion_Forum");
 const GateAllocation = require("./GateAllocation")
 const SubscriptionPlan = require("./SubscriptionPlan");
+const Module = require("./Module");
+const SubcriptionModule = require("./SubscriptionModule");
 const Parking = require("./Parking");
 const Vehicle = require("./VehicleDetails")
 const JobProfile = require("./JobProfile");
@@ -70,6 +72,8 @@ module.exports = {
   User,
   Address,
   SubscriptionPlan,
+  Module,
+  SubcriptionModule,
   Customer,
   Document,
   DiscussionForum,

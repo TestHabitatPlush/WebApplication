@@ -87,7 +87,7 @@ import { clearAuth, setToken, setUser } from "../redux/slices/authSlice";
 import NavigationHandler from "./NavigationHandler";
 
 const API_URL = process.env.REACT_APP_PUBLIC_API_URL || "http://localhost:5000/api";
-const FRONTEND_URL = process.env.REACT_APP_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+const FRONTEND_URL = process.env.REACT_APP_PUBLIC_FRONTEND_URL || "http://localhost:3001";
 
 const AuthHandler = () => {
   const dispatch = useDispatch();

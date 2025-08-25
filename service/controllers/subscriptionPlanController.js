@@ -1,5 +1,6 @@
 // const SubscriptionPlan = require("../models/SubscriptionPlan");
-const { SubscriptionPlan, Customer, User } = require("../models"); // ensure both models are imported
+const { SubscriptionPlan, Customer, User } = require("../models") // ensure both models are imported
+const { Module } = require("../models/Module")
 const sequelize = require("../config/database");
 // const Customer = require("../models/Customer");
 const { Op } = require("sequelize");
@@ -248,6 +249,30 @@ const runExpiryCheck = async (req, res) => {
   }
 };
 
+const getSubscriptionModules = async (req,res) =>{
+  try{
+    const subscription = await SubscriptionPlan.findByPk(req.params.id,{
+      include: {
+        model:Module, through:{
+          attributes:[],
+          // through: { attributes: [] }
+        }
+      }
+    });
+    if (!subscription) return res.status(404).json({
+      error:"Subscription not found"
+    });
+    res.status(200).json({
+      plan:subscription.planName,
+      modules:subscription.Modules.map(m => m.moduleName)
+    });
+  } catch (err){
+    res.status(500).json({
+      error:err.message
+    });
+  }
+}
+
 module.exports = {
   createSubscription,
   getAllSubscriptions,
@@ -257,4 +282,5 @@ module.exports = {
   deleteSubscription,
   getSubscriptionsExpiringSoon,
   runExpiryCheck,
+  getSubscriptionModules,
 };
