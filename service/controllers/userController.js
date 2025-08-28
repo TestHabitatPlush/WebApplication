@@ -570,18 +570,30 @@ const createSocietyResident = async (req, res) => {
 };
 
 //BulkCreateResidents
-
 const bulkCreateResidents = async (req, res) => {
   try {
     const { societyId } = req.params;
+    let data = [];
 
-    if (!req.file) {
-      return res.status(400).json({ message: "No file uploaded" });
+
+    if (req.file) {
+      const workbook = XLSX.readFile(req.file.path);
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      data = XLSX.utils.sheet_to_json(sheet);
+      fs.unlinkSync(req.file.path); 
+    }
+  
+    else if (req.body && Array.isArray(req.body)) {
+      data = req.body;
+    }
+  
+    else {
+      return res.status(400).json({ message: "No file or JSON body provided" });
     }
 
-    const workbook = XLSX.readFile(req.file.path);
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const data = XLSX.utils.sheet_to_json(sheet);
+    if (!data.length) {
+      return res.status(400).json({ message: "No data found" });
+    }
 
     const created = [];
     const skipped = [];
@@ -604,8 +616,13 @@ const bulkCreateResidents = async (req, res) => {
         "address.zipCode": zipCode,
         "address.address1": address1,
         "address.address2": address2,
+        address 
       } = row;
 
+    
+      const finalAddress = address || { street, city, state, zipCode, address1, address2 };
+
+      
       if (!email || !firstName || !lastName || !unitId || !roleId || !mobileNumber) {
         skipped.push({ email, reason: "Missing required fields" });
         continue;
@@ -623,17 +640,9 @@ const bulkCreateResidents = async (req, res) => {
         continue;
       }
 
-      const addressData = await addressService.createAddress({
-        street,
-        city,
-        state,
-        zipCode,
-        address1,
-        address2,
-      });
+      const addressData = await addressService.createAddress(finalAddress);
 
-      // const plainPassword = row.password || "Himansu1";
-      // const hashedPassword = await bcrypt.hash(plainPassword, 10);
+      
       const password = "Himansu1";
 
       const user = await User.create({
@@ -645,7 +654,6 @@ const bulkCreateResidents = async (req, res) => {
         mobileNumber,
         alternateNumber,
         email,
-        //  password: hashedPassword,
         password,
         roleId,
         unitId,
@@ -661,8 +669,6 @@ const bulkCreateResidents = async (req, res) => {
       created.push(user);
     }
 
-    fs.unlinkSync(req.file.path); // Clear uploaded file
-
     res.status(201).json({
       message: "Residents bulk uploaded successfully",
       createdCount: created.length,
@@ -673,6 +679,8 @@ const bulkCreateResidents = async (req, res) => {
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
+
+
 
 ///////////////////////////////////////////////////////////////
 
