@@ -543,6 +543,104 @@ const bulkCreateResidents = async (req, res) => {
   }
 };
 
+
+const bulkCreateResidentsManual = async (req, res) => {
+  try {
+    const { societyId } = req.params;
+    const { users } = req.body;
+
+    if (!Array.isArray(users) || users.length === 0) {
+      return res.status(400).json({ message: "No users provided" });
+    }
+
+    const created = [];
+    const skipped = [];
+
+  for (const row of users){
+      const {
+        salutation,
+        firstName,
+        lastName,
+        countryCode,
+        alternateCountryCode,
+        mobileNumber,
+        alternateNumber,
+        email,
+        roleId,
+        unitId,
+        "address.street": street,
+        "address.city": city,
+        "address.state": state,
+        "address.zipCode": zipCode,
+        "address.address1": address1,
+        "address.address2": address2,
+      } = row;
+
+      if (!email || !firstName || !lastName || !unitId || !roleId || !mobileNumber) {
+        skipped.push({ email, reason: "Missing required fields" });
+        continue;
+      }
+
+      const exists = await User.findOne({ where: { email } });
+      if (exists) {
+        skipped.push({ email, reason: "Email already exists" });
+        continue;
+      }
+
+      const role = await Role.findByPk(roleId);
+      if (!role) {
+        skipped.push({ email, reason: "Role not found" });
+        continue;
+      }
+
+      const addressData = await addressService.createAddress({
+        street,
+        city,
+        state,
+        zipCode,
+        address1,
+        address2,
+      });
+
+      // const plainPassword = row.password || "Himansu1";
+      // const hashedPassword = await bcrypt.hash(plainPassword, 10);
+      const password = "Himansu1";
+
+      const user = await User.create({
+        salutation,
+        firstName,
+        lastName,
+        countryCode: countryCode || 91,
+        alternateCountryCode,
+        mobileNumber,
+        alternateNumber,
+        email,
+        //  password: hashedPassword,
+        password,
+        roleId,
+        unitId,
+        societyId,
+        addressId: addressData.addressId,
+        livesHere: true,
+        primaryContact: true,
+        inManagementCommittee: false,
+        managementDesignation: "Resident",
+        status: "pending",
+      });
+
+      created.push(user);
+    }
+    res.status(201).json({
+      message: "Manual residents bulk created successfully",
+      createdCount: created.length,
+      skipped,
+    });
+  } catch (error) {
+    console.error("Manual bulk resident creation failed:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+};
+
 ///////////////////////////////////////////////////////////////
 
 const getResidentBySocietyId = async (req, res) => {
@@ -898,6 +996,7 @@ module.exports = {
   createSocietyResident,
   updateResidentBySocietyId,
   bulkCreateResidents,
+  bulkCreateResidentsManual,
   getResidentBySocietyId,
   getSocietyModerator,
   getManagement_committee,

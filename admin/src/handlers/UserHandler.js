@@ -167,39 +167,28 @@ const UserHandler = () => {
     }
   };
 
-  // const createBulkSocietyUserHandler = async (societyId, formData) => {
-  //   try {
-  //     const response = await createBulkSocietyUserService(societyId, token, formData);
-  //     if (response.status === 201) {
-  //       toast.success("Society Resident users created successfully!");
-  //     }
-  //     return response;
-  //   } catch (error) {
-  //     console.error("Error creating bulk users:", error);
-  //     toast.error(error?.response?.data?.message || "Failed to create bulk users");
-  //     return null;
-  //   }
-  // };
- // ✅ Manual Bulk Creation
-    const createBulkSocietyUserHandler = async (societyId, formData) => {
+  const createBulkSocietyUserHandler = async (societyId, formData) => {
     try {
-      return await createBulkSocietyUserService(societyId, formData);
+      const response = await createBulkSocietyUserService(societyId, token, formData);
+      if (response.status === 201) {
+        toast.success("Society Resident users created successfully!");
+      }
+      return response;
     } catch (error) {
-      console.error("Error in bulk upload:", error);
-      throw error;
+      console.error("Error creating bulk users:", error);
+      toast.error(error?.response?.data?.message || "Failed to create bulk users");
+      return null;
     }
   };
 
-  const createMultipleSocietyUserHandler = async (societyId, data) => {
-    try {
-      return await createMultipleSocietyUserService(societyId, data);
-    } catch (error) {
-      console.error("Error in multiple user creation:", error);
-      throw error;
-    }
-  };
-
-  // ✅ Properly closed and returned handlers
+   const createMultipleSocietyUserHandler = async (societyId, data) => {
+  try {
+    return await createMultipleSocietyUserService(societyId, token, data);
+  } catch (error) {
+    console.error("Error in multiple user creation:", error.response?.data || error);
+    throw error;
+  }
+};
   return {
     createSocietyModeratorHandler,
     createSocietyResidentUserHandler,
