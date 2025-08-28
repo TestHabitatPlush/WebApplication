@@ -1017,6 +1017,72 @@ const getAllApprovedUsers = async (req, res) => {
   }
 };
 
+getAllSuper_admin_itAndModrerator = async (req, res) => {
+  await Promise.all([
+    Role.findAll({
+      where: {
+        roleCategory: {
+          [Op.in]: ["super_admin_it","society_moderator"],
+        },
+      },
+    }),
+  ])
+    .then(async ([roles]) => {
+      const roleIds = roles.map((role) => role.roleId);
+      const users = await User.findAll({
+        where: {
+          roleId: {
+            [Op.in]: roleIds,
+          },
+          isDeleted: 0,
+        },
+        include: [{ model: Role, as: "role" }],
+      });
+      res.status(200).json({
+        message: "Super Admins, IT Admins, and IT Moderators fetched successfully",
+        users,
+      });
+    })
+    .catch((error) => {
+      console.error("Error fetching users:", error);
+      res.status(500).json({ error: "Internal server error" });
+    });
+};
+
+updateUserIdStatus = async(req,res) =>{
+  try{
+    const {userId} = req.params;
+  const {status}=req.body;
+  if(!userId){
+    return res.status(400).json({
+      message:"UserId is required",
+    });
+  }
+  if(!status || !["active","inactive","pending"].includes(status)){
+    return res.status(400).json({
+      message:"Valid status is required (active, inactive, pending)",
+    });
+  }
+  const user = await User.findByPk(userId);
+  if(!user){
+    return res.status(404).json({
+      message:"User not found",
+    });
+  }
+  user.status = status;
+  await user.save();
+  return res.status(200).json({
+    message:"User status updated successfully", 
+    user,
+  });
+} catch (error){
+    console.log("error updateUserId Status",error);
+    res.status(500).json({
+      message:"Internal server error",
+    });
+  }
+}
+
 module.exports = {
   createUser,
   getAllUsers,
@@ -1032,4 +1098,6 @@ module.exports = {
   getManagement_committee,
   getAllApprovedUsers,
   getAllDeactiveUsers,
+  getAllSuper_admin_itAndModrerator,
+  updateUserIdStatus,
 };

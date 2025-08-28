@@ -44,11 +44,14 @@ async function seedModules() {
     });
 
     // link modules to plans
-    await silver.setModules(moduleInstances.slice(0, 3).map(m => m[0]));  // first 3 modules
-    await gold.setModules(moduleInstances.slice(0, 5).map(m => m[0]));    // first 5 modules
-    await platinum.setModules(moduleInstances.map(m => m[0]));            // all modules
+    await silver.setModules(moduleInstances.slice(0, 3).map(m => m[0]));
+    // first 3 modules
+    await gold.setModules(moduleInstances.slice(0, 5).map(m => m[0]));
+    // first 5 modules
+    await platinum.setModules(moduleInstances.map(m => m[0]));
+    // all modules
 
-    console.log("✅ Modules seeded successfully!");
+    console.log("Modules seeded successfully!");
     process.exit();
   } catch (err) {
     console.error(" Error seeding:", err);

@@ -27,7 +27,9 @@ userRouter.put("/moderators/:id", userController.updateSocietyStatus);
 userRouter.get('/resident/approvedUser/:societyId', userController.getAllApprovedUsers);
 userRouter.get('/resident/deactive/:societyId', userController.getAllDeactiveUsers);
 // 
+userRouter.get('/superadmin/moderator', userController.getAllSuper_admin_itAndModrerator);
 // 
+userRouter.put('/User/:userId', userController.updateUserIdStatus);
 // userRouter.post("/resident/reject", userController.rejectUser);
  userRouter.get('/resident/deactive/:societyId', userController.getAllDeactiveUsers);
 module.exports = userRouter;
