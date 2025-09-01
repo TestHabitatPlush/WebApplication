@@ -137,7 +137,7 @@ export const updateSocietyModeratorService = async (userId, formData, token) => 
 };
 
 export const getSocietyModeratorService = (societyId, token, params = {}) => {
-  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/moderator/2`;
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/moderator/${societyId}`;
   return axios.get(url, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -146,24 +146,55 @@ export const getSocietyModeratorService = (societyId, token, params = {}) => {
   });
 };
 
+export const getAllSuperAdminItAndModeratorService = ( token, data) => {
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/superadmin/moderator`;
+  return axios.get(url, {
+    headers: {
+      Authorization:` Bearer ${token}`,
+    },
+    params: data,
+  });
+};
 
-export const createBulkSocietyUserService = async (societyId, token, data) => {
+
+// export const createBulkSocietyUserService = async (societyId, token, data) => {
+//   const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/bulk-create/${societyId}`;
+//   return axios.post(url, data, {
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//       "Content-Type": "multipart/form-data",
+//     },
+//   });
+// }
+
+
+// export const createMultipleSocietyUserService = async (societyId, token, data) => {
+//   const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/bulk-create/manual/${societyId}`;
+//   return axios.post(url, { users: data }, {
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//       "Content-Type": "application/json",
+//     },
+//   });
+// };
+
+
+export const createBulkSocietyUserService = async (societyId, token, formData) => {
   const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/bulk-create/${societyId}`;
-  return axios.post(url, data, {
+  return axios.post(url, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "multipart/form-data",
     },
   });
-}
+};
 
-
-export const createMultipleSocietyUserService = async (societyId, token, data) => {
-  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/bulk-create/manual/${societyId}`;
-  return axios.post(url, { users: data }, {
+export const createMultipleSocietyUserService = async (societyId, token, users) => {
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/bulk-create/${societyId}`;
+  return axios.post(url, users, {
     headers: {
       Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
+      "Content-Type": "application/json", // ✅ JSON not form-data
     },
   });
 };

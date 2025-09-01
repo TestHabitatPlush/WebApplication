@@ -1,7 +1,7 @@
 // src/components/shared/ProfileModal.jsx
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import UserHandler from "../../handlers/UserHandler";
+import UserHandler from "@/handlers/UserHandler";
 
 const ProfileModal = ({ isOpen, onClose, user }) => {
   const { updateResidentBySocietyIdHandler } = UserHandler();

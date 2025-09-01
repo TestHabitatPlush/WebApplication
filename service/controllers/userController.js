@@ -79,7 +79,7 @@ const { Op } = require("sequelize");
 //       primaryContact: true,
 //       isManagementCommittee: true,
 //       managementDesignation,
-//       status: "pending", // ensure default status
+//       status: "pending", 
 //     });
 
 //     res.status(201).json({
@@ -141,6 +141,60 @@ const createSocietyModerator = async (req, res) => {
   });
 };
 
+// const updateSocietyModerator = async (req, res) => {
+//   upload.fields([{ name: "photo" }])(req, res, async (err) => {
+//     if(err){
+//       return res.status(400).json({ message: "File upload error", error: err.messag});
+//     }
+//     try{
+//       const { userId} = req.params;
+//       const { address, roleId,email, ...updateData } = req.body;
+
+//       const existingUser = await User.findByPk(userId);
+//       if (!existingUser) {
+//         return res.status(404).json({ message: "User not found" });
+//       }
+
+//       if(address){
+//         const parsedAddress = typeof address === "string" ? JSON.parse(address) : address;
+//         if(existingUser.adressId){
+//           await addressService.updateAddress(existingUser.addressId, parsedAddress);
+//         } else {
+//           const newAdress = await addressService.createAddress(parsedAddress);
+//           updateData.addressId = newAdress.addressId;
+//         }
+//       }
+
+//       const photoPath = req.files?.photo?.[0]?.path;
+//       if (photoPath) {
+//         updateData.photo = photoPath;
+//       }
+
+//       if (roleId) {
+//         const role = await Role.findByPk(roleId);
+//         if (!role) {
+//           return res.status(400).json({ message: "Invalid role ID" });
+//         }
+//         updateData.roleId = roleId;
+//         updateData.managementDesignation = role.roleName;
+//       }
+
+//       if(email && email !== existingUser.email){
+//         const emailExists = await User.findOne({ where: { email } });
+//         if(emailExists){
+//           return res.status(400).json({ message: "Email already in use" });
+//         }
+//         updateData.email = email;
+//       }
+
+//       await existingUser.update(updateData);
+
+//     } catch(error){
+//       console.error("Error updating society moderator:", error);
+//       res.status(500).json({ error: error.message });
+//     }
+//   })
+//   }
 const updateSocietyModerator = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -195,6 +249,83 @@ const updateSocietyModerator = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
+// const updateSocietyStatus = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     // const {status} = req.body;
+//     const { address, roleId,status, ...updateData } = req.body;
+
+//     const moderator = await User.findByPk(id);
+//     if (!moderator) {
+//       await t.rollback();
+//       return res.status(404).json({ message: "Moderator not found" });
+//     }
+
+//     if (address) {
+//       const updatedAddress = await addressService.updateAddress(moderator.addressId, address);
+//       updateData.addressId = updatedAddress.addressId;
+//     }
+
+//     let newRole = null;
+//     if (roleId) {
+//       newRole = await Role.findByPk(roleId);
+//       if (!newRole) {
+//         return res.status(400).json({ message: "Invalid roleId" });
+//       }
+//       updateData.roleId = roleId;
+//       updateData.managementDesignation = newRole.roleName;
+//     }
+
+//     if (status && ["pending", "inactive", "active"].includes(status)) {
+//       updateData.status = status;
+
+//       const currentRole = await Role.findByPk(moderator.roleId);
+//       const currentCategory = currentRole?.roleCategory;
+
+//       if (["society_moderator", "society_facility_manager"].includes(currentCategory)) {
+//         const residentRoles = await Role.findAll({
+//           where: {
+//             roleCategory: ["society_owner", "society_owner_family", "society_tenant", "society_tenant_family"],
+//           },
+//         });
+//         const residentRoleIds = residentRoles.map((r) => r.roleId);
+
+//         await User.update(
+//           { status },
+//           {
+//             where: {
+//               societyId: moderator.societyId,
+//               roleId: residentRoleIds,
+//             },
+//             transaction:t,
+//           }
+//         );
+//         await Customer.update(
+//           { status },
+//           {
+//             where: {
+//               customerId: moderator.societyId,
+//             },
+//             transaction:t,
+//           }
+//         );
+//       }
+//     }
+
+//     await moderator.update(updateData, { transaction: t });
+//     await t.commit();
+//     res.status(200).json({
+//       message: "Moderator updated successfully",
+//       updatedModerator: moderator,
+//     });
+//   } catch (err) {
+//     await t.rollback();
+//     console.error("Error updating moderator:", err);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// };
+
 const updateSocietyStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -439,18 +570,30 @@ const createSocietyResident = async (req, res) => {
 };
 
 //BulkCreateResidents
-
 const bulkCreateResidents = async (req, res) => {
   try {
     const { societyId } = req.params;
+    let data = [];
 
-    if (!req.file) {
-      return res.status(400).json({ message: "No file uploaded" });
+
+    if (req.file) {
+      const workbook = XLSX.readFile(req.file.path);
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      data = XLSX.utils.sheet_to_json(sheet);
+      fs.unlinkSync(req.file.path); 
+    }
+  
+    else if (req.body && Array.isArray(req.body)) {
+      data = req.body;
+    }
+  
+    else {
+      return res.status(400).json({ message: "No file or JSON body provided" });
     }
 
-    const workbook = XLSX.readFile(req.file.path);
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const data = XLSX.utils.sheet_to_json(sheet);
+    if (!data.length) {
+      return res.status(400).json({ message: "No data found" });
+    }
 
     const created = [];
     const skipped = [];
@@ -473,8 +616,13 @@ const bulkCreateResidents = async (req, res) => {
         "address.zipCode": zipCode,
         "address.address1": address1,
         "address.address2": address2,
+        address 
       } = row;
 
+    
+      const finalAddress = address || { street, city, state, zipCode, address1, address2 };
+
+      
       if (!email || !firstName || !lastName || !unitId || !roleId || !mobileNumber) {
         skipped.push({ email, reason: "Missing required fields" });
         continue;
@@ -492,17 +640,9 @@ const bulkCreateResidents = async (req, res) => {
         continue;
       }
 
-      const addressData = await addressService.createAddress({
-        street,
-        city,
-        state,
-        zipCode,
-        address1,
-        address2,
-      });
+      const addressData = await addressService.createAddress(finalAddress);
 
-      // const plainPassword = row.password || "Himansu1";
-      // const hashedPassword = await bcrypt.hash(plainPassword, 10);
+      
       const password = "Himansu1";
 
       const user = await User.create({
@@ -514,7 +654,6 @@ const bulkCreateResidents = async (req, res) => {
         mobileNumber,
         alternateNumber,
         email,
-        //  password: hashedPassword,
         password,
         roleId,
         unitId,
@@ -544,102 +683,6 @@ const bulkCreateResidents = async (req, res) => {
 };
 
 
-const bulkCreateResidentsManual = async (req, res) => {
-  try {
-    const { societyId } = req.params;
-    const { users } = req.body;
-
-    if (!Array.isArray(users) || users.length === 0) {
-      return res.status(400).json({ message: "No users provided" });
-    }
-
-    const created = [];
-    const skipped = [];
-
-  for (const row of users){
-      const {
-        salutation,
-        firstName,
-        lastName,
-        countryCode,
-        alternateCountryCode,
-        mobileNumber,
-        alternateNumber,
-        email,
-        roleId,
-        unitId,
-        "address.street": street,
-        "address.city": city,
-        "address.state": state,
-        "address.zipCode": zipCode,
-        "address.address1": address1,
-        "address.address2": address2,
-      } = row;
-
-      if (!email || !firstName || !lastName || !unitId || !roleId || !mobileNumber) {
-        skipped.push({ email, reason: "Missing required fields" });
-        continue;
-      }
-
-      const exists = await User.findOne({ where: { email } });
-      if (exists) {
-        skipped.push({ email, reason: "Email already exists" });
-        continue;
-      }
-
-      const role = await Role.findByPk(roleId);
-      if (!role) {
-        skipped.push({ email, reason: "Role not found" });
-        continue;
-      }
-
-      const addressData = await addressService.createAddress({
-        street,
-        city,
-        state,
-        zipCode,
-        address1,
-        address2,
-      });
-
-      // const plainPassword = row.password || "Himansu1";
-      // const hashedPassword = await bcrypt.hash(plainPassword, 10);
-      const password = "Himansu1";
-
-      const user = await User.create({
-        salutation,
-        firstName,
-        lastName,
-        countryCode: countryCode || 91,
-        alternateCountryCode,
-        mobileNumber,
-        alternateNumber,
-        email,
-        //  password: hashedPassword,
-        password,
-        roleId,
-        unitId,
-        societyId,
-        addressId: addressData.addressId,
-        livesHere: true,
-        primaryContact: true,
-        inManagementCommittee: false,
-        managementDesignation: "Resident",
-        status: "pending",
-      });
-
-      created.push(user);
-    }
-    res.status(201).json({
-      message: "Manual residents bulk created successfully",
-      createdCount: created.length,
-      skipped,
-    });
-  } catch (error) {
-    console.error("Manual bulk resident creation failed:", error);
-    res.status(500).json({ message: "Internal server error", error: error.message });
-  }
-};
 
 ///////////////////////////////////////////////////////////////
 
@@ -986,6 +1029,72 @@ const getAllApprovedUsers = async (req, res) => {
   }
 };
 
+const getAllSuper_admin_itAndModrerator = async (req, res) => {
+  await Promise.all([
+    Role.findAll({
+      where: {
+        roleCategory: {
+          [Op.in]: ["super_admin_it","society_moderator"],
+        },
+      },
+    }),
+  ])
+    .then(async ([roles]) => {
+      const roleIds = roles.map((role) => role.roleId);
+      const users = await User.findAll({
+        where: {
+          roleId: {
+            [Op.in]: roleIds,
+          },
+          isDeleted: 0,
+        },
+        include: [{ model: Role, as: "role" }],
+      });
+      res.status(200).json({
+        message: "Super Admins, IT Admins, and IT Moderators fetched successfully",
+        users,
+      });
+    })
+    .catch((error) => {
+      console.error("Error fetching users:", error);
+      res.status(500).json({ error: "Internal server error" });
+    });
+};
+
+const updateUserIdStatus = async(req,res) =>{
+  try{
+    const {userId} = req.params;
+  const {status}=req.body;
+  if(!userId){
+    return res.status(400).json({
+      message:"UserId is required",
+    });
+  }
+  if(!status || !["active","inactive","pending"].includes(status)){
+    return res.status(400).json({
+      message:"Valid status is required (active, inactive, pending)",
+    });
+  }
+  const user = await User.findByPk(userId);
+  if(!user){
+    return res.status(404).json({
+      message:"User not found",
+    });
+  }
+  user.status = status;
+  await user.save();
+  return res.status(200).json({
+    message:"User status updated successfully", 
+    user,
+  });
+} catch (error){
+    console.log("error updateUserId Status",error);
+    res.status(500).json({
+      message:"Internal server error",
+    });
+  }
+}
+
 module.exports = {
   createUser,
   getAllUsers,
@@ -996,10 +1105,11 @@ module.exports = {
   createSocietyResident,
   updateResidentBySocietyId,
   bulkCreateResidents,
-  bulkCreateResidentsManual,
   getResidentBySocietyId,
   getSocietyModerator,
   getManagement_committee,
   getAllApprovedUsers,
   getAllDeactiveUsers,
+  getAllSuper_admin_itAndModrerator,
+  updateUserIdStatus,
 };

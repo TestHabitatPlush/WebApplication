@@ -8,11 +8,14 @@ import { useState } from "react";
 import Notification from "../notification/Notifications";
 import { useSelector } from "react-redux";
 import AuthHandler from "@/handlers/AuthHandler";
+import ProfileModal from "@/components/shared/ProfileModal";
 
 const DashboardHeader = () => {
   const user = useSelector((state) => state.auth.user);
   const [sideDrawer, setSideDrawer] = useState(false);
 const [isopen, setIsopen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
  const { logoutHandler } = AuthHandler();
   const toggleNotificationDrawer = () => {
     setSideDrawer((prev) => !prev);
@@ -91,7 +94,11 @@ const toggleDropdown = () => {
           </div>
         </div>
       </div>
-
+<ProfileModal
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+        user={user}
+      />
       {sideDrawer && (
         <SideDrawer
           width="w-full lg:w-[500px]"

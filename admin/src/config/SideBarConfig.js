@@ -410,7 +410,7 @@ const SideBarMenu = {
           url: "society/createuser",
         },
         {
-          name: " Society Moderator List",
+          name: " Society Moderator/User List",
           url: "society/societyModeratorList",
         },
       ],
