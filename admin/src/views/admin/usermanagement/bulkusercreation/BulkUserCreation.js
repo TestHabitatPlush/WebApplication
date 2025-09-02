@@ -14,6 +14,8 @@ const BulkUserCreation = () => {
     const format = `${process.env.REACT_APP_ADMIN_URL}/Bulk_user_format.xlsx`;
     const fileInputRef = useRef(null);
     const societyId = useSelector((state) => state.auth.user?.Customer?.customerId) || "";
+    const token = useSelector((state) => state.auth.token);
+    
     const { createBulkSocietyUserHandler ,createMultipleSocietyUserHandler} = UserHandler(); 
     // const [file, setFile] = useState(null);
     const { getUnitsHandler } = DefineUnitHandler();
@@ -32,19 +34,17 @@ const BulkUserCreation = () => {
         aTag.remove();
     }
 
-    const handleUpload = async (e) => {
-        const file = e.target.files[0];
-        if (!file) {
-            alert("Please select a file first");
-            return;
-        }
+   const handleUpload = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
 
-        const formData = new FormData();
-        formData.append("file", file);
-        const myStatus = await createBulkSocietyUserHandler(societyId, formData);
-        console.log(myStatus);
-        
-  };
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await createBulkSocietyUserHandler(societyId, token, file);
+  console.log(res);
+};
+
   useEffect(() => {
     const fetchData = async () => {
       const res = await getUnitsHandler({ page: pageIndex, pageSize });
@@ -72,7 +72,7 @@ const handleManualSubmit = async (rows) => {
     lastName: r.lname,
     email: r.email,
     mobileNumber: r.mnumber,
-    roleId: r.roleId,  // ✅ backend expects roleId
+    roleId: r.roleId,
     unitId: r.unitId,
     "address.street": r.street,
     "address.city": r.city,
@@ -81,7 +81,7 @@ const handleManualSubmit = async (rows) => {
     "address.address1": r.address1,
     "address.address2": r.address2,
   }));
-  await createMultipleSocietyUserHandler(societyId, users);
+await createMultipleSocietyUserHandler(societyId, token, users); 
 };
 
     const formColumns = [

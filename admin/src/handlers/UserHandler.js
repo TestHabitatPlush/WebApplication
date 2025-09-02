@@ -167,28 +167,52 @@ const UserHandler = () => {
     }
   };
 
-  const createBulkSocietyUserHandler = async (societyId, formData) => {
-    try {
-      const response = await createBulkSocietyUserService(societyId, token, formData);
-      if (response.status === 201) {
-        toast.success("Society Resident users created successfully!");
-      }
-      return response;
-    } catch (error) {
-      console.error("Error creating bulk users:", error);
-      toast.error(error?.response?.data?.message || "Failed to create bulk users");
-      return null;
-    }
-  };
 
-   const createMultipleSocietyUserHandler = async (societyId, data) => {
+const createBulkSocietyUserHandler = async (societyId, token, file) => {
   try {
-    return await createMultipleSocietyUserService(societyId, token, data);
+    const formData = new FormData();
+    formData.append("file", file); // 👈 field must be "file"
+
+    const response = await createBulkSocietyUserService(societyId, token, formData);
+
+    if (response.status === 201) {
+      toast.success(
+        response.data.message || "Society resident users created successfully!"
+      );
+    }
+    return response.data;
   } catch (error) {
-    console.error("Error in multiple user creation:", error.response?.data || error);
-    throw error;
+    console.error("Error creating bulk users:", error.response?.data || error);
+    toast.error(error?.response?.data?.message || "Failed to create bulk users");
+    return null;
   }
 };
+// Bulk create via JSON
+ const createMultipleSocietyUserHandler = async (societyId, token, users) => {
+  try {
+    // ✅ unwrap if object has "users"
+    const payload = Array.isArray(users) ? users : users.users;
+
+    if (!Array.isArray(payload)) {
+      throw new Error("Users data must be an array");
+    }
+
+    const response = await createMultipleSocietyUserService(societyId, token, payload);
+
+    if (response.status === 201) {
+      toast.success(response.data.message || "Society resident users created successfully!");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error in multiple user creation:", error.response?.data || error);
+    toast.error(error?.response?.data?.message || "Failed to create multiple users");
+    return null;
+  }
+};
+
+
+
+
   return {
     createSocietyModeratorHandler,
     createSocietyResidentUserHandler,

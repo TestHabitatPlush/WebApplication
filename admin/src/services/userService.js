@@ -179,6 +179,7 @@ export const getAllSuperAdminItAndModeratorService = ( token, data) => {
 // };
 
 
+// Bulk create using file upload (Excel/CSV)
 export const createBulkSocietyUserService = async (societyId, token, formData) => {
   const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/bulk-create/${societyId}`;
   return axios.post(url, formData, {
@@ -188,13 +189,19 @@ export const createBulkSocietyUserService = async (societyId, token, formData) =
     },
   });
 };
-
+// Bulk create manually using JSON
 export const createMultipleSocietyUserService = async (societyId, token, users) => {
   const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/bulk-create/${societyId}`;
+
+  // ✅ Ensure backend receives an array
+  if (!Array.isArray(users)) {
+    throw new Error("Users payload must be an array");
+  }
+
   return axios.post(url, users, {
     headers: {
       Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json", // ✅ JSON not form-data
+      "Content-Type": "application/json",
     },
   });
 };

@@ -575,19 +575,18 @@ const bulkCreateResidents = async (req, res) => {
     const { societyId } = req.params;
     let data = [];
 
-
     if (req.file) {
+      // 📂 Case 1: File upload
       const workbook = XLSX.readFile(req.file.path);
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
       data = XLSX.utils.sheet_to_json(sheet);
+
+      // cleanup uploaded file right away
       fs.unlinkSync(req.file.path); 
-    }
-  
-    else if (req.body && Array.isArray(req.body)) {
+    } else if (req.body && Array.isArray(req.body)) {
+      // 📄 Case 2: JSON body
       data = req.body;
-    }
-  
-    else {
+    } else {
       return res.status(400).json({ message: "No file or JSON body provided" });
     }
 
@@ -616,13 +615,12 @@ const bulkCreateResidents = async (req, res) => {
         "address.zipCode": zipCode,
         "address.address1": address1,
         "address.address2": address2,
-        address 
+        address,
       } = row;
 
-    
       const finalAddress = address || { street, city, state, zipCode, address1, address2 };
 
-      
+      // ✅ Required fields validation
       if (!email || !firstName || !lastName || !unitId || !roleId || !mobileNumber) {
         skipped.push({ email, reason: "Missing required fields" });
         continue;
@@ -642,7 +640,6 @@ const bulkCreateResidents = async (req, res) => {
 
       const addressData = await addressService.createAddress(finalAddress);
 
-      
       const password = "Himansu1";
 
       const user = await User.create({
@@ -669,7 +666,7 @@ const bulkCreateResidents = async (req, res) => {
       created.push(user);
     }
 
-    fs.unlinkSync(req.file.path); // Clear uploaded file
+    // ✅ Removed unconditional unlinkSync here
 
     res.status(201).json({
       message: "Residents bulk uploaded successfully",
@@ -681,6 +678,7 @@ const bulkCreateResidents = async (req, res) => {
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
+
 
 
 
