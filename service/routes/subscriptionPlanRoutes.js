@@ -30,5 +30,6 @@ router.get("/subscription-plans/expire-check", subscriptionController.runExpiryC
 
 // get aalowed modules
 router.get("/subcription-plans/:id/modules",subscriptionController.getSubscriptionModules)
+router.get("/modules",subscriptionController.getAllModules)
 
 module.exports = router;
