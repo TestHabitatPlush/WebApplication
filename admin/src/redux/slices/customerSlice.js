@@ -150,8 +150,14 @@ const customerSlice = createSlice({
     setCustomerFormData: (state, action) => {
       state.customerForm = action.payload;
     },
-    setSubscriptionPlans: (state, action) => {
-      state.subscriptionPlans = [...state.subscriptionPlans, ...action.payload];
+    // setSubscriptionPlans: (state, action) => {
+    //   state.subscriptionPlans = [...state.subscriptionPlans, ...action.payload];
+    // },
+     setSubscriptionPlans: (state, action) => {
+      state.subscriptionPlans = [
+        { value: "", label: "Choose Subscription Plan" },
+        ...action.payload,
+      ];
     },
     setLoading: (state, action) => {
       state.loading = action.payload;

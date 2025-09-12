@@ -426,7 +426,7 @@ const SideBarMenu = {
         },
         {
           name: "Subscription List",
-          url: "society/view",
+          url: "product/list",
         },
         {
           name: "Module",

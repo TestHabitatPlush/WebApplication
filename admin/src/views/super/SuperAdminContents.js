@@ -8,7 +8,9 @@ import EmergencyListSuperAdmin from "../super/EmergencyContact/EmergencyListSupe
 import SocietyModeratorList from "./society/society_user/SocietyModeratorList";
 import PlanDetails from "../super/subcriptionPlan/PlanDetails";
 import Dashboard from "../super/Dashboard/dashboard";
-import SubscriptionList from "./subcriptionPlan/planList/SubscriptionList";
+import SubscriptionList from "./Product Subscription Management/SubscriptionList/SubscriptionList";
+
+import CreateProduct from "./Product Subscription Management/CreateProduct";
 
 
 
@@ -24,7 +26,10 @@ const SuperAdminContents = () => {
       <Route path="/emergencycontact/ContactDetails" element={<CreateEmergencyDetails />} />
       <Route path="/emerencycontact/EmergencyList" element={<EmergencyListSuperAdmin />} />
       <Route path="/subscription-plan/details" element={<PlanDetails />} />
-      <Route path="/subscription-plan/list" element={<SubscriptionList/>} />
+      {/* <Route path="/subscription-plan/list" element={<SubscriptionList/>} /> */}
+      <Route path="/product/create" element={<CreateProduct/>} />
+       <Route path="/product/list" element={<SubscriptionList/>} />
+      
     </Routes>
   );
 };

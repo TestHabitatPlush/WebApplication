@@ -1,191 +1,173 @@
 import React, { useEffect, useState } from "react";
-import { FaUsers, FaPlus } from "react-icons/fa";
+import { useSelector, useDispatch } from "react-redux";
+import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+
 import SubscriptionHandler from "../../../handlers/superadmin/SubscriptionHandler";
-import { useSelector } from "react-redux";
+import DashboardCard from "../../../components/shared/DashboardCard";
+import ReusableTable from "../../../components/shared/ReusableTable"; 
+
+
+
+import ViewSocietyDetailsModal from "../society/view_society/components/ViewSocietyDetailsModal";
+import CustomerHandler from "../../../handlers/superadmin/CustomerHandler";
+import {   setPage,setPageSize } from "../../../redux/slices/societySlice";
+import { resetCustomerFormOperationType,
+  setCustomerId,
+  setFormOperationType, } from "../../../redux/slices/customerSlice";
+
+// Action buttons for each row
+const ActionData = ({ data, openModal }) => {
+  const dispatch = useDispatch();
+
+  return (
+    <div className="flex gap-2">
+      <button
+        className="px-2 py-1 text-xs text-white rounded-md bg-lime"
+        onClick={() => {
+          dispatch(setCustomerId(data.customerId));
+          dispatch(setFormOperationType("view"));
+          openModal();
+        }}
+      >
+        View
+      </button>
+    </div>
+  );
+};
 
 const Dashboard = () => {
+  const dispatch = useDispatch();
+
   const token = useSelector((state) => state.auth.token);
   const societyId = useSelector(
     (state) => state.auth.user?.Customer?.customerId
   );
   const userId = useSelector((state) => state.auth.user?.userId);
 
-  const { createPlanHandler } = SubscriptionHandler();
+  const page = useSelector((state) => state.society.page);
+  const pageSize = useSelector((state) => state.society.pageSize);
+  const filters = useSelector((state) => state.society.filters);
+  const { data, total, totalPages, columns } = useSelector(
+    (state) => state.society
+  );
 
-  const [subscriptionCount, setSubscriptionCount] = useState(0);
+  const { getSubscriptionStatsHandler } = SubscriptionHandler();
+  const { getCustomerHandler } = CustomerHandler(); // ✅ now available here
 
-  const fetchUserCounts = async () => {
+  const [subscriptionStats, setSubscriptionStats] = useState({
+    active: 0,
+    inactive: 0,
+  });
+  const [viewModal, setViewModal] = useState(false);
+
+  const openModal = () => setViewModal(true);
+  const closeModal = () => {
+    setViewModal(false);
+    dispatch(resetCustomerFormOperationType());
+  };
+
+  const fetchUserList = async () => {
     try {
-      // logic to fetch subscription counts (if needed)
+      const result = await getCustomerHandler({
+        page,
+        pageSize,
+        ...filters,
+      });
+
+      const transformedData = {
+        data: result.data.data.map((item) => ({
+          customerId: item.customerId,
+          customerName: item.customerName,
+          customerType: item.customerType, 
+          subscriptionId:item.subscriptionId,
+          establishedYear: item.establishedYear,
+          societyType: item.societyType,
+          status: item.status,
+          actions: (
+            <ActionData
+              data={item}
+              openModal={openModal}
+            />
+          ),
+        })),
+        total: result.data.total,
+        totalPages: result.data.totalPages,
+      };
+
+      dispatch({
+        type: "society/updateData",
+        payload: transformedData,
+      });
     } catch (error) {
-      console.error("Error fetching user counts:", error);
+      console.error("Failed to fetch user list:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserList();
+  }, [dispatch, page, pageSize, filters]);
+
+  const fetchSubscriptionStats = async () => {
+    try {
+      const res = await getSubscriptionStatsHandler(societyId, token);
+      if (res.data) {
+        setSubscriptionStats({
+          active: res.data.active || 0,
+          inactive: res.data.inactive || 0,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching subscription stats:", error);
     }
   };
 
   useEffect(() => {
     if (societyId && token && userId) {
-      fetchUserCounts();
-    } else {
-      console.error(
-        "Missing Society ID or Token or User ID. Please check authentication."
-      );
+      fetchSubscriptionStats();
     }
   }, [societyId, token, userId]);
 
   return (
     <div className="flex flex-col h-full p-6 bg-gray-100">
+      {/* Subscription Tracker */}
       <div className="grid grid-cols-3 gap-4 mb-4">
-        <SummaryCard
-          title="Subscription Plans"
-          icon={<FaUsers className="text-2xl text-gray-700" />}
-          count={subscriptionCount}
-          createPlanHandler={createPlanHandler}
+        <DashboardCard
+          title="Subscription Tracker"
+          count={subscriptionStats.active + subscriptionStats.inactive}
+          description="Total Subscriptions"
+          subItems={[
+            {
+              label: "Active",
+              value: subscriptionStats.active,
+              icon: <FaCheckCircle className="text-green-500" />,
+            },
+          ]}
+          rightItem={{
+            label: "Inactive",
+            value: subscriptionStats.inactive,
+            icon: <FaTimesCircle className="text-red-500" />,
+          }}
         />
       </div>
-    </div>
-  );
-};
 
-const SummaryCard = ({ title, icon, count, createPlanHandler }) => {
-  const [showModal, setShowModal] = useState(false);
-  const [planName, setPlanName] = useState("");
-  const [billingCycle, setBillingCycle] = useState("");
-  const [price, setPrice] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [discount, setDiscount] = useState("");
+      {/* User List */}
+      <div>
+        <h1 className="mb-4 text-xl font-bold">Customer Overview</h1>
+        <ReusableTable
+          columns={columns}
+          data={data}
+          pageIndex={page}
+          pageSize={pageSize}
+          totalCount={total}
+          totalPages={totalPages}
+          setPageIndex={(index) => dispatch(setPage(index))}
+          setPageSize={(size) => dispatch(setPageSize(size))}
+        />
 
-  const handleAddPlan = async (e) => {
-    e.preventDefault();
-    const newPlan = { planName, billingCycle, price, discount };
-    console.log("New Plan:", newPlan);
-
-    try {
-      await createPlanHandler(newPlan); // save to backend
-      setShowModal(false);
-      setPlanName("");
-      setBillingCycle("");
-      setPrice("");
-      setDiscount("");
-      setStartDate("");
-    } catch (err) {
-      console.error("Error creating plan:", err);
-    }
-  };
-
-  return (
-    <div className="p-4 bg-white rounded-lg shadow">
-      <h2 className="pb-2 mb-4 text-lg font-bold text-blue-600 border-b">
-        {title}
-      </h2>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          {icon}
-          <h3 className="text-xl font-semibold text-green-700">{count}</h3>
-        </div>
-        <button
-          onClick={() => setShowModal(true)}
-          className="flex items-center px-3 py-1 text-sm text-white bg-blue-600 rounded-lg shadow hover:bg-blue-700"
-        >
-          <FaPlus className="mr-1" /> Add Plan
-        </button>
+        {viewModal && (
+          <ViewSocietyDetailsModal isOpen={viewModal} onClose={closeModal} />
+        )}
       </div>
-
-      {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
-            <h2 className="mb-4 text-xl font-bold text-blue-600">
-              Create New Plan
-            </h2>
-            <form onSubmit={handleAddPlan} className="space-y-4">
-              <div>
-                <label className="block text-sm font-semibold">Plan Name</label>
-                <select
-                  value={planName}
-                  onChange={(e) => setPlanName(e.target.value)}
-                  className="w-full px-3 py-2 mt-1 border rounded-lg"
-                  required
-                >
-                  <option value="">Select Plan</option>
-                  <option value="gold">Gold</option>
-                  <option value="silver">Silver</option>
-                  <option value="platinum">Platinum</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold">
-                  Billing Cycle
-                </label>
-                <select
-                  value={billingCycle}
-                  onChange={(e) => setBillingCycle(e.target.value)}
-                  className="w-full px-3 py-2 mt-1 border rounded-lg"
-                  required
-                >
-                  <option value="">Select Cycle</option>
-                  <option value="monthly">Monthly</option>
-                  <option value="quarterly">Quarterly</option>
-                  <option value="yearly">Yearly</option>
-                </select>
-              </div>
-                {/* Start Date */}
-              <div>
-                <label className="block text-sm font-semibold">
-                  Start Date *
-                </label>
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full px-3 py-2 mt-1 border rounded-lg"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold">Price</label>
-                <input
-                  type="number"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  className="w-full px-3 py-2 mt-1 border rounded-lg"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold">
-                  Discount Percentage
-                </label>
-                <input
-                  type="number"
-                  value={discount}
-                  onChange={(e) => setDiscount(e.target.value)}
-                  className="w-full px-3 py-2 mt-1 border rounded-lg"
-                  placeholder="Enter discount %"
-                />
-              </div>
-
-              <div className="flex justify-end space-x-2">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
-                >
-                  Save Plan
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

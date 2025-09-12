@@ -145,7 +145,7 @@ export const getSocietyModeratorService = (societyId, token, params = {}) => {
     params, // will be ignored if empty
   });
 };
-
+//get status 
 export const getAllSuperAdminItAndModeratorService = ( token, data) => {
   const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/superadmin/moderator`;
   return axios.get(url, {
@@ -155,30 +155,15 @@ export const getAllSuperAdminItAndModeratorService = ( token, data) => {
     params: data,
   });
 };
-
-
-// export const createBulkSocietyUserService = async (societyId, token, data) => {
-//   const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/bulk-create/${societyId}`;
-//   return axios.post(url, data, {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//       "Content-Type": "multipart/form-data",
-//     },
-//   });
-// }
-
-
-// export const createMultipleSocietyUserService = async (societyId, token, data) => {
-//   const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/bulk-create/manual/${societyId}`;
-//   return axios.post(url, { users: data }, {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//       "Content-Type": "application/json",
-//     },
-//   });
-// };
-
-
+//update status
+export const updateUserIdStatusService = (userId, token, data) => {
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/User/${userId}`;
+  return axios.put(url, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
 // Bulk create using file upload (Excel/CSV)
 export const createBulkSocietyUserService = async (societyId, token, formData) => {
   const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/bulk-create/${societyId}`;

@@ -17,6 +17,7 @@ import GateHandler from "../../../../handlers/GateHandler";
 import EmergencyContactHandler from "../../../../handlers/EmergencyContactHandler";
 import DocumentHandler from "../../../../handlers/DocumentHandler";
 import { useSelector } from "react-redux";
+import DashboardCard from "../../../../components/shared/DashboardCard";
 
 const DashboardUser = () => {
   const token = useSelector((state) => state.auth.token);
@@ -134,9 +135,13 @@ const DashboardUser = () => {
     }
   };
 
-  const fetchDocumentCounts = async () => {
+ const fetchDocumentCounts = async () => {
     try {
-      const response = await getDocumentBySocietyHandler(societyId, userId, { page: 0, pageSize: 1000 });
+      const response = await getDocumentBySocietyHandler(
+        societyId,
+        userId,
+        { page: 0, pageSize: 1000 }
+      );
 
       const docList = Array.isArray(response?.data?.data)
         ? response.data.data
@@ -146,52 +151,55 @@ const DashboardUser = () => {
     } catch (error) {
       console.error("Error fetching Document:", error);
     }
-  };
-
+    };
   return (
     <div className="flex flex-col h-full p-6 bg-gray-100">
       <div className="grid grid-cols-3 gap-4 mb-4">
-        <SummaryCard
+                <DashboardCard
           title="Units & Users"
           icon={<FaUsers className="text-2xl text-gray-700" />}
+          rightItem={{
+            icon: <FaBuilding className="text-2xl text-gray-700" />,
+            value: unitCount,
+            label: "Units",
+          }}
           count={approvedUsersCount + unapprovedUsersCount}
           subItems={[
             { label: "Unapproved Users", value: unapprovedUsersCount, link: "/user/unapproved" },
             { label: "Approved Users", value: approvedUsersCount, link: "/user/approved" },
-            { label: "Units", value: unitCount, link: "/unit/view", icon: <FaBuilding className="text-2xl text-gray-700" /> },
           ]}
         />
-        <SummaryCard
+        <DashboardCard
           title="Vehicle Parking"
           icon={<FaCar className="text-2xl text-gray-700" />}
           count={parkingCount}
           description="Total Parking Slots"
         />
-        <SummaryCard
+        <DashboardCard
           title="Visitor"
           icon={<FaIdCard className="text-2xl text-gray-700" />}
           count={visitorCount}
           description="Total Visitors"
         />
-        <SummaryCard
+        <DashboardCard
           title="Gate & Security"
           icon={<GiGate className="text-2xl text-gray-700" />}
           count={approvedSecurityCount}
           description="Total Gates"
         />
-        <SummaryCard
+        <DashboardCard
           title="Document"
           icon={<FaFileAlt className="text-2xl text-gray-700" />}
           count={documentCount}
           description="Total Documents"
         />
-        <SummaryCard
+        <DashboardCard
           title="Complaint"
           icon={<FaFrown className="text-2xl text-gray-700" />}
           count={0}
           description="Total Complaints"
         />
-        <SummaryCard
+        <DashboardCard
           title="Emergency Contact"
           icon={<FaAddressBook className="text-2xl text-gray-700" />}
           count={emergencyContactCount}
@@ -202,27 +210,7 @@ const DashboardUser = () => {
   );
 };
 
-const SummaryCard = ({ title, icon, count, description, subItems = [] }) => (
-  <div className="p-4 bg-white rounded-lg shadow">
-    <h2 className="pb-2 mb-4 text-lg font-bold text-blue-600 border-b">{title}</h2>
-    <div className="flex items-center space-x-3">
-      {icon}
-      <div>
-        <h3 className="text-xl font-semibold text-green-700">{count}</h3>
-        {description && <p className="text-lg text-gray-500">{description}</p>}
-        {subItems.map((item, i) => (
-          <p key={i}>
-            <a
-              href={`${process.env.REACT_APP_PUBLIC_BASE_URL}${item.link}`}
-              className="text-sm text-gray-500 hover:underline"
-            >
-              {item.value} {item.label}
-            </a>
-          </p>
-        ))}
-      </div>
-    </div>
-  </div>
-);
+
+
 
 export default DashboardUser;

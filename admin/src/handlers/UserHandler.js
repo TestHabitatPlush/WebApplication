@@ -14,7 +14,9 @@ import {
   updateSocietyModeratorService,
   getSocietyModeratorService,
   createBulkSocietyUserService,
-  createMultipleSocietyUserService
+  createMultipleSocietyUserService,
+  getAllSuperAdminItAndModeratorService,
+  updateUserIdStatusService
 } from '../services/userService';
 import { useSelector } from 'react-redux';
 
@@ -210,8 +212,30 @@ const createBulkSocietyUserHandler = async (societyId, token, file) => {
   }
 };
 
-
-
+  const getAllSuperAdminItAndModeratorHandler = async (token, data = {}) => {
+    try {
+      const response = await getAllSuperAdminItAndModeratorService(token, data);
+      return response.data;
+    } catch (error) {
+      console.error(
+        "Error fetching Super Admin, IT and Moderator list:",
+        error.response?.data || error.message
+      );
+      throw error;
+    }
+  };
+  const updateUserIdStatusHandler = async (userId, token, data) => {
+    try {
+      const response = await updateUserIdStatusService(userId, token, data);
+      return response.data;
+    } catch (error) {
+      console.error(
+        "Error updating user status by ID:",
+        error.response?.data || error.message
+      );
+      throw error;
+    }
+  };
 
   return {
     createSocietyModeratorHandler,
@@ -227,7 +251,9 @@ const createBulkSocietyUserHandler = async (societyId, token, file) => {
     updateResidentBySocietyIdHandler,
     getSocietyModeratorHandler,
     createBulkSocietyUserHandler,
-    createMultipleSocietyUserHandler
+    createMultipleSocietyUserHandler,
+    getAllSuperAdminItAndModeratorHandler,
+    updateUserIdStatusHandler
   };
 };
 
