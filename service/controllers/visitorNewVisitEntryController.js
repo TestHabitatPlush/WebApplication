@@ -12,7 +12,7 @@ exports.createVisitorNewVisitEntryController = async (req, res) => {
       visit_name,
       visit_type_Id,
       visit_mobileno,
-      visit_porpous,
+      visit_purpose,
       visit_location,
       relationship,
       visit_valid_till_date,
@@ -26,7 +26,7 @@ exports.createVisitorNewVisitEntryController = async (req, res) => {
       !visit_name ||
       !visit_type_Id ||
       !visit_mobileno ||
-      !visit_porpous ||
+      !visit_purpose ||
       !visit_valid_till_date||
       !societyId ||
       !senderId
@@ -51,7 +51,7 @@ exports.createVisitorNewVisitEntryController = async (req, res) => {
       visit_type_Id: parseInt(visit_type_Id),
       visit_mobileno: parseInt(visit_mobileno),
       relationship,
-      visit_porpous,
+      visit_purpose,
       visit_valid_till_date,
       societyId,
       senderId,
@@ -66,7 +66,7 @@ exports.createVisitorNewVisitEntryController = async (req, res) => {
       societyId: result.societyId,
       visit_name: result.visit_name,
       visit_mobileno: result.visit_mobileno,
-      visit_porpous: result.visit_porpous,
+      visit_purpose: result.visit_purpose,
       relationship: result.relationship || null,
       senderId: result.senderId,
       timestamp: new Date().toISOString(),
@@ -180,7 +180,7 @@ exports.getVisiterEntry = async (req, res) => {
       societyId: visitorEntry.societyId,
       visit_name: visitorEntry.visit_name,
       visit_mobileno: visitorEntry.visit_mobileno,
-      visit_porpous: visitorEntry.visit_porpous,
+      visit_purpose: visitorEntry.visit_purpose,
       relationship:visitorEntry.relationship,
       senderId: visitorEntry.senderId,
       timestamp: new Date().toISOString(),
@@ -331,7 +331,7 @@ exports.getVisitorEntriesBySender = async (req, res) => {
           societyId: visitorEntry.societyId,
           visit_name: visitorEntry.visit_name,
           visit_mobileno: visitorEntry.visit_mobileno,
-          visit_porpous: visitorEntry.visit_porpous,
+          visit_purpose: visitorEntry.visit_purpose,
           relationship: visitorEntry.relationship,
           senderId: visitorEntry.senderId,
           timestamp: new Date().toISOString(),

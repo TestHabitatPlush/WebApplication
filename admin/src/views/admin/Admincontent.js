@@ -4,6 +4,8 @@ import AddUser from "./usermanagement/adduser/AddUser";
 import UnapprovedUser from "./usermanagement/unapproveduser/UnapprovedUser";
 import ApprovedUser from "./usermanagement/approveduser/ApprovedUser";
 import DashboardUser from "./usermanagement/dashboard/DashboardUser";
+import BulkUserCreation from "./usermanagement/bulkusercreation/BulkUserCreation";
+
 
 import GeneralSetting from "./usermanagement/generalsetting/GeneralSetting";
 import UnitList from "./unitdetails/unitlist/UnitList";
@@ -114,6 +116,7 @@ const Admincontent = () => {
       <Route path="/user/unapproved" element={<UnapprovedUser />} />
       <Route path="/user/adduser" element={<AddUser />} />
       <Route path="/user/approved" element={<ApprovedUser />} />
+      <Route path="/user/bulkuser" element = {<BulkUserCreation/>} />
       <Route path="/user/deactivated" element={<DeactivateUser />} />
        <Route path="/user/bulkuser" element = {<BulkUserCreation/>} />
       <Route path="/user/setting" element={<GeneralSetting />} />

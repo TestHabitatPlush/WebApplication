@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "export": "next export",
+  "build-export": "npm run build && npm run export",
     "build-test": "cross-env NODE_ENV=test next build",
     "build-prod": "cross-env NODE_ENV=production next build",
     "start-test": "cross-env NODE_ENV=test next start",

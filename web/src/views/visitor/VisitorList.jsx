@@ -89,7 +89,7 @@ const VisitorList = () => {
       { Header: "ID", accessor: "visit_entry_Id" },
       { Header: "Name", accessor: "visit_name" },
       { Header: "Phone", accessor: "visit_mobileno" },
-      { Header: "Purpose", accessor: "visit_porpous" },
+      { Header: "Purpose", accessor: "visit_purpose" },
       { Header: "Address", accessor: "visit_location" },
       { Header: "Entry Date", accessor: "visit_expect_date_of_entry_date" },
       {

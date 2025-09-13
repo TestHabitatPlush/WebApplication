@@ -1,4 +1,4 @@
-const { User, Unit, Role,Customer } = require("../models");
+const { User, Unit, Role } = require("../models");
 const { getAllUsersService, getUserByIdService } = require("../services/userService");
 //const { createUnit, getUnit, getAllUnits } = require("../controllers/unitController.js");
 const addressService = require("../services/addressService");
@@ -678,7 +678,6 @@ const bulkCreateResidents = async (req, res) => {
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
-
 
 
 

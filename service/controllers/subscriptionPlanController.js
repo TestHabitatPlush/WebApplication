@@ -1,5 +1,6 @@
 // const SubscriptionPlan = require("../models/SubscriptionPlan");
-const { SubscriptionPlan, Customer, User } = require("../models"); // ensure both models are imported
+const { SubscriptionPlan, Customer, User } = require("../models") 
+const  Module  = require("../models/Module")
 const sequelize = require("../config/database");
 // const Customer = require("../models/Customer");
 const { Op } = require("sequelize");
@@ -7,6 +8,7 @@ const { determineStatus, computeFinalPrice, computeEndDate } = require("../servi
 
 // CREATE
 const createSubscription = async (req, res) => {
+  const t = await sequelize.transaction();
   try {
     const {
       planName,
@@ -15,14 +17,13 @@ const createSubscription = async (req, res) => {
       endDate: userEndDate,
       price = 0,
       discountPercentage = 0,
+      moduleIds = []
     } = req.body;
 
     if(!startDate) {
       return res.status(400).json({ error: "Start date is required" });
     }
-
     let endDate = userEndDate;
-
     if(billingCycle !== "custom") {
       endDate = computeEndDate(startDate, billingCycle);
     } else if (!userEndDate) {
@@ -41,10 +42,22 @@ const createSubscription = async (req, res) => {
       discountPercentage,
       finalPrice,
       status,
-    });
+    }, {transaction:t});
+
+    if(moduleIds.length > 0) {
+      const modules = await Module.findAll({
+        where:{
+          moduleId:moduleIds
+        }
+      });
+      await subscription.setModules(modules, {transaction:t});
+    }
+
+    await t.commit();
 
     res.status(201).json({ message: "Subscription created", subscription });
   } catch (err) {
+    await t.rollback();
     res.status(400).json({ error: err.message });
   }
 };
@@ -74,8 +87,9 @@ const getSubscriptionById = async (req, res) => {
 
 // UPDATE
 const updateSubscription = async (req, res) => {
+  const t = await sequelize.transaction();
   try {
-    const subscription = await SubscriptionPlan.findByPk(req.params.id);
+    const subscription = await SubscriptionPlan.findByPk(req.params.id,{transaction:t});
     if (!subscription) {
       return res.status(404).json({ error: "Subscription not found" });
     }
@@ -87,15 +101,19 @@ const updateSubscription = async (req, res) => {
       discountPercentage,
       startDate,
       endDate,
-      status
+      status,
+      moduleIds= []
     } = req.body;
-
-    planName = planName ?? subscription.planName;
-    billingCycle = billingCycle ?? subscription.billingCycle;
-    price  = price ?? subscription.price;
-    discountPercentage = discountPercentage ?? subscription.discountPercentage;
-    startDate = startDate ?? subscription.startDate;
-
+    await subscription.update({
+    planName : planName ?? subscription.planName,
+    billingCycle : billingCycle ?? subscription.billingCycle,
+    price  : price ?? subscription.price,
+    discountPercentage : discountPercentage ?? subscription.discountPercentage,
+    startDate : startDate ?? subscription.startDate,
+    endDate : endDate ?? subscription.endDate,
+    finalPrice : computeFinalPrice(price ?? subscription.price, discountPercentage ?? subscription.discountPercentage),
+    status: status?? subscription.status,
+  }, {transaction:t});
     if (billingCycle !== "custom" && !endDate) {
       endDate = computeEndDate(startDate, billingCycle);
     } else {
@@ -117,19 +135,19 @@ const updateSubscription = async (req, res) => {
     //   status = determineStatus(s, e);
     // }
 
-    await subscription.update({
-      planName,
-      billingCycle,
-      price,
-      discountPercentage,
-      startDate,
-      endDate,
-      finalPrice,
-      status,
+  if(moduleIds.length > 0){
+    const modules = await Module.findAll({
+      where:{
+        moduleId:moduleIds
+      }
     });
+    await subscription.setModules(modules, {transaction:t});
+  }
+  await t.commit();
 
     res.status(200).json({ message: "Subscription updated", subscription });
   } catch (err) {
+    await t.rollback();
     res.status(400).json({ error: err.message });
   }
 };
@@ -250,6 +268,43 @@ const runExpiryCheck = async (req, res) => {
   }
 };
 
+const getSubscriptionModules = async (req,res) =>{
+  try{
+    const subscription = await SubscriptionPlan.findByPk(req.params.id,{
+      include: {
+        model:Module,
+          attributes:["moduleId","moduleName"],
+           through: { attributes: [] }
+        }
+    });
+    if (!subscription) return res.status(404).json({
+      error:"Subscription not found"
+    });
+    res.status(200).json({
+      plan:subscription.planName,
+      modules:subscription.Modules.map(m => ({
+        moduleId:m.moduleId,
+        moduleName:m.moduleName
+      }))
+    });
+  } catch (err){
+    res.status(500).json({
+      error:err.message
+    });
+  }
+}
+
+const getAllModules = async (req,res) =>{
+  try{
+    const modules = await Module.findAll({attributes:['moduleId','moduleName']});
+    res.status(200).json(modules);
+  } catch (err){
+    res.status(500).json({
+      error:err.message
+    });
+  }
+}
+
 module.exports = {
   createSubscription,
   getAllSubscriptions,
@@ -259,4 +314,6 @@ module.exports = {
   deleteSubscription,
   getSubscriptionsExpiringSoon,
   runExpiryCheck,
+  getSubscriptionModules,
+  getAllModules,
 };

@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 import React, { useRef, useState,useEffect } from 'react'
+=======
+import React, { useRef, useState } from 'react'
+import { FaSearch, FaTrashAlt } from "react-icons/fa";
+>>>>>>> origin/himansu
 import { TiArrowUpThick, TiArrowDownOutline  } from "react-icons/ti";
 import UrlPath from "../../../../components/shared/UrlPath";
 import Button from '../../../../components/ui/Button';
@@ -6,7 +11,10 @@ import PageHeading from "../../../../components/shared/PageHeading";
 import ReusableInputForm from "../../../../components/shared/ReusableInputForm"
 import { useSelector } from "react-redux";
 import UserHandler from '../../../../handlers/UserHandler';
+<<<<<<< HEAD
 import DefineUnitHandler from "../../../../handlers/DefineUnitHandler";
+=======
+>>>>>>> origin/himansu
 
 const BulkUserCreation = () => {
     const paths = ["User Management", "Create Bulk User"];
@@ -14,6 +22,7 @@ const BulkUserCreation = () => {
     const format = `${process.env.REACT_APP_ADMIN_URL}/Bulk_user_format.xlsx`;
     const fileInputRef = useRef(null);
     const societyId = useSelector((state) => state.auth.user?.Customer?.customerId) || "";
+<<<<<<< HEAD
     const token = useSelector((state) => state.auth.token);
     
     const { createBulkSocietyUserHandler ,createMultipleSocietyUserHandler} = UserHandler(); 
@@ -24,6 +33,11 @@ const BulkUserCreation = () => {
    const [pageSize] = useState(10);
    const [units, setUnits] = useState([]);
    
+=======
+    const { createBulkSocietyUserHandler } = UserHandler(); 
+    // const [file, setFile] = useState(null);
+
+>>>>>>> origin/himansu
     const downloadFormatFile=(url)=>{
         const fileName = "Bulk_user_format.xlsx";
         const aTag = document.createElement("a");
@@ -34,6 +48,7 @@ const BulkUserCreation = () => {
         aTag.remove();
     }
 
+<<<<<<< HEAD
    const handleUpload = async (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -83,6 +98,22 @@ const handleManualSubmit = async (rows) => {
   }));
 await createMultipleSocietyUserHandler(societyId, token, users); 
 };
+=======
+    const handleUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) {
+            alert("Please select a file first");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+        const myStatus = await createBulkSocietyUserHandler(societyId, formData);
+        console.log(myStatus);
+        
+  };
+
+>>>>>>> origin/himansu
 
     const formColumns = [
         {
@@ -130,6 +161,7 @@ await createMultipleSocietyUserHandler(societyId, token, users);
             required: true,
             placeholder: 'Contact Nuumber'
         },
+<<<<<<< HEAD
         { Header: "Role", accessor: "roleId", inputType: "select", required: true,
       options: [
         { value: 5, label: "Owner" },
@@ -146,6 +178,29 @@ await createMultipleSocietyUserHandler(societyId, token, users);
           { Header: "Address Line 1", accessor: "address1", inputType: "text" },
           { Header: "Address Line 2", accessor: "address2", inputType: "text" },
         ];
+=======
+        {
+            Header: 'Role',
+            accessor: 'department',
+            inputType: 'select',
+            required: true,
+            options: [
+                { value: 'society_owner', label: 'Owner' },
+                { value: 'society_owner_family', label: 'Owner Family' },
+                { value: 'society_tenant', label: 'Tenant' },
+                { value: 'society_tenant_family', label: 'Tenant Family' }
+            ]
+        },
+        {
+            Header: 'Unit Name',
+            accessor: 'unitname',
+            inputType: 'text',
+            placeholder: ' ',
+            required: true,
+        }
+    ];
+
+>>>>>>> origin/himansu
     return (
         <>
             <UrlPath paths={paths} />
@@ -162,10 +217,19 @@ await createMultipleSocietyUserHandler(societyId, token, users);
                         <div className='relative w-full overflow-x-auto shadow-md sm:rounded-lg'>
                             <ReusableInputForm
                                 columns={formColumns}
+<<<<<<< HEAD
                                
                                 formTitle=""
                                 numberOfRows={2}
                                 onSubmit={handleManualSubmit}
+=======
+                                numberOfRows={5}
+                                formTitle=""
+                                onSubmit={(data) => {
+                                    console.log('Form submitted:', data);
+                                    // Handle form submission
+                                }}
+>>>>>>> origin/himansu
                                 onRowAdd={(rowIndex) => {
                                     console.log('Row added at index:', rowIndex);
                                 }}
@@ -184,6 +248,7 @@ await createMultipleSocietyUserHandler(societyId, token, users);
     )
 }
 
+<<<<<<< HEAD
 export default BulkUserCreation;
 
 
@@ -339,3 +404,6 @@ export default BulkUserCreation;
 // };
 
 // export default BulkUserCreation;
+=======
+export default BulkUserCreation
+>>>>>>> origin/himansu
