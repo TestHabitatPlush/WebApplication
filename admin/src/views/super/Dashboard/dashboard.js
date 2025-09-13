@@ -80,6 +80,8 @@ const Dashboard = () => {
           customerName: item.customerName,
           customerType: item.customerType, 
           subscriptionId:item.subscriptionId,
+          email:item.email,
+          phone:item.phone,
           establishedYear: item.establishedYear,
           societyType: item.societyType,
           status: item.status,
