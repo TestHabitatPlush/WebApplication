@@ -91,6 +91,7 @@ const updateSubscription = async (req, res) => {
   try {
     const subscription = await SubscriptionPlan.findByPk(req.params.id,{transaction:t});
     if (!subscription) {
+      await t.rollback();
       return res.status(404).json({ error: "Subscription not found" });
     }
 
@@ -104,36 +105,38 @@ const updateSubscription = async (req, res) => {
       status,
       moduleIds= []
     } = req.body;
+
+    if(
+      planName !== undefined ||
+      billingCycle !== undefined ||
+      price !== undefined ||
+      discountPercentage !== undefined ||
+      startDate !== undefined ||
+      endDate !== undefined
+    ) {
+      if (billingCycle !== "custom" && startDate && !endDate) {
+        endDate = computeEndDate(startDate, billingCycle);
+      } else{
+        endDate = endDate ?? subscription.endDate;
+      }
+      finalPrice = computeFinalPrice(
+        price ?? subscription.price,
+        discountPercentage ?? subscription.discountPercentage
+      );
+    } else {
+      endDate = subscription.endDate;
+    }
     await subscription.update({
     planName : planName ?? subscription.planName,
     billingCycle : billingCycle ?? subscription.billingCycle,
     price  : price ?? subscription.price,
     discountPercentage : discountPercentage ?? subscription.discountPercentage,
     startDate : startDate ?? subscription.startDate,
-    endDate : endDate ?? subscription.endDate,
-    finalPrice : computeFinalPrice(price ?? subscription.price, discountPercentage ?? subscription.discountPercentage),
+    endDate,
+    finalPrice,
     status: status?? subscription.status,
   }, {transaction:t});
-    if (billingCycle !== "custom" && !endDate) {
-      endDate = computeEndDate(startDate, billingCycle);
-    } else {
-      endDate = endDate ?? subscription.enddate;
-    }
 
-    let finalPrice = computeFinalPrice(price, discountPercentage);
-    // let status = determineStatus(startDate, endDate);
-
-    // if (price !== undefined || discountPercentage !== undefined) {
-    //   const p = price !== undefined ? price : subscription.price;
-    //   const d = discountPercentage !== undefined ? discountPercentage : subscription.discountPercentage;
-    //   finalPrice = computeFinalPrice(p, d);
-    // }
-
-    // if (startDate !== undefined || endDate !== undefined) {
-    //   const s = startDate !== undefined ? startDate : subscription.startDate;
-    //   const e = endDate !== undefined ? endDate : subscription.endDate;
-    //   status = determineStatus(s, e);
-    // }
 
   if(moduleIds.length > 0){
     const modules = await Module.findAll({

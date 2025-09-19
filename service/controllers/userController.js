@@ -1025,7 +1025,7 @@ const getAllApprovedUsers = async (req, res) => {
   }
 };
 
-getAllSuper_admin_itAndModrerator = async (req, res) => {
+const getAllSuper_admin_itAndModrerator = async (req, res) => {
   await Promise.all([
     Role.findAll({
       where: {
@@ -1057,7 +1057,7 @@ getAllSuper_admin_itAndModrerator = async (req, res) => {
     });
 };
 
-updateUserIdStatus = async(req,res) =>{
+const updateUserIdStatus = async(req,res) =>{
   try{
     const {userId} = req.params;
   const {status}=req.body;
