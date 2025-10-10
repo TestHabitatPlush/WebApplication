@@ -1,7 +1,7 @@
 import axios from "axios";
 
-export const getvisitorEntryService = (token) => {
-  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/visitormanagement/:visit_entry_Id`;
+export const getvisitorEntryService = (visit_entry_Id,token) => {
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/visitormanagement/${visit_entry_Id}`;
 
   return axios.get(url, {
     headers: {
