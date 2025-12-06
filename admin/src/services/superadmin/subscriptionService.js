@@ -40,3 +40,17 @@ export const updateSubscriptionService = async (id, token, data) => {
   });
   return res.data;
 };
+
+// get allowed modules
+export const getAllModulesService = async (token) => {
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/modules`;
+  const res = await axios.get(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  return res; 
+
+};
+
+
+//router.get("/subscription-plans/:id/modules",subscriptionController.getSubscriptionModules)

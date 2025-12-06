@@ -14,8 +14,10 @@ const SocietyModeratorList = () => {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth?.token || null);
 
-  const { getAllSuperAdminItAndModeratorHandler, updateUserIdStatusHandler } =
-    UserHandler();
+  const {
+    getAllSuperAdminItAndModeratorHandler,
+    updateUserIdStatusHandler,
+  } = UserHandler();
 
   const [moderators, setModerators] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,7 +29,7 @@ const SocietyModeratorList = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [newStatus, setNewStatus] = useState(null);
 
-  // Local pagination
+  // Pagination
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
@@ -36,6 +38,7 @@ const SocietyModeratorList = () => {
   const fetchModerators = async () => {
     try {
       setLoading(true);
+
       const res = await getAllSuperAdminItAndModeratorHandler(token, {
         page,
         pageSize,
@@ -71,31 +74,32 @@ const SocietyModeratorList = () => {
   };
 
   useEffect(() => {
-    fetchModerators();
-  }, [page, pageSize]);
-
-  const handleStatusChange = async () => {
-  if (!selectedUser) return;
-  try {
-    setIsLoading(true);
-
-    const updated = await updateUserIdStatusHandler(
-      selectedUser.userId,
-      token,
-      { status: newStatus }   // ✅ send object, not string
-    );
-
-    if (updated?.user?.status === newStatus) {
+    if (token) {
       fetchModerators();
     }
-    setShowConfirmModal(false);
-  } catch (err) {
-    console.error("Status update failed", err);
-  } finally {
-    setIsLoading(false);
-  }
-};
+  }, [page, pageSize, token]);
 
+  const handleStatusChange = async () => {
+    if (!selectedUser) return;
+    try {
+      setIsLoading(true);
+
+      const updated = await updateUserIdStatusHandler(
+        selectedUser.userId,
+        token,
+        { status: newStatus } // ✅ send as object
+      );
+
+      if (updated?.user?.status === newStatus) {
+        fetchModerators();
+      }
+      setShowConfirmModal(false);
+    } catch (err) {
+      console.error("Status update failed", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const columns = [
     { Header: "Sl No", accessor: "slNo" },

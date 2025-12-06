@@ -18,11 +18,38 @@ const UpdateSubscriptionDetailsModal = ({
   onClose,
   formData,
   onEditHandler,
+  modules = [],
 }) => {
-  const [subscriptionForm, setSubscriptionForm] = useState(formData);
+  const [subscriptionForm, setSubscriptionForm] = useState({
+    planName: "",
+    billingCycle: "",
+    startDate: "",
+    endDate: "",
+    price: "",
+    discountPercentage: "",
+    selectedModules: [],
+  });
+
+  // module mapping (friendly display names)
+  const modulesMapping = {
+    document: "Document Management",
+    emergency_contact: "Emergency Contact",
+    gate: "Gate Management",
+    notice: "Notice and Announcement",
+    users: "User Management",
+    vehicle: "Vehicle Management",
+    visitor_new_visitentry: "Visitor Management",
+  };
 
   useEffect(() => {
-    setSubscriptionForm(formData); // sync with props
+    if (formData) {
+      setSubscriptionForm({
+        ...formData,
+        selectedModules: formData.selectedModules
+          ? formData.selectedModules
+          : formData.modules?.map((m) => m.moduleId) || [],
+      });
+    }
   }, [formData]);
 
   const handleInput = (e) => {
@@ -35,10 +62,24 @@ const UpdateSubscriptionDetailsModal = ({
     });
   };
 
+  const handleModuleToggle = (moduleId) => {
+    setSubscriptionForm((prev) => ({
+      ...prev,
+      selectedModules: prev.selectedModules.includes(moduleId)
+        ? prev.selectedModules.filter((m) => m !== moduleId)
+        : [...prev.selectedModules, moduleId],
+    }));
+  };
+
   const handleSubmit = () => {
-    onEditHandler(subscriptionForm); // Call parent handler
+    onEditHandler(subscriptionForm);
     onClose();
   };
+
+  // split modules into 2 columns
+  const mid = Math.ceil(modules.length / 2);
+  const leftModules = modules.slice(0, mid);
+  const rightModules = modules.slice(mid);
 
   return (
     <Dialog
@@ -54,7 +95,7 @@ const UpdateSubscriptionDetailsModal = ({
           <label className="text-sm font-medium text-gray-700">Plan Name</label>
           <select
             name="planName"
-            value={subscriptionForm?.planName || ""}
+            value={subscriptionForm.planName}
             onChange={handleInput}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
@@ -70,7 +111,7 @@ const UpdateSubscriptionDetailsModal = ({
           </label>
           <select
             name="billingCycle"
-            value={subscriptionForm?.billingCycle || ""}
+            value={subscriptionForm.billingCycle}
             onChange={handleInput}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
@@ -88,15 +129,15 @@ const UpdateSubscriptionDetailsModal = ({
               label="Start Date"
               type="date"
               name="startDate"
-              value={formatDate(subscriptionForm?.startDate)}
+              value={formatDate(subscriptionForm.startDate)}
               onChange={handleInput}
             />
-            {subscriptionForm?.billingCycle === "custom" && (
+            {subscriptionForm.billingCycle === "custom" && (
               <Input
                 label="End Date"
                 type="date"
                 name="endDate"
-                value={formatDate(subscriptionForm?.endDate)}
+                value={formatDate(subscriptionForm.endDate)}
                 onChange={handleInput}
               />
             )}
@@ -108,7 +149,7 @@ const UpdateSubscriptionDetailsModal = ({
               label="Price"
               name="price"
               type="number"
-              value={subscriptionForm?.price || ""}
+              value={subscriptionForm.price}
               onChange={handleInput}
               placeholder="Enter price"
             />
@@ -116,10 +157,51 @@ const UpdateSubscriptionDetailsModal = ({
               label="Discount Percentage"
               name="discountPercentage"
               type="number"
-              value={subscriptionForm?.discountPercentage || ""}
+              value={subscriptionForm.discountPercentage}
               onChange={handleInput}
               placeholder="Enter discount %"
             />
+          </div>
+
+          {/* Module Selection */}
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              Module Names
+            </label>
+            <div className="grid grid-cols-2 gap-4 p-4 border rounded-lg">
+              {[leftModules, rightModules].map((column, idx) => (
+                <div key={idx}>
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="bg-gray-100">
+                        <th className="px-2 py-1 border">Select</th>
+                        <th className="px-2 py-1 border">Module Name</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {column.map((m) => {
+                        const rawName = m.moduleName;
+                        const displayName = modulesMapping[rawName] || rawName;
+                        return (
+                          <tr key={m.moduleId}>
+                            <td className="px-2 py-1 text-center border">
+                              <input
+                                type="checkbox"
+                                checked={subscriptionForm.selectedModules.includes(
+                                  m.moduleId
+                                )}
+                                onChange={() => handleModuleToggle(m.moduleId)}
+                              />
+                            </td>
+                            <td className="px-2 py-1 border">{displayName}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Submit */}

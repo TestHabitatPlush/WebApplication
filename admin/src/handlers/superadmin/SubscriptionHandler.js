@@ -1,4 +1,4 @@
-import { getAllSubscriptionsService,createPlanService,deleteSubscriptionService,getSubscriptionByIdService ,updateSubscriptionService} from "../../services/subscriptionService";
+import { getAllSubscriptionsService,createPlanService,deleteSubscriptionService,getSubscriptionByIdService ,updateSubscriptionService,getAllModulesService} from "../../services/superadmin/subscriptionService";
 
 const SubscriptionHandler = () => {
   const getAllSubscriptionsHandler = async () => {
@@ -72,13 +72,28 @@ const SubscriptionHandler = () => {
         throw error;
       }
     };
+
+
+  const getAllModulesHandler = async (token) => {
+  try {
+    const res = await getAllModulesService(token); // axios response
+    console.log("Modules API response:", res.data);
+
+    // Always return an array of modules
+    return res.data.modules || res.data || [];
+  } catch (err) {
+    console.error("Error fetching modules:", err.response?.data || err.message);
+    return [];
+  }
+};
   
     return {
       createPlanHandler,
       getAllSubscriptionsHandler,
       deleteSubscriptionByIdHandler,
       getSubscriptionByIdHandler,
-      updateSubscriptionHandler, // ✅ return pure API function
+      updateSubscriptionHandler, 
+      getAllModulesHandler
     };
 
 };

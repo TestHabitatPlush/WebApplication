@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Dialog from "../../../../components/ui/Dialog";
-import {
-  FaIdBadge,
-  FaBuilding,
-  FaLayerGroup,
-  FaCalendarAlt,
-  FaMoneyBillWave,
-  FaPercentage,
-} from "react-icons/fa";
-import { format } from "date-fns";
 
 const ViewSubscriptionListModal = ({ isOpen, onClose, formData }) => {
   const [subscriptionViewForm, setSubscriptionViewForm] = useState(null);
@@ -19,82 +10,138 @@ const ViewSubscriptionListModal = ({ isOpen, onClose, formData }) => {
     }
   }, [formData]);
 
-  const subscriptionDetails = [
-    {
-      icon: <FaIdBadge className="text-xl text-blue-600" />,
-      label: "Subscription ID",
-      value: subscriptionViewForm?.subscriptionId || "—",
-    },
-    {
-      icon: <FaBuilding className="text-xl text-blue-600" />,
-      label: "Subscription Name",
-      value: subscriptionViewForm?.planName || "—",
-    },
-    {
-      icon: <FaLayerGroup className="text-xl text-blue-600" />,
-      label: "Billing Cycle",
-      value: subscriptionViewForm?.billingCycle || "—",
-    },
-    {
-      icon: <FaCalendarAlt className="text-xl text-blue-600" />,
-      label: "Booking From",
-      value: subscriptionViewForm?.startDate
-        ? format(new Date(subscriptionViewForm.startDate), "dd-MM-yyyy")
-        : "—",
-    },
-    {
-      icon: <FaCalendarAlt className="text-xl text-blue-600" />,
-      label: "Booking To",
-      value: subscriptionViewForm?.endDate
-        ? format(new Date(subscriptionViewForm.endDate), "dd-MM-yyyy")
-        : "—",
-    },
-    {
-  icon: <FaMoneyBillWave className="text-xl text-blue-600" />,
-  label: "Price",
-  value: subscriptionViewForm?.price
-    ? `₹${subscriptionViewForm.price}`
-    : "—",
-},
-{
-  icon: <FaPercentage className="text-xl text-blue-600" />,
-  label: "Discount (%)",
-  value: subscriptionViewForm?.discountPercentage ?? "—",
-},
-  ];
-
   return (
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
       className="w-full h-full p-10 overflow-auto"
-      contentClassName="w-full h-full bg-white lg:max-w-4xl rounded-lg overflow-auto p-5"
+      contentClassName="w-full h-full bg-white lg:max-w-5xl rounded-lg overflow-auto p-6"
       overlayClassName="backdrop-blur"
     >
       {/* Header */}
-      <div className="pb-4 mb-6 border-b">
-        <h2 className="text-2xl font-semibold text-gray-800">
-          Subscription Details
+      <div className="flex items-center justify-between pb-4 mb-6 border-b border-gray-300">
+        <h2 className="text-xl font-semibold text-gray-800">
+          Package Subscription Details
         </h2>
+        {/* <button
+          onClick={onClose}
+          className="text-lg font-bold text-red-600 hover:text-red-800"
+        >
+          ✕
+        </button> */}
       </div>
 
-      {/* Subscription Details List */}
-      <ul className="space-y-4">
-        {subscriptionDetails.map((item, index) => (
-          <li
-            key={index}
-            className="flex items-start gap-4 p-4 border border-gray-200 rounded-md shadow-sm bg-gray-50"
-          >
-            <div className="flex-shrink-0">{item.icon}</div>
-            <div className="flex-1">
-              <h4 className="mb-1 text-sm font-medium text-gray-600">
-                {item.label}
-              </h4>
-              <p className="text-sm text-gray-800">{item.value}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
+      {/* Package Info Section */}
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        <div>
+          <label className="block mb-1 text-sm font-semibold text-gray-700">
+            Package ID
+          </label>
+          <input
+            type="text"
+            readOnly
+            value={subscriptionViewForm?.subscriptionId || "P1"}
+            className="w-full px-3 py-2 text-gray-800 bg-gray-100 border rounded-md"
+          />
+        </div>
+
+        <div>
+          <label className="block mb-1 text-sm font-semibold text-gray-700">
+            Package Type
+          </label>
+          <input
+            type="text"
+            readOnly
+            value={subscriptionViewForm?.packageType || "Standard"}
+            className="w-full px-3 py-2 text-gray-800 bg-gray-100 border rounded-md"
+          />
+        </div>
+
+        <div>
+          <label className="block mb-1 text-sm font-semibold text-gray-700">
+            Package Name
+          </label>
+          <input
+            type="text"
+            readOnly
+            value={subscriptionViewForm?.planName || "Silver"}
+            className="w-full px-3 py-2 text-gray-800 bg-gray-100 border rounded-md"
+          />
+        </div>
+      </div>
+
+      {/* Module Selection Table */}
+      <div className="overflow-hidden border border-gray-300 rounded-lg shadow-sm">
+        <table className="w-full text-sm text-left border-collapse">
+          <thead className="text-white bg-teal-700">
+            <tr>
+              <th className="px-3 py-2 border border-gray-300 w-[10%] text-center">
+                Select
+              </th>
+              <th className="px-3 py-2 border border-gray-300">Module Name</th>
+              <th className="px-3 py-2 border border-gray-300 w-[10%] text-center">
+                Select
+              </th>
+              <th className="px-3 py-2 border border-gray-300">Module Name</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {/* Left + Right side modules */}
+            <tr>
+              <td className="px-3 py-2 text-center border">
+                <input type="checkbox" checked readOnly />
+              </td>
+              <td className="px-3 py-2 border">Building Management</td>
+
+              <td className="px-3 py-2 text-center border">
+                <input type="checkbox" checked readOnly />
+              </td>
+              <td className="px-3 py-2 border">Visitor Management</td>
+            </tr>
+
+            <tr>
+              <td className="px-3 py-2 text-center border">
+                <input type="checkbox" checked readOnly />
+              </td>
+              <td className="px-3 py-2 border">User Management</td>
+
+              <td className="px-3 py-2 text-center border">
+                <input type="checkbox" checked readOnly />
+              </td>
+              <td className="px-3 py-2 border">Gate Management</td>
+            </tr>
+
+            <tr>
+              <td className="px-3 py-2 text-center border">
+                <input type="checkbox" checked readOnly />
+              </td>
+              <td className="px-3 py-2 border">Notice and Announcement</td>
+
+              <td className="px-3 py-2 text-center border">
+                <input type="checkbox" checked readOnly />
+              </td>
+              <td className="px-3 py-2 border">Facility Management</td>
+            </tr>
+
+            <tr>
+              <td className="px-3 py-2 text-center border">
+                <input type="checkbox" checked readOnly />
+              </td>
+              <td className="px-3 py-2 border">Discussion Forum</td>
+
+              <td className="px-3 py-2 text-center border">
+                <input type="checkbox" checked readOnly />
+              </td>
+              <td className="px-3 py-2 border">Vendor Management</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p className="mt-3 text-sm italic text-center text-gray-500">
+        Show the applicable module names for selected package name
+      </p>
     </Dialog>
   );
 };

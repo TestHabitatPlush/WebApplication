@@ -430,8 +430,8 @@ const SideBarMenu = {
           url: "product/list",
         },
         {
-          name: "Module",
-          url: "module/create",
+          name: "Customer Subscription",
+          url: "product/customerSubscription",
         },
       ],
     },

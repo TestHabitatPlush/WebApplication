@@ -146,15 +146,17 @@ export const getSocietyModeratorService = (societyId, token, params = {}) => {
   });
 };
 //get status 
-export const getAllSuperAdminItAndModeratorService = ( token, data) => {
+export const getAllSuperAdminItAndModeratorService = (token, data) => {
   const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/superadmin/moderator`;
+
   return axios.get(url, {
     headers: {
-      Authorization:` Bearer ${token}`,
+      Authorization: `Bearer ${token}`,  // ✅ correct
     },
     params: data,
   });
 };
+
 //update status
 export const updateUserIdStatusService = (userId, token, data) => {
   const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/User/${userId}`;

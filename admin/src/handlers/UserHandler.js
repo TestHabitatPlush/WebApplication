@@ -14,7 +14,6 @@ import {
   updateModeratorStatusService,
   updateSocietyModeratorService,
   getSocietyModeratorService,
-  createBulkSocietyUserService,
   createMultipleSocietyUserService,
   getAllSuperAdminItAndModeratorService,
   updateUserIdStatusService
@@ -137,16 +136,16 @@ const UserHandler = () => {
       return null;
     }
   };
-  const createBulkSocietyUserHandler = async (societyId, formData) => {
-    try {
-      const response = await createBulkSocietyUserService(societyId, token, formData)
-      if (response.status === 201) {
-        toast.success("Society Resident users created Success!");
-      }
-    } catch (error) {
-      console.error("Error creating resident:", error);
-    }
-  }
+  // const createBulkSocietyUserHandler = async (societyId, formData) => {
+  //   try {
+  //     const response = await createBulkSocietyUserService(societyId, token, formData)
+  //     if (response.status === 201) {
+  //       toast.success("Society Resident users created Success!");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error creating resident:", error);
+  //   }
+  // }
 
   const updateResidentBySocietyIdHandler = async (residentData) => {
     try {
@@ -223,18 +222,18 @@ const createBulkSocietyUserHandler = async (societyId, token, file) => {
   }
 };
 
-  const getAllSuperAdminItAndModeratorHandler = async (token, data = {}) => {
-    try {
-      const response = await getAllSuperAdminItAndModeratorService(token, data);
-      return response.data;
-    } catch (error) {
-      console.error(
-        "Error fetching Super Admin, IT and Moderator list:",
-        error.response?.data || error.message
-      );
-      throw error;
-    }
-  };
+ const getAllSuperAdminItAndModeratorHandler = async (token, data = {}) => {
+  try {
+    const response = await getAllSuperAdminItAndModeratorService(token, data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching Super Admin, IT and Moderator list:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
   const updateUserIdStatusHandler = async (userId, token, data) => {
     try {
       const response = await updateUserIdStatusService(userId, token, data);
@@ -251,7 +250,6 @@ const createBulkSocietyUserHandler = async (societyId, token, file) => {
   return {
     createSocietyModeratorHandler,
     createSocietyResidentUserHandler,
-    createBulkSocietyUserHandler,
     getResidentBySocietyIdHandler,
     getUserByIdHandler,
     getAllUserDataHandler,

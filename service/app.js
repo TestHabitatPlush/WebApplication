@@ -264,9 +264,10 @@ app.get("/getenv", (req, res) => {
 });
 
 // --- Protected Routes ---
-app.use("/api/users", keycloak.protect(), userRouter);
+// app.use("/api/users", keycloak.protect(), userRouter);
 
 // --- Public / Semi-protected Routes ---
+app.use("/api/users", userRouter);
 app.use("/api/family", familyRouter);
 app.use("/api/password", passwordRouter);
 app.use("/api/auth", authRouter);

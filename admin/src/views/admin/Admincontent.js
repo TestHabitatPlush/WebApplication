@@ -4,7 +4,7 @@ import AddUser from "./usermanagement/adduser/AddUser";
 import UnapprovedUser from "./usermanagement/unapproveduser/UnapprovedUser";
 import ApprovedUser from "./usermanagement/approveduser/ApprovedUser";
 import DashboardUser from "./usermanagement/dashboard/DashboardUser";
-import BulkUserCreation from "./usermanagement/bulkusercreation/BulkUserCreation";
+
 
 
 import GeneralSetting from "./usermanagement/generalsetting/GeneralSetting";

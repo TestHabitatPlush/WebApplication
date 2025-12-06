@@ -6,11 +6,12 @@ import UpdateSubscriptionDetailsModal from "../../Product Subscription Managemen
 import ViewSubscriptionListModal from "../../Product Subscription Management/SubscriptionList/ViewSubscriptionListModal";
 import ReusableTable from "../../../../components/shared/ReusableTable";
 import { FaEye, FaTrashAlt, FaEdit } from "react-icons/fa";
+
 import { format } from "date-fns";
 import { toast } from "react-toastify";
 import SubscriptionHandler from "../../../../handlers/superadmin/SubscriptionHandler";
 
-const SubscriptionList = () => {
+const CustomerSubscriptionList = () => {
   const paths = ["Subscription Plan", "Subscription Plan List"];
   const Heading = ["Subscription Plan List"];
 
@@ -235,4 +236,4 @@ const SubscriptionList = () => {
   );
 };
 
-export default SubscriptionList;
+export default CustomerSubscriptionList;

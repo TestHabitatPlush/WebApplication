@@ -9,10 +9,8 @@ import SocietyModeratorList from "./society/society_user/SocietyModeratorList";
 import PlanDetails from "../super/subcriptionPlan/PlanDetails";
 import Dashboard from "../super/Dashboard/dashboard";
 import SubscriptionList from "./Product Subscription Management/SubscriptionList/SubscriptionList";
-
 import CreateProduct from "./Product Subscription Management/CreateProduct";
-
-
+import CustomerSubscriptionList from "./Product Subscription Management/CustomerSubscriptionList/CustomerSubscription";
 
 
 const SuperAdminContents = () => {
@@ -28,7 +26,9 @@ const SuperAdminContents = () => {
       <Route path="/subscription-plan/details" element={<PlanDetails />} />
       {/* <Route path="/subscription-plan/list" element={<SubscriptionList/>} /> */}
       <Route path="/product/create" element={<CreateProduct/>} />
-       <Route path="/product/list" element={<SubscriptionList/>} />
+      <Route path="/product/list" element={<SubscriptionList/>} />
+      <Route path="/product/customerSubscription" element={<CustomerSubscriptionList/>} />
+        
       
     </Routes>
   );
