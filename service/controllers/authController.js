@@ -1,5 +1,6 @@
 require("dotenv").config(); 
 
+
 const { generateToken, verifyToken } = require("../utils/jwt");
 const cookieHandler = require("../middleware/cookieHandler");
 const { User, Role, Customer, JobProfile } = require("../models");
@@ -34,7 +35,11 @@ const loginUser = async (req, res) => {
       ["super_admin", "society_moderator", "management_committee","super_admin_it"].includes(user.role.roleCategory)
     ) {
       const token = generateToken({ email, password }, "1h");
+      console.error("before baseUrl ", process.env.ADMIN_BASE_URL);
+      //console.log("Environment Variables:", JSON.stringify(process.env, null, 2));
       const baseUrl = process.env.ADMIN_BASE_URL.replace(/\/+$/, "");
+      console.error("after baseUrl ");
+   
       const redirectUrl = `${baseUrl}/signin/${token}`;
       return res.json({ redirectUrl, token, user });
     }
@@ -118,7 +123,9 @@ const jobProfileLogin = async (req, res) => {
     const token = generateToken(payload, payload.password ? "1h" : undefined);
 
     if (payload.password) {
+      console.error("before 124 ");
       const baseUrl = process.env.ADMIN_BASE_URL.replace(/\/+$/, "");
+      console.error("after 124 ");
       return res.json({
         redirectUrl: `${baseUrl}/signin/${token}`,
         token,

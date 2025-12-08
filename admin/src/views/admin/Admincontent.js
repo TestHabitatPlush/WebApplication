@@ -62,6 +62,9 @@ import EmergencyList from './emerencyContact/emergencyList/EmergencyList';
 import DocumentUploadFacility from "./documentmanagement/documentuploadfacility/DocumentUploadFacility";
 import DocumentList from "./documentmanagement/documentlist/DocumentList";
 import DeactivateGateUsers from "./gatemanagement/deactivategateusers/DeactivateGateUsers";
+import PlanDetails from "./subcriptionPlan/PlanDetails";
+
+ import PlanList from "./subcriptionPlan/planList/SubscriptionList";
 
 
 // import CreateResident from "./resident/create/CreateResident";
@@ -210,7 +213,11 @@ const Admincontent = () => {
      element={<EmergencyList />} /> 
     
 
-  
+    <Route path="/subcriptionPlan/PlanDetails"
+     element={<PlanDetails />} /> 
+     
+    <Route path="/subcriptionPlan/PlanList" 
+     element={<PlanList />} /> 
     </Routes>
 
   );
