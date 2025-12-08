@@ -111,84 +111,90 @@ const CountryStateCitySelector = ({ address, setAddress }) => {
 
   useEffect(() => {
     if (!selectedCountry) return;
-
     const states = State.getStatesOfCountry(selectedCountry.isoCode);
     setStateList(states);
     setCityList([]);
     setSelectedState(null);
 
-    setAddress((prev) => ({
-      ...prev,
+    setAddress({
       country: selectedCountry.name,
       state: "",
       city: "",
-    }));
-  }, [selectedCountry, setAddress]);
+    });
+  }, [selectedCountry]);
 
   useEffect(() => {
     if (!selectedCountry || !selectedState) return;
-
     const cities = City.getCitiesOfState(
       selectedCountry.isoCode,
       selectedState.isoCode
     );
     setCityList(cities);
 
-    setAddress((prev) => ({
-      ...prev,
+    setAddress({
+      ...address,
       state: selectedState.name,
       city: "",
-    }));
-  }, [selectedCountry, selectedState, setAddress]);
+    });
+  }, [selectedState]);
 
   const handleCountryChange = (e) => {
-    const country = countryList.find((c) => c.name === e.target.value);
+    const selectedName = e.target.value;
+    const country = countryList.find((c) => c.name === selectedName);
     if (country) setSelectedCountry(country);
   };
 
   const handleStateChange = (e) => {
-    const state = stateList.find((s) => s.name === e.target.value);
+    const selectedName = e.target.value;
+    const state = stateList.find((s) => s.name === selectedName);
     if (state) setSelectedState(state);
   };
 
   const handleCityChange = (e) => {
-    setAddress((prev) => ({
-      ...prev,
-      city: e.target.value,
-    }));
+    const selectedName = e.target.value;
+    setAddress({
+      ...address,
+      city: selectedName,
+    });
   };
 
   return (
     <>
       <Select
         label="Country"
+        name="country"
         value={address.country}
         onChange={handleCountryChange}
         options={[
           { label: "Select Country", value: "" },
           ...countryList.map((c) => ({ label: c.name, value: c.name })),
         ]}
+        className="py-[10px]"
       />
 
       <Select
         label="State"
+        name="state"
         value={address.state}
         onChange={handleStateChange}
         options={[
           { label: "Select State", value: "" },
           ...stateList.map((s) => ({ label: s.name, value: s.name })),
         ]}
+        className="py-[10px]"
         disabled={!selectedCountry}
       />
 
       <Select
         label="City"
+        name="city"
         value={address.city}
         onChange={handleCityChange}
         options={[
           { label: "Select City", value: "" },
           ...cityList.map((c) => ({ label: c.name, value: c.name })),
         ]}
+        className="py-[10px]"
         disabled={!selectedState}
       />
     </>

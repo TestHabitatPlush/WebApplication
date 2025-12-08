@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import AuthHandler from "../../handlers/AuthHandler";
 
 const TokenLoginScreen = () => {
-  console.log("TokenLoginScreen component rendered");
   const { loginHandler } = AuthHandler();
   const { token } = useParams();
   // useAuthRedirect('/');

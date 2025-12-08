@@ -377,22 +377,7 @@ const SideBarMenu = {
 },
 
 
-{
-  name: "Subcription Plan",
-  isAvailable: true,
-  icon: FaAddressBook,
-  children: [
-    {
-      name: "Subcription Plan Details",
-      url: "subcriptionPlan/PlanDetails",
-    },
-   {
-      name: "Subcription Plan List",
-      url: "/subcriptionPlan/PlanList",
-    },
-    
-  ],
-}
+
   ],
  
   super_admin: [

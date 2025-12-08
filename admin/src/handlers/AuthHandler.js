@@ -90,12 +90,10 @@ const API_URL = process.env.REACT_APP_PUBLIC_API_URL || "http://localhost:5000/a
 const FRONTEND_URL = process.env.REACT_APP_PUBLIC_FRONTEND_URL || "http://localhost:3001";
 
 const AuthHandler = () => {
-  console.log("AuthHandler initialized with API_URL:", API_URL, "and FRONTEND_URL:", FRONTEND_URL);
   const dispatch = useDispatch();
   const { customNavigation } = NavigationHandler();
 
   const loginHandler = async (token) => {
-  console.log(`API_URL: ${API_URL}, FRONTEND_URL: ${FRONTEND_URL}`);
     try {
       console.log("Sending login request...");
       const res = await axios.post(`${API_URL}/auth/token-signin`, { token });

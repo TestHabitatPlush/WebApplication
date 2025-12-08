@@ -20,15 +20,10 @@ function App() {
   return (
     <div>
       <Routes>
-      <Route path="/signin/:token" element={<TokenLoginScreen />} />
-      <Route path="/test" element={<h1>Test route works!</h1>} />
-      {user ? (
-        <Route path="/*" element={<DashBoard user={user} />} />
-      ) : (
-        <Route path="/*" element={<PageNotFound />} />
-      )}
+        <Route path="/signin/:token" element={<TokenLoginScreen />} />
+        <Route path="/*" element={user && <DashBoard user={user} />} />
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
-
     </div>
   );
 }
