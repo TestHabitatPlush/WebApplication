@@ -1,547 +1,322 @@
-// "use client";
+// 'use client';
 
-// import React, { useEffect, useMemo, useState } from "react";
-// import DocumentHandler from "@/handlers/DocumentHandler";
-// import UserGroupHandler from "@/handlers/UseGroupHandler";
-// import { FaFilePdf, FaFileImage, FaTrashAlt } from "react-icons/fa";
-// import { FiEye, FiDownload, FiFile, FiFileText } from "react-icons/fi";
-// import ReusableTable from "@/components/shared/ReusableTable";
+// import React, { useMemo, useState, useEffect } from 'react';
 
-// // Constant for "Self" user group
-// const MY_DOCUMENTS_ID = "__self__";
+// import { useSelector } from 'react-redux';
+// import DocumentHandler from '@/handlers/DocumentHandler';
+// import { FaFilePdf, FaFileImage, FaTrashAlt } from 'react-icons/fa';
+// import { FiEye, FiDownload, FiFile, FiFileText } from 'react-icons/fi';
+// import ReusableTable from '@/components/shared/ReusableTable';
+// import ViewDocumentModal from './ViewDocumentModal';
+// import Dialog from '@/components/ui/Dialog';
+// import toast from 'react-hot-toast';
+
+// const formatDateTime = (value) => {
+//   const date = new Date(value);
+//   return date.toLocaleString('en-IN', {
+//     year: 'numeric',
+//     month: 'short',
+//     day: 'numeric',
+//     hour: '2-digit',
+//     minute: '2-digit',
+//   });
+// };
 
 // const DocumentList = () => {
-//   const [userGroupId, setUserGroupId] = useState("");
+//   const token = useSelector((state) => state.auth.token);
 //   const [documents, setDocuments] = useState([]);
-//   const [userGroups, setUserGroups] = useState([]);
-//   const [pageIndex, setPageIndex] = useState(0);
-//   const [pageSize, setPageSize] = useState(5);
+//   const [selectedDoc, setSelectedDoc] = useState(null);
+//   const [viewModalOpen, setViewModalOpen] = useState(false);
+//   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+//   const [deleteDocId, setDeleteDocId] = useState(null);
 //   const [loading, setLoading] = useState(false);
+//   const [selectedType, setSelectedType] = useState('user');
 
 //   const {
-//     getDocumentBySocietyHandler,
 //     getDocumentByUserHandler,
+//     getDocumentBySocietyHandler,
 //     deleteDocumentHandler,
 //   } = DocumentHandler();
 
-//   const { getUserGroupHandler } = UserGroupHandler();
-
-//   useEffect(() => {
-//     const loadGroups = async () => {
-//       try {
-//         const res = await getUserGroupHandler();
-//         setUserGroups(res.data.data);
-//         // console.log(res.data.data);
-//       } catch (err) {
-//         console.error("Failed to load user groups:", err);
-//       }
-//     };
-//     loadGroups();
-//   }, []);
-
-//   useEffect(() => {
-//     const fetchDocuments = async () => {
-//       setLoading(true);
-//       try {
-//         let docs = [];
-
-//         if (userGroupId === MY_DOCUMENTS_ID) {
-//           const res = await getDocumentByUserHandler();
-//           docs = res.data.data;
-//           console.log(docs);
-//         } else {
-//           const res = await getDocumentBySocietyHandler();
-//           docs = res.data;
-
-//           if (userGroupId) {
-//             docs = docs.filter(
-//               (doc) => String(doc.userGroupId) === String(userGroupId)
-//             );
-//           }
-//         }
-
-//         setDocuments(docs);
-//         setPageIndex(0); // reset pagination
-//       } catch (err) {
-//         console.error("Error fetching documents:", err);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchDocuments();
-//   }, [userGroupId, pageSize]);
-
-//   const pagedDocs = useMemo(() => {
-//     const reversed = [...documents].reverse();
-//     const start = pageIndex * pageSize;
-//     return reversed.slice(start, start + pageSize);
-//   }, [pageIndex, pageSize, documents]);
-
-//   const totalPages = Math.ceil(documents.length / pageSize);
-
-//   const handleDelete = async (documentId) => {
-//     if (typeof window !== "undefined" && window.confirm("Are you sure?")) {
-//       const res = await deleteDocumentHandler(documentId);
-//       if (res?.status === 200) {
-//         setDocuments((prevDocs) =>
-//           prevDocs.filter((doc) => doc.documentId !== documentId)
-//         );
-//       }
-//     }
+//   const handleDownload = (url) => {
+//     if (!url) return toast.error('Download URL not found');
+//     const link = document.createElement('a');
+//     link.href = url;
+//     link.download = '';
+//     document.body.appendChild(link);
+//     link.click();
+//     document.body.removeChild(link);
 //   };
 
-//   const handleDownload = async (url) => {
-//     if (typeof window === "undefined") return;
+//   const handleView = (doc) => {
+//     setSelectedDoc(doc);
+//     setViewModalOpen(true);
+//   };
 
+//   const confirmDelete = (docId) => {
+//     setDeleteDocId(docId);
+//     setDeleteDialogOpen(true);
+//   };
+
+//   const handleDelete = async () => {
 //     try {
-//       const response = await fetch(url);
-//       if (!response.ok) throw new Error("Network error");
-
-//       const blob = await response.blob();
-//       const contentDisposition = response.headers.get("Content-Disposition");
-
-//       let fileName = "document";
-//       if (contentDisposition && contentDisposition.includes("filename=")) {
-//         const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-//         if (match && match[1]) {
-//           fileName = match[1].replace(/['"]/g, "");
-//         }
-//       } else {
-//         fileName = url.split("/").pop()?.split("?")[0] || "document";
-//       }
-
-//       const blobUrl = window.URL.createObjectURL(blob);
-//       const link = document.createElement("a");
-//       link.href = blobUrl;
-//       link.setAttribute("download", fileName);
-//       document.body.appendChild(link);
-//       link.click();
-//       link.remove();
-//       window.URL.revokeObjectURL(blobUrl);
+//       await deleteDocumentHandler(deleteDocId, token);
+//       toast.success('Document deleted successfully');
+//       fetchDocuments();
 //     } catch (error) {
-//       console.warn("Download failed:", error);
-//       const link = document.createElement("a");
-//       link.href = url;
-//       link.setAttribute("download", "");
-//       link.setAttribute("target", "_blank");
-//       document.body.appendChild(link);
-//       link.click();
-//       link.remove();
+//       toast.error('Failed to delete document');
+//     } finally {
+//       setDeleteDialogOpen(false);
+//       setDeleteDocId(null);
 //     }
 //   };
 
-//   const columns = useMemo(
-//     () => [
-//       {
-//         Header: "S.No",
-//         Cell: ({ row }) =>
-//           documents.length - (pageIndex * pageSize + row.index),
-//         className: "text-center",
-//       },
-//       {
-//         Header: "Document Name",
-//         accessor: "documentName",
-//         className: "text-left",
-//       },
-//       {
-//         Header: "Document Type",
-//         accessor: "document",
-//         Cell: ({ value }) => {
-//           const filePath = value || "";
-//           const fileName = filePath.split(/[/\\]/).pop();
-//           const extension = fileName?.split(".").pop()?.toLowerCase();
-
-//           const iconMap = {
-//             pdf: <FaFilePdf className="inline mr-1 text-red-600" />,
-//             png: <FaFileImage className="inline mr-1 text-blue-500" />,
-//             jpg: <FaFileImage className="inline mr-1 text-blue-500" />,
-//             jpeg: <FaFileImage className="inline mr-1 text-blue-500" />,
-//             txt: <FiFileText className="inline mr-1 text-gray-600" />,
-//             doc: <FiFileText className="inline mr-1 text-indigo-600" />,
-//             docx: <FiFileText className="inline mr-1 text-indigo-600" />,
-//           };
-
-//           const icon = iconMap[extension] || (
-//             <FiFile className="inline mr-1 text-gray-400" />
-//           );
-//           const displayExt = extension ? `.${extension}` : "—";
-
-//           return <span className="flex items-center">{icon} {displayExt}</span>;
-//         },
-//         className: "text-left",
-//       },
-//       {
-//         Header: "Uploaded On",
-//         accessor: "createdAt",
-//         Cell: ({ value }) => new Date(value).toLocaleDateString(),
-//         className: "text-center",
-//       },
-//       {
-//         Header: "Actions",
-//         Cell: ({ row }) => (
-//           <div className="flex items-center gap-2">
-//             <a
-//               href={row.original.document}
-//               target="_blank"
-//               rel="noopener noreferrer"
-//               title="View"
-//               className="text-blue-600 hover:text-blue-800"
-//             >
-//               <FiEye size={18} />
-//             </a>
-//             <button
-//               onClick={() => handleDownload(row.original.document)}
-//               title="Download"
-//               className="text-green-600 hover:text-green-800"
-//             >
-//               <FiDownload size={18} />
-//             </button>
-//             <button
-//               onClick={() => handleDelete(row.original.documentId)}
-//               title="Delete"
-//               className="text-red-600 hover:text-red-800"
-//             >
-//               <FaTrashAlt size={16} />
-//             </button>
-//           </div>
-//         ),
-//         className: "text-left",
-//       },
-//     ],
-//     [pageIndex, pageSize, documents]
-//   );
-
-//   const activeGroupName =
-//     userGroupId === MY_DOCUMENTS_ID
-//       ? "My Documents"
-//       : userGroups.find((g) => String(g.userGroupId) === userGroupId)
-//           ?.userGroupName;
-
-//   return (
-//     <div className="relative px-4 py-6">
-//       <div className="flex items-center justify-between mt-4">
-//         <div className="text-lg font-medium text-gray-700">
-//           TOTAL {documents.length} DOCUMENTS
-//         </div>
-//         <div>
-//           <select
-//             name="userGroupId"
-//             value={userGroupId}
-//             onChange={(e) => setUserGroupId(e.target.value)}
-//             className="px-3 py-2 text-sm uppercase border border-gray-300 rounded-md"
-//           >
-//             <option value="">All Groups</option>
-//             <option value={MY_DOCUMENTS_ID}>Self</option>
-//             {userGroups.map((grp) => (
-//               <option key={grp.userGroupId} value={String(grp.userGroupId)}>
-//                 {grp.userGroupName}
-//               </option>
-//             ))}
-//           </select>
-//         </div>
-//       </div>
-
-//       {userGroupId && (
-//         <div className="mt-2 text-sm text-gray-600">
-//           Showing documents for:{" "}
-//           <span className="font-semibold">{activeGroupName}</span>
-//         </div>
-//       )}
-
-//       <div className="mt-6 overflow-x-auto">
-//         <ReusableTable
-//           columns={columns}
-//           data={pagedDocs}
-//           pageIndex={pageIndex}
-//           pageSize={pageSize}
-//           totalCount={documents.length}
-//           totalPages={totalPages}
-//           setPageIndex={setPageIndex}
-//           setPageSize={setPageSize}
-//           loading={loading}
-//         />
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default DocumentList;
-
-// "use client";
-
-// import React, { useEffect, useMemo, useState } from "react";
-// import DocumentHandler from "@/handlers/DocumentHandler";
-// import { FaFilePdf, FaFileImage, FaTrashAlt } from "react-icons/fa";
-// import { FiEye, FiDownload, FiFile, FiFileText } from "react-icons/fi";
-// import ReusableTable from "@/components/shared/ReusableTable";
-
-// const DocumentList = () => {
-//   const [documents, setDocuments] = useState([]);
-//   const [pageIndex, setPageIndex] = useState(0);
-//   const [pageSize, setPageSize] = useState(5);
-//   const [loading, setLoading] = useState(false);
-
-//   const { getDocumentByUserHandler, deleteDocumentHandler } = DocumentHandler();
-
-//   // useEffect(() => {
-//   //   console.log("useEffect ran"); // Check if effect runs at all
-
-//   //   const fetchDocuments = async () => {
-//   //     setLoading(true);
-//   //     try {
-//   //       const res = await getDocumentByUserHandler();
-//   //       console.log("Raw response:", res);
-
-//   //       const docs = res?.data?.data || [];
-//   //       console.log("Extracted docs:", docs);
-//   //       // const docs = await getDocumentByUserHandler();
-//   //       // setDocuments(docs || []);
-//   //       // setDocuments(docs);
-//   //       setPageIndex(0);
-//   //     } catch (err) {
-//   //       console.error("Error fetching documents:", err);
-//   //     } finally {
-//   //       setLoading(false);
-//   //     }
-//   //   };
-
-//   //   fetchDocuments();
-//   // }, []);
-
-// useEffect(() => {
 //   const fetchDocuments = async () => {
 //     setLoading(true);
 //     try {
-//       const docs = await getDocumentByUserHandler(); 
-//       console.log("Fetched documents:", docs);
-//       setDocuments(docs || []);
-//       setPageIndex(0);
-//     } catch (err) {
-//       console.error("Error fetching documents:", err);
+//       let res = [];
+
+//       if (selectedType === 'user') {
+//         res = await getDocumentByUserHandler(token);
+//       } else if (selectedType === 'society') {
+//         res = await getDocumentBySocietyHandler(token);
+//       } else {
+//         const userDocs = await getDocumentByUserHandler(token);
+//         const societyDocs = await getDocumentBySocietyHandler(token);
+//         res = [...(userDocs || []), ...(societyDocs || [])];
+//       }
+
+//       setDocuments(res || []);
+//     } catch (error) {
+//       console.error('Failed to fetch documents:', error);
 //     } finally {
 //       setLoading(false);
 //     }
 //   };
 
-//   fetchDocuments();
-// }, []);
+//   useEffect(() => {
+//     fetchDocuments();
+//   }, [selectedType]);
 
+//   const renderColumns = (pageIndex, pageSize) => [
+//     {
+//       Header: 'SL.No',
+//       Cell: ({ row }) => documents.length - (pageIndex * pageSize + row.index),
+//       className: 'text-center',
+//     },
+//     {
+//       Header: 'Document Name',
+//       accessor: 'documentName',
+//       className: 'text-left',
+//     },
+//       {
+//       Header: 'User Id',
+//       accessor: 'userId',
+//       className: 'text-left',
+//     },
+//      {
+//       Header: 'Society Id',
+//       accessor: 'societyId',
+//       className: 'text-left',
+//     },
+//     {
+//       Header: 'Document Type',
+//       accessor: 'document',
+//       Cell: ({ value }) => {
+//         const filePath = value || '';
+//         const fileName = filePath.split(/[/\\]/).pop();
+//         const extension = fileName?.split('.').pop()?.toLowerCase();
 
-//   const pagedDocs = useMemo(() => {
-//     const reversed = [...documents].reverse(); 
-//     const start = pageIndex * pageSize;
-//     return reversed.slice(start, start + pageSize);
-//   }, [pageIndex, pageSize, documents]);
+//         const iconMap = {
+//           pdf: <FaFilePdf className="inline mr-1 text-red-600" />,
+//           png: <FaFileImage className="inline mr-1 text-blue-500" />,
+//           jpg: <FaFileImage className="inline mr-1 text-blue-500" />,
+//           jpeg: <FaFileImage className="inline mr-1 text-blue-500" />,
+//           txt: <FiFileText className="inline mr-1 text-gray-600" />,
+//           doc: <FiFileText className="inline mr-1 text-indigo-600" />,
+//           docx: <FiFileText className="inline mr-1 text-indigo-600" />,
+//         };
 
-//   const totalPages = Math.ceil(documents.length / pageSize);
-//   // // Delete handler
-//   // const handleDelete = async (documentId) => {
-//   //   if (window.confirm("Are you sure you want to delete this document?")) {
-//   //     const res = await deleteDocumentHandler(documentId);
-//   //     if (res?.status === 200) {
-//   //       setDocuments((prevDocs) =>
-//   //         prevDocs.filter((doc) => doc.documentId !== documentId)
-//   //       );
-//   //     }
-//   //   }
-//   // };
+//         const icon = iconMap[extension] || <FiFile className="inline mr-1 text-gray-400" />;
+//         const displayExt = extension ? `.${extension}` : '—';
 
-//   const handleDelete = async (documentId) => {
-//   if (window.confirm("Are you sure you want to delete this document?")) {
-//     const res = await deleteDocumentHandler(documentId);
-//     if (res?.status === 200) {
-//       const updatedDocs = await getDocumentByUserHandler();
-//       setDocuments(updatedDocs || []);
-//     }
-//   }
-// };
-
-
-//   const handleDownload = async (url) => {
-//     if (typeof window === "undefined") return;
-
-//     try {
-//       const response = await fetch(url);
-//       if (!response.ok) throw new Error("Network error");
-
-//       const blob = await response.blob();
-//       const contentDisposition = response.headers.get("Content-Disposition");
-
-//       let fileName = "document";
-//       if (contentDisposition && contentDisposition.includes("filename=")) {
-//         const match = contentDisposition.match(
-//           /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+//         return (
+//           <span className="flex items-center">
+//             {icon} {displayExt}
+//           </span>
 //         );
-//         if (match && match[1]) {
-//           fileName = match[1].replace(/['"]/g, "");
-//         }
-//       } else {
-//         fileName = url.split("/").pop()?.split("?")[0] || "document";
-//       }
-
-//       const blobUrl = window.URL.createObjectURL(blob);
-//       const link = document.createElement("a");
-//       link.href = blobUrl;
-//       link.setAttribute("download", fileName);
-//       document.body.appendChild(link);
-//       link.click();
-//       link.remove();
-//       window.URL.revokeObjectURL(blobUrl);
-//     } catch (error) {
-//       console.warn("Download failed:", error);
-//       const link = document.createElement("a");
-//       link.href = url;
-//       link.setAttribute("download", "");
-//       link.setAttribute("target", "_blank");
-//       document.body.appendChild(link);
-//       link.click();
-//       link.remove();
-//     }
-//   };
-
-//   const columns = useMemo(
-//     () => [
-//       {
-//         Header: "S.No",
-//         Cell: ({ row }) =>
-//           documents.length - (pageIndex * pageSize + row.index),
-//         className: "text-center",
 //       },
-//       {
-//         Header: "Document Name",
-//         accessor: "documentName",
-//         className: "text-left",
-//       },
-//       {
-//         Header: "Document Type",
-//         accessor: "document",
-//         Cell: ({ value }) => {
-//           const filePath = value || "";
-//           const fileName = filePath.split(/[/\\]/).pop();
-//           const extension = fileName?.split(".").pop()?.toLowerCase();
-
-//           const iconMap = {
-//             pdf: <FaFilePdf className="inline mr-1 text-red-600" />,
-//             png: <FaFileImage className="inline mr-1 text-blue-500" />,
-//             jpg: <FaFileImage className="inline mr-1 text-blue-500" />,
-//             jpeg: <FaFileImage className="inline mr-1 text-blue-500" />,
-//             txt: <FiFileText className="inline mr-1 text-gray-600" />,
-//             doc: <FiFileText className="inline mr-1 text-indigo-600" />,
-//             docx: <FiFileText className="inline mr-1 text-indigo-600" />,
-//           };
-
-//           const icon = iconMap[extension] || (
-//             <FiFile className="inline mr-1 text-gray-400" />
-//           );
-//           const displayExt = extension ? `.${extension}` : "—";
-
-//           return (
-//             <span className="flex items-center">
-//               {icon} {displayExt}
-//             </span>
-//           );
-//         },
-//         className: "text-left",
-//       },
-//       {
-//         Header: "Uploaded On",
-//         accessor: "createdAt",
-//         Cell: ({ value }) => new Date(value).toLocaleDateString(),
-//         className: "text-center",
-//       },
-//       {
-//         Header: "Actions",
-//         Cell: ({ row }) => (
-//           <div className="flex items-center gap-2">
-//             <a
-//               href={row.original.document}
-//               target="_blank"
-//               rel="noopener noreferrer"
-//               title="View"
-//               className="text-blue-600 hover:text-blue-800"
-//             >
-//               <FiEye size={18} />
-//             </a>
-//             <button
-//               onClick={() => handleDownload(row.original.document)}
-//               title="Download"
-//               className="text-green-600 hover:text-green-800"
-//             >
-//               <FiDownload size={18} />
-//             </button>
-//             <button
-//               onClick={() => handleDelete(row.original.documentId)}
-//               title="Delete"
-//               className="text-red-600 hover:text-red-800"
-//             >
-//               <FaTrashAlt size={16} />
-//             </button>
-//           </div>
-//         ),
-//         className: "text-left",
-//       },
-//     ],
-//     [pageIndex, pageSize]
-//   );
+//       className: 'text-left',
+//     },
+//     {
+//       Header: 'Uploaded On',
+//       accessor: 'createdAt',
+//       Cell: ({ value }) => formatDateTime(value),
+//       className: 'text-center',
+//     },
+//     {
+//       Header: 'Actions',
+//       Cell: ({ row }) => (
+//         <div className="flex gap-3">
+//           <FiEye
+//             className="text-blue-600 cursor-pointer"
+//             onClick={() => handleView(row.original)}
+//             title="View"
+//           />
+//           <FiDownload
+//             className="text-green-600 cursor-pointer"
+//             onClick={() => handleDownload(row.original.document_url)}
+//             title="Download"
+//           />
+//           <FaTrashAlt
+//             className="text-red-500 cursor-pointer"
+//             onClick={() => confirmDelete(row.original.id)}
+//             title="Delete"
+//           />
+//         </div>
+//       ),
+//     },
+//   ];
 
 //   return (
-//     <div className="relative px-4 py-6">
-//       <div className="flex items-center justify-between mt-4">
-//         <div className="text-lg font-medium text-gray-700">
-//           TOTAL {documents.length} DOCUMENTS
-//         </div>
+//     <div className="p-4">
+//       <div className="flex items-center justify-between mb-4">
+//         <h2 className="text-xl font-bold">Document List</h2>
+//         <select
+//           value={selectedType}
+//           onChange={(e) => setSelectedType(e.target.value)}
+//           className="p-2 border border-gray-300 rounded-md"
+//         >
+//           <option value="user">User</option>
+//           <option value="society">Society</option>
+//           <option value="all">All</option>
+//         </select>
 //       </div>
 
-//       <div className="mt-6 overflow-x-auto">
-//         <ReusableTable
-//           columns={columns}
-//           data={pagedDocs}
-//           pageIndex={pageIndex}
-//           pageSize={pageSize}
-//           totalCount={documents.length}
-//           totalPages={totalPages}
-//           setPageIndex={setPageIndex}
-//           setPageSize={setPageSize}
-//           loading={loading}
-//         />
-//       </div>
+//       <ReusableTable
+//         data={documents}
+//         columns={renderColumns(0, 10)}
+//         loading={loading}
+//         pageSize={10}
+//       />
+
+//       <ViewDocumentModal
+//         isOpen={viewModalOpen}
+//         onClose={() => setViewModalOpen(false)}
+//         document={selectedDoc}
+//       />
+
+//       <Dialog
+//         isOpen={deleteDialogOpen}
+//         title="Delete Document"
+//         message="Are you sure you want to delete this document?"
+//         onCancel={() => setDeleteDialogOpen(false)}
+//         onConfirm={handleDelete}
+//       />
 //     </div>
 //   );
 // };
 
 // export default DocumentList;
-
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import DocumentHandler from '@/handlers/DocumentHandler';
 import { FaFilePdf, FaFileImage, FaTrashAlt } from 'react-icons/fa';
 import { FiEye, FiDownload, FiFile, FiFileText } from 'react-icons/fi';
 import ReusableTable from '@/components/shared/ReusableTable';
-import ViewDocumentModal from '@/views/documents/ViewDocumentModal';
-import Button from '@/components/ui/Button';
+import ViewDocumentModal from './ViewDocumentModal';
+import Dialog from '@/components/ui/Dialog';
+import toast from 'react-hot-toast';
+
+const formatDateTime = (value) => {
+  const date = new Date(value);
+  return date.toLocaleString('en-IN', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+};
 
 const DocumentList = () => {
-  const [documents, setDocuments] = useState([]);
-  const [pageIndex, setPageIndex] = useState(0);
-  const [pageSize, setPageSize] = useState(5);
-  const [loading, setLoading] = useState(false);
-  const [selectedDoc, setSelectedDoc] = useState(null);
-  const [isViewOpen, setIsViewOpen] = useState(false);
+  // const token = useSelector((state) => state.auth.token);
+  // const userId = useSelector((state) => state.auth.user?.id);
+  // const societyId = useSelector((state) => state.auth.user?.societyId);
 
-  const { getDocumentByUserHandler, deleteDocumentHandler } = DocumentHandler();
-  const token = useSelector((state) => state.auth.token);
+
+   const token = useSelector((state) => state.auth.token);
+    const userId = useSelector((state) => state.auth.user?.userId);
+     const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
+     
+
+  const [documents, setDocuments] = useState([]);
+  const [selectedDoc, setSelectedDoc] = useState(null);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteDocId, setDeleteDocId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [selectedType, setSelectedType] = useState('user');
+
+  const {
+    getDocumentByUserHandler,
+    getDocumentBySocietyHandler,
+    deleteDocumentHandler,
+  } = DocumentHandler();
+
+  const handleDownload = (url) => {
+    if (!url) return toast.error('Download URL not found');
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = '';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleView = (doc) => {
+    setSelectedDoc(doc);
+    setViewModalOpen(true);
+  };
+
+  const confirmDelete = (docId) => {
+    setDeleteDocId(docId);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteDocumentHandler(deleteDocId, token);
+      toast.success('Document deleted successfully');
+      fetchDocuments();
+    } catch (error) {
+      toast.error('Failed to delete document');
+    } finally {
+      setDeleteDialogOpen(false);
+      setDeleteDocId(null);
+    }
+  };
 
   const fetchDocuments = async () => {
     setLoading(true);
     try {
-      const docs = await getDocumentByUserHandler();
-      setDocuments(docs || []);
-      setPageIndex(0);
-    } catch (err) {
-      console.error('Error fetching documents:', err);
+      let res = [];
+
+      if (selectedType === 'user') {
+        res = await getDocumentByUserHandler(token);
+      } else if (selectedType === 'society') {
+        res = await getDocumentBySocietyHandler(societyId, userId, token);
+      } else {
+        const userDocs = await getDocumentByUserHandler(token);
+        const societyDocs = await getDocumentBySocietyHandler(societyId, userId, token);
+        res = [...(userDocs || []), ...(societyDocs || [])];
+      }
+
+      setDocuments(res || []);
+    } catch (error) {
+      console.error('Failed to fetch documents:', error);
     } finally {
       setLoading(false);
     }
@@ -549,182 +324,129 @@ const DocumentList = () => {
 
   useEffect(() => {
     fetchDocuments();
-  }, []);
+  }, [selectedType]);
 
-  const pagedDocs = useMemo(() => {
-    const reversed = [...documents].reverse();
-    const start = pageIndex * pageSize;
-    return reversed.slice(start, start + pageSize);
-  }, [pageIndex, pageSize, documents]);
+  const renderColumns = (pageIndex, pageSize) => [
+    {
+      Header: 'SL.No',
+      Cell: ({ row }) => documents.length - (pageIndex * pageSize + row.index),
+      className: 'text-center',
+    },
+    {
+      Header: 'Document Name',
+      accessor: 'documentName',
+      className: 'text-left',
+    },
+    {
+      Header: 'User Id',
+      accessor: 'userId',
+      className: 'text-left',
+    },
+    {
+      Header: 'Society Id',
+      accessor: 'societyId',
+      className: 'text-left',
+    },
+    {
+      Header: 'Document Type',
+      accessor: 'document',
+      Cell: ({ value }) => {
+        const filePath = value || '';
+        const fileName = filePath.split(/[/\\]/).pop();
+        const extension = fileName?.split('.').pop()?.toLowerCase();
 
-  const totalPages = Math.ceil(documents.length / pageSize);
+        const iconMap = {
+          pdf: <FaFilePdf className="inline mr-1 text-red-600" />,
+          png: <FaFileImage className="inline mr-1 text-blue-500" />,
+          jpg: <FaFileImage className="inline mr-1 text-blue-500" />,
+          jpeg: <FaFileImage className="inline mr-1 text-blue-500" />,
+          txt: <FiFileText className="inline mr-1 text-gray-600" />,
+          doc: <FiFileText className="inline mr-1 text-indigo-600" />,
+          docx: <FiFileText className="inline mr-1 text-indigo-600" />,
+        };
 
-  const handleDelete = async (documentId) => {
-    if (window.confirm('Are you sure you want to delete this document?')) {
-      const res = await deleteDocumentHandler(documentId);
-      if (res?.status === 200) {
-        await fetchDocuments();
-      }
-    }
-  };
+        const icon = iconMap[extension] || <FiFile className="inline mr-1 text-gray-400" />;
+        const displayExt = extension ? `.${extension}` : '—';
 
-  const handleDownload = async (url) => {
-    if (typeof window === 'undefined') return;
-
-    try {
-      const fullUrl = `${process.env.NEXT_PUBLIC_API_URL}/${url}`;
-      const response = await fetch(fullUrl, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) throw new Error('Network error');
-
-      const blob = await response.blob();
-      const contentDisposition = response.headers.get('Content-Disposition');
-
-      let fileName = 'document';
-      if (contentDisposition && contentDisposition.includes('filename=')) {
-        const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-        if (match && match[1]) {
-          fileName = match[1].replace(/['"]/g, '');
-        }
-      } else {
-        fileName = url.split('/').pop()?.split('?')[0] || 'document';
-      }
-
-      const blobUrl = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      link.setAttribute('download', fileName);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(blobUrl);
-    } catch (error) {
-      console.warn('Download failed:', error);
-    }
-  };
-
-  const handleView = (doc) => {
-    setSelectedDoc(doc);
-    setIsViewOpen(true);
-  };
-
-  const closeModal = () => {
-    setSelectedDoc(null);
-    setIsViewOpen(false);
-  };
-
-  const columns = useMemo(
-    () => [
-      {
-        Header: 'S.No',
-        Cell: ({ row }) => documents.length - (pageIndex * pageSize + row.index),
-        className: 'text-center',
+        return (
+          <span className="flex items-center">
+            {icon} {displayExt}
+          </span>
+        );
       },
-      {
-        Header: 'Document Name',
-        accessor: 'documentName',
-        className: 'text-left',
-      },
-      {
-        Header: 'Document Type',
-        accessor: 'document',
-        Cell: ({ value }) => {
-          const filePath = value || '';
-          const fileName = filePath.split(/[/\\]/).pop();
-          const extension = fileName?.split('.').pop()?.toLowerCase();
-
-          const iconMap = {
-            pdf: <FaFilePdf className="inline mr-1 text-red-600" />,
-            png: <FaFileImage className="inline mr-1 text-blue-500" />,
-            jpg: <FaFileImage className="inline mr-1 text-blue-500" />,
-            jpeg: <FaFileImage className="inline mr-1 text-blue-500" />,
-            txt: <FiFileText className="inline mr-1 text-gray-600" />,
-            doc: <FiFileText className="inline mr-1 text-indigo-600" />,
-            docx: <FiFileText className="inline mr-1 text-indigo-600" />,
-          };
-
-          const icon = iconMap[extension] || <FiFile className="inline mr-1 text-gray-400" />;
-          const displayExt = extension ? `.${extension}` : '—';
-
-          return (
-            <span className="flex items-center">
-              {icon} {displayExt}
-            </span>
-          );
-        },
-        className: 'text-left',
-      },
-      {
-        Header: 'Uploaded On',
-        accessor: 'createdAt',
-        Cell: ({ value }) => new Date(value).toLocaleDateString(),
-        className: 'text-center',
-      },
-      {
-        Header: 'Actions',
-        Cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => handleView(row.original)}
-              title="View"
-              className="text-blue-600 hover:text-blue-800"
-            >
-              <FiEye size={18} />
-            </button>
-            <button
-              onClick={() => handleDownload(row.original.document)}
-              title="Download"
-              className="text-green-600 hover:text-green-800"
-            >
-              <FiDownload size={18} />
-            </button>
-            <button
-              onClick={() => handleDelete(row.original.documentId)}
-              title="Delete"
-              className="text-red-600 hover:text-red-800"
-            >
-              <FaTrashAlt size={16} />
-            </button>
-          </div>
-        ),
-        className: 'text-left',
-      },
-    ],
-    [pageIndex, pageSize, documents]
-  );
+      className: 'text-left',
+    },
+    {
+      Header: 'Uploaded On',
+      accessor: 'createdAt',
+      Cell: ({ value }) => formatDateTime(value),
+      className: 'text-center',
+    },
+    {
+      Header: 'Actions',
+      Cell: ({ row }) => (
+        <div className="flex gap-3">
+          <FiEye
+            className="text-blue-600 cursor-pointer"
+            onClick={() => handleView(row.original)}
+            title="View"
+          />
+          <FiDownload
+            className="text-green-600 cursor-pointer"
+            onClick={() => handleDownload(row.original.document_url)}
+          />
+          <FaTrashAlt
+            className="text-red-500 cursor-pointer"
+            onClick={() => confirmDelete(row.original.id)}
+            title="Delete"
+          />
+        </div>
+      ),
+    },
+  ];
 
   return (
-    <div className="relative px-4 py-6">
-      <div className="flex items-center justify-between mt-4">
-        <div className="text-lg font-medium text-gray-700">
-          TOTAL {documents.length} DOCUMENTS
-        </div>
-        <Button onClick={fetchDocuments}>Refresh</Button>
+    <div className="p-4">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-bold">Document List</h2>
+        <select
+          value={selectedType}
+          onChange={(e) => setSelectedType(e.target.value)}
+          className="p-2 border border-gray-300 rounded-md"
+        >
+          <option value="user">User</option>
+          <option value="society">Society</option>
+          <option value="all">All</option>
+        </select>
       </div>
 
-      <div className="mt-6 overflow-x-auto">
-        <ReusableTable
-          columns={columns}
-          data={pagedDocs}
-          pageIndex={pageIndex}
-          pageSize={pageSize}
-          totalCount={documents.length}
-          totalPages={totalPages}
-          setPageIndex={setPageIndex}
-          setPageSize={setPageSize}
-          loading={loading}
-        />
-      </div>
+      <ReusableTable
+        data={documents}
+        columns={renderColumns(0, 10)}
+        loading={loading}
+        pageSize={10}
+      />
 
-      <ViewDocumentModal isOpen={isViewOpen} onClose={closeModal} formData={selectedDoc} />
+      <ViewDocumentModal
+        isOpen={viewModalOpen}
+        onClose={() => setViewModalOpen(false)}
+        document={selectedDoc}
+      />
+
+      <Dialog
+        isOpen={deleteDialogOpen}
+        title="Delete Document"
+        message="Are you sure you want to delete this document?"
+        onCancel={() => setDeleteDialogOpen(false)}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 };
 
 export default DocumentList;
+<<<<<<< HEAD
+=======
 
 
+>>>>>>> origin/himansu

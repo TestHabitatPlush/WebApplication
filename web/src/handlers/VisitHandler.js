@@ -12,26 +12,15 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 
 const VisitHandler = () => {
-  const authState = useSelector((state) => state.auth);
-  const societyState = useSelector((state) => state.society);
-  const customerState = useSelector((state) => state.customer); // ⬅️ added
+ const senderId = useSelector((state) => state.auth.user?.userId || state.auth.user?._id);
+   const token = useSelector((state) => state.auth.token);
+   const userId = useSelector((state) => state.auth.user?.userId);
+   const societyId = 2;
+  // useSelector((state) => state.auth.user?.Customer?.customerId);
 
-  // Log full redux state for debugging
-  console.log("Auth State:", authState);
-  console.log("Society State:", societyState);
-  console.log("Customer State:", customerState); // ⬅️ added
-
-  // Get sender and society IDs
-  const senderId =
-    authState?.user?._id || authState?.user?.userId || null;
-
-  //const societyId = authState?.user?.Customer?.customerId ;
-  const societyId =3;
-  const token = authState.token;
-
-  if (!senderId || !societyId) {
-    console.warn("Missing senderId or societyId", { senderId, societyId });
-  }
+  // if (!senderId || !societyId) {
+  //   console.warn("❌ Missing senderId or societyId", { senderId, societyId });
+  // }
 
   // Fetch visitor relationships
   const fetchVisitorRelationship = async () => {

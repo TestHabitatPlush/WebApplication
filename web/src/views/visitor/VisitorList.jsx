@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from "react";
 import { useTable, usePagination, useSortBy } from "react-table";
 import { FaEye, FaTrashAlt, FaQrcode } from "react-icons/fa";

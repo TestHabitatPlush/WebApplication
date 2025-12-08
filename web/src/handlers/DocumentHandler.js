@@ -43,14 +43,6 @@
 //     try {
 //       const res = await getDocumentBySocietyService(societyId, userId, token);
 
-//       if (res.status === 200) {
-//         return res.data;
-//       }
-//     } catch (err) {
-//       toast.error("Failed to fetch society documents.");
-//       console.error(err);
-//     }
-//   };
 
 //   const createDocumentByUserHandler = async (data) => {
 //     try {

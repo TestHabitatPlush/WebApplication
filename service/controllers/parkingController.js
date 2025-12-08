@@ -181,7 +181,7 @@ exports.createVehicleBySocietyId = async (req, res) => {
 
     const newVehicle = await Vehicle.create({
       vehicleNumber,
-      fastagNumber,
+      fastagNumber: fastagNumber || null,
       vehicleType,
       ownerName,
       ownerContact,
@@ -207,7 +207,7 @@ exports.createVehicleByUserId = async (req, res) => {
   try {
       const { vehicleNumber, fastagNumber, vehicleType, ownerName, ownerContact, userId, societyId } = req.body;
 
-      if (!vehicleNumber || !fastagNumber || !vehicleType || !ownerName || !ownerContact || !userId || !societyId) {
+      if (!vehicleNumber  || !vehicleType || !ownerName || !ownerContact || !userId || !societyId) {
           return res.status(400).json({ message: 'All fields are required' });
       }
 

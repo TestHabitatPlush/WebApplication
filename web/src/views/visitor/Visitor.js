@@ -1,3 +1,4 @@
+"use client";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import React from "react";
 import DashboardHeader from "../dashboard/DashboardHeader";

@@ -164,7 +164,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTable, usePagination } from 'react-table';
 import PropTypes from 'prop-types';
-import { CSVLink } from 'react-csv';
+// import { CSVLink } from 'react-csv';
 import { utils, writeFile } from 'xlsx';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -259,21 +259,21 @@ const ReusableTable = ({
     printWindow.print();
   };
 
-  const handleCopy = async () => {
-    const copyText = filteredData.map(row =>
-      columns.map(col => row[col.accessor]).join('\t')
-    ).join('\n');
-    await navigator.clipboard.writeText(copyText);
-    alert('Table copied to clipboard!');
-  };
+  // const handleCopy = async () => {
+  //   const copyText = filteredData.map(row =>
+  //     columns.map(col => row[col.accessor]).join('\t')
+  //   ).join('\n');
+  //   await navigator.clipboard.writeText(copyText);
+  //   alert('Table copied to clipboard!');
+  // };
 
   return (
     <div>
       {/* Search and Export Buttons */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex gap-2">
-          <button onClick={handleCopy} className="px-3 py-1 text-white bg-gray-700 rounded">Copy</button>
-          <CSVLink data={filteredData} filename="table_data.csv" className="px-3 py-1 text-white bg-green-600 rounded">CSV</CSVLink>
+          {/* <button onClick={handleCopy} className="px-3 py-1 text-white bg-gray-700 rounded">Copy</button>
+          <CSVLink data={filteredData} filename="table_data.csv" className="px-3 py-1 text-white bg-green-600 rounded">CSV</CSVLink> */}
           <button onClick={handleExcelExport} className="px-3 py-1 text-white bg-blue-600 rounded">Excel</button>
           <button onClick={handlePDFExport} className="px-3 py-1 text-white bg-red-600 rounded">PDF</button>
           <button onClick={handlePrint} className="px-3 py-1 text-white bg-purple-600 rounded">Print</button>

@@ -1,16 +1,21 @@
-import React, { useState, useEffect } from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import Button from "@/components/ui/Button";
 import VisitHandler from "@/handlers/VisitHandler";
 import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedSociety } from "@/redux/slices/societySlice"; // ✅
 
 const AddVisitor = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const { fetchVisitorRelationship, createNewVisitorEntry } = VisitHandler();
-  const [errors, setErrors] = useState({});
-  const [visitorTypes, setVisitorTypes] = useState([]);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user); // ✅ user object
 
-  // Initial visitor details state
+  const { fetchVisitorRelationship, createNewVisitorEntry } = VisitHandler();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [visitorTypes, setVisitorTypes] = useState([]);
+  const [errors, setErrors] = useState({});
+
   const [visitorDetails, setVisitorDetails] = useState({
     visit_name: "",
     visit_type_Id: "",
@@ -21,29 +26,38 @@ const AddVisitor = () => {
     visit_purpose: "",
   });
 
-  // Fetch visitor types when modal opens
+  // ✅ Dynamically set selectedSociety from user.Customer
+  useEffect(() => {
+    const society = user?.Customer || user?.customer;
+    if (society?.customerId) {
+      dispatch(
+        setSelectedSociety({
+          id: society.customerId,
+          name: society.customerName,
+          type: society.customerType,
+        })
+      );
+    } else {
+      console.warn("❗ No society info in user object");
+    }
+  }, [user]);
+
+  // ✅ Fetch visitor types when modal opens
   useEffect(() => {
     if (isModalOpen) {
       fetchVisitorTypes();
     }
   }, [isModalOpen]);
 
-  // Fetch visitor types
   const fetchVisitorTypes = async () => {
     try {
       const result = await fetchVisitorRelationship();
-      console.log("Fetched Visitor Types:", result);
-
       if (Array.isArray(result)) {
         setVisitorTypes(result);
       } else {
-        console.warn("No visitor types found.");
         setVisitorTypes([]);
       }
     } catch (error) {
-      console.error("Error fetching visitor types:", error.message);
-
-      // Fallback to default visitor types if API fails
       setVisitorTypes([
         { Visit_relation_Id: "3", Visit_relation_Description: "Guest" },
         { Visit_relation_Id: "7", Visit_relation_Description: "Staff" },
@@ -51,14 +65,12 @@ const AddVisitor = () => {
     }
   };
 
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setVisitorDetails((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  // Validate form fields
   const validateForm = () => {
     const requiredFields = [
       "visit_name",
@@ -75,27 +87,22 @@ const AddVisitor = () => {
       }
     });
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return false;
-    }
-    return true;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
- 
+    if (!validateForm()) return;
+
     try {
       const payload = {
         ...visitorDetails,
         visit_mobileno: parseInt(visitorDetails.visit_mobileno, 10) || 0,
         visit_type_Id: parseInt(visitorDetails.visit_type_Id, 10) || 0,
       };
-  
-      console.log("Final Payload being sent:", payload);
-  
+
       const response = await createNewVisitorEntry(payload);
-  
       if (response.success) {
         toast.success("Visitor entry created successfully.");
         resetForm();
@@ -104,11 +111,10 @@ const AddVisitor = () => {
         toast.error(response.message || "Error creating visitor entry.");
       }
     } catch (error) {
-      
+      toast.error("Failed to create visitor entry.");
     }
   };
-  
-  // Reset form after submission
+
   const resetForm = () => {
     setVisitorDetails({
       visit_name: "",
@@ -124,7 +130,6 @@ const AddVisitor = () => {
 
   return (
     <div>
-      {/* Add Visitor Button */}
       <div className="flex items-center gap-3">
         <FaPlus
           className="ml-5 text-lg cursor-pointer text-turquoise"
@@ -133,7 +138,6 @@ const AddVisitor = () => {
         <h1 className="mb-1 text-xl font-semibold">Add Visitor</h1>
       </div>
 
-      {/* Modal for Adding Visitor */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[1050]">
           <div className="bg-white max-w-[1300px] w-[90%] max-h-[90vh] overflow-y-auto p-6 rounded-lg shadow-md relative">
@@ -146,7 +150,6 @@ const AddVisitor = () => {
             <h2 className="mb-8 text-xl font-semibold">Add New Visitor</h2>
 
             <form onSubmit={handleSubmit}>
-              {/* Visitor Type Selection */}
               <div className="mb-4">
                 <label
                   htmlFor="visitorType"
@@ -164,26 +167,19 @@ const AddVisitor = () => {
                   <option value="" disabled>
                     Select type of Visitor
                   </option>
-                  {visitorTypes.length > 0 ? (
-                    visitorTypes.map((type) => (
-                      <option
-                        key={type.Visit_relation_Id}
-                        value={type.Visit_relation_Id}
-                      >
-                        {type.Visit_relation_Description}
-                      </option>
-                    ))
-                  ) : (
-                    <option value="" disabled>
-                      Loading...
+                  {visitorTypes.map((type) => (
+                    <option
+                      key={type.Visit_relation_Id}
+                      value={type.Visit_relation_Id}
+                    >
+                      {type.Visit_relation_Description}
                     </option>
-                  )}
+                  ))}
                 </select>
               </div>
 
-              {/* Form Fields */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {[
+                {[ 
                   { label: "Name", name: "visit_name", type: "text" },
                   { label: "Mobile Number", name: "visit_mobileno", type: "number" },
                   { label: "Expected Entry Date", name: "visit_expect_date_of_entry_date", type: "date" },
@@ -225,12 +221,6 @@ const AddVisitor = () => {
                 ))}
               </div>
 
-              {/* General Error Message */}
-              {errors.general && (
-                <div className="mb-4 text-sm text-red-600">{errors.general}</div>
-              )}
-
-              {/* Submit and Cancel Buttons */}
               <div className="flex justify-center gap-4 mt-6">
                 <Button
                   type="submit"

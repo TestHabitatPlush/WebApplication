@@ -7,7 +7,7 @@ const societySlice = createSlice({
     page: 0,
     pageSize: 10,
     total: 0,
-    totalPages : 0,
+    totalPages: 0,
     columns: [
       { Header: 'ID', accessor: 'customerId' },
       { Header: 'Name', accessor: 'customerName' },
@@ -18,17 +18,17 @@ const societySlice = createSlice({
       { Header: 'Society Type', accessor: 'societyType' },
       { Header: 'Actions', accessor: 'actions' },
     ],
-    status: 'idle',
     filters: { 
       name: '',
       type: '',
       email: '',
-      societyType: ""
+      societyType: ''
     },
+    selectedSociety: null,   // ✅ NEW: holds selected society object
+    status: 'idle',
   },
   reducers: {
     setPage: (state, action) => {
-      console.log(action.payload);
       state.page = action.payload;
     },
     setPageSize: (state, action) => {
@@ -42,12 +42,26 @@ const societySlice = createSlice({
       state.totalPages = action.payload.totalPages;
       state.total = action.payload.total;
     },
-    setSocietyLists : (state, action) =>{
+    setSocietyLists: (state, action) => {
       state.data = action.payload;
+    },
+    setSelectedSociety: (state, action) => {
+      state.selectedSociety = action.payload; // ✅ new action
+    },
+    clearSelectedSociety: (state) => {
+      state.selectedSociety = null;
     }
   },
 });
 
-export const { setPage, setPageSize, setFilters } = societySlice.actions;
+export const {
+  setPage,
+  setPageSize,
+  setFilters,
+  updateData,
+  setSocietyLists,
+  setSelectedSociety,      // ✅ export new actions
+  clearSelectedSociety,
+} = societySlice.actions;
 
 export default societySlice.reducer;

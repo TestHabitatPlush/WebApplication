@@ -32,9 +32,7 @@ const CreateUserForm = () => {
   }
 
   const newData = result.data
-    .filter((el) => el.roleCategory === "society_moderator" ||
-    el.roleCategory === "super_admin_it"
-    )
+    .filter((el) => el.roleCategory === "society_moderator" || el.roleCategory === "super_admin_it")
     .map((el) => ({ label: el.roleCategory, value: el.roleId }));
 
   dispatch({

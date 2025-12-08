@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import Dialog from "../../../../components/ui/Dialog";
-import { FaUser, FaPhone, FaIdBadge, FaUserTag } from "react-icons/fa";
+import { FaUser, FaPhone, FaIdBadge, FaUserTag ,FaEnvelope } from "react-icons/fa";
 
 const ViewUserAllDetailsModal = ({ isOpen, onClose, formData }) => {
   const [userViewForm, setUserViewForm] = useState(formData);
@@ -14,6 +14,7 @@ const ViewUserAllDetailsModal = ({ isOpen, onClose, formData }) => {
     { label: "User ID", value: userViewForm?.userId, icon: <FaIdBadge /> },
     { label: "First Name", value: userViewForm?.firstName, icon: <FaUser /> },
     { label: "Last Name", value: userViewForm?.lastName, icon: <FaUser /> },
+    { label: "Email", value: userViewForm?.email, icon: <FaEnvelope  /> },
     { label: "Mobile No.", value: userViewForm?.mobileNumber, icon: <FaPhone /> },
     { label: "Role", value: userViewForm?.roleId, icon: <FaUserTag /> },
   ];

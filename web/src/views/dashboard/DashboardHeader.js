@@ -7,13 +7,21 @@ import SideDrawer from "@/components/shared/SideDrawer";
 import { useState } from "react";
 import Notification from "../notification/Notifications";
 import { useSelector } from "react-redux";
+import AuthHandler from "@/handlers/AuthHandler";
+import ProfileModal from "@/components/shared/ProfileModal";
 
 const DashboardHeader = () => {
   const user = useSelector((state) => state.auth.user);
   const [sideDrawer, setSideDrawer] = useState(false);
+const [isopen, setIsopen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
+ const { logoutHandler } = AuthHandler();
   const toggleNotificationDrawer = () => {
     setSideDrawer((prev) => !prev);
+  };
+const toggleDropdown = () => {
+    setIsopen(!isopen);
   };
 
   return (
@@ -48,8 +56,37 @@ const DashboardHeader = () => {
               alt="Logo"
               layout="fill"
               className="rounded-full "
+                 onClick={toggleDropdown}
             />
+
+            {isopen && (
+              <div className="absolute right-0 z-50 w-48 mt-2 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+                <div className="py-1">
+                  <span
+                    onClick={() => setIsProfileOpen(true)}
+                    className="block px-4 py-2 text-base text-gray-700 cursor-pointer hover:bg-gray-200"
+                  >
+                    Profile
+                  </span>
+                  <span
+                    className="block px-4 py-2 text-base text-gray-700 cursor-pointer hover:bg-gray-200"
+                  >
+                    Contact Us
+                  </span>
+                  <span
+                    onClick={logoutHandler}
+                    className="block px-4 py-2 text-base text-red-500 cursor-pointer hover:bg-gray-200"
+                  >
+                    Logout
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
+
+          <span className="text-white">{user?.email}</span>
+   
+         
           <div className="hidden md:block">
             <p className="text-white text-[15px] font-normal hover:text-gray">
               {/* {user.r_name} */}
@@ -57,7 +94,11 @@ const DashboardHeader = () => {
           </div>
         </div>
       </div>
-
+<ProfileModal
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+        user={user}
+      />
       {sideDrawer && (
         <SideDrawer
           width="w-full lg:w-[500px]"

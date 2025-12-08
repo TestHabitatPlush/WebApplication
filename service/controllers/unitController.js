@@ -200,4 +200,4 @@ const deleteUnit = async (req,res) =>{
   }
 }
 
-module.exports = { createUnit, getUnit, getAllUnits, updateUnit, deleteUnit };
+module.exports = { createUnit, getUnit,getAllUnits,updateUnit, deleteUnit};

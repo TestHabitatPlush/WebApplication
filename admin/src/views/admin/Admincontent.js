@@ -4,12 +4,13 @@ import AddUser from "./usermanagement/adduser/AddUser";
 import UnapprovedUser from "./usermanagement/unapproveduser/UnapprovedUser";
 import ApprovedUser from "./usermanagement/approveduser/ApprovedUser";
 import DashboardUser from "./usermanagement/dashboard/DashboardUser";
-import BulkUserCreation from "./usermanagement/bulkusercreation/BulkUserCreation";
+
 
 
 import GeneralSetting from "./usermanagement/generalsetting/GeneralSetting";
 import UnitList from "./unitdetails/unitlist/UnitList";
 import DeactivateUser from "./usermanagement/deactivateuser/DeactivateUser";
+import BulkUserCreation from "./usermanagement/bulkusercreation/BulkUserCreation";
 import DefineUnit from "./unitdetails/defineunit/DefineUnit";
 import DefineStructer from "./unitdetails/definestructer/DefineStructer";
 import AddnewNotice from "./noticeannouncement/addnewnotice/AddnewNotice";
@@ -61,6 +62,7 @@ import EmergencyList from './emerencyContact/emergencyList/EmergencyList';
 import DocumentUploadFacility from "./documentmanagement/documentuploadfacility/DocumentUploadFacility";
 import DocumentList from "./documentmanagement/documentlist/DocumentList";
 import DeactivateGateUsers from "./gatemanagement/deactivategateusers/DeactivateGateUsers";
+
 
 // import CreateResident from "./resident/create/CreateResident";
 // import CreateFloorInformation from "./floorinformation/create/CreateFloorInformation";
@@ -116,6 +118,7 @@ const Admincontent = () => {
       <Route path="/user/approved" element={<ApprovedUser />} />
       <Route path="/user/bulkuser" element = {<BulkUserCreation/>} />
       <Route path="/user/deactivated" element={<DeactivateUser />} />
+       <Route path="/user/bulkuser" element = {<BulkUserCreation/>} />
       <Route path="/user/setting" element={<GeneralSetting />} />
       <Route path="/user/setting" element={<GeneralSetting />} />
       <Route path="/unit/structer" element={<DefineStructer />} />
@@ -205,7 +208,11 @@ const Admincontent = () => {
      
     <Route path="/emerencycontact/EmergencyList" 
      element={<EmergencyList />} /> 
+    
+
+  
     </Routes>
+
   );
 };
 
