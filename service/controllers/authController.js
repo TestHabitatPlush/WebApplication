@@ -31,7 +31,7 @@ const loginUser = async (req, res) => {
 
     // Token & redirection for special roles
     if (
-      ["super_admin", " b", "management_committee","super_admin_it"].includes(user.role.roleCategory)
+      ["super_admin", "society_moderator", "management_committee","super_admin_it"].includes(user.role.roleCategory)
     ) {
       const token = generateToken({ email, password }, "1h");
       const baseUrl = process.env.ADMIN_BASE_URL.replace(/\/+$/, "");
