@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "export": "next export",
-  "build-export": "npm run build && npm run export",
+    "build-export": "npm run build && npm run export",
     "build-test": "cross-env NODE_ENV=test next build",
     "build-prod": "cross-env NODE_ENV=production next build",
     "start-test": "cross-env NODE_ENV=test next start",
@@ -18,6 +18,7 @@
     "@emailjs/browser": "^4.4.1",
     "@reduxjs/toolkit": "^2.2.7",
     "axios": "^1.7.3",
+    "c": "^1.1.1",
     "classnames": "^2.5.1",
     "js-cookie": "^3.0.5",
     "next": "^14.2.17",
@@ -32,6 +33,7 @@
     "update": "^0.4.2"
   },
   "devDependencies": {
+    "cross-env": "^10.0.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "postcss": "^8",

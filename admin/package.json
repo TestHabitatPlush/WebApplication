@@ -10,6 +10,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.6",
     "browser-image-compression": "^2.0.2",
+    "c": "^1.1.1",
     "classnames": "^2.5.1",
     "country-state-city": "^3.2.1",
     "date-fns": "^4.1.0",

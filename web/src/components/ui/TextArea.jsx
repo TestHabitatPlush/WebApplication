@@ -1,7 +1,11 @@
+
+"use Client";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import { COLORS } from "@/constants/config.color";
-import { INPUT_SIZES } from "@/constants/config.size";
+import { INPUT_SIZES } from "../../constants/config.size";
+import { COLORS } from "../../constants/config.color";
+// import { COLORS } from "@/constants/config.color";
+// import { INPUT_SIZES } from "@/constants/config.size";
 
 const TextArea = ({
   label,
@@ -13,10 +17,11 @@ const TextArea = ({
   className = "",
   isFalse = false,
   rows = 3,
+  name
 }) => {
   const sizeClass = INPUT_SIZES[size] || INPUT_SIZES.md;
   const borderColorClass = isFalse ? "border-danger" : "border-gray-300";
-  const ringColorClass = isFalse ? "focus:ring-danger" : 'focus:ring-'+color;
+  const ringColorClass = isFalse ? "focus:ring-danger" : "focus:ring-" + color;
 
   const textAreaClasses = classNames(
     className,
@@ -26,8 +31,8 @@ const TextArea = ({
     "focus:ring-2",
     sizeClass,
     borderColorClass,
-      ringColorClass,
-    'rounded-lg'
+    ringColorClass,
+    "rounded-lg"
   );
 
   return (
@@ -43,6 +48,7 @@ const TextArea = ({
         value={value}
         onChange={onChange}
         rows={rows}
+        name={name}
       />
     </div>
   );

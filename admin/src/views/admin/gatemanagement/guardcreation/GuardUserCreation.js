@@ -6,6 +6,7 @@ import { FaCamera } from "react-icons/fa";
 import Button from "../../../../components/ui/Button";
 import toast from "react-hot-toast";
 import ProfileHandler from "../../../../handlers/ProfileHandler";
+import PhoneCodeSelector from "../../../../components/shared/PhoneCodeSelector";
 
 const GuardUserCreation = () => {
   const paths = ["Gate Management", "Guard Profile Creation"];
@@ -20,7 +21,7 @@ const GuardUserCreation = () => {
     title: "MR",
     firstName: "",
     lastName: "",
-    countryCode: "+91",
+    countryCode: "",
     mobileNumber: "",
     email: "",
     documentType: "",
@@ -196,7 +197,9 @@ const GuardUserCreation = () => {
 
         <div className="flex flex-wrap items-center gap-5 py-6">
           <div>
-            <label className="block pb-2 ml-1 -mt-3 text-sm font-medium text-gray-900">MR./MRS.</label>
+            <label className="block pb-2 ml-1 -mt-3 text-sm font-medium text-gray-900">
+              MR./MRS.
+            </label>
             <select
               name="title"
               value={formData.title}
@@ -233,19 +236,22 @@ const GuardUserCreation = () => {
 
         <div className="flex flex-wrap items-center gap-5">
           <div>
-            <label className="block font-semibold text-gray-700">Country Code</label>
-            <select
+           
+            <PhoneCodeSelector
+              label={
+                <span>
+                  Country Code<span className="text-red-500">*</span>
+                </span>
+              }
               name="countryCode"
               value={formData.countryCode}
-              onChange={handleInputChange}
-              className="p-3 border border-gray-300 rounded-md w-28"
-            >
-              {countryCodes.map((item) => (
-                <option key={item.code} value={item.code}>
-                  {item.code} - {item.country}
-                </option>
-              ))}
-            </select>
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  countryCode: e.target.value,
+                }))
+              }
+            />
           </div>
 
           <Input
@@ -332,7 +338,12 @@ const GuardUserCreation = () => {
       </div>
 
       <div className="flex justify-center mt-5">
-        <Button onClick={handleSubmit} className="max-w-sm" type="submit" size="lg">
+        <Button
+          onClick={handleSubmit}
+          className="max-w-sm"
+          type="submit"
+          size="lg"
+        >
           Add User
         </Button>
       </div>

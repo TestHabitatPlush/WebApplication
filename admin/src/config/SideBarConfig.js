@@ -511,7 +511,41 @@ const SideBarMenu = {
     
   ],
 }
-  ]
+  ],
+
+
+   super_admin_it: [
+     {
+      name: "Software HelpDesk Management",
+      isAvailable: true,
+      icon:FaLaptopCode,
+      children: [
+        {
+          name: "SetUp",
+          url: "softwarehelpdesk/softwarehelpdesksetup",
+          children: [
+            {
+              name: "Approval Matrix",
+              url: "softwarehelpdesk/softwarehelpdesksetup/softwareapprovalmatrix",
+            },
+            {
+              name: "Define Purpose",
+              url: "softwarehelpdesk/softwarehelpdesksetup/softwaredefinepurpose",
+            },
+          ],
+        },
+        {
+          name: "Create Ticket",
+          url: "softwarehelpdesk/softwarehelpdeskcreateticket",
+        },
+        {
+          name: "Ticket List",
+          url: "softwarehelpdesk/softwarehelpdeskticketlist",
+        },
+      ],
+    },
+  ],
+
 };
 export default SideBarMenu;
 

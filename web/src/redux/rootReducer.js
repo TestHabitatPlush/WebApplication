@@ -13,7 +13,6 @@ const rootReducer = combineReducers({
   society: societySlice,
   addUser: addUserSlice,
   countryCode: countryCodeSlice,
- // <-- Add it here if it exists
 });
 
 export default rootReducer;

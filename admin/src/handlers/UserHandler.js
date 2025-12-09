@@ -1,4 +1,4 @@
-// ✅ Rectified UserHandler.js with added logic for both Activate and Inactivate
+//  Rectified UserHandler.js with added logic for both Activate and Inactivate
 
 import toast from 'react-hot-toast';
 import {
@@ -27,6 +27,7 @@ const UserHandler = () => {
   const createSocietyModeratorHandler = async (formData) => {
     try {
       const response = await createSocietyModeratorService(formData, token);
+      console.log("societymoderator",response)
       if (response.status === 201) {
         toast.success('Society Moderator created successfully!');
       }
@@ -41,6 +42,7 @@ const UserHandler = () => {
   const createSocietyResidentUserHandler = async (societyId, formData) => {
     try {
       const response = await createSocietyResidentService(societyId, token, formData);
+      console.log("society response",response);
       if (response.status === 201) {
         toast.success('Society Resident created successfully!');
       }
@@ -52,7 +54,15 @@ const UserHandler = () => {
     }
   };
 
+<<<<<<< HEAD
+  
+ 
+
+
+  const getResidentBySocietyIdHandler = async (societyId, token, { page, pageSize }) => {
+=======
   const getResidentBySocietyIdHandler = async (societyId, { page, pageSize }) => {
+>>>>>>> 870a576d38725c9830678d5f338e9368efed5b2f
     try {
       const response = await getResidentBySocietyIdService(societyId, token, { page, pageSize });
       return response.data;
@@ -268,3 +278,5 @@ const createBulkSocietyUserHandler = async (societyId, token, file) => {
 };
 
 export default UserHandler;
+
+

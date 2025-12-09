@@ -1,60 +1,64 @@
+
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 const Customer = require("./Customer");
 const User = require("./User");
-const ref_ticket_status = require("./ref_ticket_status");
-const ref_ticket_catagorisation = require("./ref_ticket_catagorisation");
+const Ticket_Purpose = require("./Ticket_Purpose");
 
-const Ticket_Summery = sequelize.define(
-  "Ticket_Summery",
+const Ticket_Summary = sequelize.define(
+  "Ticket_Summary",
   {
     ticket_Id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    ticketCategorisationId: {
+    request_type: {
+      type: DataTypes.ENUM("suggestion", "complaint", "clarification"),
+      allowNull: false,
+      defaultValue: "suggestion",
+    },
+    ticket_purpose_Id: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       references: {
-        model: ref_ticket_catagorisation,
-        key: "ticket_catagorisation_Id",
+        model: Ticket_Purpose,
+        key: "ticket_purpose_Id",
       },
-      allowNull: false,
     },
-    ticketPurpose: {
+    ticket_title: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    ticketTitle: {
+    ticket_description: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    ticket_attachment_details: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     societyId: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       references: {
         model: Customer,
         key: "customerId",
       },
-      allowNull: false,
     },
-
     userId: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       references: {
         model: User,
         key: "userId",
       },
-      allowNull: false,
-    },
-    ticket_description_max_Id: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
     },
   },
   {
-    tableName: "Ticket_Summery",
+    tableName: "Ticket_Summary",
     timestamps: true,
   }
 );
 
-module.exports = Ticket_Summery;
+module.exports = Ticket_Summary;

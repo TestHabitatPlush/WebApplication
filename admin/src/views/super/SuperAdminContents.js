@@ -5,6 +5,10 @@ import SocietyList from "./society/view_society/SocietyList";
 import CreateSocietyModerator from "./society/society_user/CreateSocietyModerator";
 import CreateEmergencyDetails from "./EmergencyContact/CreateEmergencyDetails";
 import EmergencyListSuperAdmin from "../super/EmergencyContact/EmergencyListSuperAdmin/EmergencyListSuperAdmin";
+import CreateTicketForm from "./softwarehelpdesk/createticket/CreateTicketForm";
+import ApprovalMatrixForm from "./softwarehelpdesk/setup/approvalmatrix/ApprovalMatrixForm";
+import DefinePorpousForm from "./softwarehelpdesk/setup/defineporpous/DefinePorpousForm";
+import TicketListForm from "./softwarehelpdesk/ticketlist/TicketListForm";
 import SocietyModeratorList from "./society/society_user/SocietyModeratorList";
 import PlanDetails from "../super/subcriptionPlan/PlanDetails";
 import Dashboard from "../super/Dashboard/dashboard";
@@ -23,6 +27,10 @@ const SuperAdminContents = () => {
       <Route path="/society/societyModeratorList" element={<SocietyModeratorList />} />
       <Route path="/emergencycontact/ContactDetails" element={<CreateEmergencyDetails />} />
       <Route path="/emerencycontact/EmergencyList" element={<EmergencyListSuperAdmin />} />
+      {/* <Route path="softwarehelpdesk/softwarehelpdesksetup/softwareapprovalmatrix" element={<ApprovalMatrixForm/>} /> */}
+      <Route path="softwarehelpdesk/softwarehelpdesksetup/softwaredefinepurpose" element={<DefinePorpousForm/>} />
+      <Route path="/softwarehelpdesk/softwarehelpdeskcreateticket" element={<CreateTicketForm/>} />
+      <Route path="/softwarehelpdesk/softwarehelpdeskticketlist" element={<TicketListForm/>} />
       <Route path="/subscription-plan/details" element={<PlanDetails />} />
       {/* <Route path="/subscription-plan/list" element={<SubscriptionList/>} /> */}
       <Route path="/product/create" element={<CreateProduct/>} />

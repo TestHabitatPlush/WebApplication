@@ -52,6 +52,7 @@ exports.generateToken = (payload, expiresIn = "30d") => {
   return jwt.sign(cloned, JWT_SECRET, { expiresIn });
 };
 
+
 exports.verifyToken = (token) => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);

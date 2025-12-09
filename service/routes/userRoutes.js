@@ -30,7 +30,6 @@
 // // 
 // // 
 // // userRouter.post("/resident/reject", userController.rejectUser);
-
 // module.exports = userRouter;
 
 

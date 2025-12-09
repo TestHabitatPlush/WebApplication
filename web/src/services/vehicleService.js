@@ -1,3 +1,5 @@
+"use client";
+
 import axios from "axios";
 export const createVehicleByUserService = (userId, data, token) => {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/vehicle/user/${userId}`;

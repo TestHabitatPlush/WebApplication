@@ -1,10 +1,10 @@
 import React from "react";
-import ApprovalMatrixForm from "./ApprovalMatrixForm";
+// import ApprovalMatrixForm from "./ApprovalMatrixForm";
 
 const ApprovalMatrix = () => {
   return (
     <div>
-      <ApprovalMatrixForm />
+      {/* <ApprovalMatrixForm /> */}
     </div>
   );
 };

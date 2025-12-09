@@ -80,7 +80,6 @@ const DocumentHandler = () => {
   const getDocumentByUserHandler = async () => {
     try {
       const res = await getDocumentByUserService(userId, token);
-      console.log("hjwvwchkgvdkchg", res);
       if (res.status === 200) return res.data;
     } catch (err) {
       toast.error("Failed to fetch user documents.");
@@ -132,6 +131,8 @@ const DocumentHandler = () => {
 
 export default DocumentHandler;
 
+<<<<<<< HEAD
+=======
 
 // import toast from "react-hot-toast";
 // import { useSelector } from "react-redux";
@@ -262,3 +263,4 @@ export default DocumentHandler;
 // };
 
 // export default DocumentHandler;
+>>>>>>> 870a576d38725c9830678d5f338e9368efed5b2f

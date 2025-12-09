@@ -1,10 +1,12 @@
+
+
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 const Customer = require("./Customer");
 const User = require("./User");
 
-const Socity_HelpDesk_Access_Management = sequelize.define(
-  "Socity_HelpDesk_Access_Management",
+const Society_HelpDesk_Access_Management = sequelize.define(
+  "Society_HelpDesk_Access_Management",
   {
     Socity_HelpDesk_Access_Id: {
       type: DataTypes.INTEGER,
@@ -13,18 +15,12 @@ const Socity_HelpDesk_Access_Management = sequelize.define(
     },
     societyId: {
       type: DataTypes.INTEGER,
-      references: {
-        model: Customer,
-        key: "customerId",
-      },
+      references: { model: Customer, key: "customerId" },
       allowNull: false,
     },
     userId: {
       type: DataTypes.INTEGER,
-      references: {
-        model: User,
-        key: "userId",
-      },
+      references: { model: User, key: "userId" },
       allowNull: false,
     },
     module_Access: {
@@ -33,17 +29,25 @@ const Socity_HelpDesk_Access_Management = sequelize.define(
     },
     Update_User_Id: {
       type: DataTypes.INTEGER,
-      references: {
-        model: User,
-        key: "userId",
-      },
+      references: { model: User, key: "userId" },
       allowNull: false,
     },
   },
   {
+    tableName: "Society_HelpDesk_Access_Management",
     timestamps: true,
-    tableName: "Socity_HelpDesk_Access_Management",
   }
 );
 
-module.exports = Socity_HelpDesk_Access_Management;
+Society_HelpDesk_Access_Management.belongsTo(User, {
+  foreignKey: "userId",
+});
+
+User.hasMany(Society_HelpDesk_Access_Management, {
+  foreignKey: "userId",
+});
+
+
+module.exports = Society_HelpDesk_Access_Management;
+
+
