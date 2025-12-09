@@ -10,10 +10,12 @@ const Notice = () => {
       <DashboardLayout
         header={<DashboardHeader />}
         leftContent={<DashboardLeftContents />}
-        rightContent={<React.Fragment>
-      <AddNewNoticeForm />
-      <NoticeList />
-        </React.Fragment>}
+        rightContent={
+          <React.Fragment>
+            <AddNewNoticeForm />
+            <NoticeList />
+          </React.Fragment>
+        }
       />
     </main>
   );

@@ -95,20 +95,13 @@ const AuthHandler = () => {
 
   const loginHandler = async (token) => {
     try {
-      await axios
-        .post(`${API_URL}/auth/token-signin`, { token })
-        .then((res) => {
-          console.log(res);
-          setReduxAuthState(res.data);
-          setLocalStorage(res.data);
-          toast.success("Successfully logged in!");
-          customNavigation('/');
-          return;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      console.log("end f catch block");
+      console.log("Sending login request...");
+      const res = await axios.post(`${API_URL}/auth/token-signin`, { token });
+      console.log("Login response:", res.data);
+      setReduxAuthState(res.data);
+      setLocalStorage(res.data);
+      toast.success("Successfully logged in!");
+      customNavigation('/');
     } catch (error) {
       console.error("Login error:", error);
       toast.error("Login failed. Please try again.");
@@ -163,4 +156,3 @@ const AuthHandler = () => {
 };
 
 export default AuthHandler;
-

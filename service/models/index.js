@@ -27,6 +27,11 @@ const Ticket_Details = require("./Ticket_Details")
 const Ticket_Summary = require("./Ticket_Summary")
 const Ticket_Purpose = require("./Ticket_Purpose");
 const Society_HelpDesk_Access_Management = require("./Society_HelpDesk_Access_Management");
+const Software_HelpDesk_Access_Management = require("./Software_HelpDesk_access_Management");
+const Software_Ticket_Summary = require("./Software_Ticket_Summary");
+const Software_Ref_Ticket_Status = require("./Software_Ref_Ticket_Status");
+const Software_Ticket_Details = require("./Software_Ticket_Details");
+const Software_Ticket_Purpose = require("./Software_Ticket_Purpose");
 
 
 Address.hasMany(Customer, { foreignKey: "addressId" });
@@ -104,6 +109,32 @@ Ticket_Details.belongsTo(ref_ticket_status, { foreignKey: 'ticket_status_Id' });
 // Ticket_Details.belongsTo(User, { as: "updatedUser", foreignKey: "updated_by_user_id" });
 
 
+
+
+
+
+
+Software_Ticket_Summary.hasMany(Software_Ticket_Details, { foreignKey: "ticket_Id" });
+Software_Ticket_Details.belongsTo(Software_Ticket_Summary, { foreignKey: "ticket_Id" });
+
+Software_Ticket_Summary.belongsTo(Software_Ticket_Purpose, { foreignKey: "ticket_purpose_Id" });
+Software_Ticket_Purpose.hasMany(Software_Ticket_Summary, { foreignKey: "ticket_purpose_Id" });
+
+Software_Ticket_Summary.belongsTo(User, { foreignKey: "userId" });
+
+Software_Ticket_Details.belongsTo(User, { foreignKey: "userId", as: "createdBy" });
+Software_Ticket_Details.belongsTo(User, { foreignKey: "assigned_to", as: "assignedTo" });
+Software_Ticket_Details.belongsTo(User, { foreignKey: "updated_by_user_id", as: "updatedBy" });
+
+Software_Ticket_Details.belongsTo(Software_Ref_Ticket_Status, { foreignKey: "ticket_status_Id" });
+Software_Ref_Ticket_Status.hasMany(Software_Ticket_Details, { foreignKey: "ticket_status_Id" });
+
+Software_Ticket_Summary.belongsTo(Software_Ticket_Purpose, { foreignKey: 'ticket_purpose_Id' });
+Software_Ticket_Summary.hasMany(Software_Ticket_Details, { foreignKey: 'ticket_Id' });
+
+Software_Ticket_Details.belongsTo(Software_Ref_Ticket_Status, { foreignKey: 'ticket_status_Id' });
+
+
 module.exports = {
   User,
   Address,
@@ -133,5 +164,10 @@ module.exports = {
  Ticket_Details,
  Ticket_Summary,
  Ticket_Purpose,
- Society_HelpDesk_Access_Management
+ Society_HelpDesk_Access_Management,
+Software_HelpDesk_Access_Management,
+Software_Ref_Ticket_Status,
+Software_Ticket_Purpose,
+Software_Ticket_Summary,
+Software_Ticket_Details,
 };

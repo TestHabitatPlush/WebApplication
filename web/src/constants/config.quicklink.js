@@ -385,6 +385,7 @@
 // ];
 // import { FaUserAlt, FaBuilding, FaBullhorn, FaComments, FaFileAlt, FaFileInvoice, FaParking, FaCog, FaHeadset, FaLaptopCode, FaUserFriends, FaHome, FaUserTie } from 'react-icons/fa';
 // import img from "../../assets/svg&pngicon/booking.png";
+
 import tentantIcon from "../../assets/svg&pngicon/tentant-icon.png";
 import documentIcon from "../../assets/svg&pngicon/document-icon.webp";
 import visitorIcon from "../../assets/svg&pngicon/visitor-icon.png";
@@ -496,6 +497,15 @@ export const QuickLinks = {
           linkOf: "myUnit",
         },
       ],
+
+      help:[
+        {
+          name: "Software HelpDesk",
+          url: "/softwarehelpdesk",
+          icon: helpIcon, 
+          linkOf: "help",
+        },
+      ]
     },
     
   },

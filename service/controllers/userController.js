@@ -740,46 +740,49 @@ const getUserById = async (req, res) => {
   }
 };
 
-// const getSocietyModerator = async (req, res) => {
-//   try {
-//     const societyId = req.params.societyId;
-//     if (!societyId) {
-//       return res.status(400).json({ message: "Society ID is required" });
-//     }
-//     const moderator = await User.findAll({
-//       where: {
-//         societyId,
-//         isManagementCommittee: true,
-//         isDeleted: 0,
-//         status: "active",
-//       },
-//       attributes: [
-//         "userId",
-//         "salutation",
-//         "firstName",
-//         "lastName",
-//         "email",
-//         "mobileNumber",
-//         "roleId",
-//         "status",
-//         "addressId",
-//         "primaryContact",
-//         "livesHere",
-//       ],
-//     })
-//     if (!moderator || moderator.length === 0) {
-//       return res.status(404).json({ message: "No society moderator found for the given Society ID" });
-//     }
-//     res.status(200).json({
-//       message: "Society Moderator fetched successfully",
-//       moderator,
-//     });
-//   }
-//   catch (error) {
-//     console.error("Error fetching society moderator:", error);
-//     res.status(500).json({ error: error.message });
-//   }
-// }
+
+
+const getSocietyModerator = async (req, res) => {
+  try {
+    const societyId = req.params.societyId;
+    if (!societyId) {
+      return res.status(400).json({ message: "Society ID is required" });
+    }
+    const moderator = await User.findAll({
+      where: {
+        societyId,
+        isManagementCommittee: true,
+        isDeleted: 0,
+        status: "active",
+      },
+      attributes: [
+        "userId",
+        "salutation",
+        "firstName",
+        "lastName",
+        "email",
+        "mobileNumber",
+        "roleId",
+        "status",
+        "addressId",
+        "primaryContact",
+        "livesHere",
+      ],
+    })
+    if (!moderator || moderator.length === 0) {
+      return res.status(404).json({ message: "No society moderator found for the given Society ID" });
+    }
+    res.status(200).json({
+      message: "Society Moderator fetched successfully",
+      moderator,
+    });
+  }
+  catch (error) {
+    console.error("Error fetching society moderator:", error);
+    res.status(500).json({ error: error.message });
+  }
+}
+
 
 const getManagement_committee = async (req, res) => {
   try {
@@ -888,6 +891,75 @@ const getAllApprovedUsers = async (req, res) => {
   }
 };
 
+
+const getAllSuper_admin_itAndModrerator = async (req, res) => {
+  await Promise.all([
+    Role.findAll({
+      where: {
+        roleCategory: {
+          [Op.in]: ["super_admin_it","society_moderator"],
+        },
+      },
+    }),
+  ])
+    .then(async ([roles]) => {
+      const roleIds = roles.map((role) => role.roleId);
+      const users = await User.findAll({
+        where: {
+          roleId: {
+            [Op.in]: roleIds,
+          },
+          isDeleted: 0,
+        },
+        include: [{ model: Role, as: "role" }],
+      });
+      res.status(200).json({
+        message: "Super Admins, IT Admins, and IT Moderators fetched successfully",
+        users,
+      });
+    })
+    .catch((error) => {
+      console.error("Error fetching users:", error);
+      res.status(500).json({ error: "Internal server error" });
+    });
+};
+
+const updateUserIdStatus = async(req,res) =>{
+  try{
+    const {userId} = req.params;
+  const {status}=req.body;
+  if(!userId){
+    return res.status(400).json({
+      message:"UserId is required",
+    });
+  }
+  if(!status || !["active","inactive","pending"].includes(status)){
+    return res.status(400).json({
+      message:"Valid status is required (active, inactive, pending)",
+    });
+  }
+  const user = await User.findByPk(userId);
+  if(!user){
+    return res.status(404).json({
+      message:"User not found",
+    });
+  }
+  user.status = status;
+  await user.save();
+  return res.status(200).json({
+    message:"User status updated successfully", 
+    user,
+  });
+} catch (error){
+    console.log("error updateUserId Status",error);
+    res.status(500).json({
+      message:"Internal server error",
+    });
+  }
+}
+
+
+
 module.exports = {
   createUser,
   getAllUsers,
@@ -899,8 +971,13 @@ module.exports = {
   updateResidentBySocietyId,
   bulkCreateResidents,
   getResidentBySocietyId,
-  //getSocietyModerator,
+  getSocietyModerator,
   getManagement_committee,
   getAllApprovedUsers,
   getAllDeactiveUsers,
+  getAllSuper_admin_itAndModrerator,
+  updateUserIdStatus,
 };
+
+
+

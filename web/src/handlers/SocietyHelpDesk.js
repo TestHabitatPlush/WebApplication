@@ -1,3 +1,7 @@
+
+
+"use client";
+
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 
@@ -12,15 +16,22 @@ import {
   getTicketTableService,
   updateTicketStatusAndRemarksService,
   getAssignableUsersService,
-} from "../services/softwarehelpdeskService";
+} from "@/services/societyhelpdeskService";
 
-const SoftwareHelpDeskHandler = () => {
+const SocietyHelpDeskHandler = () => {
   const token = useSelector((state) => state.auth.token);
-  const societyId = useSelector(
-    (state) => state.auth.user?.Customer?.customerId
-  );
-  const userId = useSelector((state) => state.auth.user?.userId);
+  // const societyId = useSelector(
+  //   (state) => state.auth.user?.Customer?.customerId
+  // );
 
+  // const authState = useSelector((state) => state.auth);
+  // console.log("AUTH STATE >>>", authState);
+  // const societyId = 2;
+
+  const societyId = useSelector((state) => state.society.selectedSocietyId);
+  console.log("societyId from redux", societyId);
+  const userId = useSelector((state) => state.auth.user?.userId);
+  console.log("SoftwareHelpDeskHandler", societyId, userId);
   const createRefTicketStatus = async (data) => {
     try {
       const response = await createRefTicketStatusService(data, token);
@@ -37,6 +48,7 @@ const SoftwareHelpDeskHandler = () => {
   const getRefTicketStatus = async () => {
     try {
       const response = await getRefTicketStatusService(token);
+      console.log("getRefTicketStatus", response);
       return response.data?.data || [];
     } catch (err) {
       console.error("Error fetching ticket statuses:", err);
@@ -66,6 +78,7 @@ const SoftwareHelpDeskHandler = () => {
   const getTicketPurposeList = async (params = {}) => {
     try {
       const response = await getTicketPurposeService(societyId, token, params);
+      console.log("getTicketPurposeList", "response");
       return response.data;
     } catch (err) {
       console.error("Error fetching ticket purpose list:", err);
@@ -91,7 +104,7 @@ const SoftwareHelpDeskHandler = () => {
   const getTicketDropdown = async () => {
     try {
       const response = await getTicketPurposeDropdownService(societyId, token);
-      // console.log("getTicketDropdown",response)
+      console.log("getTicketDropdown", response);
       return response.data?.data || [];
     } catch (err) {
       console.error("Error fetching ticket dropdown:", err);
@@ -120,7 +133,6 @@ const SoftwareHelpDeskHandler = () => {
   const getTicketTable = async (params = {}) => {
     try {
       const res = await getTicketTableService(userId, societyId, token, params);
-      // console.log("getTicketTable res", res);
       if (res.status === 200) {
         return res.data;
       }
@@ -149,15 +161,14 @@ const SoftwareHelpDeskHandler = () => {
 
   const getAssignableUsers = async (societyId) => {
     try {
-      const token = localStorage.getItem("token");
       const response = await getAssignableUsersService(societyId, token);
-      return response?.data?.data || []; 
+      console.log("getAssignableUsers", response);
+      return response?.data?.data || [];
     } catch (error) {
       console.error("Error fetching assignable users:", error);
       return [];
     }
   };
-
 
   return {
     createRefTicketStatus,
@@ -173,4 +184,4 @@ const SoftwareHelpDeskHandler = () => {
   };
 };
 
-export default SoftwareHelpDeskHandler;
+export default SocietyHelpDeskHandler;

@@ -24,6 +24,10 @@ const NavigationHandler = () => {
     router.push("/more");
   };
 
+  const navigateToHelp = () => {
+    router.push("/help");
+  };
+
   const customNavigation = (route) => {
     router.push(route);
   };
@@ -35,6 +39,7 @@ const NavigationHandler = () => {
     customNavigation,
     navigateToFind,
     navigateToMore,
+    navigateToHelp
   };
 };
 

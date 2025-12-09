@@ -37,7 +37,7 @@ const UserHandler = () => {
       if (response.status === 201) {
         toast.success('Society Resident created successfully!');
       }
-    } catch (error) {https://chatgpt.com/c/68821588-ab24-800f-a924-89d69e6c37bc
+    } catch (error) {
       console.error('Error creating resident:', error);
       toast.error(error?.response?.data?.message || 'An error occurred. Please try again.');
     }

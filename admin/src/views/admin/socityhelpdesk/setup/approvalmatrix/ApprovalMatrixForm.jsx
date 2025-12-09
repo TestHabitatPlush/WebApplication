@@ -132,168 +132,168 @@
 
 // export default ApprovalMatrixForm;
 
-import React, { useEffect, useState } from "react";
-import UrlPath from "../../../../../components/shared/UrlPath";
-import PageHeading from "../../../../../components/shared/PageHeading";
-// import Input from "../../../../../components/shared/Input";
-import Button from "../../../../../components/ui/Button";
-import SoftwareHelpDeskHandler from "../../../../../handlers/SoftwareHelpDesk";
-import ReusableTable from "../../../../../components/shared/ReusableTable";
+// import React, { useEffect, useState } from "react";
+// import UrlPath from "../../../../../components/shared/UrlPath";
+// import PageHeading from "../../../../../components/shared/PageHeading";
+// // import Input from "../../../../../components/shared/Input";
+// import Button from "../../../../../components/ui/Button";
+// import SocietyHelpDeskHandler from "../../../../../handlers/SocietyHelpDesk";
+// import ReusableTable from "../../../../../components/shared/ReusableTable";
 
-const ApprovalMatrixForm = () => {
-  const paths = ["Socity HelpDesk Management", "Setup", "Approval Matrix"];
-  const Heading = ["Approval Matrix"];
+// const ApprovalMatrixForm = () => {
+//   const paths = ["Socity HelpDesk Management", "Setup", "Approval Matrix"];
+//   const Heading = ["Approval Matrix"];
 
-  const [page, setPage] = useState(0); 
-  const [pageSize, setPageSize] = useState(5); 
-  const [transformedData, setTransformedData] = useState([]);
-  const [totalPages, setTotalPages] = useState(null);
-  const [total, setTotal] = useState(null);
+//   const [page, setPage] = useState(0); 
+//   const [pageSize, setPageSize] = useState(5); 
+//   const [transformedData, setTransformedData] = useState([]);
+//   const [totalPages, setTotalPages] = useState(null);
+//   const [total, setTotal] = useState(null);
 
-  const { accessManagementTable, sendAccessManagementData } =
-    SoftwareHelpDeskHandler();
+//   const { getAssignableUsere, sendAccessManagementData } =
+//     SocietyHelpDeskHandler();
 
-const fetchAccessManagementTable = async () => {
-  try {
-    const result = await accessManagementTable({
-      page,
-      pageSize,
-    });
-
-    // Fix: result already is `res.data` from the handler
-    setTransformedData(result?.data || []);
-    setTotal(result?.total || 0);
-    setTotalPages(result?.totalPages || 0);
-    
-    console.log("access management list", result);
-  } catch (err) {
-    console.error("Error fetching access data:", err);
-  }
-};
-
-
-  useEffect(() => {
-    fetchAccessManagementTable();
-  }, [page, pageSize]);
-
-  // Handle radio button state for each row
-  const handleApprovalChange = (id, value) => {
-    console.log("radio button", value);
-
-    setTransformedData((prevData) =>
-      prevData.map((row) => (row.id === id ? { ...row, approval: value } : row))
-    );
-  };
-
-  // const refreshHandler = () => {
-  //   fetchAccessManagementTable(); 
-  // };
-
-  const columns = [
-    { Header: "Management Committee", accessor: "firstName" },
-    { Header: "Role/Design", accessor: "managementDesignation" },
-    {
-      Header: "Approval",
-      accessor: "approval",
-      Cell: ({ row }) => (
-        console.log("row", row),
-        <div>
-          <label>
-            <input
-              type="radio"
-              name={`approval-${row.original.id}`}
-              value="yes"
-              checked={row.original.approval === "yes"}
-              onChange={() => handleApprovalChange(row.original.id, "yes")}
-            />
-            Yes
-          </label>
-          <label className="ml-4">
-            <input
-              type="radio"
-              name={`approval-${row.original.id}`}
-              value="no"
-              checked={row.original.approval === "no"}
-              onChange={() => handleApprovalChange(row.original.id, "no")}
-            />
-            No
-          </label>
-        </div>
-      ),
-    },
-  ];
-
-  const handleSubmit = () => {
-    console.log("Submitting data:", transformedData);
-    sendAccessManagementData(transformedData);
-  };
-
-//   const handleSubmit = async () => {
+// const fetchAccessManagementTable = async () => {
 //   try {
-//     console.log("Submitting data:", transformedData);
-//     const result = await sendAccessManagementData(transformedData);
-//     console.log("Submission response:", result);
+//     const result = await accessManagementTable({
+//       page,
+//       pageSize,
+//     });
+
+//     // Fix: result already is `res.data` from the handler
+//     setTransformedData(result?.data || []);
+//     setTotal(result?.total || 0);
+//     setTotalPages(result?.totalPages || 0);
+    
+//     console.log("access management list", result);
 //   } catch (err) {
-//     console.error("Submit error:", err);
+//     console.error("Error fetching access data:", err);
 //   }
 // };
 
 
-  return (
-    <div className="px-5 ">
-      <div className="text-sm font-semibold my-2 flex items-center gap-2 text-gray-200">
-        <UrlPath paths={paths} />
-      </div>
-      <PageHeading heading={Heading} />
-      <div className="p-10 my-5 border rounded-lg bg-gray-100">
-        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-          <div>Know your management committee member</div>
+//   useEffect(() => {
+//     fetchAccessManagementTable();
+//   }, [page, pageSize]);
+
+//   // Handle radio button state for each row
+//   const handleApprovalChange = (id, value) => {
+//     console.log("radio button", value);
+
+//     setTransformedData((prevData) =>
+//       prevData.map((row) => (row.id === id ? { ...row, approval: value } : row))
+//     );
+//   };
+
+//   // const refreshHandler = () => {
+//   //   fetchAccessManagementTable(); 
+//   // };
+
+//   const columns = [
+//     { Header: "Management Committee", accessor: "firstName" },
+//     { Header: "Role/Design", accessor: "managementDesignation" },
+//     {
+//       Header: "Approval",
+//       accessor: "approval",
+//       Cell: ({ row }) => (
+//         console.log("row", row),
+//         <div>
+//           <label>
+//             <input
+//               type="radio"
+//               name={`approval-${row.original.id}`}
+//               value="yes"
+//               checked={row.original.approval === "yes"}
+//               onChange={() => handleApprovalChange(row.original.id, "yes")}
+//             />
+//             Yes
+//           </label>
+//           <label className="ml-4">
+//             <input
+//               type="radio"
+//               name={`approval-${row.original.id}`}
+//               value="no"
+//               checked={row.original.approval === "no"}
+//               onChange={() => handleApprovalChange(row.original.id, "no")}
+//             />
+//             No
+//           </label>
+//         </div>
+//       ),
+//     },
+//   ];
+
+//   const handleSubmit = () => {
+//     console.log("Submitting data:", transformedData);
+//     sendAccessManagementData(transformedData);
+//   };
+
+// //   const handleSubmit = async () => {
+// //   try {
+// //     console.log("Submitting data:", transformedData);
+// //     const result = await sendAccessManagementData(transformedData);
+// //     console.log("Submission response:", result);
+// //   } catch (err) {
+// //     console.error("Submit error:", err);
+// //   }
+// // };
+
+
+//   return (
+//     <div className="px-5 ">
+//       <div className="text-sm font-semibold my-2 flex items-center gap-2 text-gray-200">
+//         <UrlPath paths={paths} />
+//       </div>
+//       <PageHeading heading={Heading} />
+//       <div className="p-10 my-5 border rounded-lg bg-gray-100">
+//         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+//           <div>Know your management committee member</div>
         
-          <div className="p-10 my-5 border rounded-lg bg-gray-100">
-            <ReusableTable
-              columns={columns}
-              data={transformedData}
-              pageIndex={page}
-              pageSize={pageSize}
-              totalCount={total}
-              totalPages={totalPages}
-              setPageIndex={(index) => setPage(index)}
-              setPageSize={(size) => setPageSize(size)}
-            />
-          </div>
-        </div>
+//           <div className="p-10 my-5 border rounded-lg bg-gray-100">
+//             <ReusableTable
+//               columns={columns}
+//               data={transformedData}
+//               pageIndex={page}
+//               pageSize={pageSize}
+//               totalCount={total}
+//               totalPages={totalPages}
+//               setPageIndex={(index) => setPage(index)}
+//               setPageSize={(size) => setPageSize(size)}
+//             />
+//           </div>
+//         </div>
 
-        <div className="flex items-center mt-[30px]">
-          <input
-            id="checked-checkbox"
-            type="checkbox"
-            value=""
-            className="w-7 h-7 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-          />
-          <label
-            htmlFor="checked-checkbox"
-            className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-          >
-            YES - Send Notification by Email
-          </label>
-        </div>
-      </div>
+//         <div className="flex items-center mt-[30px]">
+//           <input
+//             id="checked-checkbox"
+//             type="checkbox"
+//             value=""
+//             className="w-7 h-7 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+//           />
+//           <label
+//             htmlFor="checked-checkbox"
+//             className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+//           >
+//             YES - Send Notification by Email
+//           </label>
+//         </div>
+//       </div>
 
-      <div className="flex justify-center mt-5">
-        <Button
-          className="max-w-sm"
-          onClick={handleSubmit}
-          type="submit"
-          size="lg"
-        >
-          Submit
-        </Button>
-      </div>
-    </div>
-  );
-};
+//       <div className="flex justify-center mt-5">
+//         <Button
+//           className="max-w-sm"
+//           onClick={handleSubmit}
+//           type="submit"
+//           size="lg"
+//         >
+//           Submit
+//         </Button>
+//       </div>
+//     </div>
+//   );
+// };
 
-export default ApprovalMatrixForm;
+// export default ApprovalMatrixForm;
 
 
 

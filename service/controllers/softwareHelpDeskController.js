@@ -1,33 +1,29 @@
 // const { Op } = require("sequelize");
-// const {
-//   Ticket_Purpose,
-//   Ticket_Summary,
-//   Ticket_Details,
-//   ref_ticket_status,
-//   User,
-//   Society_HelpDesk_Access_Management,
-//   RoleModel
-// } = require("../models");
-
 // const upload = require("../middleware/upload");
 // const { sendErrorResponse, sendSuccessResponse } = require("../utils/response");
 
+// const {
+//   Software_Ticket_Purpose,
+//   Software_Ticket_Summary,
+//   Software_Ticket_Details,
+//   Software_Ref_Ticket_Status,
+//   Software_HelpDesk_Access_Management,
+//   User,
+//   Role,
+// } = require("../models");
 
-
-
-
-// exports.createRefTicketStatus = async (req, res) => {
+// exports.createSoftwareRefTicketStatus = async (req, res) => {
 //   try {
 //     const { ticket_status_description } = req.body;
 //     if (!ticket_status_description)
 //       return sendErrorResponse(res, "Status description required", 400);
 
-//     const exists = await ref_ticket_status.findOne({
+//     const exists = await Software_Ref_Ticket_Status.findOne({
 //       where: { ticket_status_description },
 //     });
 //     if (exists) return sendErrorResponse(res, "Status already exists", 409);
 
-//     const newStatus = await ref_ticket_status.create({
+//     const newStatus = await Software_Ref_Ticket_Status.create({
 //       ticket_status_description,
 //     });
 //     return sendSuccessResponse(res, "Status created", newStatus, 201);
@@ -37,9 +33,9 @@
 //   }
 // };
 
-// exports.getRefTicketStatus = async (req, res) => {
+// exports.getSoftwareRefTicketStatus = async (req, res) => {
 //   try {
-//     const all = await ref_ticket_status.findAll();
+//     const all = await Software_Ref_Ticket_Status.findAll();
 //     return sendSuccessResponse(res, "Statuses fetched", all, 200);
 //   } catch (err) {
 //     console.error(err);
@@ -47,7 +43,7 @@
 //   }
 // };
 
-// exports.createTicketPurpose = async (req, res) => {
+// exports.createSoftwareTicketPurpose = async (req, res) => {
 //   try {
 //     const { purpose_Details } = req.body;
 //     const { societyId, userId } = req.params;
@@ -55,7 +51,7 @@
 //       return sendErrorResponse(res, "Enter all details", 400);
 //     }
 
-//     const result = await Ticket_Purpose.create({
+//     const result = await Software_Ticket_Purpose.create({
 //       purpose_Details,
 //       societyId,
 //       userId,
@@ -72,83 +68,30 @@
 //   }
 // };
 
-// exports.getTicketPurpose = async (req, res) => {
+// exports.getSoftwareTicketPurpose = async (req, res) => {
 //   try {
 //     const { societyId } = req.params;
 //     const { page = 0, pageSize = 10 } = req.query;
 //     if (!societyId) return sendErrorResponse(res, "Enter Society Id", 400);
 
-//     const { count, rows } = await Ticket_Purpose.findAndCountAll({
+//     const { count, rows } = await Software_Ticket_Purpose.findAndCountAll({
 //       where: { societyId },
 //       limit: +pageSize,
 //       offset: page * pageSize,
 //     });
 
-//     return sendSuccessResponse(
-//       res,
-//       "Ticket purpose list fetched successfully",
-//       {
-//         rows,
-//         total: count,
-//         totalPages: Math.ceil(count / pageSize),
-//       }
-//     );
-//   } catch (err) {
-//     console.error(err);
-//     return sendErrorResponse(res, "Internal server error", 500, err.message);
-//   }
-// };
-
-// exports.updateTicketPurpose = async (req, res) => {
-//   try {
-//     const { ticket_purpose_Id } = req.params;
-//     const [updatedRows] = await Ticket_Purpose.update(req.body, {
-//       where: { ticket_purpose_Id },
+//     return sendSuccessResponse(res, "Ticket purpose list fetched successfully", {
+//       rows,
+//       total: count,
+//       totalPages: Math.ceil(count / pageSize),
 //     });
-
-//     if (!updatedRows)
-//       return sendErrorResponse(
-//         res,
-//         "Ticket purpose not found or no changes made",
-//         404
-//       );
-
-//     return sendSuccessResponse(
-//       res,
-//       "Ticket purpose updated successfully",
-//       null,
-//       200
-//     );
 //   } catch (err) {
 //     console.error(err);
 //     return sendErrorResponse(res, "Internal server error", 500, err.message);
 //   }
 // };
 
-// exports.getTicketListView = async (req, res) => {
-//   try {
-//     const { societyId } = req.params;
-//     if (!societyId)
-//       return sendErrorResponse(res, "Society ID is required", 400);
-
-//     const purposes = await Ticket_Purpose.findAll({
-//       where: { societyId, status: "active" },
-//       attributes: ["ticket_purpose_Id", "purpose_Details"],
-//     });
-
-//     return sendSuccessResponse(
-//       res,
-//       "Ticket list sent successfully",
-//       purposes,
-//       200
-//     );
-//   } catch (err) {
-//     console.error(err);
-//     return sendErrorResponse(res, "Internal server error", 500, err.message);
-//   }
-// };
-
-// exports.createTicket = (req, res) => {
+// exports.createSoftwareTicket = (req, res) => {
 //   upload.fields([{ name: "ticket_attachment_details" }])(
 //     req,
 //     res,
@@ -163,7 +106,6 @@
 //           ticket_purpose_Id,
 //           request_type,
 //         } = req.body;
-
 //         const { userId, societyId } = req.params;
 
 //         if (!ticket_title || !ticket_description || !ticket_purpose_Id)
@@ -173,11 +115,11 @@
 //         if (!user)
 //           return sendErrorResponse(res, "User not found in this society", 404);
 
-//         const purpose = await Ticket_Purpose.findByPk(ticket_purpose_Id);
+//         const purpose = await Software_Ticket_Purpose.findByPk(ticket_purpose_Id);
 //         if (!purpose)
 //           return sendErrorResponse(res, "Invalid ticket purpose", 400);
 
-//         const initialStatus = await ref_ticket_status.findOne({
+//         const initialStatus = await Software_Ref_Ticket_Status.findOne({
 //           where: { ticket_status_description: "NEW" },
 //         });
 //         if (!initialStatus)
@@ -186,7 +128,7 @@
 //         const attachmentFile =
 //           req.files?.ticket_attachment_details?.[0] || null;
 
-//         const summary = await Ticket_Summary.create({
+//         const summary = await Software_Ticket_Summary.create({
 //           ticket_title,
 //           ticket_description,
 //           ticket_purpose_Id,
@@ -196,7 +138,7 @@
 //           ticket_attachment_details: attachmentFile?.filename || null,
 //         });
 
-//         await Ticket_Details.create({
+//         await Software_Ticket_Details.create({
 //           ticket_details_description: ticket_description,
 //           ticket_status_Id: initialStatus.ticket_status_Id,
 //           ticket_Id: summary.ticket_Id,
@@ -219,7 +161,7 @@
 //   );
 // };
 
-// exports.getTicketTable = async (req, res) => {
+// exports.getSoftwareTicketTable = async (req, res) => {
 //   const { userId, societyId } = req.params;
 //   const {
 //     page = 1,
@@ -231,73 +173,65 @@
 //     status,
 //   } = req.query;
 
-//   const offset = (page - 1) * pageSize
+//   const offset = (page - 1) * pageSize;
 
-// const where = {
-//   societyId,
-//   userId,
-//   ...(ticketNumber ? { ticket_Id: Number(ticketNumber) } : {}),
-//   ...(ticketTitle
-//     ? { ticket_title: { [Op.like]: `%${ticketTitle}%` } }
-//     : {}),
-//   ...(startDate && endDate
-//     ? {
-//         createdAt: {
-//           [Op.between]: [
-//             new Date(startDate + "T00:00:00"),
-//             new Date(endDate + "T23:59:59"),
-//           ],
-//         },
-//       }
-//     : startDate
-//     ? {
-//         createdAt: {
-//           [Op.gte]: new Date(startDate + "T00:00:00"),
-//         },
-//       }
-//     : endDate
-//     ? {
-//         createdAt: {
-//           [Op.lte]: new Date(endDate + "T23:59:59"),
-//         },
-//       }
-//     : {}),
-// };
-
+//   const where = {
+//     societyId,
+//     userId,
+//     ...(ticketNumber ? { ticket_Id: Number(ticketNumber) } : {}),
+//     ...(ticketTitle ? { ticket_title: { [Op.like]: `%${ticketTitle}%` } } : {}),
+//     ...(startDate && endDate
+//       ? {
+//           createdAt: {
+//             [Op.between]: [
+//               new Date(startDate + "T00:00:00"),
+//               new Date(endDate + "T23:59:59"),
+//             ],
+//           },
+//         }
+//       : startDate
+//       ? {
+//           createdAt: { [Op.gte]: new Date(startDate + "T00:00:00") },
+//         }
+//       : endDate
+//       ? {
+//           createdAt: { [Op.lte]: new Date(endDate + "T23:59:59") },
+//         }
+//       : {}),
+//   };
 
 //   try {
-//     const tickets = await Ticket_Summary.findAndCountAll({
+//     const tickets = await Software_Ticket_Summary.findAndCountAll({
 //       where,
 //       offset,
 //       limit: parseInt(pageSize),
 //       include: [
 //         {
-//           model: Ticket_Purpose,
+//           model: Software_Ticket_Purpose,
 //           attributes: ["ticket_purpose_Id", "purpose_Details"],
 //         },
 //         {
-//   model: Ticket_Details,
-//   include: [
-//     {
-//       model: ref_ticket_status,
-//       attributes: ["ticket_status_Id", "ticket_status_description"],
-//       ...(status
-//         ? { where: { ticket_status_description: status } }
-//         : {}),
-//     },
-//     {
-//       model: User,
-//       as: "assignedUser",
-//       attributes: ["userId", "firstName", "lastName"] 
-//     },
-//     {
-//       model: User,
-//       as: "updatedUser",
-//       attributes: ["userId", "firstName", "lastName"]
-//     }
-//   ],
-// }
-
+//           model: Software_Ticket_Details,
+//           include: [
+//             {
+//               model: Software_Ref_Ticket_Status,
+//               attributes: ["ticket_status_Id", "ticket_status_description"],
+//               ...(status
+//                 ? { where: { ticket_status_description: status } }
+//                 : {}),
+//             },
+//             {
+//               model: User,
+//               as: "assignedUser",
+//               attributes: ["userId", "firstName", "lastName"],
+//             },
+//             {
+//               model: User,
+//               as: "updatedUser",
+//               attributes: ["userId", "firstName", "lastName"],
+//             },
+//           ],
+//         },
 //       ],
 //       distinct: true,
 //       order: [["ticket_Id", "DESC"]],
@@ -310,31 +244,70 @@
 //   }
 // };
 
-// exports.updateTicketStatusAndRemarks = async (req, res) => {
+// // -------------------- Ticket Update --------------------
+// exports.updateSoftwareTicketStatusAndRemarks = async (req, res) => {
 //   try {
 //     const { ticket_Id } = req.params;
 //     const { userId, assigned_to, ticket_status_description, ticket_comment } =
 //       req.body;
 
-//     if (!ticket_status_description || !userId)
+//     if (!ticket_status_description || !userId) {
 //       return sendErrorResponse(res, "Missing status or userId", 400);
+//     }
 
-//     const ticketSummary = await Ticket_Summary.findByPk(ticket_Id);
-//     if (!ticketSummary) return sendErrorResponse(res, "Ticket not found", 404);
+//     const ticketSummary = await Software_Ticket_Summary.findByPk(ticket_Id);
+//     if (!ticketSummary) {
+//       return sendErrorResponse(res, "Ticket not found", 404);
+//     }
 
-//     const status = await ref_ticket_status.findOne({
+//     const status = await Software_Ref_Ticket_Status.findOne({
 //       where: { ticket_status_description },
 //     });
+//     if (!status) {
+//       return sendErrorResponse(res, "Invalid ticket status", 400);
+//     }
 
-//     if (!status) return sendErrorResponse(res, "Invalid ticket status", 400);
+//     const currentStatus = await Software_Ref_Ticket_Status.findByPk(
+//       ticketSummary.ticket_status_Id
+//     );
+
+//     const validTransitions = {
+//       NEW: ["OPEN"],
+//       OPEN: ["IN-PROGRESS"],
+//       "IN-PROGRESS": ["CLOSE"],
+//       CLOSE: ["REOPEN"],
+//       REOPEN: ["IN-PROGRESS"],
+//     };
+
+//     if (
+//       currentStatus &&
+//       !validTransitions[currentStatus.ticket_status_description]?.includes(
+//         ticket_status_description
+//       )
+//     ) {
+//       return sendErrorResponse(
+//         res,
+//         `Invalid status transition: ${currentStatus.ticket_status_description} → ${ticket_status_description}`,
+//         400
+//       );
+//     }
+
+//     if (!ticket_comment || ticket_comment.trim() === "") {
+//       return sendErrorResponse(
+//         res,
+//         "Remarks are required for status update",
+//         400
+//       );
+//     }
 
 //     const assignedToFinal = assigned_to ?? ticketSummary.assigned_to ?? null;
 
 //     ticketSummary.assigned_to = assignedToFinal;
+//     ticketSummary.ticket_status_Id = status.ticket_status_Id;
 //     ticketSummary.updated_by_user_id = userId;
 //     await ticketSummary.save();
 
-//     const newDetail = await Ticket_Details.create({
+//     const newDetail = await Software_Ticket_Details.create({
 //       ticket_Id,
 //       userId,
 //       societyId: ticketSummary.societyId,
@@ -342,17 +315,13 @@
 //       ticket_comment,
 //       assigned_to: assignedToFinal,
 //       updated_by_user_id: userId,
-//       ticket_details_description:
-//         ticket_comment || `Status changed to ${ticket_status_description}`,
+//       ticket_details_description: ticket_comment,
 //     });
 
 //     return sendSuccessResponse(
 //       res,
 //       "Ticket updated successfully",
-//       {
-//         summary: ticketSummary,
-//         details_log: newDetail,
-//       },
+//       { summary: ticketSummary, details_log: newDetail },
 //       200
 //     );
 //   } catch (err) {
@@ -361,9 +330,973 @@
 //   }
 // };
 
+// // -------------------- Access Management --------------------
+// exports.createSoftwareAccessManagement = async (req, res) => {
+//   try {
+//     const { societyId, userId, approval } = req.body;
+//     if (!societyId || !userId || !approval) {
+//       return res.status(400).json({ message: "All Fields are required" });
+//     }
+//     const result = await Software_HelpDesk_Access_Management.create({
+//       societyId,
+//       userId,
+//       module_Access: approval,
+//       Update_User_Id: userId,
+//     });
+
+//     return sendSuccessResponse(
+//       res,
+//       "Access management created successfully",
+//       result,
+//       201
+//     );
+//   } catch (error) {
+//     console.error("Error creating Software Access:", error);
+//     res.status(500).json({ message: "Error creating Software Access", error });
+//   }
+// };
 
 
 
+
+// const { Op } = require("sequelize");
+// const upload = require("../middleware/upload");
+// const { sendErrorResponse, sendSuccessResponse } = require("../utils/response");
+// const { checkSoftwareUpdateAccess } = require("../utils/softwareacces");
+
+// const {
+//   Software_Ticket_Purpose,
+//   Software_Ticket_Summary,
+//   Software_Ticket_Details,
+//   Software_Ref_Ticket_Status,
+//   Software_HelpDesk_Access_Management,
+//   User,
+// } = require("../models");
+
+// exports.createSoftwareRefTicketStatus = async (req, res) => {
+//   try {
+//     const { ticket_status_description } = req.body;
+//     if (!ticket_status_description)
+//       return sendErrorResponse(res, "Status description required", 400);
+
+//     const exists = await Software_Ref_Ticket_Status.findOne({
+//       where: { ticket_status_description },
+//     });
+//     if (exists) return sendErrorResponse(res, "Status already exists", 409);
+
+//     const newStatus = await Software_Ref_Ticket_Status.create({
+//       ticket_status_description,
+//     });
+//     return sendSuccessResponse(res, "Status created", newStatus, 201);
+//   } catch (err) {
+//     console.error(err);
+//     return sendErrorResponse(res, "Internal server error", 500, err.message);
+//   }
+// };
+
+// exports.getSoftwareRefTicketStatus = async (req, res) => {
+//   try {
+//     const all = await Software_Ref_Ticket_Status.findAll();
+//     return sendSuccessResponse(res, "Statuses fetched", all, 200);
+//   } catch (err) {
+//     console.error(err);
+//     return sendErrorResponse(res, "Internal server error", 500, err.message);
+//   }
+// };
+
+// // -------------------- Ticket Purpose --------------------
+// exports.createSoftwareTicketPurpose = async (req, res) => {
+//   try {
+//     const { purpose_Details } = req.body;
+//     const { societyId, userId } = req.params;
+//     if (!purpose_Details || !societyId || !userId) {
+//       return sendErrorResponse(res, "Enter all details", 400);
+//     }
+
+//     const result = await Software_Ticket_Purpose.create({
+//       purpose_Details,
+//       societyId,
+//       userId,
+//     });
+//     return sendSuccessResponse(
+//       res,
+//       "Ticket purpose created successfully",
+//       result,
+//       201
+//     );
+//   } catch (err) {
+//     console.error(err);
+//     return sendErrorResponse(res, "Internal server error", 500, err.message);
+//   }
+// };
+
+// exports.getSoftwareTicketPurpose = async (req, res) => {
+//   try {
+//     const { societyId } = req.params;
+//     const { page = 0, pageSize = 10 } = req.query;
+//     if (!societyId) return sendErrorResponse(res, "Enter Society Id", 400);
+
+//     const { count, rows } = await Software_Ticket_Purpose.findAndCountAll({
+//       where: { societyId },
+//       limit: +pageSize,
+//       offset: page * pageSize,
+//     });
+
+//     return sendSuccessResponse(res, "Ticket purpose list fetched successfully", {
+//       rows,
+//       total: count,
+//       totalPages: Math.ceil(count / pageSize),
+//     });
+//   } catch (err) {
+//     console.error(err);
+//     return sendErrorResponse(res, "Internal server error", 500, err.message);
+//   }
+// };
+
+// // -------------------- Ticket Create --------------------
+// exports.createSoftwareTicket = (req, res) => {
+//   upload.fields([{ name: "ticket_attachment_details" }])(
+//     req,
+//     res,
+//     async (err) => {
+//       if (err)
+//         return sendErrorResponse(res, "File upload error", 400, err.message);
+
+//       try {
+//         const {
+//           ticket_title,
+//           ticket_description,
+//           ticket_purpose_Id,
+//           request_type,
+//         } = req.body;
+//         const { userId, societyId } = req.params;
+
+//         if (!ticket_title || !ticket_description || !ticket_purpose_Id)
+//           return sendErrorResponse(res, "All fields are required", 400);
+
+//         const user = await User.findOne({ where: { userId, societyId } });
+//         if (!user)
+//           return sendErrorResponse(res, "User not found in this society", 404);
+
+//         const purpose = await Software_Ticket_Purpose.findByPk(ticket_purpose_Id);
+//         if (!purpose)
+//           return sendErrorResponse(res, "Invalid ticket purpose", 400);
+
+//         const initialStatus = await Software_Ref_Ticket_Status.findOne({
+//           where: { ticket_status_description: "NEW" },
+//         });
+//         if (!initialStatus)
+//           return sendErrorResponse(res, "Initial status not configured", 500);
+
+//         const attachmentFile =
+//           req.files?.ticket_attachment_details?.[0] || null;
+
+//         const summary = await Software_Ticket_Summary.create({
+//           ticket_title,
+//           ticket_description,
+//           ticket_purpose_Id,
+//           request_type,
+//           userId,
+//           societyId,
+//           ticket_attachment_details: attachmentFile?.filename || null,
+//         });
+
+//         await Software_Ticket_Details.create({
+//           ticket_details_description: ticket_description,
+//           ticket_status_Id: initialStatus.ticket_status_Id,
+//           ticket_Id: summary.ticket_Id,
+//           userId,
+//           societyId,
+//           ticket_comment: "Ticket created successfully",
+//           ticket_attachment_details: attachmentFile?.filename || null,
+//         });
+
+//         return sendSuccessResponse(res, summary, "Ticket created successfully");
+//       } catch (error) {
+//         return sendErrorResponse(
+//           res,
+//           "Failed to create ticket",
+//           500,
+//           error.message
+//         );
+//       }
+//     }
+//   );
+// };
+
+// // -------------------- Ticket Table --------------------
+// exports.getSoftwareTicketTable = async (req, res) => {
+//   const { userId, societyId } = req.params;
+//   const {
+//     page = 1,
+//     pageSize = 10,
+//     ticketNumber,
+//     ticketTitle,
+//     startDate,
+//     endDate,
+//     status,
+//   } = req.query;
+
+//   const offset = (page - 1) * pageSize;
+
+//   const where = {
+//     societyId,
+//     userId, // super_admin_it can override in middleware if needed
+//     ...(ticketNumber ? { ticket_Id: Number(ticketNumber) } : {}),
+//     ...(ticketTitle ? { ticket_title: { [Op.like]: `%${ticketTitle}%` } } : {}),
+//     ...(startDate && endDate
+//       ? {
+//           createdAt: {
+//             [Op.between]: [
+//               new Date(startDate + "T00:00:00"),
+//               new Date(endDate + "T23:59:59"),
+//             ],
+//           },
+//         }
+//       : startDate
+//       ? {
+//           createdAt: { [Op.gte]: new Date(startDate + "T00:00:00") },
+//         }
+//       : endDate
+//       ? {
+//           createdAt: { [Op.lte]: new Date(endDate + "T23:59:59") },
+//         }
+//       : {}),
+//   };
+
+//   try {
+//     const tickets = await Software_Ticket_Summary.findAndCountAll({
+//       where,
+//       offset,
+//       limit: parseInt(pageSize),
+//       include: [
+//         {
+//           model: Software_Ticket_Purpose,
+//           attributes: ["ticket_purpose_Id", "purpose_Details"],
+//         },
+//         {
+//           model: Software_Ticket_Details,
+//           include: [
+//             {
+//               model: Software_Ref_Ticket_Status,
+//               attributes: ["ticket_status_Id", "ticket_status_description"],
+//               ...(status
+//                 ? { where: { ticket_status_description: status } }
+//                 : {}),
+//             },
+//             {
+//               model: User,
+//               as: "assignedUser",
+//               attributes: ["userId", "firstName", "lastName"],
+//             },
+//             {
+//               model: User,
+//               as: "updatedUser",
+//               attributes: ["userId", "firstName", "lastName"],
+//             },
+//           ],
+//         },
+//       ],
+//       distinct: true,
+//       order: [["ticket_Id", "DESC"]],
+//     });
+
+//     res.status(200).json({ success: true, data: tickets });
+//   } catch (error) {
+//     console.error("Error fetching tickets:", error);
+//     res.status(500).json({ success: false, message: "Server Error" });
+//   }
+// };
+
+// // -------------------- Ticket Update --------------------
+// exports.updateSoftwareTicketStatusAndRemarks = async (req, res) => {
+//   try {
+//     const { ticket_Id } = req.params;
+//     const { userId, assigned_to, ticket_status_description, ticket_comment } =
+//       req.body;
+
+//     const canUpdate = await checkSoftwareUpdateAccess(userId);
+//     if (!canUpdate) {
+//       return sendErrorResponse(res, "Not allowed to update ticket", 403);
+//     }
+
+//     if (!ticket_status_description || !userId) {
+//       return sendErrorResponse(res, "Missing status or userId", 400);
+//     }
+
+//     const ticketSummary = await Software_Ticket_Summary.findByPk(ticket_Id);
+//     if (!ticketSummary) {
+//       return sendErrorResponse(res, "Ticket not found", 404);
+//     }
+
+//     const status = await Software_Ref_Ticket_Status.findOne({
+//       where: { ticket_status_description },
+//     });
+//     if (!status) {
+//       return sendErrorResponse(res, "Invalid ticket status", 400);
+//     }
+
+//     const currentStatus = await Software_Ref_Ticket_Status.findByPk(
+//       ticketSummary.ticket_status_Id
+//     );
+
+//     const validTransitions = {
+//       NEW: ["OPEN"],
+//       OPEN: ["IN-PROGRESS"],
+//       "IN-PROGRESS": ["CLOSE"],
+//       CLOSE: ["REOPEN"],
+//       REOPEN: ["IN-PROGRESS"],
+//     };
+
+//     if (
+//       currentStatus &&
+//       !validTransitions[currentStatus.ticket_status_description]?.includes(
+//         ticket_status_description
+//       )
+//     ) {
+//       return sendErrorResponse(
+//         res,
+//         `Invalid status transition: ${currentStatus.ticket_status_description} → ${ticket_status_description}`,
+//         400
+//       );
+//     }
+
+//     if (!ticket_comment || ticket_comment.trim() === "") {
+//       return sendErrorResponse(
+//         res,
+//         "Remarks are required for status update",
+//         400
+//       );
+//     }
+
+//     const assignedToFinal = assigned_to ?? ticketSummary.assigned_to ?? null;
+
+//     ticketSummary.assigned_to = assignedToFinal;
+//     ticketSummary.ticket_status_Id = status.ticket_status_Id;
+//     ticketSummary.updated_by_user_id = userId;
+//     await ticketSummary.save();
+
+//     const newDetail = await Software_Ticket_Details.create({
+//       ticket_Id,
+//       userId,
+//       societyId: ticketSummary.societyId,
+//       ticket_status_Id: status.ticket_status_Id,
+//       ticket_comment,
+//       assigned_to: assignedToFinal,
+//       updated_by_user_id: userId,
+//       ticket_details_description: ticket_comment,
+//     });
+
+//     return sendSuccessResponse(
+//       res,
+//       "Ticket updated successfully",
+//       { summary: ticketSummary, details_log: newDetail },
+//       200
+//     );
+//   } catch (err) {
+//     console.error(err);
+//     return sendErrorResponse(res, "Failed to update ticket", 500, err.message);
+//   }
+// };
+
+// // -------------------- Access Management --------------------
+// exports.createSoftwareAccessManagement = async (req, res) => {
+//   try {
+//     const { societyId, userId, approval } = req.body;
+
+//     const canUpdate = await checkSoftwareUpdateAccess(userId);
+//     if (!canUpdate) {
+//       return sendErrorResponse(res, "Not allowed to manage access", 403);
+//     }
+
+//     if (!societyId || !userId || !approval) {
+//       return res.status(400).json({ message: "All Fields are required" });
+//     }
+//     const result = await Software_HelpDesk_Access_Management.create({
+//       societyId,
+//       userId,
+//       module_Access: approval,
+//       Update_User_Id: userId,
+//     });
+
+//     return sendSuccessResponse(
+//       res,
+//       "Access management created successfully",
+//       result,
+//       201
+//     );
+//   } catch (error) {
+//     console.error("Error creating Software Access:", error);
+//     res.status(500).json({ message: "Error creating Software Access", error });
+//   }
+// };
+
+// // -------------------- Access Management Members --------------------
+// exports.getAccessManagementMember = async (req, res) => {
+//   try {
+//     const { societyId } = req.params;
+//     if (!societyId) {
+//       return sendErrorResponse(res, "societyId is required", 400);
+//     }
+
+//     const members = await Society_HelpDesk_Access_Management.findAll({
+//       where: { societyId },
+//       include: [
+//         {
+//           model: User,
+//           attributes: ["userId", "firstName", "lastName", "email", "mobile"],
+//         },
+//       ],
+//       order: [["createdAt", "DESC"]],
+//     });
+
+//     return sendSuccessResponse(
+//       res,
+//       "Access management members fetched successfully",
+//       members,
+//       200
+//     );
+//   } catch (error) {
+//     console.error("Error fetching access management members:", error);
+//     return sendErrorResponse(
+//       res,
+//       "Failed to fetch access management members",
+//       500,
+//       error.message
+//     );
+//   }
+// };
+
+
+
+
+// const { Op } = require("sequelize");
+// const upload = require("../middleware/upload");
+// const { sendErrorResponse, sendSuccessResponse } = require("../utils/response");
+// const { checkCreatorAccess,checkSoftwareUpdateAccess } = require("../utils/access");
+
+// const {
+//   Software_Ticket_Purpose,
+//   Software_Ticket_Summary,
+//   Software_Ticket_Details,
+//   Software_Ref_Ticket_Status,
+//   Software_HelpDesk_Access_Management,
+//   User,
+//   Role,
+// } = require("../models");
+
+// exports.createSoftwareRefTicketStatus = async (req, res) => {
+//   try {
+//     const { ticket_status_description } = req.body;
+//     if (!ticket_status_description)
+//       return sendErrorResponse(res, "Status description required", 400);
+
+//     const exists = await Software_Ref_Ticket_Status.findOne({
+//       where: { ticket_status_description },
+//     });
+//     if (exists) return sendErrorResponse(res, "Status already exists", 409);
+
+//     const newStatus = await Software_Ref_Ticket_Status.create({
+//       ticket_status_description,
+//     });
+//     return sendSuccessResponse(res, "Status created", newStatus, 201);
+//   } catch (err) {
+//     console.error(err);
+//     return sendErrorResponse(res, "Internal server error", 500, err.message);
+//   }
+// };
+
+// exports.getSoftwareRefTicketStatus = async (req, res) => {
+//   try {
+//     const all = await Software_Ref_Ticket_Status.findAll();
+//     return sendSuccessResponse(res, "Statuses fetched", all, 200);
+//   } catch (err) {
+//     console.error(err);
+//     return sendErrorResponse(res, "Internal server error", 500, err.message);
+//   }
+// };
+
+// exports.createSoftwareTicketPurpose = async (req, res) => {
+//   try {
+//     const { purpose_Details } = req.body;
+//     const { societyId, userId } = req.params;
+//     if (!purpose_Details || !societyId || !userId) {
+//       return sendErrorResponse(res, "Enter all details", 400);
+//     }
+
+//     const result = await Software_Ticket_Purpose.create({
+//       purpose_Details,
+//       societyId,
+//       userId,
+//     });
+//     return sendSuccessResponse(
+//       res,
+//       "Ticket purpose created successfully",
+//       result,
+//       201
+//     );
+//   } catch (err) {
+//     console.error(err);
+//     return sendErrorResponse(res, "Internal server error", 500, err.message);
+//   }
+// };
+
+// exports.getSoftwareTicketPurpose = async (req, res) => {
+//   try {
+//     const { societyId } = req.params;
+//     const { page = 0, pageSize = 10 } = req.query;
+//     if (!societyId) return sendErrorResponse(res, "Enter Society Id", 400);
+
+//     const { count, rows } = await Software_Ticket_Purpose.findAndCountAll({
+//       where: { societyId },
+//       limit: +pageSize,
+//       offset: page * pageSize,
+//     });
+
+//     return sendSuccessResponse(
+//       res,
+//       "Ticket purpose list fetched successfully",
+//       {
+//         rows,
+//         total: count,
+//         totalPages: Math.ceil(count / pageSize),
+//       }
+//     );
+//   } catch (err) {
+//     console.error(err);
+//     return sendErrorResponse(res, "Internal server error", 500, err.message);
+//   }
+// };
+
+// exports.updateSoftwareTicketPurpose = async (req, res) => {
+//   try {
+//     const { ticket_purpose_Id } = req.params;
+//     const [updatedRows] = await Software_Ticket_Purpose.update(req.body, {
+//       where: { ticket_purpose_Id },
+//     });
+
+//     if (!updatedRows)
+//       return sendErrorResponse(
+//         res,
+//         "Ticket purpose not found or no changes made",
+//         404
+//       );
+
+//     return sendSuccessResponse(
+//       res,
+//       "Ticket purpose updated successfully",
+//       null,
+//       200
+//     );
+//   } catch (err) {
+//     console.error(err);
+//     return sendErrorResponse(res, "Internal server error", 500, err.message);
+//   }
+// };
+
+// exports.getSoftwareTicketListView = async (req, res) => {
+//   try {
+//     const { societyId } = req.params;
+//     if (!societyId)
+//       return sendErrorResponse(res, "Society ID is required", 400);
+
+//     const purposes = await Software_Ticket_Purpose.findAll({
+//       where: { societyId, status: "active" },
+//       attributes: ["ticket_purpose_Id", "purpose_Details"],
+//     });
+
+//     return sendSuccessResponse(
+//       res,
+//       "Ticket list sent successfully",
+//       purposes,
+//       200
+//     );
+//   } catch (err) {
+//     console.error(err);
+//     return sendErrorResponse(res, "Internal server error", 500, err.message);
+//   }
+// };
+
+// exports.createSoftwareTicket = (req, res) => {
+//   upload.fields([{ name: "ticket_attachment_details" }])(
+//     req,
+//     res,
+//     async (err) => {
+//       if (err)
+//         return sendErrorResponse(res, "File upload error", 400, err.message);
+
+//       try {
+//         const {
+//           ticket_title,
+//           ticket_description,
+//           ticket_purpose_Id,
+//           request_type,
+//         } = req.body;
+
+//         const { userId, societyId } = req.params;
+
+//         const canAccess = await checkCreatorAccess(userId);
+//         if (!canAccess)
+//           return sendErrorResponse(
+//             res,
+//             "User not allowed to create tickets",
+//             403
+//           );
+
+//         if (!ticket_title || !ticket_description || !ticket_purpose_Id)
+//           return sendErrorResponse(res, "All fields are required", 400);
+
+//         const user = await User.findOne({ where: { userId, societyId } });
+//         if (!user)
+//           return sendErrorResponse(res, "User not found in this society", 404);
+
+//         const purpose = await Software_Ticket_Purpose.findByPk(ticket_purpose_Id);
+//         if (!purpose)
+//           return sendErrorResponse(res, "Invalid ticket purpose", 400);
+
+//         const initialStatus = await Software_Ref_Ticket_Status.findOne({
+//           where: { ticket_status_description: "NEW" },
+//         });
+//         if (!initialStatus)
+//           return sendErrorResponse(res, "Initial status not configured", 500);
+
+//         const attachmentFile =
+//           req.files?.ticket_attachment_details?.[0] || null;
+
+//         const summary = await Software_Ticket_Summary.create({
+//           ticket_title,
+//           ticket_description,
+//           ticket_purpose_Id,
+//           request_type,
+//           userId,
+//           societyId,
+//           ticket_attachment_details: attachmentFile?.filename || null,
+//         });
+
+//         await Software_Ticket_Details.create({
+//           ticket_details_description: ticket_description,
+//           ticket_status_Id: initialStatus.ticket_status_Id,
+//           ticket_Id: summary.ticket_Id,
+//           userId,
+//           societyId,
+//           ticket_comment: "Ticket created successfully",
+//           ticket_attachment_details: attachmentFile?.filename || null,
+//         });
+
+//         return sendSuccessResponse(res, summary, "Ticket created successfully");
+//       } catch (error) {
+//         return sendErrorResponse(
+//           res,
+//           "Failed to create ticket",
+//           500,
+//           error.message
+//         );
+//       }
+//     }
+//   );
+// };
+
+
+// exports.getSoftwareTicketTable = async (req, res) => {
+//   const { userId, societyId } = req.params;
+//   const {
+//     page = 1,
+//     pageSize = 10,
+//     ticketNumber,
+//     ticketTitle,
+//     startDate,
+//     endDate,
+//     status,
+//   } = req.query;
+
+//   const offset = (page - 1) * pageSize;
+
+//   const where = {
+//     societyId,
+//     userId,
+//     ...(ticketNumber ? { ticket_Id: Number(ticketNumber) } : {}),
+//     ...(ticketTitle ? { ticket_title: { [Op.like]: `%${ticketTitle}%` } } : {}),
+//     ...(startDate && endDate
+//       ? {
+//           createdAt: {
+//             [Op.between]: [
+//               new Date(startDate + "T00:00:00"),
+//               new Date(endDate + "T23:59:59"),
+//             ],
+//           },
+//         }
+//       : startDate
+//       ? {
+//           createdAt: { [Op.gte]: new Date(startDate + "T00:00:00") },
+//         }
+//       : endDate
+//       ? {
+//           createdAt: { [Op.lte]: new Date(endDate + "T23:59:59") },
+//         }
+//       : {}),
+//   };
+
+//   try {
+//     const tickets = await Software_Ticket_Summary.findAndCountAll({
+//       where,
+//       offset,
+//       limit: parseInt(pageSize),
+//       include: [
+//         {
+//           model: Software_Ticket_Purpose,
+//           attributes: ["ticket_purpose_Id", "purpose_Details"],
+//         },
+//         {
+//           model: Software_Ticket_Details,
+//           include: [
+//             {
+//               model: Software_Ref_Ticket_Status,
+//               attributes: ["ticket_status_Id", "ticket_status_description"],
+//               ...(status
+//                 ? { where: { ticket_status_description: status } }
+//                 : {}),
+//             },
+//             {
+//               model: User,
+//               as: "assignedUser",
+//               attributes: ["userId", "firstName", "lastName"],
+//             },
+//             {
+//               model: User,
+//               as: "updatedUser",
+//               attributes: ["userId", "firstName", "lastName"],
+//             },
+//           ],
+//         },
+//       ],
+//       distinct: true,
+//       order: [["ticket_Id", "DESC"]],
+//     });
+
+//     res.status(200).json({ success: true, data: tickets });
+//   } catch (error) {
+//     console.error("Error fetching tickets:", error);
+//     res.status(500).json({ success: false, message: "Server Error" });
+//   }
+// };
+
+// // exports.updateSoftwareTicketStatusAndRemarks = async (req, res) => {
+// //   try {
+// //     const { ticket_Id } = req.params;
+// //     const { userId, assigned_to, ticket_status_description, ticket_comment } =
+// //       req.body;
+
+// //     const canUpdate = await checkSoftwareUpdateAccess(userId);
+// //     if (!canUpdate) {
+// //       return sendErrorResponse(res, "Not allowed to update ticket", 403);
+// //     }
+
+// //     if (!ticket_status_description || !userId) {
+// //       return sendErrorResponse(res, "Missing status or userId", 400);
+// //     }
+
+// //     const ticketSummary = await Software_Ticket_Summary.findByPk(ticket_Id);
+// //     if (!ticketSummary) {
+// //       return sendErrorResponse(res, "Ticket not found", 404);
+// //     }
+
+// //     const status = await Software_Ref_Ticket_Status.findOne({
+// //       where: { ticket_status_description },
+// //     });
+// //     if (!status) {
+// //       return sendErrorResponse(res, "Invalid ticket status", 400);
+// //     }
+
+// //     const currentStatus = await Software_Ref_Ticket_Status.findByPk(
+// //       ticketSummary.ticket_status_Id
+// //     );
+
+// //     const validTransitions = {
+// //       NEW: ["OPEN"],
+// //       OPEN: ["IN-PROGRESS"],
+// //       "IN-PROGRESS": ["CLOSE"],
+// //       CLOSE: ["REOPEN"],
+// //       REOPEN: ["IN-PROGRESS"],
+// //     };
+
+// //     if (
+// //       currentStatus &&
+// //       !validTransitions[currentStatus.ticket_status_description]?.includes(
+// //         ticket_status_description
+// //       )
+// //     ) {
+// //       return sendErrorResponse(
+// //         res,
+// //         `Invalid status transition: ${currentStatus.ticket_status_description} → ${ticket_status_description}`,
+// //         400
+// //       );
+// //     }
+
+// //     if (!ticket_comment || ticket_comment.trim() === "") {
+// //       return sendErrorResponse(
+// //         res,
+// //         "Remarks are required for status update",
+// //         400
+// //       );
+// //     }
+
+// //     const assignedToFinal = assigned_to ?? ticketSummary.assigned_to ?? null;
+
+// //     ticketSummary.assigned_to = assignedToFinal;
+// //     ticketSummary.ticket_status_Id = status.ticket_status_Id;
+// //     ticketSummary.updated_by_user_id = userId;
+// //     await ticketSummary.save();
+
+// //     const newDetail = await Software_Ticket_Details.create({
+// //       ticket_Id,
+// //       userId,
+// //       societyId: ticketSummary.societyId,
+// //       ticket_status_Id: status.ticket_status_Id,
+// //       ticket_comment,
+// //       assigned_to: assignedToFinal,
+// //       updated_by_user_id: userId,
+// //       ticket_details_description: ticket_comment,
+// //     });
+
+// //     return sendSuccessResponse(
+// //       res,
+// //       "Ticket updated successfully",
+// //       { summary: ticketSummary, details_log: newDetail },
+// //       200
+// //     );
+// //   } catch (err) {
+// //     console.error(err);
+// //     return sendErrorResponse(res, "Failed to update ticket", 500, err.message);
+// //   }
+// // };
+
+
+
+
+// exports.updateSoftwareTicketStatusAndRemarks = async (req, res) => {
+//   try {
+//     const { ticket_Id } = req.params;
+//     const { userId, assigned_to, ticket_status_description, ticket_comment } =
+//       req.body;
+
+//     const canUpdate = await checkSoftwareUpdateAccess(userId);
+//     if (!canUpdate) {
+//       return sendErrorResponse(res, "Not allowed to update ticket", 403);
+//     }
+
+//     if (!ticket_status_description || !userId) {
+//       return sendErrorResponse(res, "Missing status or userId", 400);
+//     }
+
+//     const ticketSummary = await Software_Ticket_Summary.findByPk(ticket_Id);
+//     if (!ticketSummary) {
+//       return sendErrorResponse(res, "Ticket not found", 404);
+//     }
+
+//     const status = await Software_Ref_Ticket_Status.findOne({
+//       where: { ticket_status_description },
+//     });
+//     if (!status) {
+//       return sendErrorResponse(res, "Invalid ticket status", 400);
+//     }
+
+//     // ✅ Safely resolve current status
+//     let currentStatus = null;
+//     if (ticketSummary.ticket_status_Id) {
+//       currentStatus = await Software_Ref_Ticket_Status.findByPk(
+//         ticketSummary.ticket_status_Id
+//       );
+//     }
+
+//     const validTransitions = {
+//       NEW: ["OPEN"],
+//       OPEN: ["IN-PROGRESS"],
+//       "IN-PROGRESS": ["CLOSE"],
+//       CLOSE: ["REOPEN"],
+//       REOPEN: ["IN-PROGRESS"],
+//     };
+
+//     if (
+//       currentStatus &&
+//       !validTransitions[currentStatus.ticket_status_description]?.includes(
+//         ticket_status_description
+//       )
+//     ) {
+//       return sendErrorResponse(
+//         res,
+//         `Invalid status transition: ${currentStatus.ticket_status_description} → ${ticket_status_description}`,
+//         400
+//       );
+//     }
+
+//     if (!ticket_comment || ticket_comment.trim() === "") {
+//       return sendErrorResponse(
+//         res,
+//         "Remarks are required for status update",
+//         400
+//       );
+//     }
+
+//     const assignedToFinal = assigned_to ?? ticketSummary.assigned_to ?? null;
+
+//     ticketSummary.assigned_to = assignedToFinal;
+//     ticketSummary.ticket_status_Id = status.ticket_status_Id; // ✅ always updated safely
+//     ticketSummary.updated_by_user_id = userId;
+//     await ticketSummary.save();
+
+//     const newDetail = await Software_Ticket_Details.create({
+//       ticket_Id,
+//       userId,
+//       societyId: ticketSummary.societyId,
+//       ticket_status_Id: status.ticket_status_Id,
+//       ticket_comment,
+//       assigned_to: assignedToFinal,
+//       updated_by_user_id: userId,
+//       ticket_details_description: ticket_comment,
+//     });
+
+//     return sendSuccessResponse(
+//       res,
+//       "Ticket updated successfully",
+//       { summary: ticketSummary, details_log: newDetail },
+//       200
+//     );
+//   } catch (err) {
+//     console.error(err);
+//     return sendErrorResponse(res, "Failed to update ticket", 500, err.message);
+//   }
+// };
+
+// exports.createSoftwareAccessManagement = async (req, res) => {
+//   try {
+//     const { societyId, userId, approval } = req.body;
+
+//     const canUpdate = await checkSoftwareUpdateAccess(userId);
+//     if (!canUpdate) {
+//       return sendErrorResponse(res, "Not allowed to manage access", 403);
+//     }
+
+//     if (!societyId || !userId || !approval) {
+//       return res.status(400).json({ message: "All Fields are required" });
+//     }
+//     const result = await Software_HelpDesk_Access_Management.create({
+//       societyId,
+//       userId,
+//       module_Access: approval,
+//       Update_User_Id: userId,
+//     });
+
+//     return sendSuccessResponse(
+//       res,
+//       "Access management created successfully",
+//       result,
+//       201
+//     );
+//   } catch (error) {
+//     console.error("Error creating Software Access:", error);
+//     res.status(500).json({ message: "Error creating Software Access", error });
+//   }
+// };
 
 // exports.getAccessManagementMember = async (req, res) => {
 //   try {
@@ -375,21 +1308,15 @@
 //       return sendErrorResponse(res, "Enter Socity Id", 400);
 //     }
 
-//     //   pagination handler
 //     const pagination = {
 //       page: parseInt(req.query.page) || 0,
 //       pageSize: parseInt(req.query.pageSize) || 10,
 //     };
 //     const whereClause = { isManagementCommittee: true };
-//     // if (disscussionheading) {
-//     //   whereClause.noticeHeading = { [Op.like]: `%${disscussionheading}%` }; // Case-insensitive search
-//     // }
+
 //     if (societyId) {
 //       whereClause.societyId = societyId;
 //     }
-//     // if (userGroupId) {
-//     //   whereClause.userGroupId = userGroupId;
-//     // }
 
 //     const { count, rows } = await User.findAndCountAll({
 //       where: whereClause,
@@ -409,65 +1336,35 @@
 //   }
 // };
 
-// exports.createAccessManagementtable = async (req, res) => {
-//   console.log("create Access Management table");
-//   try {
-//     console.log("Access management table created table", req.body);
-//     const { societyId, userId, approval } = req.body;
-//     if (!societyId || !userId || !approval) {
-//       return res.status(400).json({ message: "All Fields are required" });
-//     }
-//     const result = await Society_HelpDesk_Access_Management.create({
-//       societyId: societyId,
-//       userId: userId,
-//       module_Access: approval,
-//       Update_User_Id: userId,
-//     });
-//     // console.log(result);
-
-//     return sendSuccessResponse(
-//       res,
-//       "access management created successfully",
-//       result,
-//       201
-//     );
-//   } catch (error) {
-//     console.error("Error creating RefUserGroup:", error);
-//     res.status(500).json({ message: "Error creating RefUserGroup", error });
-//   }
-// };
-
-
-
-
 
 const { Op } = require("sequelize");
-const {
-  Ticket_Purpose,
-  Ticket_Summary,
-  Ticket_Details,
-  ref_ticket_status,
-  User,
-  Society_HelpDesk_Access_Management,
-} = require("../models");
-
 const upload = require("../middleware/upload");
 const { sendErrorResponse, sendSuccessResponse } = require("../utils/response");
-const { checkTicketAccess, checkTicketUpdateAccess } = require("../utils/access");
+const { checkCreatorAccess, checkSoftwareUpdateAccess } = require("../utils/access");
 
+const {
+  Software_Ticket_Purpose,
+  Software_Ticket_Summary,
+  Software_Ticket_Details,
+  Software_Ref_Ticket_Status,
+  Software_HelpDesk_Access_Management,
+  User,
+  Role,
+} = require("../models");
 
-exports.createRefTicketStatus = async (req, res) => {
+// ------------------- Ticket Status -------------------
+exports.createSoftwareRefTicketStatus = async (req, res) => {
   try {
     const { ticket_status_description } = req.body;
     if (!ticket_status_description)
       return sendErrorResponse(res, "Status description required", 400);
 
-    const exists = await ref_ticket_status.findOne({
+    const exists = await Software_Ref_Ticket_Status.findOne({
       where: { ticket_status_description },
     });
     if (exists) return sendErrorResponse(res, "Status already exists", 409);
 
-    const newStatus = await ref_ticket_status.create({
+    const newStatus = await Software_Ref_Ticket_Status.create({
       ticket_status_description,
     });
     return sendSuccessResponse(res, "Status created", newStatus, 201);
@@ -477,9 +1374,9 @@ exports.createRefTicketStatus = async (req, res) => {
   }
 };
 
-exports.getRefTicketStatus = async (req, res) => {
+exports.getSoftwareRefTicketStatus = async (req, res) => {
   try {
-    const all = await ref_ticket_status.findAll();
+    const all = await Software_Ref_Ticket_Status.findAll();
     return sendSuccessResponse(res, "Statuses fetched", all, 200);
   } catch (err) {
     console.error(err);
@@ -487,7 +1384,8 @@ exports.getRefTicketStatus = async (req, res) => {
   }
 };
 
-exports.createTicketPurpose = async (req, res) => {
+// ------------------- Ticket Purpose -------------------
+exports.createSoftwareTicketPurpose = async (req, res) => {
   try {
     const { purpose_Details } = req.body;
     const { societyId, userId } = req.params;
@@ -495,7 +1393,7 @@ exports.createTicketPurpose = async (req, res) => {
       return sendErrorResponse(res, "Enter all details", 400);
     }
 
-    const result = await Ticket_Purpose.create({
+    const result = await Software_Ticket_Purpose.create({
       purpose_Details,
       societyId,
       userId,
@@ -512,13 +1410,13 @@ exports.createTicketPurpose = async (req, res) => {
   }
 };
 
-exports.getTicketPurpose = async (req, res) => {
+exports.getSoftwareTicketPurpose = async (req, res) => {
   try {
     const { societyId } = req.params;
     const { page = 0, pageSize = 10 } = req.query;
     if (!societyId) return sendErrorResponse(res, "Enter Society Id", 400);
 
-    const { count, rows } = await Ticket_Purpose.findAndCountAll({
+    const { count, rows } = await Software_Ticket_Purpose.findAndCountAll({
       where: { societyId },
       limit: +pageSize,
       offset: page * pageSize,
@@ -539,10 +1437,10 @@ exports.getTicketPurpose = async (req, res) => {
   }
 };
 
-exports.updateTicketPurpose = async (req, res) => {
+exports.updateSoftwareTicketPurpose = async (req, res) => {
   try {
     const { ticket_purpose_Id } = req.params;
-    const [updatedRows] = await Ticket_Purpose.update(req.body, {
+    const [updatedRows] = await Software_Ticket_Purpose.update(req.body, {
       where: { ticket_purpose_Id },
     });
 
@@ -565,13 +1463,13 @@ exports.updateTicketPurpose = async (req, res) => {
   }
 };
 
-exports.getTicketListView = async (req, res) => {
+exports.getSoftwareTicketListView = async (req, res) => {
   try {
     const { societyId } = req.params;
     if (!societyId)
       return sendErrorResponse(res, "Society ID is required", 400);
 
-    const purposes = await Ticket_Purpose.findAll({
+    const purposes = await Software_Ticket_Purpose.findAll({
       where: { societyId, status: "active" },
       attributes: ["ticket_purpose_Id", "purpose_Details"],
     });
@@ -588,7 +1486,8 @@ exports.getTicketListView = async (req, res) => {
   }
 };
 
-exports.createTicket = (req, res) => {
+// ------------------- Create Ticket -------------------
+exports.createSoftwareTicket = (req, res) => {
   upload.fields([{ name: "ticket_attachment_details" }])(
     req,
     res,
@@ -606,9 +1505,13 @@ exports.createTicket = (req, res) => {
 
         const { userId, societyId } = req.params;
 
-        const canAccess = await checkTicketAccess(userId);
+        const canAccess = await checkCreatorAccess(userId);
         if (!canAccess)
-          return sendErrorResponse(res, "User not allowed to create tickets", 403);
+          return sendErrorResponse(
+            res,
+            "User not allowed to create tickets",
+            403
+          );
 
         if (!ticket_title || !ticket_description || !ticket_purpose_Id)
           return sendErrorResponse(res, "All fields are required", 400);
@@ -617,11 +1520,11 @@ exports.createTicket = (req, res) => {
         if (!user)
           return sendErrorResponse(res, "User not found in this society", 404);
 
-        const purpose = await Ticket_Purpose.findByPk(ticket_purpose_Id);
+        const purpose = await Software_Ticket_Purpose.findByPk(ticket_purpose_Id);
         if (!purpose)
           return sendErrorResponse(res, "Invalid ticket purpose", 400);
 
-        const initialStatus = await ref_ticket_status.findOne({
+        const initialStatus = await Software_Ref_Ticket_Status.findOne({
           where: { ticket_status_description: "NEW" },
         });
         if (!initialStatus)
@@ -630,17 +1533,18 @@ exports.createTicket = (req, res) => {
         const attachmentFile =
           req.files?.ticket_attachment_details?.[0] || null;
 
-        const summary = await Ticket_Summary.create({
+        const summary = await Software_Ticket_Summary.create({
           ticket_title,
           ticket_description,
           ticket_purpose_Id,
           request_type,
           userId,
           societyId,
+          ticket_status_Id: initialStatus.ticket_status_Id, 
           ticket_attachment_details: attachmentFile?.filename || null,
         });
 
-        await Ticket_Details.create({
+        await Software_Ticket_Details.create({
           ticket_details_description: ticket_description,
           ticket_status_Id: initialStatus.ticket_status_Id,
           ticket_Id: summary.ticket_Id,
@@ -650,8 +1554,9 @@ exports.createTicket = (req, res) => {
           ticket_attachment_details: attachmentFile?.filename || null,
         });
 
-        return sendSuccessResponse(res, summary, "Ticket created successfully");
+        return sendSuccessResponse(res, "Ticket created successfully", summary); 
       } catch (error) {
+        console.error(error);
         return sendErrorResponse(
           res,
           "Failed to create ticket",
@@ -663,7 +1568,8 @@ exports.createTicket = (req, res) => {
   );
 };
 
-exports.getTicketTable = async (req, res) => {
+// ------------------- Ticket Table -------------------
+exports.getSoftwareTicketTable = async (req, res) => {
   const { userId, societyId } = req.params;
   const {
     page = 1,
@@ -675,19 +1581,13 @@ exports.getTicketTable = async (req, res) => {
     status,
   } = req.query;
 
-  const canAccess = await checkTicketAccess(userId);
-  if (!canAccess)
-    return sendErrorResponse(res, "User not allowed to view tickets", 403);
-
   const offset = (page - 1) * pageSize;
 
   const where = {
     societyId,
     userId,
     ...(ticketNumber ? { ticket_Id: Number(ticketNumber) } : {}),
-    ...(ticketTitle
-      ? { ticket_title: { [Op.like]: `%${ticketTitle}%` } }
-      : {}),
+    ...(ticketTitle ? { ticket_title: { [Op.like]: `%${ticketTitle}%` } } : {}),
     ...(startDate && endDate
       ? {
           createdAt: {
@@ -699,34 +1599,30 @@ exports.getTicketTable = async (req, res) => {
         }
       : startDate
       ? {
-          createdAt: {
-            [Op.gte]: new Date(startDate + "T00:00:00"),
-          },
+          createdAt: { [Op.gte]: new Date(startDate + "T00:00:00") },
         }
       : endDate
       ? {
-          createdAt: {
-            [Op.lte]: new Date(endDate + "T23:59:59"),
-          },
+          createdAt: { [Op.lte]: new Date(endDate + "T23:59:59") },
         }
       : {}),
   };
 
   try {
-    const tickets = await Ticket_Summary.findAndCountAll({
+    const tickets = await Software_Ticket_Summary.findAndCountAll({
       where,
       offset,
       limit: parseInt(pageSize),
       include: [
         {
-          model: Ticket_Purpose,
+          model: Software_Ticket_Purpose,
           attributes: ["ticket_purpose_Id", "purpose_Details"],
         },
         {
-          model: Ticket_Details,
+          model: Software_Ticket_Details,
           include: [
             {
-              model: ref_ticket_status,
+              model: Software_Ref_Ticket_Status,
               attributes: ["ticket_status_Id", "ticket_status_description"],
               ...(status
                 ? { where: { ticket_status_description: status } }
@@ -756,40 +1652,40 @@ exports.getTicketTable = async (req, res) => {
   }
 };
 
-// Rest of your controller remains unchanged
-
-
-
-exports.updateTicketStatusAndRemarks = async (req, res) => {
+// ------------------- Ticket Update -------------------
+exports.updateSoftwareTicketStatusAndRemarks = async (req, res) => {
   try {
     const { ticket_Id } = req.params;
-    const { userId, assigned_to, ticket_status_description, ticket_comment } = req.body;
+    const { userId, assigned_to, ticket_status_description, ticket_comment } =
+      req.body;
+
+    const canUpdate = await checkSoftwareUpdateAccess(userId);
+    if (!canUpdate) {
+      return sendErrorResponse(res, "Not allowed to update ticket", 403);
+    }
 
     if (!ticket_status_description || !userId) {
       return sendErrorResponse(res, "Missing status or userId", 400);
     }
 
-    // Check role permission
-    const canUpdate = await checkTicketUpdateAccess(userId);
-    if (!canUpdate) {
-      return sendErrorResponse(res, "User not allowed to update ticket status", 403);
-    }
-
-    // Find existing ticket
-    const ticketSummary = await Ticket_Summary.findByPk(ticket_Id);
+    const ticketSummary = await Software_Ticket_Summary.findByPk(ticket_Id);
     if (!ticketSummary) {
       return sendErrorResponse(res, "Ticket not found", 404);
     }
 
-    // Validate target status
-    const status = await ref_ticket_status.findOne({
+    const status = await Software_Ref_Ticket_Status.findOne({
       where: { ticket_status_description },
     });
     if (!status) {
       return sendErrorResponse(res, "Invalid ticket status", 400);
     }
 
-    const currentStatus = await ref_ticket_status.findByPk(ticketSummary.ticket_status_Id);
+    let currentStatus = null;
+    if (ticketSummary.ticket_status_Id) {
+      currentStatus = await Software_Ref_Ticket_Status.findByPk(
+        ticketSummary.ticket_status_Id
+      );
+    }
 
     const validTransitions = {
       NEW: ["OPEN"],
@@ -801,7 +1697,9 @@ exports.updateTicketStatusAndRemarks = async (req, res) => {
 
     if (
       currentStatus &&
-      !validTransitions[currentStatus.ticket_status_description]?.includes(ticket_status_description)
+      !validTransitions[currentStatus.ticket_status_description]?.includes(
+        ticket_status_description
+      )
     ) {
       return sendErrorResponse(
         res,
@@ -810,22 +1708,22 @@ exports.updateTicketStatusAndRemarks = async (req, res) => {
       );
     }
 
-    // Enforce remarks
     if (!ticket_comment || ticket_comment.trim() === "") {
-      return sendErrorResponse(res, "Remarks are required for status update", 400);
+      return sendErrorResponse(
+        res,
+        "Remarks are required for status update",
+        400
+      );
     }
 
-    // Handle assignment
     const assignedToFinal = assigned_to ?? ticketSummary.assigned_to ?? null;
 
-    // Update ticket summary
     ticketSummary.assigned_to = assignedToFinal;
     ticketSummary.ticket_status_Id = status.ticket_status_Id;
     ticketSummary.updated_by_user_id = userId;
     await ticketSummary.save();
 
-    // Log details
-    const newDetail = await Ticket_Details.create({
+    const newDetail = await Software_Ticket_Details.create({
       ticket_Id,
       userId,
       societyId: ticketSummary.societyId,
@@ -839,10 +1737,7 @@ exports.updateTicketStatusAndRemarks = async (req, res) => {
     return sendSuccessResponse(
       res,
       "Ticket updated successfully",
-      {
-        summary: ticketSummary,
-        details_log: newDetail,
-      },
+      { summary: ticketSummary, details_log: newDetail },
       200
     );
   } catch (err) {
@@ -851,77 +1746,66 @@ exports.updateTicketStatusAndRemarks = async (req, res) => {
   }
 };
 
-
-
-
-exports.getAccessManagementMember = async (req, res) => {
+// ------------------- Access Management -------------------
+exports.createSoftwareAccessManagement = async (req, res) => {
   try {
-    console.log(req.query);
-
-    const { societyId } = req.params;
-
-    if (!societyId) {
-      return sendErrorResponse(res, "Enter Socity Id", 400);
-    }
-
-    //   pagination handler
-    const pagination = {
-      page: parseInt(req.query.page) || 0,
-      pageSize: parseInt(req.query.pageSize) || 10,
-    };
-    const whereClause = { isManagementCommittee: true };
-    // if (disscussionheading) {
-    //   whereClause.noticeHeading = { [Op.like]: `%${disscussionheading}%` }; // Case-insensitive search
-    // }
-    if (societyId) {
-      whereClause.societyId = societyId;
-    }
-    // if (userGroupId) {
-    //   whereClause.userGroupId = userGroupId;
-    // }
-
-    const { count, rows } = await User.findAndCountAll({
-      where: whereClause,
-      limit: pagination.pageSize,
-      offset: pagination.page * pagination.pageSize,
-    });
-    const totalPages = Math.ceil(count / pagination.pageSize);
-    res.status(200).json({
-      message: "Visitor Matrix fetched successfully",
-      data: rows,
-      total: count,
-      totalPages,
-    });
-  } catch (err) {
-    console.error("Error creating notice:", err);
-    return sendErrorResponse(res, "Internal server error", 500, err.message);
-  }
-};
-
-exports.createAccessManagementtable = async (req, res) => {
-  console.log("create Access Management table");
-  try {
-    console.log("Access management table created table", req.body);
     const { societyId, userId, approval } = req.body;
+
+    const canUpdate = await checkSoftwareUpdateAccess(userId);
+    if (!canUpdate) {
+      return sendErrorResponse(res, "Not allowed to manage access", 403);
+    }
+
     if (!societyId || !userId || !approval) {
       return res.status(400).json({ message: "All Fields are required" });
     }
-    const result = await Society_HelpDesk_Access_Management.create({
-      societyId: societyId,
-      userId: userId,
+    const result = await Software_HelpDesk_Access_Management.create({
+      societyId,
+      userId,
       module_Access: approval,
       Update_User_Id: userId,
     });
-    // console.log(result);
 
     return sendSuccessResponse(
       res,
-      "access management created successfully",
+      "Access management created successfully",
       result,
       201
     );
   } catch (error) {
-    console.error("Error creating RefUserGroup:", error);
-    res.status(500).json({ message: "Error creating RefUserGroup", error });
+    console.error("Error creating Software Access:", error);
+    res.status(500).json({ message: "Error creating Software Access", error });
+  }
+};
+
+exports.getAccessManagementMember = async (req, res) => {
+  try {
+    const { societyId } = req.params;
+
+    if (!societyId) {
+      return sendErrorResponse(res, "Enter Society Id", 400);
+    }
+
+    const page = parseInt(req.query.page) || 0;
+    const pageSize = parseInt(req.query.pageSize) || 10;
+
+    const whereClause = { societyId, isManagementCommittee: true }; // ✅ FIX: Ensure both applied
+
+    const { count, rows } = await User.findAndCountAll({
+      where: whereClause,
+      limit: pageSize,
+      offset: page * pageSize,
+    });
+
+    const totalPages = Math.ceil(count / pageSize);
+
+    return sendSuccessResponse(res, "Members fetched successfully", {
+      rows,
+      total: count,
+      totalPages,
+    });
+  } catch (err) {
+    console.error("Error fetching access members:", err);
+    return sendErrorResponse(res, "Internal server error", 500, err.message);
   }
 };

@@ -1,44 +1,54 @@
+
 const { User, Role } = require("../models");
 
-const ALLOWED_ROLE_CATEGORIES = [
+// ------------------- Role Groups -------------------
+const CREATOR_ROLES = [
   "super_admin_it",
+  "society_moderator",
+  "management_committee",
   "society_owner",
   "society_owner_family",
   "society_tenant",
   "society_tenant_family",
   "society_builder",
-  "society_moderator", 
 ];
 
-// const UPDATE_ALLOWED_ROLE_CATEGORIES = [
-//   "super_admin_it",
-//   "society_moderator", 
-// ];
-
-
-const UPDATE_ALLOWED_ROLE_CATEGORIES = [
-  "super_admin_it",      
-  "society_moderator",  
-  "society_admin",       
-  "society_owner",      
-  "society_tenant",     
+const SOFTWARE_UPDATE_ROLES = [
+  "super_admin_it", 
 ];
 
+const SOCIETY_UPDATE_ROLES = [
+  "society_moderator",
+  "management_committee",
+];
 
-async function checkTicketAccess(userId) {
+// ------------------- Helpers -------------------
+async function getUserRoleCategory(userId) {
   const user = await User.findByPk(userId, {
     include: [{ model: Role, attributes: ["roleCategory"] }],
   });
-  if (!user || !user.Role) return false;
-  return ALLOWED_ROLE_CATEGORIES.includes(user.Role.roleCategory);
+  return user?.Role?.roleCategory || null;
 }
 
-async function checkTicketUpdateAccess(userId) {
-  const user = await User.findByPk(userId, {
-    include: [{ model: Role, attributes: ["roleCategory"] }],
-  });
-  if (!user || !user.Role) return false;
-  return UPDATE_ALLOWED_ROLE_CATEGORIES.includes(user.Role.roleCategory);
+// ------------------- Checkers -------------------
+async function checkCreatorAccess(userId) {
+  const roleCategory = await getUserRoleCategory(userId);
+  return CREATOR_ROLES.includes(roleCategory);
 }
 
-module.exports = { checkTicketAccess, checkTicketUpdateAccess };
+async function checkSoftwareUpdateAccess(userId) {
+  const roleCategory = await getUserRoleCategory(userId);
+  return SOFTWARE_UPDATE_ROLES.includes(roleCategory);
+}
+
+async function checkSocietyUpdateAccess(userId) {
+  const roleCategory = await getUserRoleCategory(userId);
+  return SOCIETY_UPDATE_ROLES.includes(roleCategory);
+}
+
+// ------------------- Exports -------------------
+module.exports = {
+  checkCreatorAccess,
+  checkSoftwareUpdateAccess,
+  checkSocietyUpdateAccess,
+};

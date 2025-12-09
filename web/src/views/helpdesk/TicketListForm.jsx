@@ -1,15 +1,14 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
 import Input from "@/components/shared/Input";
 import Button from "@/components/ui/Button";
 import ReusableTable from "@/components/shared/ReusableTable";
-import SoftwareHelpDeskHandler from "@/handlers/SoftwareHelpDesk";
+import SocietyHelpDeskHandler from "@/handlers/SocietyHelpDesk";
 import TicketListView from "@/views/helpdesk/TicketListView";
 import TicketListEdit from "@/views/helpdesk/TicketListEdit";
 
 const TicketListForm = () => {
-  // Use the handler properly inside the component
-  const handler = SoftwareHelpDeskHandler();
+  const handler = SocietyHelpDeskHandler();
   const { getRefTicketStatus, getTicketTable } = handler;
 
   const [filters, setFilters] = useState({
@@ -212,4 +211,3 @@ const TicketListForm = () => {
 };
 
 export default TicketListForm;
-

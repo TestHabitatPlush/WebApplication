@@ -4,12 +4,12 @@ import PageHeading from "../../../../components/shared/PageHeading";
 import Input from "../../../../components/shared/Input";
 import Button from "../../../../components/ui/Button";
 import ReusableTable from "../../../../components/shared/ReusableTable";
-import SoftwareHelpDeskHandler from "../../../../handlers/SoftwareHelpDesk";
+import SocietyHelpDeskHandler from "../../../../handlers/SocietyHelpDesk";
 import TicketListView from "./TicketListView";
 import TicketListEdit from "./TicketListEdit";
 
 const TicketListForm = () => {
-  const { getRefTicketStatus, getTicketTable } = SoftwareHelpDeskHandler();
+  const { getRefTicketStatus, getTicketTable } = SocietyHelpDeskHandler();
 
   const [filters, setFilters] = useState({
     ticketNumber: "",

@@ -69,7 +69,8 @@ const {
 const noticeAnnouncementRouter = require("./routes/noticeAnnouncementRouter");
 const visitorManagementRouter = require("./routes/visitorManagementRouter");
 const unitRouter = require("./routes/unitRoutes");
-const softwareHelpDeskRouter = require("./routes/softwareHelpDeskRouter");
+const societyHelpDeskRouter = require("./routes/societyHelpDeskRouter");
+const softwareHelpDeskRouter = require("./routes/softwareHelpDeskRouter.js");
 const refTicketStatusRouter = require("./routes/refTicketStatusRouter");
 const passwordRouter = require("./routes/passwordRoutes.js");
 
@@ -122,7 +123,9 @@ app.use("/api/noticeAnnouncement", noticeAnnouncementRouter);
 app.use("/api/visitormanagement", visitorManagementRouter);
 
 // software helpdesk
+app.use("/api/societyhelpdesk", societyHelpDeskRouter);
 app.use("/api/softwarehelpdesk", softwareHelpDeskRouter);
+
 
 // softwarehelpdesk refticketstatus
 app.use("/api/softwarehelpdesk", refTicketStatusRouter);
