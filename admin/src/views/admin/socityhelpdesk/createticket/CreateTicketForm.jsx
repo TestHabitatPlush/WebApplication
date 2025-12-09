@@ -82,7 +82,6 @@ const CreateTicketForm = () => {
   return (
     <div className="px-5">
       <div className="text-sm font-semibold my-2 flex items-center gap-2 text-gray-500">
-      <div className="text-sm font-semibold my-2 flex items-center gap-2 text-gray-500">
         <UrlPath paths={paths} />
       </div>
       <PageHeading heading={Heading} />
@@ -121,7 +120,6 @@ const CreateTicketForm = () => {
             </select>
           </div>
 
-
           <div>
             <label
               htmlFor="ticket_purpose_Id"
@@ -135,12 +133,6 @@ const CreateTicketForm = () => {
               value={formData.ticket_purpose_Id}
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-3.5"
             >
-              <option value="">Select Ticket Purpose</option>
-              {ticketPurpousList.map((el) => (
-                <option key={el.ticket_purpose_Id} value={el.ticket_purpose_Id}>
-                  {el.purpose_Details}
-                </option>
-              ))}
               <option value="">Select Ticket Purpose</option>
               {ticketPurpousList.map((el) => (
                 <option key={el.ticket_purpose_Id} value={el.ticket_purpose_Id}>
@@ -173,14 +165,11 @@ const CreateTicketForm = () => {
           rows={5}
         />
 
-
         <div>
           <Input
             label="Attachment (Max. Allowed 2MB)"
-            label="Attachment (Max. Allowed 2MB)"
             type="file"
             onChange={handleFileChange}
-            size="lg"
             size="lg"
           />
           {fileError && (
@@ -202,7 +191,6 @@ const CreateTicketForm = () => {
             size="xl"
           >
             Submit
-          </Button>
           </Button>
         </div>
       </div>

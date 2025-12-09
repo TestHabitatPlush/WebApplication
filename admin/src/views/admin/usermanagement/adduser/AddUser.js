@@ -12,10 +12,6 @@ import DefineUnitHandler from "../../../../handlers/DefineUnitHandler";
 import BuildingHandler from "../../../../handlers/BuildingHandler";
 import FloorHandler from "../../../../handlers/FloorHandler";
 import UnitTypeHandler from "../../../../handlers/building_management/UnitTypeHandler";
-
-import { useRef } from "react";
-
-
 import { FaCamera,FaTrashAlt } from "react-icons/fa";
 import PhoneCodeSelector from "../../../../components/shared/PhoneCodeSelector";
 import CountryStateCitySelector from "../../../../components/shared/CountryStateCitySelector"

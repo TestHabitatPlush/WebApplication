@@ -23,13 +23,7 @@ const Notice = require("./Notice");
 const ref_visitor_type_of_entry = require("./ref_visitor_type_of_entry");
 const ref_visitor_type = require("./ref_visitor_type");
 const Visitor_new_visitentry = require("./Visitor_new_visitentry");
-<<<<<<< HEAD
 // const ref_ticket_categorisation = require("./ref_ticket_catagorisation");
-=======
-const Ticket_Details = require("./Ticket_Details");
-const Ticket_Purpose = require("./Ticket_Purpose");
-const Ticket_Summary = require('./Ticket_Summary.js');
->>>>>>> 870a576d38725c9830678d5f338e9368efed5b2f
 const ref_ticket_status = require("./ref_ticket_status");
 const Ticket_Details = require("./Ticket_Details")
 const Ticket_Summary = require("./Ticket_Summary")
@@ -169,7 +163,6 @@ module.exports = {
   ref_visitor_type_of_entry,
   ref_visitor_type,
   Visitor_new_visitentry,
-<<<<<<< HEAD
 //  ref_ticket_categorisation,
  ref_ticket_status,
  Ticket_Details,
@@ -181,12 +174,4 @@ Software_Ref_Ticket_Status,
 Software_Ticket_Purpose,
 Software_Ticket_Summary,
 Software_Ticket_Details,
-=======
-  Ticket_Details,
-  Ticket_Purpose,
-  Ticket_Summary,
-  ref_ticket_status,
-  ref_ticket_catagorisation,
-  Socity_HelpDesk_Access_Management,
->>>>>>> 870a576d38725c9830678d5f338e9368efed5b2f
 };

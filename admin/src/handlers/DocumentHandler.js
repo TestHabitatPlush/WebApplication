@@ -131,8 +131,6 @@ const DocumentHandler = () => {
 
 export default DocumentHandler;
 
-<<<<<<< HEAD
-=======
 
 // import toast from "react-hot-toast";
 // import { useSelector } from "react-redux";
@@ -263,4 +261,3 @@ export default DocumentHandler;
 // };
 
 // export default DocumentHandler;
->>>>>>> 870a576d38725c9830678d5f338e9368efed5b2f

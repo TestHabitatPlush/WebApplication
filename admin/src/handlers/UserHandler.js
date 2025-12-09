@@ -54,15 +54,7 @@ const UserHandler = () => {
     }
   };
 
-<<<<<<< HEAD
-  
- 
-
-
-  const getResidentBySocietyIdHandler = async (societyId, token, { page, pageSize }) => {
-=======
   const getResidentBySocietyIdHandler = async (societyId, { page, pageSize }) => {
->>>>>>> 870a576d38725c9830678d5f338e9368efed5b2f
     try {
       const response = await getResidentBySocietyIdService(societyId, token, { page, pageSize });
       return response.data;
