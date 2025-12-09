@@ -12,11 +12,15 @@ import DefineUnitHandler from "../../../../handlers/DefineUnitHandler";
 import BuildingHandler from "../../../../handlers/BuildingHandler";
 import FloorHandler from "../../../../handlers/FloorHandler";
 import UnitTypeHandler from "../../../../handlers/building_management/UnitTypeHandler";
-import { FaTimes } from "react-icons/fa";
+
+import { useRef } from "react";
+
+
+import { FaCamera,FaTrashAlt } from "react-icons/fa";
 import PhoneCodeSelector from "../../../../components/shared/PhoneCodeSelector";
-import CountryStateCitySelector from "../../../../components/shared/CountryStateCitySelector";
-import { FaCamera } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
+import CountryStateCitySelector from "../../../../components/shared/CountryStateCitySelector"
+import ReusableTable from "../../../../components/shared/ReusableTable";
+
 const AddUser = () => {
   const paths = ["User Management", "Add User"];
   const Heading = ["Add Resident User"];
@@ -32,7 +36,8 @@ const AddUser = () => {
   const { getBuildingshandler } = BuildingHandler();
   const { createSocietyResidentUserHandler } = UserHandler();
   const { getUserRolesHandler } = UserRoleHandler();
-  const { deleteUnitHandler, getAllUnitHandler } = UnitHandler();
+  const { deleteUnitHandler ,getAllUnitHandler} = UnitHandler();
+   const fileInputRef = useRef(null);
 
   const [buildingOptions, setBuildingOptions] = useState([]);
   const [floorOptions, setFloorOptions] = useState([]);
@@ -50,36 +55,10 @@ const AddUser = () => {
     //  unitsize: "",
   });
 
-  // const [formData, setFormData] = useState({
-  //   photo: "",
-  //   salutation: "",
-  //   firstName: "",
-  //   lastName: "",
-  //   countryCode: "",
-  //   mobileNumber: "",
-  //   alternateCountryCode: "",
-  //   alternateNumber: "",
-  //   email: "",
-  //   address: {
-  //     addressLine1: "",
-  //     addressLine2: "",
-  //     state: "",
-  //     city: "",
-  //     country: "",
-  //     zipCode: "",
-  //   },
-  //   liveshere: false,
-  //   primarycontact: false,
-  //   ismaemberofassociationcommite: false,
-  //   membertype: "",
-  //   remark: "",
-  //   societyId: "",
-  //   roleId: "",
-  //   unitId: "",
-  // });
+
 
   const [formData, setFormData] = useState({
-    photo: null,
+    photo: "",
     salutation: "",
     firstName: "",
     lastName: "",
@@ -113,8 +92,8 @@ const AddUser = () => {
   });
 
   const [units, setUnits] = useState([]);
-  const fileInputRef = useRef(null);
-  const [photo, setProfilePhoto] = useState(null);
+  //const fileInputRef = useRef(null);
+  const [photo, setProfilePhoto] = useState("");
   const [photomsg, setPhotomsg] = useState("");
   const selectOption = {
     salutation: [
@@ -408,22 +387,133 @@ const AddUser = () => {
       }));
     }
   };
-  const submitProfileUser = async () => {
-    if (!selectedRoleId) {
-      toast.error("Please select a role.");
-      return;
-    }
-    if (!validateForm()) return;
+  // const submitProfileUser = async () => {
+  //   if (!selectedRoleId) {
+  //     toast.error("Please select a role.");
+  //     return;
+  //   }
+  //   if (!validateForm()) return;
 
-    const updatedFormData = {
-      ...formData,
-      societyId,
-      roleId: selectedRoleId,
-    };
+  //   const updatedFormData = {
+  //     ...formData,
+  //     societyId,
+  //     roleId: selectedRoleId,
+  //   };
 
-    try {
-      await createSocietyResidentUserHandler(societyId, updatedFormData);
+  //   try {
+  //     await createSocietyResidentUserHandler(societyId, updatedFormData);
+  //     toast.success("User profile created successfully.");
+  //     setFormData({
+  //       salutation: "",
+  //       firstName: "",
+  //       lastName: "",
+  //       countryCode: "",
+  //       mobileNumber: "",
+  //       alternateCountryCode: "",
+  //       alternateNumber: "",
+  //       email: "",
+  //       address: {
+  //         addressLine1: "",
+  //         addressLine2: "",
+  //         state: "",
+  //         city: "",
+  //         country: "",
+  //         zipCode: "",
+  //       },
+  //       liveshere: false,
+  //       primarycontact: false,
+  //       ismaemberofassociationcommite: false,
+  //       membertype: "",
+  //       remark: "",
+  //       societyId,
+  //       roleId: "",
+  //       unitId: "",
+  //       photo:""
+  //     });
+  //     setSelectedRoleId(null);
+  //     setUnits([]);
+  //   } catch (error) {
+  //     console.error("Error creating resident:", error);
+  //     toast.error("Failed to create user profile.");
+  //   }
+  // };
+const [selectedUnits, setSelectedUnits] = useState([]);
+
+  // ✅ Handle checkbox selection
+  const handleSelect = (unitId) => {
+    setSelectedUnits((prev) =>
+      prev.includes(unitId)
+        ? prev.filter((id) => id !== unitId)
+        : [...prev, unitId]
+    );
+  };
+
+  // ✅ Handle delete
+  const handleDelete = (unitId) => {
+    setUnits((prev) => prev.filter((u) => u.id !== unitId));
+    setSelectedUnits((prev) => prev.filter((id) => id !== unitId));
+  };
+const columns = [
+  {
+    Header: "Select",
+    accessor: "unitId",
+    Cell: ({ row }) => (
+      <input
+        type="checkbox"
+        checked={selectedUnits.includes(row.original.unitId)}
+        onChange={() => handleSelect(row.original.unitId)}
+        className="w-4 h-4 accent-blue-600"
+      />
+    )
+  },
+  { Header: "Building", accessor: "buildingName" },
+  { Header: "Floor", accessor: "floorName" },
+  { Header: "Unit Number", accessor: "unitNumber" },
+  { Header: "Unit Name", accessor: "unitName" },
+  {
+    Header: "Delete",
+    Cell: ({ row }) => (
+      <button
+        className="text-red-500 hover:text-red-700"
+        onClick={() => handleDeleteUnit(row.original.unitId)}
+      >
+        <FaTrashAlt />
+      </button>
+    )
+  },
+];
+
+
+const submitProfileUser = async () => {
+  if (!selectedRoleId) {
+    toast.error("Please select a role.");
+    return;
+  }
+  if (!validateForm()) return;
+
+  const form = new FormData();
+  form.append("salutation", formData.salutation);
+  form.append("firstName", formData.firstName);
+  form.append("lastName", formData.lastName);
+  form.append("countryCode", formData.countryCode || "91");
+  form.append("mobileNumber", formData.mobileNumber);
+  form.append("alternateCountryCode", formData.alternateCountryCode || "91");
+  form.append("alternateNumber", formData.alternateNumber || "");
+  form.append("email", formData.email);
+  form.append("roleId", selectedRoleId);
+  form.append("unitId", formData.unitId);
+  form.append("address", JSON.stringify(formData.address));
+
+  if (formData.photo) {
+    form.append("photo", formData.photo);
+  }
+
+  try {
+    const response = await createSocietyResidentUserHandler(societyId, form);
+    if (response.status === 201) {
       toast.success("User profile created successfully.");
+
+      // Reset form
       setFormData({
         salutation: "",
         firstName: "",
@@ -449,15 +539,21 @@ const AddUser = () => {
         societyId,
         roleId: "",
         unitId: "",
+        photo: "",
       });
       setSelectedRoleId(null);
       setUnits([]);
-    } catch (error) {
-      console.error("Error creating resident:", error);
+      setProfilePhoto("");
+    } else {
       toast.error("Failed to create user profile.");
     }
-  };
+  } catch (error) {
+    console.error("Error creating resident:", error);
+    toast.error("Failed to create user profile.");
+  }
+};
 
+  
   return (
     <div className="px-5 ">
       <div className="flex items-center gap-2 my-2 text-sm font-semibold text-gray-200">
@@ -472,7 +568,7 @@ const AddUser = () => {
 
         <div className="flex items-center gap-5">
           <div
-            className="relative h-28 w-28 rounded-full border-2 border-lime"
+            className="relative border-2 rounded-full h-28 w-28 border-lime"
             style={{
               backgroundImage: photo ? `url(${photo})` : "none",
               backgroundSize: "cover",
@@ -616,51 +712,80 @@ const AddUser = () => {
         </div>
 
         <div className="mt-10 font-sans text-xl font-semibold text-lime">
-          Address Details
-        </div>
-        <div className="grid items-center grid-cols-3 gap-3 py-6 ">
-          <Input
-            label={<span>Address line 1</span>}
-            name="addressLine1"
-            value={formData.address.addressLine1}
-            onChange={handleInputChange}
-            placeholder={"Enter Address"}
-            size={"lg"}
-          />
-          <Input
-            label={<span>Address line 2</span>}
-            type="text"
-            name="addressLine2"
-            value={formData.address.addressLine2}
-            onChange={handleInputChange}
-            placeholder={"Enter Address"}
-            size={"lg"}
-          />
-        </div>
-        <div className="grid items-center grid-cols-4 gap-4">
-          <CountryStateCitySelector
-            address={formData.address}
-            setAddress={(updatedFields) =>
-              setFormData((prev) => ({
-                ...prev,
-                address: {
-                  ...prev.address,
-                  ...updatedFields,
-                },
-              }))
-            }
-          />
+  Address Details
+</div>
 
-          <Input
-            label={<span>Pin</span>}
-            type="number"
-            name="zipCode"
-            value={formData.address.zipCode}
-            onChange={handleInputChange}
-            placeholder={"Enter Postal Pin"}
-            size={"lg"}
-          />
-        </div>
+<div className="grid items-center grid-cols-3 gap-3 py-6">
+  <Input
+    label={
+      <span>
+        Address line 1 <span className="text-red-500">*</span>
+      </span>
+    }
+    name="addressLine1"
+    value={formData.address.addressLine1}
+    onChange={handleInputChange}
+    placeholder={"Enter Address"}
+    size={"lg"}
+  />
+
+  <Input
+    label={<span>Address line 2</span>}
+    type="text"
+    name="addressLine2"
+    value={formData.address.addressLine2}
+    onChange={handleInputChange}
+    placeholder={"Enter Address"}
+    size={"lg"}
+  />
+</div>
+
+<div className="grid items-center grid-cols-4 gap-4">
+  <CountryStateCitySelector
+    labelComponents={{
+      country: (
+        <span>
+          Country <span className="text-red-500">*</span>
+        </span>
+      ),
+      state: (
+        <span>
+          State <span className="text-red-500">*</span>
+        </span>
+      ),
+      city: (
+        <span>
+          City <span className="text-red-500">*</span>
+        </span>
+      ),
+    }}
+    address={formData.address}
+    setAddress={(updatedFields) =>
+      setFormData((prev) => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          ...updatedFields,
+        },
+      }))
+    }
+  />
+
+  <Input
+    label={
+      <span>
+        Pin <span className="text-red-500">*</span>
+      </span>
+    }
+    type="number"
+    name="zipCode"
+    value={formData.address.zipCode}
+    onChange={handleInputChange}
+    placeholder={"Enter Postal Pin"}
+    size={"lg"}
+  />
+</div>
+
         <div className="mt-10 font-sans text-xl font-semibold text-lime">
           Role Allocation
         </div>
@@ -754,11 +879,11 @@ const AddUser = () => {
       </div>
 
       <div className="p-10 my-5 bg-gray-100 border rounded-lg">
-        <div className="font-sans text-xl font-semibold text-lime">
+        {/* <div className="font-sans text-xl font-semibold text-lime">
           Unit Details
-        </div>
+        </div> */}
         <div className="grid items-center grid-cols-3 gap-5 py-6">
-          <Select
+          {/* <Select
             label={
               <div>
                 Tower / Building (Name / No.){" "}
@@ -814,7 +939,7 @@ const AddUser = () => {
             color="blue"
             size="md"
             className="py-[14px]"
-          />
+          /> */}
           {/* <Input
                   label={
                       <div>
@@ -850,7 +975,7 @@ const AddUser = () => {
                 </div>
               </div> */}
 
-          <div className="flex justify-center mt-5">
+          {/* <div className="flex justify-center mt-5">
             <Button
               className="max-w-sm"
               type="submit"
@@ -860,12 +985,9 @@ const AddUser = () => {
               Add Unit
             </Button>
           </div>
+         */}
+         
           {/* <div className="mt-5">
-  <h5 className="text-lg font-semibold">
-    Unit Names List ({units.length})
-  </h5> */}
-          {/* Units List */}
-          <div className="mt-5">
             <h5 className="text-lg font-semibold">
               Unit Names List ({units.length})
             </h5>
@@ -892,9 +1014,365 @@ const AddUser = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </div>*/}
+        </div> 
+
+{/* <div className="mt-10">
+  <h5 className="mb-3 text-lg font-semibold">Unit Names List</h5>
+
+  <ReusableTable
+    columns={[
+      {
+        Header: "Select",
+        accessor: "select",
+        Cell: ({ row }) => (
+          <input
+            type="checkbox"
+            checked={selectedUnits.includes(row.original.unitId)}
+            onChange={() => handleSelect(row.original.unitId)}
+            className="w-4 h-4 accent-blue-600"
+          />
+        ),
+      },
+      { Header: "Tower / Building Name", accessor: "buildingName" },
+      { Header: "Floor Name", accessor: "floorName" },
+      { Header: "Unit Number", accessor: "unitNumber" },
+      { Header: "Unit Name", accessor: "unitName" },
+      {
+        Header: "Action",
+        accessor: "action",
+        Cell: ({ row }) => (
+          <button
+            onClick={() => handleDeleteUnit(row.original.unitId)}
+            className="text-red-500 hover:text-red-700"
+            title="Delete Unit"
+          >
+            <FaTrashAlt />
+          </button>
+        ),
+      },
+    ]}
+    data={units.map((u, i) => ({
+      ...u,
+      id: i + 1,
+      buildingName: buildingOptions.find(b => b.value === u.buildingId)?.label || "-",
+      floorName: floorOptions.find(f => f.value === u.floorId)?.label || "-",
+    }))}
+    pageIndex={0}
+    pageSize={5}
+    totalCount={units.length}
+    totalPages={1}
+    setPageIndex={() => {}}
+    setPageSize={() => {}}
+  />
+
+  <div className="mt-4 text-sm text-gray-600">
+    <span className="font-semibold">Note:</span> Selected Units can be allocated
+    to a single user.
+  </div>
+</div> */}
+{/* ========================= UNIT DETAILS ========================= */}
+<div className="p-10 my-5 bg-gray-100 border rounded-lg">
+  {/* <div className="font-sans text-xl font-semibold text-lime">
+    Unit Details
+  </div> */}
+
+{/* 
+  <div className="grid items-center grid-cols-3 gap-5 py-6">
+    <Select
+      label={
+        <div>
+          Tower / Building (Name / No.){" "}
+          <span className="text-red-500">*</span>
         </div>
+      }
+      options={buildingOptions}
+      value={defineUnit.buildingId}
+      onChange={onBuildingChange}
+      name="buildingId"
+      color="blue"
+      size="md"
+      className="py-[14px]"
+    />
+
+    <Select
+      label={
+        <div>
+          Select Floor<span className="text-red-500">*</span>
+        </div>
+      }
+      options={floorOptions}
+      value={defineUnit.floorId}
+      onChange={onFloorChange}
+      name="floorId"
+      color="blue"
+      size="md"
+      className="py-[14px]"
+    />
+
+    <Select
+      label={
+        <div>
+          Unit Type<span className="text-red-500">*</span>
+        </div>
+      }
+      options={unitTypeOptions}
+      value={defineUnit.unitTypeId}
+      onChange={handleChange}
+      name="unitTypeId"
+      color="blue"
+      size="md"
+      className="py-[14px]"
+    />
+  </div> */}
+
+  {/* Search Button */}
+  <div className="flex justify-center mt-3">
+    {/* <Button
+      className="max-w-sm"
+      type="button"
+      onClick={async () => {
+        try {
+          // 👇 Filter API call
+          const response = await getAllUnitHandler({
+            buildingId: defineUnit.buildingId || null,
+            floorId: defineUnit.floorId || null,
+            unitTypeId: defineUnit.unitTypeId || null,
+            societyId,
+          });
+
+          if (response?.data?.data) {
+            const unitList = response.data.data.map((unit, index) => ({
+              id: unit.unitId,
+              buildingName: unit.Building?.buildingName || "N/A",
+              floorName: unit.Floor?.floorName || "N/A",
+              unitNumber: unit.unitNumber,
+              unitName: unit.unitName,
+            }));
+            setUnits(unitList);
+            toast.success(`Found ${unitList.length} units.`);
+          } else {
+            setUnits([]);
+            toast.error("No units found for the selected filters.");
+          }
+        } catch (error) {
+          console.error("Error fetching filtered units:", error);
+          toast.error("Failed to fetch units.");
+        }
+      }}
+      size="lg"
+    >
+      Search Units
+    </Button> */}
+{/* <Button
+  className="max-w-sm"
+  type="button"
+  onClick={async () => {
+    try {
+      const response = await getAllUnitHandler({
+        societyId,
+        buildingId: defineUnit.buildingId || null,
+        floorId: defineUnit.floorId || null,
+        unitTypeId: defineUnit.unitTypeId || null,
+      });
+
+      if (response?.data) {
+      const unitList = response.data.data.map((unit) => ({
+        unitId: unit.unitId,
+        buildingName:  unit.Building?.buildingName || "N/A",
+        floorName:  unit.Floor?.floorName || "N/A",
+        unitNumber: unit.unitNumber,
+        unitName: unit.unitName,
+     }));
+
+        setUnits(unitList);
+        toast.success(`Found ${unitList.length} units.`);
+      } else {
+        setUnits([]);
+        toast.error("No units found for the selected filters.");
+      }
+    } catch (error) {
+      console.error("Error fetching filtered units:", error);
+      toast.error("Failed to fetch units.");
+    }
+  }}
+  size="lg"
+>
+  Search Units
+</Button> */}
+
+  {/* </div> */}
+
+
+  {/* <div className="mt-8">
+    <h5 className="text-lg font-semibold">
+      Units List ({units.length})
+    </h5>
+
+    <ReusableTable
+      columns={columns}
+      data={units}
+      pageIndex={0}
+      pageSize={5}
+      totalCount={units.length}
+      totalPages={1}
+      setPageIndex={() => {}}
+      setPageSize={() => {}}
+    />
+
+    <div className="mt-4 text-sm text-gray-600">
+      <span className="font-semibold">Note:</span> Selected Units can be
+      allocated for a single user.
+    </div>
+  </div> */}
+</div>
+
+
+      {/* ✅ Footer note below the table */}
+      {/* <div className="mt-4 text-sm text-gray-600">
+        <span className="font-semibold">Note:</span> Selected Units can be
+        Allocated for a single user.
       </div>
+      */}
+       </div> 
+
+      <div className="p-10 my-5 bg-gray-100 border rounded-lg">
+  <div className="font-sans text-xl font-semibold text-lime">
+    Unit Details
+  </div>
+
+  {/* Filter Inputs */}
+  <div className="grid items-center grid-cols-3 gap-5 py-6">
+    <Select
+      label={<div> Building <span className="text-red-500">*</span></div>}
+      options={buildingOptions}
+      value={defineUnit.buildingId}
+      onChange={onBuildingChange}
+      name="buildingId"
+      color="blue"
+      size="md"
+    />
+
+    <Select
+      label={<div>Floor <span className="text-red-500">*</span></div>}
+      options={floorOptions}
+      value={defineUnit.floorId}
+      onChange={onFloorChange}
+      name="floorId"
+      color="blue"
+      size="md"
+    />
+
+    <Select
+      label={<div>Unit Type<span className="text-red-500">*</span></div>}
+      options={unitTypeOptions}
+      value={defineUnit.unitTypeId}
+      onChange={handleChange}
+      name="unitTypeId"
+      color="blue"
+      size="md"
+    />
+  </div>
+
+  {/* Search Button */}
+  <div className="flex justify-center mt-3">
+    <Button
+      className="max-w-sm"
+      type="button"
+      size="lg"
+      onClick={async () => {
+        try {
+          const response = await getAllUnitHandler({
+            societyId,
+            buildingId: defineUnit.buildingId || null,
+            floorId: defineUnit.floorId || null,
+            unitTypeId: defineUnit.unitTypeId || null,
+          });
+
+          if (response?.data?.data?.length > 0) {
+          const unitList = response.data.data.map((unit) => ({
+            unitId: unit.unitId,
+            buildingName: unit.Building?.buildingName || "N/A",
+            floorName: unit.Floor?.floorName || "N/A",
+            floorId: unit.floorId,        // optional add
+            buildingId: unit.buildingId,  // optional add
+            unitNumber: unit.unitNumber,
+            unitName: unit.unitName,
+          }));
+
+
+            setUnits(unitList);
+            console.log(unitList);
+            toast.success(`Found ${unitList.length} units.`);
+          } else {
+            setUnits([]);
+            toast.error("No units found!");
+          }
+        } catch (error) {
+          console.error("Error fetching filtered units:", error);
+          toast.error("Failed to fetch units.");
+        }
+      }}
+    >
+      Search Units
+    </Button>
+  </div>
+
+  {/* Table Display */}
+  <div className="mt-8">
+    <h5 className="text-lg font-semibold">Units List ({units.length})</h5>
+
+    <ReusableTable
+      columns={[
+        {
+          Header: "Select",
+          accessor: "unitId",
+          Cell: ({ row }) => (
+            <input
+              type="checkbox"
+              className="w-4 h-4 accent-blue-600"
+              checked={selectedUnits.includes(row.original.unitId)}
+              onChange={() => handleSelect(row.original.unitId)}
+            />
+          )
+        },
+        { Header: "Building", accessor: "buildingName" },
+        { Header: "Floor", accessor: "floorName" },
+        { Header: "Unit No", accessor: "unitNumber" },
+        { Header: "Unit Name", accessor: "unitName" },
+        {
+          Header: "Delete",
+          Cell: ({ row }) => (
+            <button
+              className="text-red-500 hover:text-red-700"
+              onClick={() => handleDeleteUnit(row.original.unitId)}
+            >
+              <FaTrashAlt />
+            </button>
+          )
+        }
+      ]}
+       data={units.map((u, i) => ({
+      ...u,
+      id: i + 1,
+      buildingName: buildingOptions.find(b => b.value === u.buildingId)?.label || "-",
+      floorName: floorOptions.find(f => f.value === u.floorId)?.label || "-",
+    }))}
+     // data={units}
+      pageIndex={0}
+      pageSize={5}
+      totalCount={units.length}
+      totalPages={1}
+      setPageIndex={() => {}}
+      setPageSize={() => {}}
+    />
+
+    <div className="mt-4 text-sm text-gray-600">
+      <span className="font-semibold">Note:</span> Selected Units can be allocated for a single user.
+    </div>
+  </div>
+</div>
+
       <div className="flex justify-center mt-5">
         <Button
           className="max-w-sm"
@@ -906,6 +1384,8 @@ const AddUser = () => {
         </Button>
       </div>
     </div>
+    </div>
   );
 };
 export default AddUser;
+

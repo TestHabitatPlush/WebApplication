@@ -37,7 +37,7 @@ const ViewVisitorDetailsModal = ({ isOpen, onClose, formData }) => {
     {
       icon: <FaClipboard className="text-xl text-blue-600" />,
       label: "Purpose of Visit",
-      value: visitorViewForm?.visit_porpous || "—",
+      value: visitorViewForm?.visit_purpose || "—",
     },
     {
       icon: <FaMapMarkerAlt className="text-xl text-blue-600" />,

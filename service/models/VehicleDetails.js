@@ -35,6 +35,7 @@ const Vehicle = sequelize.define(
         len: [6, 12],
       },
     },
+<<<<<<< HEAD
     // fastagNumber: {
     //   type: DataTypes.STRING,
     //   allowNull: true,
@@ -45,13 +46,21 @@ const Vehicle = sequelize.define(
     //   },
     // },
     fastagNumber: {
+=======
+  fastagNumber: {
+>>>>>>> 870a576d38725c9830678d5f338e9368efed5b2f
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
         len: [12, 16],
         is: /^[A-Z0-9]+$/i, 
+<<<<<<< HEAD
       },
     },
+=======
+      },
+    },
+>>>>>>> 870a576d38725c9830678d5f338e9368efed5b2f
  
     vehicleType: {
       type: DataTypes.ENUM("Car", "Bike", "Truck", "Van", "Bus"),

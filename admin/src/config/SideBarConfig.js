@@ -42,6 +42,7 @@ const SideBarMenu = {
         // },
       ],
     },
+    
      {
       name: "User Management",
       isAvailable: true,
@@ -66,6 +67,11 @@ const SideBarMenu = {
           name: "Deactivate Users",
           url: "user/deactivated",
           path: ["user", "setting"],
+        },
+           {
+          name: "Add Bulk User",
+          url: "user/bulkuser",
+          path: ["user", "BulkUser"],
         },
         // {
         //   name: "User Access",
@@ -368,11 +374,25 @@ const SideBarMenu = {
     },
     
   ],
-}
+},
+
+
 
   ],
  
   super_admin: [
+    {
+      name: "Dashboard",
+      isAvailable: true,
+       icon: FaTachometerAlt ,
+      children: [
+        {
+          name: "Dashboard",
+          url: "dashboard",
+        },
+       
+      ],
+    },
     {
       name: "Society Management",
       isAvailable: true,
@@ -390,6 +410,10 @@ const SideBarMenu = {
           name: "Create Society User",
           url: "society/createuser",
         },
+        {
+          name: " Society Moderator/User List",
+          url: "society/societyModeratorList",
+        },
       ],
     },
     {
@@ -403,11 +427,11 @@ const SideBarMenu = {
         },
         {
           name: "Subscription List",
-          url: "society/view",
+          url: "product/list",
         },
         {
-          name: "Module",
-          url: "module/create",
+          name: "Customer Subscription",
+          url: "product/customerSubscription",
         },
       ],
     },
@@ -467,6 +491,22 @@ const SideBarMenu = {
    {
       name: "Emergency List",
       url: "/emerencycontact/EmergencyList",
+    },
+    
+  ],
+},
+{
+  name: "Subcription Plan",
+  isAvailable: true,
+  icon: FaAddressBook,
+  children: [
+    {
+      name: "Subcription Plan Details",
+      url: "/subscription-plan/details",
+    },
+   {
+      name: "Subcription Plan List",
+      url: "/subscription-plan/list",
     },
     
   ],

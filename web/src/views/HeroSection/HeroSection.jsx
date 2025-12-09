@@ -4,7 +4,7 @@ const HeroSection = () => {
   return (
     <section className="flex flex-col items-center justify-center  text-center text-black bg-white mt-5">
       <h1 className="mb-4 text-xl font-bold md:text-xl">
-        Welcome to HebitatPluse
+        Welcome to HebitatPluse--
       </h1>
       <h2 className='max-w-xl mb-4 text-4xl font-bolt md:text-6xl'>
         Enhancing Apartment Living

@@ -11,3 +11,7 @@ export { default as Notice } from "./notice/Notice";
 export { default as Email } from "./email/Email";
 export { default as Documents } from "./documents/Documents";
 export {default as Vehicle} from "./vehicle/Vehicle";
+
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('API_URL:', process.env.NEXT_PUBLIC_ENVIRONMENT); // Replace with actual key
+console.log('Custom ENV:', process.env.NEXT_PUBLIC_API_URL); // Add your keys here

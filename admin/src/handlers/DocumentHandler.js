@@ -1,6 +1,3 @@
-
-
-
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import {
@@ -11,7 +8,7 @@ import {
   updateDocumentBySocietyService,
   updateDocumentByUserService,
   deleteDocumentService,
-} from "../services/documentService"
+} from ".//../services/documentService";
 
 const DocumentHandler = () => {
   const token = useSelector((state) => state.auth.token);
@@ -48,12 +45,21 @@ const DocumentHandler = () => {
   const getDocumentBySocietyHandler = async () => {
     try {
       const res = await getDocumentBySocietyService(societyId, userId, token);
-      if (res.status === 200) return res.data;
+      if (res.status === 200) return res;
     } catch (err) {
       toast.error("Failed to fetch society documents.");
       console.error(err);
     }
   };
+// const getDocumentBySocietyHandler = async (societyId, userId, params = { page: 0, pageSize: 1000 }) => {
+//   try {
+//     const res = await getDocumentBySocietyService(societyId, userId, token, params);
+//     if (res.status === 200) return res;
+//   } catch (err) {
+//     toast.error("Failed to fetch society documents.");
+//     console.error(err);
+//   }
+// };
 
   // ===== USER =====
   const createDocumentByUserHandler = async (data) => {
@@ -125,3 +131,136 @@ const DocumentHandler = () => {
 
 export default DocumentHandler;
 
+<<<<<<< HEAD
+=======
+
+// import toast from "react-hot-toast";
+// import { useSelector } from "react-redux";
+// import {
+//   createDocumentBySocietyService,
+//   createDocumentByUserService,
+//   getDocumentBySocietyService,
+//   getDocumentByUserService,
+//   updateDocumentBySocietyService,
+//   updateDocumentByUserService,
+//   deleteDocumentService,
+// } from "../services/documentService";
+
+// // Helper to build FormData for both types
+// const buildFormData = (data) => {
+//   const formData = new FormData();
+//   if (data.documentName) formData.append("documentName", data.documentName);
+//   if (data.visibilityOption) formData.append("visibilityOption", data.visibilityOption);
+//   if (data.societyId) formData.append("societyId", data.societyId);
+//   if (data.document) formData.append("document", data.document);
+//   if (data.picture) formData.append("picture", data.picture);
+//   return formData;
+// };
+
+// const DocumentHandler = () => {
+//   const token = useSelector((state) => state.auth.token);
+//   const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
+//   const userId = useSelector((state) => state.auth.user?.userId);
+
+//   // ===== SOCIETY =====
+//   const createDocumentBySocietyHandler = async (data) => {
+//     try {
+//       const formData = buildFormData(data);
+//       const res = await createDocumentBySocietyService(formData, societyId, userId, token);
+
+//       if (res.status === 201) {
+//         toast.success("Document created for society.");
+//       }
+
+//       return res;
+//     } catch (err) {
+//       toast.error(err?.response?.data?.message || "Failed to create society document.");
+//       console.error(err);
+//     }
+//   };
+
+//   const getDocumentBySocietyHandler = async () => {
+//     try {
+//       const res = await getDocumentBySocietyService(societyId, userId, token);
+//       if (res.status === 200) return res.data;
+//     } catch (err) {
+//       toast.error(err?.response?.data?.message || "Failed to fetch society documents.");
+//       console.error(err);
+//     }
+//   };
+
+//   // ===== USER =====
+//   const createDocumentByUserHandler = async (data) => {
+//     try {
+//       const formData = buildFormData(data);
+      
+//       // Log FormData entries for debugging
+//       for (let pair of formData.entries()) {
+//         console.log(`${pair[0]}:`, pair[1]);
+//       }
+
+//       const res = await createDocumentByUserService(formData, userId, token);
+//       if (res.status === 201) {
+//         toast.success("Document created for user.");
+//       }
+//       return res;
+//     } catch (err) {
+//       toast.error(err?.response?.data?.message || "Failed to create user document.");
+//       console.error(err);
+//     }
+//   };
+
+//   const getDocumentByUserHandler = async () => {
+//     try {
+//       const res = await getDocumentByUserService(userId, token);
+//       if (res.status === 200) return res.data;
+//     } catch (err) {
+//       toast.error(err?.response?.data?.message || "Failed to fetch user documents.");
+//       console.error(err);
+//     }
+//   };
+
+//   // ===== COMMON =====
+//   const updateDocumentHandler = async (data, documentId, isSociety = true) => {
+//     try {
+//       const formData = buildFormData(data);
+//       const res = isSociety
+//         ? await updateDocumentBySocietyService(formData, documentId, token)
+//         : await updateDocumentByUserService(formData, documentId, token);
+
+//       if (res.status === 200) {
+//         toast.success("Document updated successfully.");
+//       }
+
+//       return res;
+//     } catch (err) {
+//       toast.error(err?.response?.data?.message || "Failed to update document.");
+//       console.error(err);
+//     }
+//   };
+
+//   const deleteDocumentHandler = async (documentId) => {
+//     try {
+//       const res = await deleteDocumentService(documentId, token);
+//       if (res.status === 200) {
+//         toast.success("Document Permanently Deleted.");
+//       }
+//       return res;
+//     } catch (err) {
+//       toast.error(err?.response?.data?.message || "Failed to delete document.");
+//       console.error(err);
+//     }
+//   };
+
+//   return {
+//     createDocumentBySocietyHandler,
+//     getDocumentBySocietyHandler,
+//     createDocumentByUserHandler,
+//     getDocumentByUserHandler,
+//     updateDocumentHandler,
+//     deleteDocumentHandler,
+//   };
+// };
+
+// export default DocumentHandler;
+>>>>>>> 870a576d38725c9830678d5f338e9368efed5b2f

@@ -125,9 +125,13 @@ import Image1 from "../../assets/images/image2.jpg";
 import { useSelector } from "react-redux";
 import AuthHandler from "../../handlers/AuthHandler";
 import CustomerHandler from "../../handlers/superadmin/CustomerHandler";
+import ProfileModal from "../../components/shared/ProfileModal";
+
+
 
 const Header = () => {
   const [isopen, setIsopen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const dropdownRef = useRef(null);
 
@@ -138,6 +142,7 @@ const Header = () => {
   const toggleDropdown = () => {
     setIsopen(!isopen);
   };
+
   const fetchSocietiesData = async () => {
     try {
       const result = await getCustomerHandler();
@@ -172,59 +177,67 @@ const Header = () => {
   }, []);
 
   return (
-    <div className="h-[65px] flex flex-row w-full px-3 py-2 bg-lime justify-between relative">
-      <div className="flex flex-row items-center space-x-3">
-        <img src={Logo} alt="logo" height={40} width={52} />
-        <div className="font-sans font-bold text-[19px] text-slate">
-          {customerName || "Loading..."}
+    <>
+      <div className="h-[65px] flex flex-row w-full px-3 py-2 bg-lime justify-between relative">
+        <div className="flex flex-row items-center space-x-3">
+          <img src={Logo} alt="logo" height={40} width={52} />
+          <div className="font-sans font-bold text-[19px] text-slate">
+            {customerName || "Loading..."}
+          </div>
         </div>
-      </div>
 
-      <div className="flex flex-row items-center space-x-3">
-        <IoChatbubble className="text-[20px] text-slate" />
-        <IoIosNotifications className="text-[30px] text-slate" />
+        <div className="flex flex-row items-center space-x-3">
+          <IoChatbubble className="text-[20px] text-slate" />
+          <IoIosNotifications className="text-[30px] text-slate" />
 
-        <div className="relative" ref={dropdownRef}>
-          <img
-            src={Image1}
-            alt="profile"
-            height={40}
-            width={52}
-            className="rounded-full cursor-pointer"
-            onClick={toggleDropdown}
-          />
+          <div className="relative" ref={dropdownRef}>
+            <img
+              src={Image1}
+              alt="profile"
+              height={40}
+              width={52}
+              className="rounded-full cursor-pointer"
+              onClick={toggleDropdown}
+            />
 
-          {isopen && (
-            <div className="absolute right-0 z-50 w-48 mt-2 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
-              <div className="py-1">
-                <span
-                  className="block px-4 py-2 text-base text-gray-700 cursor-pointer hover:bg-gray-200"
-                >
-                  Profile
-                </span>
-                <span
-                  className="block px-4 py-2 text-base text-gray-700 cursor-pointer hover:bg-gray-200"
-                >
-                  Contact Us
-                </span>
-                <span
-                  onClick={() => {
-                    console.log("Logging out clicked");
-                    logoutHandler();
-                  }}
-                  className="block px-4 py-2 text-base text-red-500 cursor-pointer hover:bg-gray-200"
-                >
-                  Logout
-                </span>
+            {isopen && (
+              <div className="absolute right-0 z-50 w-48 mt-2 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+                <div className="py-1">
+                  <span
+                    onClick={() => setIsProfileOpen(true)}
+                    className="block px-4 py-2 text-base text-gray-700 cursor-pointer hover:bg-gray-200"
+                  >
+                    Profile
+                  </span>
+                  <span
+                    className="block px-4 py-2 text-base text-gray-700 cursor-pointer hover:bg-gray-200"
+                  >
+                    Contact Us
+                  </span>
+                  <span
+                    onClick={logoutHandler}
+                    className="block px-4 py-2 text-base text-red-500 cursor-pointer hover:bg-gray-200"
+                  >
+                    Logout
+                  </span>
+                </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
 
-        <span className="text-white">{user?.email}</span>
+          <span className="text-white">{user?.email}</span>
+        </div>
       </div>
-    </div>
+
+      {/* ✅ Profile Modal */}
+      <ProfileModal
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+        user={user}
+      />
+    </>
   );
 };
 
 export default Header;
+

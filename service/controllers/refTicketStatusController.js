@@ -44,5 +44,10 @@ exports.getRefTicketStatus = async (req, res) => {
   } catch (err) {
     console.error(err);
     return sendErrorResponse(res, "Internal server error", 500, err.message);
+    const all = await ref_ticket_status.findAll();
+    return sendSuccessResponse(res, "Statuses fetched", all, 200);
+  } catch (err) {
+    console.error(err);
+    return sendErrorResponse(res, "Internal server error", 500, err.message);
   }
 };

@@ -9,21 +9,35 @@ import CreateTicketForm from "./softwarehelpdesk/createticket/CreateTicketForm";
 import ApprovalMatrixForm from "./softwarehelpdesk/setup/approvalmatrix/ApprovalMatrixForm";
 import DefinePorpousForm from "./softwarehelpdesk/setup/defineporpous/DefinePorpousForm";
 import TicketListForm from "./softwarehelpdesk/ticketlist/TicketListForm";
+import SocietyModeratorList from "./society/society_user/SocietyModeratorList";
+import PlanDetails from "../super/subcriptionPlan/PlanDetails";
+import Dashboard from "../super/Dashboard/dashboard";
+import SubscriptionList from "./Product Subscription Management/SubscriptionList/SubscriptionList";
+import CreateProduct from "./Product Subscription Management/CreateProduct";
+import CustomerSubscriptionList from "./Product Subscription Management/CustomerSubscriptionList/CustomerSubscription";
 
 
 const SuperAdminContents = () => {
   return (
     <Routes>
-      <Route path="/" element={<div>Admin Dashboard home</div>} />
+      <Route path="/dashboard" element={<Dashboard/>} />
       <Route path="/society/create" element={<CreateSociety />} />
       <Route path="/society/view" element={<SocietyList />} />
       <Route path="/society/createuser" element={<CreateSocietyModerator />} />
+      <Route path="/society/societyModeratorList" element={<SocietyModeratorList />} />
       <Route path="/emergencycontact/ContactDetails" element={<CreateEmergencyDetails />} />
       <Route path="/emerencycontact/EmergencyList" element={<EmergencyListSuperAdmin />} />
       {/* <Route path="softwarehelpdesk/softwarehelpdesksetup/softwareapprovalmatrix" element={<ApprovalMatrixForm/>} /> */}
       <Route path="softwarehelpdesk/softwarehelpdesksetup/softwaredefinepurpose" element={<DefinePorpousForm/>} />
       <Route path="/softwarehelpdesk/softwarehelpdeskcreateticket" element={<CreateTicketForm/>} />
       <Route path="/softwarehelpdesk/softwarehelpdeskticketlist" element={<TicketListForm/>} />
+      <Route path="/subscription-plan/details" element={<PlanDetails />} />
+      {/* <Route path="/subscription-plan/list" element={<SubscriptionList/>} /> */}
+      <Route path="/product/create" element={<CreateProduct/>} />
+      <Route path="/product/list" element={<SubscriptionList/>} />
+      <Route path="/product/customerSubscription" element={<CustomerSubscriptionList/>} />
+        
+      
     </Routes>
   );
 };

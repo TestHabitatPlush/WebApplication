@@ -7,7 +7,7 @@ import ParkingHandler from "../../../../handlers/ParkingHandler";
 import toast from "react-hot-toast";
 
 const AddVehicleDetails = ({ societyId, token }) => {
-  const paths = ["Parking Managemen", "Add Vehicle"];
+  const paths = ["Parking Management", "Add Vehicle"];
   const Heading = ["Add Vehicle"];
 
   return (

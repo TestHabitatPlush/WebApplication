@@ -3,6 +3,7 @@ const path = require("path");
 
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
 
+
 const envConfiguration = () => {
   switch (process.env.NODE_ENV) {
     case "production":
