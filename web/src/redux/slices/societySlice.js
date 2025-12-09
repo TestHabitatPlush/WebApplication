@@ -80,13 +80,8 @@ const societySlice = createSlice({
       email: '',
       societyType: ''
     },
-<<<<<<< HEAD
 
     selectedSocietyId: null,
-=======
-    selectedSociety: null,   // ✅ NEW: holds selected society object
-    status: 'idle',
->>>>>>> 870a576d38725c9830678d5f338e9368efed5b2f
   },
   reducers: {
     setPage: (state, action) => {
@@ -106,7 +101,6 @@ const societySlice = createSlice({
     setSocietyLists: (state, action) => {
       state.data = action.payload;
     },
-<<<<<<< HEAD
 
     setSelectedSociety: (state, action) => {
       state.selectedSocietyId = action.payload;
@@ -115,25 +109,5 @@ const societySlice = createSlice({
 });
 
 export const { setPage, setPageSize, setFilters, updateData, setSocietyLists, setSelectedSociety } = societySlice.actions;
-=======
-    setSelectedSociety: (state, action) => {
-      state.selectedSociety = action.payload; // ✅ new action
-    },
-    clearSelectedSociety: (state) => {
-      state.selectedSociety = null;
-    }
-  },
-});
-
-export const {
-  setPage,
-  setPageSize,
-  setFilters,
-  updateData,
-  setSocietyLists,
-  setSelectedSociety,      // ✅ export new actions
-  clearSelectedSociety,
-} = societySlice.actions;
->>>>>>> 870a576d38725c9830678d5f338e9368efed5b2f
 
 export default societySlice.reducer;

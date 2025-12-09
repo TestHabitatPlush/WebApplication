@@ -17,19 +17,12 @@
 // userRouter.put("/resident/:societyId", userController.updateResidentBySocietyId)
 
 // userRouter.post("/bulk-create/:societyId", upload.single("file"), userController.bulkCreateResidents)
-<<<<<<< HEAD
-
-// //userRouter.get("/moderator/:societyId", userController. getSocietyModerator);
-// userRouter.get("/management/:societyId", userController.getManagement_committee);
-
-=======
 // userRouter.post("/bulk-create/manual/:societyId", userController.bulkCreateResidentsManual);
 
 // userRouter.get("/moderator/:societyId", userController. getSocietyModerator);
 // userRouter.get("/management/:societyId", userController.getManagement_committee);
 
 // userRouter.put("/moderator/:userId", upload.fields([{ name: "photo", maxCount: 1 }]), userController.updateSocietyModerator);
->>>>>>> 870a576d38725c9830678d5f338e9368efed5b2f
 // userRouter.put("/moderators/:id", userController.updateSocietyStatus);
 
 // userRouter.get('/resident/approvedUser/:societyId', userController.getAllApprovedUsers);
@@ -37,22 +30,10 @@
 // // 
 // // 
 // // userRouter.post("/resident/reject", userController.rejectUser);
-<<<<<<< HEAD
-//  userRouter.get('/resident/deactive/:societyId', userController.getAllDeactiveUsers);
-=======
-
->>>>>>> 870a576d38725c9830678d5f338e9368efed5b2f
 // module.exports = userRouter;
 
 
 
-<<<<<<< HEAD
-
-
-
-
-=======
->>>>>>> 870a576d38725c9830678d5f338e9368efed5b2f
 const express = require("express");
 const userRouter = express.Router();
 const userController = require("../controllers/userController")
@@ -90,9 +71,3 @@ userRouter.put('/User/:userId', userController.updateUserIdStatus);
 module.exports = userRouter;
 
 
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> 870a576d38725c9830678d5f338e9368efed5b2f
