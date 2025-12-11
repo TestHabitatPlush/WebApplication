@@ -217,7 +217,7 @@ export const updateTicketPurposeService = (
 
 export const getTicketPurposeDropdownService = (societyId, token) => {
   const url = `${API_URL}/societyhelpdesk/ticket-purpose/dropdown/${societyId}`;
-  console.log("API CALL:", url);
+  // console.log("API CALL:", url);
   return axios.get(url, {
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -246,7 +246,7 @@ export const getTicketTableService = (userId, societyId, token, params = {}) => 
 
 export const updateTicketStatusAndRemarksService = (ticket_Id, data, token) => {
   const url = `${API_URL}/societyhelpdesk/ticket/${ticket_Id}`;
-  // console.log("API CALL:", url);
+  console.log("API CALL:", url);
   return axios.put(url, data, {
     headers: { Authorization: `Bearer ${token}` },
   });

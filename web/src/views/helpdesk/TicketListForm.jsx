@@ -71,6 +71,20 @@ const TicketListForm = () => {
     });
   };
 
+    const handleRefresh = () => {
+    const defaultFilters = {
+      ticketNumber: "",
+      ticketTitle: "",
+      startDate: "",
+      endDate: "",
+      status: "",
+    };
+    setFilters(defaultFilters);
+    setSearchFilters(defaultFilters);
+    setPage(1);
+    fetchTickets();
+  };
+
   const totalPages = Math.ceil(totalCount / pageSize);
 
   const columns = [
@@ -180,6 +194,9 @@ const TicketListForm = () => {
 
       <div className="flex justify-end mb-4">
         <Button onClick={handleSearch}>Submit</Button>
+           <Button onClick={handleRefresh} variant="secondary">
+          Refresh
+        </Button>
       </div>
 
       <div className="bg-white p-4 rounded shadow">

@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "export": "next export",
-  "build-export": "npm run build && npm run export",
+    "build-export": "npm run build && npm run export",
     "build-test": "cross-env NODE_ENV=test next build",
     "build-prod": "cross-env NODE_ENV=production next build",
     "start-test": "cross-env NODE_ENV=test next start",
@@ -36,7 +36,6 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "postcss": "^8",
-    "tailwindcss": "^3.4.1",
-    "webpack-dev-server": "^5.2.0"
+    "tailwindcss": "^3.4.1"
   }
 }

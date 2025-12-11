@@ -16,12 +16,11 @@ import { FaCamera,FaTrashAlt } from "react-icons/fa";
 import PhoneCodeSelector from "../../../../components/shared/PhoneCodeSelector";
 import CountryStateCitySelector from "../../../../components/shared/CountryStateCitySelector"
 import ReusableTable from "../../../../components/shared/ReusableTable";
-
+import { useDispatch, useSelector } from "react-redux";
 const AddUser = () => {
   const paths = ["User Management", "Add User"];
   const Heading = ["Add Resident User"];
-  const societyId =
-    useSelector((state) => state.auth.user?.Customer?.customerId) || "";
+  const societyId =useSelector((state) => state.auth.user?.Customer?.customerId) || "";
   const unitId = useSelector((state) => state.auth.user?.Unit?.unitId) || "";
   // const countryCodesList =
   //   useSelector((state) => state.countryCode.countryCodes) || [];
