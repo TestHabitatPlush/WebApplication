@@ -44,6 +44,7 @@ const upload = require("..//middleware/upload.js")
 userRouter.post("/", userController.createUser);
 userRouter.get("/", userController.getAllUsers);
 userRouter.get("/:id", userController.getUserById);
+userRouter.get("/society/:societyId/users", userController.getUserBySocietyId);
 
 // userRouter.post("/resident/:id", userController.createResident);
 

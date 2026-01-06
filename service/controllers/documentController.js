@@ -123,11 +123,6 @@ const getDocumentBySocietyId = async (req, res) => {
     return res.status(500).json({ message: "Error fetching documents", error: err.message });
   }
 };
-
-
-
-
-  
   
 // This function is used by Residents to create their own documents. 
 // Admins can also use this function to create documents for themselves.

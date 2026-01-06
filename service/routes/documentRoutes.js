@@ -29,7 +29,7 @@ documentRouter.get("/society/:societyId/:userId", documentController.getDocument
 
 
 documentRouter.get("/user/:userId", documentController.getDocumentByUserId);
-// documentRouter.get("/all/by-user/:userId", documentController.getAllDocuments);
+//documentRouter.get("/all/by-user/:userId", documentController.getAllDocuments);
 documentRouter.get("/:userId", documentController.getAllDocuments);
 
 documentRouter.put("/society/:documentId",documentController.updateDocumentBySocietyId);

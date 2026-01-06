@@ -80,3 +80,5 @@ visitorManagementRouter.get(
 );
 
 module.exports = visitorManagementRouter;
+
+// /visitormanagement

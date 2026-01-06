@@ -154,5 +154,6 @@ Unit.belongsTo(Building, { foreignKey: "buildingId" });
 Unit.belongsTo(Floor, { foreignKey: "floorId" });
 Unit.belongsTo(UnitType, { foreignKey: "unitTypeId" });
 
+
 module.exports = Unit;
 

@@ -2204,6 +2204,62 @@ const updateUserIdStatus = async(req,res) =>{
   }
 }
 
+
+const getUserBySocietyId = async (req, res) => {
+  try {
+    const { societyId } = req.params;
+    const { roleCategory } = req.query; 
+    // example: society_owner, society_tenant, management_committee
+
+    const users = await User.findAll({
+      where: {
+        societyId,
+        isDeleted: false,
+        status: "active",
+      },
+      attributes: [
+        "userId",
+        "salutation",
+        "firstName",
+        "lastName",
+        "email",
+        "mobileNumber",
+        "primaryContact",
+        "isManagementCommittee",
+        "status",
+      ],
+      include: [
+        {
+          model: Role,
+          as: "role",
+          attributes: [
+            "roleId",
+            "roleCategory",
+            "roleName",
+            "occupancyStatus",
+          ],
+          where: roleCategory
+            ? { roleCategory, isDeleted: false }
+            : { isDeleted: false },
+        },
+      ],
+      order: [["userId", "DESC"]],
+    });
+
+    return res.status(200).json({
+      success: true,
+      count: users.length,
+      data: users,
+    });
+  } catch (error) {
+    console.error("getUserBySocietyId error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch users",
+    });
+  }
+};
+
 module.exports = {
   createUser,
   getAllUsers,
@@ -2221,4 +2277,5 @@ module.exports = {
   getAllDeactiveUsers,
   getAllSuper_admin_itAndModrerator,
   updateUserIdStatus,
+  getUserBySocietyId,
 };

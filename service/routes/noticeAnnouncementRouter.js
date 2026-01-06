@@ -28,11 +28,12 @@ const {
   deleteNoticeById,
 } = require("../controllers/noticeAnController");
 
-router.post("/create/:societyId/:userId", createNoticeBySocietyId);
+router.post("/create/:societyId/:senderId", createNoticeBySocietyId);
 router.get("/get/:societyId/:userId", getNoticesBySocietyId);
-router.post("/create/:userId", createNoticeByUserId);
+router.post("/create/:senderId", createNoticeByUserId);
 router.get("/user/:userId", getNoticesByUserId);
 router.put("/update/:noticeId", updateNoticeById);
 router.delete("/delete/:noticeId", deleteNoticeById);
 
 module.exports = router;
+

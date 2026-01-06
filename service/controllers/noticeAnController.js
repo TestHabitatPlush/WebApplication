@@ -40,7 +40,7 @@
 //       noticeExpireDate,
 //       userGroupId,
 //       societyId,
-//       senderId,
+//       userId,
 //     } = req.body;
 //     if (
 //       !noticeHeading ||
@@ -48,7 +48,7 @@
 //       !noticeExpireDate ||
 //       !userGroupId ||
 //       !societyId ||
-//       !senderId
+//       !userId
 //     ) {
 //       return sendErrorResponse(res, "Enter All Details", 400);
 //     }
@@ -424,47 +424,53 @@ const { sendSuccessResponse, sendErrorResponse } = require("../utils/response");
 const visibilityMap = {
   owner: ["society_owner", "society_owner_family"],
   tenant: ["society_tenant", "society_tenant_family"],
-  all: ["society_owner", "society_owner_family", "society_tenant", "society_tenant_family"],
+  all: [
+    "society_owner",
+    "society_owner_family",
+    "society_tenant",
+    "society_tenant_family"
+  ],
   primary: ["primary_member"],
 };
 
-// Create Notice by Society ID
+/* ======================================================
+    CREATE NOTICE BY SOCIETY ID (Moderator/Admin Only)
+====================================================== */
 const createNoticeBySocietyId = async (req, res) => {
   try {
-    const { societyId, userId } = req.params;
+    const { societyId, senderId } = req.params;
     const { noticeHeading, noticeDescription, noticeExpireDate, visibilityOption } = req.body;
 
-    if (!societyId || !userId || !noticeHeading || !noticeDescription || !noticeExpireDate || !visibilityOption) {
+    if (!societyId || !senderId)
+      return sendErrorResponse(res, "societyId and senderId are required", 400);
+
+    if (!noticeHeading || !noticeDescription || !noticeExpireDate || !visibilityOption)
       return sendErrorResponse(res, "Missing required fields", 400);
-    }
 
-    const user = await User.findByPk(userId);
-    if (!user) return sendErrorResponse(res, "User not found", 404);
+    const sender = await User.findByPk(senderId);
+    if (!sender) return sendErrorResponse(res, "Sender not found", 404);
 
-    const role = await Role.findByPk(user.roleId);
+    if (sender.societyId?.toString() !== societyId.toString())
+      return sendErrorResponse(res, "You can only create notices for your own society", 403);
+
+    const role = await Role.findByPk(sender.roleId);
     if (!role) return sendErrorResponse(res, "Role not found", 404);
 
-    if (user.societyId?.toString() !== societyId.toString()) {
-      return sendErrorResponse(res, "You can only create notices for your own society", 403);
-    }
-
-    if (!["society_moderator", "management_committee"].includes(role.roleCategory)) {
+    if (!["society_moderator", "management_committee"].includes(role.roleCategory))
       return sendErrorResponse(res, "Permission denied", 403);
-    }
 
     const roleCategories = visibilityMap[visibilityOption];
-    if (!roleCategories) {
+    if (!roleCategories)
       return sendErrorResponse(res, "Invalid visibility option", 400);
-    }
 
     const notice = await Notice.create({
+      societyId,
+      senderId,
       noticeHeading,
       noticeDescription,
       noticeExpireDate,
-      societyId,
-      userId,
-      roleId: user.roleId,
-      roleCategories,
+      roleId: sender.roleId,
+      roleCategories
     });
 
     return sendSuccessResponse(res, "Notice created successfully", notice, 201);
@@ -473,14 +479,15 @@ const createNoticeBySocietyId = async (req, res) => {
   }
 };
 
-// Get Notices by Society ID
+/* ======================================================
+                GET NOTICES FOR A SOCIETY
+====================================================== */
 const getNoticesBySocietyId = async (req, res) => {
   try {
     const { societyId, userId } = req.params;
 
-    if (!societyId || !userId) {
+    if (!societyId || !userId)
       return sendErrorResponse(res, "societyId and userId are required", 400);
-    }
 
     const user = await User.findByPk(userId);
     if (!user) return sendErrorResponse(res, "User not found", 404);
@@ -488,11 +495,10 @@ const getNoticesBySocietyId = async (req, res) => {
     const role = await Role.findByPk(user.roleId);
     if (!role) return sendErrorResponse(res, "User role not found", 404);
 
-    if (user.societyId?.toString() !== societyId.toString()) {
+    if (user.societyId?.toString() !== societyId.toString())
       return sendErrorResponse(res, "You can only view notices from your own society", 403);
-    }
 
-    const userCategory = role.roleCategory?.toLowerCase();
+    const userCategory = role.roleCategory.toLowerCase();
     const isPrimary = user.primaryMember === true;
 
     const allNotices = await Notice.findAll({
@@ -502,9 +508,12 @@ const getNoticesBySocietyId = async (req, res) => {
 
     const matched = allNotices.filter((notice) => {
       const categories = Array.isArray(notice.roleCategories) ? notice.roleCategories : [];
+
       if (categories.includes("primary_member") && isPrimary) return true;
       if (categories.includes(userCategory)) return true;
+
       if (categories.length === 0) return true;
+
       return false;
     });
 
@@ -514,27 +523,31 @@ const getNoticesBySocietyId = async (req, res) => {
   }
 };
 
-// Create Notice by User ID (Super Admin Only)
-// This function is used by Residents or Admins to create their own notices
+/* ======================================================
+             CREATE NOTICE BY USER ID (General)
+====================================================== */
 const createNoticeByUserId = async (req, res) => {
   try {
+    const { senderId } = req.params;
     const { noticeHeading, noticeDescription, noticeExpireDate } = req.body;
-    const { userId } = req.params;
 
-    if (!userId) return sendErrorResponse(res, "userId is required", 400);
+    if (!senderId)
+      return sendErrorResponse(res, "senderId is required", 400);
+
     if (!noticeHeading || !noticeDescription || !noticeExpireDate)
       return sendErrorResponse(res, "All fields are required", 400);
 
-    const user = await User.findByPk(userId);
+    const user = await User.findByPk(senderId);
     if (!user) return sendErrorResponse(res, "User not found", 404);
 
     const notice = await Notice.create({
-      userId,
-      roleId: user.roleId, 
+      senderId,
+      roleId: user.roleId,
       societyId: user.societyId,
       noticeHeading,
       noticeDescription,
       noticeExpireDate,
+      roleCategories: null // User-created notices have no visibility restriction
     });
 
     return sendSuccessResponse(res, "Notice created successfully", notice, 201);
@@ -543,10 +556,12 @@ const createNoticeByUserId = async (req, res) => {
   }
 };
 
-// Get Notices by User ID
+/* ======================================================
+                    GET USER NOTICES
+====================================================== */
 const getNoticesByUserId = async (req, res) => {
   try {
-    const userId = req.userId || req.params.userId;
+    const userId = req.params.userId;
 
     if (!userId) return sendErrorResponse(res, "userId is required", 400);
 
@@ -554,7 +569,7 @@ const getNoticesByUserId = async (req, res) => {
     if (!user) return sendErrorResponse(res, "User not found", 404);
 
     const notices = await Notice.findAll({
-      where: { userId },
+      where: { senderId: userId },
       order: [["createdAt", "DESC"]],
     });
 
@@ -567,16 +582,9 @@ const getNoticesByUserId = async (req, res) => {
   }
 };
 
-// const getAllNotices = async (req, res) => {
-//   try {
-//     const notices = await Notice.findAll({ order: [["createdAt", "DESC"]] });
-//     return sendSuccessResponse(res, "All notices fetched", { count: notices.length, notices });
-//   } catch (err) {
-//     return sendErrorResponse(res, "Error fetching all notices", 500, err.message);
-//   }
-// };
-
-// Update Notice
+/* ======================================================
+                    UPDATE NOTICE
+====================================================== */
 const updateNoticeById = async (req, res) => {
   try {
     const { noticeId } = req.params;
@@ -586,20 +594,25 @@ const updateNoticeById = async (req, res) => {
     if (!notice) return sendErrorResponse(res, "Notice not found", 404);
 
     await notice.update(updateData);
+
     return sendSuccessResponse(res, "Notice updated successfully", notice);
   } catch (err) {
     return sendErrorResponse(res, "Error updating notice", 500, err.message);
   }
 };
 
-// Delete Notice
+/* ======================================================
+                    DELETE NOTICE
+====================================================== */
 const deleteNoticeById = async (req, res) => {
   try {
     const { noticeId } = req.params;
+
     const notice = await Notice.findByPk(noticeId);
     if (!notice) return sendErrorResponse(res, "Notice not found", 404);
 
     await notice.destroy();
+
     return sendSuccessResponse(res, "Notice deleted successfully");
   } catch (err) {
     return sendErrorResponse(res, "Error deleting notice", 500, err.message);

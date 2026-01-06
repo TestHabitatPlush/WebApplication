@@ -1,24 +1,37 @@
 const envConfiguration = require("./config/envConfig");
 envConfiguration();
 
+const http = require("http");
 const app = require("./app");
 const sequelize = require("./config/database");
+const { setupSocket } = require("./utils/socket");
 
 const PORT = process.env.PORT || 5001;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-(async function connectDB() {
+(async function startServer() {
   try {
+    // Connect database first
     await sequelize.authenticate();
     console.log("Database connected successfully");
 
+    //  Create HTTP server
+    const server = http.createServer(app);
+
+    // Initialize Socket.IO
+    setupSocket(server);
+
+    //  Start listening
+    server.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+
   } catch (error) {
-    console.error(" Database connection failed:", error);
+    console.error(" Server startup failed:", error);
+    process.exit(1); // important for cloud restart
   }
 })();
+
+
 
 // const envConfiguration = require("./config/envConfig");
 // envConfiguration();

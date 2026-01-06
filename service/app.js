@@ -175,6 +175,7 @@ const path = require("path");
 const dotenv = require("dotenv");
 const session = require("express-session");
 const Keycloak = require("keycloak-connect");
+const apiKeyMiddleware = require("./middleware/apiKeyMiddleware.js")
 
 dotenv.config();
 
@@ -194,7 +195,7 @@ app.use(
     saveUninitialized: true,
     store: memoryStore,
     cookie: {
-      secure: false, // ❗ set true if HTTPS
+      secure: false, //  set true if HTTPS
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     },
@@ -226,13 +227,17 @@ const errorHandler = require("./middleware/errorHandler");
 
 // Import routes
 const userRouter = require("./routes/userRoutes");
+const userUnitRouter = require ('./routes/userUnitRoutes.js')
 const familyRouter = require("./routes/userFamilyRoutes.js");
 const authRouter = require("./routes/authRoutes");
 const documentRouter = require("./routes/documentRoutes");
 const discussionRouter = require("./routes/discussion_forum_Routes");
+const chat = require ("./routes/chatRoutes.js")
+const chatAdmin = require("./routes/chatAdminRoutes.js");
 const jobProfileRouter = require("./routes/jobProfileRoutes");
 const customerRoutes = require("./routes/customerRoutes");
 const parkingRoutes = require("./routes/parkingRoutes");
+const vehicleRouter = require("./routes/vehicleRoutes.js")
 const emergencyContactRouter = require("./routes/emergency_contact_Routes");
 const gateAllocationRoutes = require("./routes/gateAllocationRoutes.js");
 const locationRouter = require("./routes/locationRoutes");
@@ -265,10 +270,13 @@ app.get("/getenv", (req, res) => {
 });
 
 // --- Protected Routes ---
-// app.use("/api/users", keycloak.protect(), userRouter);
+//app.use("/api", keycloak.protect(), userRouter);
+
+app.use("/api",apiKeyMiddleware)
 
 // --- Public / Semi-protected Routes ---
 app.use("/api/users", userRouter);
+app.use("/api/userUnit",userUnitRouter)
 app.use("/api/family", familyRouter);
 app.use("/api/password", passwordRouter);
 app.use("/api/auth", authRouter);
@@ -299,8 +307,11 @@ app.get("/init-database", initController);
 app.use("/api/filter", filterRoutes);
 app.use("/api/facilityManagement", facilityManagement);
 app.use("/api", parkingRoutes);
+app.use("/api/vehicle",vehicleRouter)
 app.use("/api/documents", documentRouter);
 app.use("/api/discussionForum", discussionRouter);
+app.use("/api/chat",chat);
+app.use("/api/chatAdmin",chatAdmin);
 app.use("/api/emergencyContacts", emergencyContactRouter);
 app.use("/api/location", locationRouter);
 

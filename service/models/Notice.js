@@ -66,12 +66,11 @@
 
 // module.exports = Notice;
 
-
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 const Customer = require("./Customer");
+const UserGroup = require("./UserGroup");
 const User = require("./User");
-const Role = require("./RoleModel");
 
 const Notice = sequelize.define(
   "Notice",
@@ -87,19 +86,7 @@ const Notice = sequelize.define(
         model: Customer,
         key: "customerId",
       },
-      allowNull: true,
-    },
-    roleId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: Role,
-        key: "roleId",
-      },
-      allowNull: true,
-    },
-    roleCategories: {
-      type: DataTypes.JSON,
-      allowNull: true,
+      allowNull: false,
     },
     noticeHeading: {
       type: DataTypes.STRING,
@@ -109,26 +96,34 @@ const Notice = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    userId: {
+    senderId: {
       type: DataTypes.INTEGER,
       references: {
         model: User,
         key: "userId",
       },
-      allowNull: true,
     },
     noticeExpireDate: {
       type: DataTypes.DATE,
       allowNull: false,
     },
+    roleCategories: {
+      type: DataTypes.JSON,    
+      allowNull: true,
+    },
+
+    userGroupId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: UserGroup,
+        key: "userGroupId",
+      },
+    },
   },
   {
     tableName: "Notice",
-    timestamps: true, 
+    timestamps: true,
   }
 );
-
-Notice.belongsTo(Role, { foreignKey: "roleId" });
-Role.hasMany(Notice, { foreignKey: "roleId" });
 
 module.exports = Notice;
