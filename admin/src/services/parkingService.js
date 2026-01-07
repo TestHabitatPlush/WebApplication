@@ -95,7 +95,7 @@ export const getVehicleService = (societyId, data, token) => {
   });
 };
 export const getVehicleDataByIdService = (vehicleId, token) => {
-  const url = `${BASE_URL}/vehicleData/${vehicleId}`;
+  const url = `${BASE_URL}/vehicle/${vehicleId}`;
 
   return axios.get(url, {
     headers: {

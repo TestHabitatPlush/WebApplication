@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import Input from "../../../../components/shared/Input";
 import UrlPath from "../../../../components/shared/UrlPath";
@@ -12,6 +13,10 @@ import DefineUnitHandler from "../../../../handlers/DefineUnitHandler";
 import BuildingHandler from "../../../../handlers/BuildingHandler";
 import FloorHandler from "../../../../handlers/FloorHandler";
 import UnitTypeHandler from "../../../../handlers/building_management/UnitTypeHandler";
+
+import { useRef } from "react";
+
+
 import { FaCamera,FaTrashAlt } from "react-icons/fa";
 import PhoneCodeSelector from "../../../../components/shared/PhoneCodeSelector";
 import CountryStateCitySelector from "../../../../components/shared/CountryStateCitySelector"
@@ -20,12 +25,10 @@ import ReusableTable from "../../../../components/shared/ReusableTable";
 const AddUser = () => {
   const paths = ["User Management", "Add User"];
   const Heading = ["Add Resident User"];
-  const societyId =
-    useSelector((state) => state.auth.user?.Customer?.customerId) || "";
+  const societyId = useSelector((state) => state.auth.user?.Customer?.customerId) || "";
   const unitId = useSelector((state) => state.auth.user?.Unit?.unitId) || "";
-  // const countryCodesList =
-  //   useSelector((state) => state.countryCode.countryCodes) || [];
-  const dispatch = useDispatch();
+  const countryCodesList = useSelector((state) => state.countryCode.countryCodes) || [];
+
   const { CreateDefineUnitHandler } = DefineUnitHandler();
   const { getFloorHandler } = FloorHandler();
   const { getUnitTypeHandler } = UnitTypeHandler();
@@ -41,14 +44,16 @@ const AddUser = () => {
   const [roles, setRoles] = useState([]);
   const [selectedRoleId, setSelectedRoleId] = useState(null);
   const [unitNoOptions, setUnitNoOptions] = useState([]);
-  const [errors, setErrors] = useState({});
-  const [previewFileName, setPreviewFileName] = useState(null);
+
+
+
+
   const [defineUnit, setDefineUnit] = useState({
     buildingId: "",
     floorId: "",
     unitTypeId: "",
     unitNumber: "",
-    //  unitsize: "",
+  //  unitsize: "",
   });
 
 
@@ -1384,4 +1389,3 @@ const submitProfileUser = async () => {
   );
 };
 export default AddUser;
-

@@ -7,6 +7,7 @@
 // import { toast, ToastContainer } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 
+
 // const SocietyCreateForm = ({ onSubmit, onEditHandler }) => {
 //   const dispatch = useDispatch();
 //   const formData = useSelector((state) => state.customer.customerForm);
@@ -74,10 +75,13 @@
 //   const { name, value } = e.target;
 //   let error = "";
 
+ 
 //   // Validation for specific fields
 //   if (["customerName", "builderName", "state", "city"].includes(name) && !/^[A-Za-z\s]*$/.test(value)) {
 //     error = "Only alphabetic characters are allowed";
 //   }
+
+  
 
 //   if (error) {
 //     setErrors((prevErrors) => ({ ...prevErrors, [name]: error }));
@@ -100,7 +104,7 @@
 //   if (name === "phone" && value.length > 10 ){
 //     return; // Prevent updating if the input length exceeds 6
 //   }
-
+  
 //   if (name === "zipCode" && value && !/^\d{6}$/.test(value)) {
 //     error = "ZIP Code must be exactly 6 digits";
 //   }
@@ -112,6 +116,7 @@
 //   if (name === "email" && value && !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) {
 //     error = "Please enter a valid email address (e.g., example@domain.com)";
 //   }
+
 
 //   // Clear errors and update field value
 //   setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
@@ -278,7 +283,7 @@
 //               onChange={handleInputChange}
 //               readOnly={isReadOnly()}
 //               error={errors.builderName}
-
+           
 // />
 // {errors.builderName && (
 //   <p className="mt-1 text-sm text-red-500">{errors.builderName}</p>
@@ -292,8 +297,10 @@
 //               value={formData.builderSocialLink}
 //               onChange={handleInputChange}
 //               readOnly={isReadOnly()}
-
+          
+           
 // />
+
 
 //           </div>
 //         </div>
@@ -304,8 +311,8 @@
 //             Society Location / Address
 //           </h3>
 //           <div className="grid items-center grid-cols-3 gap-5 mt-3">
-//             <Input
-//               label={<><span>Address Line 1</span><span className="font-bold text-red-500">*</span></>}
+//             <Input 
+//               label={<><span>Address Line 1</span><span className="font-bold text-red-500">*</span></>} 
 //               type="text"
 //               placeholder="Enter address line 1"
 //               size="lg"
@@ -314,9 +321,9 @@
 //               onChange={handleInputChange}
 //               readOnly={isReadOnly()}
 //             />
-
+            
 //             <Input
-//               label={<><span>Street</span><span className="font-bold text-red-500">*</span></>}
+//               label={<><span>Street</span><span className="font-bold text-red-500">*</span></>} 
 //               type="text"
 //               placeholder="Enter Street"
 //               size="lg"
@@ -328,7 +335,7 @@
 //           </div>
 //           <div className="grid items-center grid-cols-3 gap-5 mt-3">
 //             <Input
-//               label={<><span>City</span><span className="font-bold text-red-500">*</span></>}
+//               label={<><span>City</span><span className="font-bold text-red-500">*</span></>} 
 //               type="text"
 //               placeholder="Enter city"
 //               size="lg"
@@ -339,7 +346,7 @@
 //               error={errors.city}
 //             />
 //             <Input
-//               label={<><span>State</span><span className="font-bold text-red-500">*</span></>}
+//               label={<><span>State</span><span className="font-bold text-red-500">*</span></>} 
 //               type="text"
 //               placeholder="Enter state"
 //               size="lg"
@@ -350,7 +357,7 @@
 //               error={errors.state}
 //             />
 //             {/* <Input
-//               label={<><span>ZIP Code</span><span className="font-bold text-red-500">*</span></>}
+//               label={<><span>ZIP Code</span><span className="font-bold text-red-500">*</span></>} 
 //               type="text"
 //               placeholder="Enter ZIP code"
 //               size="lg"
@@ -389,7 +396,7 @@
 //           <h3 className="font-semibold text-lime">Society Contact Details</h3>
 //           <div className="grid items-center grid-cols-3 gap-5 mt-3">
 //             {/* <Input
-//               label={<><span>Phone</span><span className="font-bold text-red-500">*</span></>}
+//               label={<><span>Phone</span><span className="font-bold text-red-500">*</span></>} 
 //               type="text"
 //               placeholder="Enter phone number"
 //               size="lg"
@@ -429,12 +436,13 @@
 //   onChange={handleChange}
 //   readOnly={isReadOnly()}
 //   error={errors.email}
-
+  
 //   title="Please enter a valid email address (e.g., example@domain.com)."
 // />
 // {errors.email && (
 //   <p className="mt-1 text-sm text-red-500">{errors.email}</p>
 // )}
+
 
 //           </div>
 //         </div>
@@ -465,8 +473,6 @@
 // };
 
 // export default SocietyCreateForm;
-
-
 // import React from "react";
 // import Input from "../../../../components/shared/Input";
 // import Select from "../../../../components/ui/Select";
@@ -692,621 +698,43 @@
 // };
 
 // export default SocietyCreateForm;
-
-// import React from "react";
-// import Input from "../../../../components/shared/Input";
-// import Select from "../../../../components/ui/Select";
-// import Button from "../../../../components/ui/Button";
-// import { useDispatch, useSelector } from "react-redux";
-// import { setCustomerFormField } from "../../../../redux/slices/customerSlice";
-// import CountryStateCitySelector from "../../../../components/shared/CountryStateCitySelector";
-// const SocietyCreateForm = ({ onSubmit, onEditHandler }) => {
-//   const dispatch = useDispatch();
-//   const formData = useSelector((state) => state.customer.customerForm);
-//   const societyTypeOptions = useSelector(
-//     (state) => state.customer.societyTypeOptions
-//   );
-//   const subscriptionPlans = useSelector(
-//     (state) => state.customer.subscriptionPlans
-//   );
-//   const customerTypeOptions = useSelector(
-//     (state) => state.customer.customerTypeOptions
-//   );
-//   const formMode = useSelector((state) => state.customer.formOperationType);
-
-//   console.log(formMode);
-
-//   const handleInputChange = (e) => {
-//     const { name, value } = e.target;
-//     console.log(name, value);
-//     dispatch(setCustomerFormField({ name, value }));
-//   };
-
-//   return (
-//     <div className="flex">
-//       <div className="w-full space-y-5">
-//         <div className="p-5 bg-white border border-gray-100 rounded-2xl">
-//           <h3 className="font-semibold text-lime">Customer Info</h3>
-//           <div className="grid items-center grid-cols-3 gap-5 mt-3">
-//             <Input
-//               label={
-//                 <>
-//                   <span>Customer Name</span>
-//                   <span className="font-bold text-red-500">*</span>
-//                 </>
-//               }
-//               type="text"
-//               placeholder="Enter customer name"
-//               size="lg"
-//               name="customerName"
-//               value={formData.customerName}
-//               onChange={handleInputChange}
-//               readOnly={formMode !== "create"}
-//             />
-//             <Select
-//               label={
-//                 <>
-//                   <span>Select Customer Type</span>
-//                   <span className="font-bold text-red-500">*</span>
-//                 </>
-//               }
-//               options={customerTypeOptions}
-//               value={formData.customerType}
-//               onChange={handleInputChange}
-//               color="blue"
-//               size="md"
-//               name="customerType"
-//               className="py-[14px]"
-//               readOnly={formMode !== "create"}
-//             />
-//             <Select
-//               label={
-//                 <>
-//                   <span>Select Subscription Plan</span>
-//                   <span className="font-bold text-red-500">*</span>
-//                 </>
-//               }
-//               options={subscriptionPlans}
-//               value={formData.subscriptionId}
-//               onChange={handleInputChange}
-//               color="blue"
-//               size="md"
-//               name="subscriptionId"
-//               className="py-[14px]"
-//               readOnly={formMode === "view"}
-//             />
-//             <Input
-//               label={
-//                 <>
-//                   <span>Establisment Year</span>
-//                   <span className="font-bold text-red-500">*</span>
-//                 </>
-//               }
-//               type="number"
-//               placeholder="Enter year"
-//               size="lg"
-//               name="establishedYear"
-//               value={formData.establishedYear}
-//               onChange={handleInputChange}
-//               readOnly={formMode === "view"}
-//             />
-//             {formData.customerType === "society" && (
-//               <Select
-//                 label={
-//                   <>
-//                     <span>Select Society Type</span>
-//                     <span className="font-bold text-red-500">*</span>
-//                   </>
-//                 }
-//                 options={societyTypeOptions}
-//                 value={formData.societyType}
-//                 onChange={handleInputChange}
-//                 color="blue"
-//                 size="md"
-//                 name="societyType"
-//                 className="py-[14px]"
-//                 readOnly={formMode === "view"}
-//               />
-//             )}
-//           </div>
-//         </div>
-
-//         <div className="p-5 bg-white border border-gray-100 rounded-2xl">
-//           <h3 className="font-semibold text-lime">Builder Info</h3>
-//           <div className="grid items-center grid-cols-3 gap-5 mt-3">
-//             <Input
-//               label="Builder Name"
-//               type="text"
-//               placeholder="Enter Builder name"
-//               size="lg"
-//               name="builderName"
-//               value={formData.builderName}
-//               onChange={handleInputChange}
-//               readOnly={formMode === "view"}
-//             />
-//             <Input
-//               label="Builder Details"
-//               type="text"
-//               placeholder="Enter Builder Social Link"
-//               size="lg"
-//               name="builderSocialLink"
-//               value={formData.builderSocialLink}
-//               onChange={handleInputChange}
-//               readOnly={formMode === "view"}
-//             />
-//           </div>
-//         </div>
-
-//         <div className="p-5 bg-white border border-gray-100 rounded-2xl">
-//           <h3 className="font-semibold text-lime">
-//             Society Location / Address
-//           </h3>
-//           <div className="grid items-center grid-cols-3 gap-5 mt-3">
-//             <Input
-//               label={
-//                 <>
-//                   <span>Address Line 1</span>
-//                   <span className="font-bold text-red-500">*</span>
-//                 </>
-//               }
-//               type="text"
-//               placeholder="Enter address line 1"
-//               size="lg"
-//               name="address1"
-//               value={formData.address.address1}
-//               onChange={handleInputChange}
-//               readOnly={formMode === "view"}
-//             />
-//             <Input
-//               label={
-//                 <>
-//                   <span>Address Line 2 </span>
-//                   <span className="font-bold text-red-500">*</span>
-//                 </>
-//               }
-//               type="text"
-//               placeholder="Enter address line 2"
-//               size="lg"
-//               name="street"
-//               value={formData.address.street}
-//               onChange={handleInputChange}
-//               readOnly={formMode === "view"}
-//             />
-//           </div>
-//           <div className="grid items-center grid-cols-3 gap-5 mt-3">
-//             {/* <Input
-//               label={<><span>City</span><span className="font-bold text-red-500">*</span></>}
-//               type="text"
-//               placeholder="Enter city"
-//               size="lg"
-//               name="city"
-//               value={formData.address.city}
-//               onChange={handleInputChange}
-//               readOnly={formMode === "view"}
-//             />
-//             <Input
-//               label={<><span>State</span><span className="font-bold text-red-500">*</span></>}
-//               type="text"
-//               placeholder="Enter state"
-//               size="lg"
-//               name="state"
-//               value={formData.address.state}
-//               onChange={handleInputChange}
-//               readOnly={formMode === "view"}
-//             /> */}
-//             <CountryStateCitySelector
-//               address={formData.address}
-//               setAddress={(updatedFields) => {
-//                 Object.entries(updatedFields).forEach(([name, value]) => {
-//                   dispatch(
-//                     setCustomerFormField({ name: `address.${name}`, value })
-//                   );
-//                 });
-//               }}
-//             />
-
-//             <Input
-//               label={
-//                 <>
-//                   <span>Pin</span>
-//                   <span className="font-bold text-red-500">*</span>
-//                 </>
-//               }
-//               type="text"
-//               placeholder="Enter pin"
-//               size="lg"
-//               name="zipCode"
-//               value={formData.address.zipCode}
-//               onChange={handleInputChange}
-//               readOnly={formMode === "view"}
-//             />
-//           </div>
-//         </div>
-
-//         <div className="p-5 bg-white border border-gray-100 rounded-2xl">
-//           <h3 className="font-semibold text-lime">Society Contact Details</h3>
-//           <div className="grid items-center grid-cols-3 gap-5 mt-3">
-//             <Input
-//               label={
-//                 <>
-//                   <span>Mobile Number</span>
-//                   <span className="font-bold text-red-500">*</span>
-//                 </>
-//               }
-//               type="text"
-//               placeholder="Enter mobile number"
-//               size="lg"
-//               name="phone"
-//               value={formData.phone}
-//               onChange={handleInputChange}
-//               readOnly={formMode === "view"}
-//             />
-//             <Input
-//               label={
-//                 <>
-//                   <span>Email</span>
-//                   <span className="font-bold text-red-500">*</span>
-//                 </>
-//               }
-//               type="text"
-//               placeholder="Enter email"
-//               size="lg"
-//               name="email"
-//               value={formData.email}
-//               onChange={handleInputChange}
-//               readOnly={formMode === "view"}
-//             />
-//           </div>
-//         </div>
-
-//         <div className="flex justify-center py-5">
-//           {formMode === "create" && (
-//             <Button onClick={onSubmit} className="w-full max-w-lg">
-//               Submit
-//             </Button>
-//           )}
-
-//           {formMode === "edit" && (
-//             <Button onClick={() => onEditHandler()} className="w-full max-w-lg">
-//               Edit
-//             </Button>
-//           )}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default SocietyCreateForm;
-
-
-// import React from "react";
-// import Input from "../../../../components/shared/Input";
-// import Select from "../../../../components/ui/Select";
-// import Button from "../../../../components/ui/Button";
-// import { useDispatch, useSelector } from "react-redux";
-// import { setCustomerFormField } from "../../../../redux/slices/customerSlice";
-// import CountryStateCitySelector from "../../../../components/shared/CountryStateCitySelector";
-
-// const SocietyCreateForm = ({ onSubmit, onEditHandler }) => {
-//   const dispatch = useDispatch();
-//   const formData = useSelector((state) => state.customer.customerForm);
-//   const societyTypeOptions = useSelector(
-//     (state) => state.customer.societyTypeOptions
-//   );
-//   const subscriptionPlans = useSelector(
-//     (state) => state.customer.subscriptionPlans
-//   );
-//   const customerTypeOptions = useSelector(
-//     (state) => state.customer.customerTypeOptions
-//   );
-//   const formMode = useSelector((state) => state.customer.formOperationType);
-
-//   const handleInputChange = (e) => {
-//     const { name, value } = e.target;
-//     dispatch(setCustomerFormField({ name, value }));
-//   };
-
-//   return (
-//     <div className="flex">
-//       <div className="w-full space-y-5">
-//         {/* Customer Info */}
-//         <div className="p-5 bg-white border border-gray-100 rounded-2xl">
-//           <h3 className="font-semibold text-lime">Customer Info</h3>
-//           <div className="grid items-center grid-cols-3 gap-5 mt-3">
-//             <Input
-//               label={
-//                 <>
-//                   <span>Customer Name</span>
-//                   <span className="font-bold text-red-500">*</span>
-//                 </>
-//               }
-//               type="text"
-//               placeholder="Enter customer name"
-//               size="lg"
-//               name="customerName"
-//               value={formData.customerName}
-//               onChange={handleInputChange}
-//               readOnly={formMode !== "create"}
-//             />
-//             <Select
-//               label={
-//                 <>
-//                   <span>Select Customer Type</span>
-//                   <span className="font-bold text-red-500">*</span>
-//                 </>
-//               }
-//               options={customerTypeOptions}
-//               value={formData.customerType}
-//               onChange={handleInputChange}
-//               name="customerType"
-//               className="py-[14px]"
-//               readOnly={formMode !== "create"}
-//             />
-//             <Select
-//               label={
-//                 <>
-//                   <span>Select Subscription Plan</span>
-//                   <span className="font-bold text-red-500">*</span>
-//                 </>
-//               }
-//               options={subscriptionPlans}
-//               value={formData.subscriptionId}
-//               onChange={handleInputChange}
-//               name="subscriptionId"
-//               className="py-[14px]"
-//               readOnly={formMode === "view"}
-//             />
-//             <Input
-//               label={
-//                 <>
-//                   <span>Establishment Year</span>
-//                   <span className="font-bold text-red-500">*</span>
-//                 </>
-//               }
-//               type="number"
-//               placeholder="Enter year"
-//               size="lg"
-//               name="establishedYear"
-//               value={formData.establishedYear}
-//               onChange={handleInputChange}
-//               readOnly={formMode === "view"}
-//             />
-//             {formData.customerType === "society" && (
-//               <Select
-//                 label={
-//                   <>
-//                     <span>Select Society Type</span>
-//                     <span className="font-bold text-red-500">*</span>
-//                   </>
-//                 }
-//                 options={societyTypeOptions}
-//                 value={formData.societyType}
-//                 onChange={handleInputChange}
-//                 name="societyType"
-//                 className="py-[14px]"
-//                 readOnly={formMode === "view"}
-//               />
-//             )}
-//           </div>
-//         </div>
-
-//         {/* Builder Info */}
-//         <div className="p-5 bg-white border border-gray-100 rounded-2xl">
-//           <h3 className="font-semibold text-lime">Builder Info</h3>
-//           <div className="grid items-center grid-cols-3 gap-5 mt-3">
-//             <Input
-//               label="Builder Name"
-//               type="text"
-//               placeholder="Enter Builder name"
-//               size="lg"
-//               name="builderName"
-//               value={formData.builderName}
-//               onChange={handleInputChange}
-//               readOnly={formMode === "view"}
-//             />
-//             <Input
-//               label="Builder Details"
-//               type="text"
-//               placeholder="Enter Builder Social Link"
-//               size="lg"
-//               name="builderSocialLink"
-//               value={formData.builderSocialLink}
-//               onChange={handleInputChange}
-//               readOnly={formMode === "view"}
-//             />
-//           </div>
-//         </div>
-
-//         {/* Address Section */}
-//         <div className="p-5 bg-white border border-gray-100 rounded-2xl">
-//           <h3 className="font-semibold text-lime">
-//             Society Location / Address
-//           </h3>
-//           <div className="grid items-center grid-cols-3 gap-5 mt-3">
-//             <Input
-//               label={
-//                 <>
-//                   <span>Address Line 1</span>
-//                   <span className="font-bold text-red-500">*</span>
-//                 </>
-//               }
-//               type="text"
-//               placeholder="Enter address line 1"
-//               size="lg"
-//               name="address1"
-//               value={formData.address.address1}
-//               onChange={handleInputChange}
-//               readOnly={formMode === "view"}
-//             />
-//             <Input
-//               label={
-//                 <>
-//                   <span>Address Line 2</span>
-//                   <span className="font-bold text-red-500">*</span>
-//                 </>
-//               }
-//               type="text"
-//               placeholder="Enter address line 2"
-//               size="lg"
-//               name="street"
-//               value={formData.address.street}
-//               onChange={handleInputChange}
-//               readOnly={formMode === "view"}
-//             />
-//           </div>
-//           <div className="grid items-center grid-cols-3 gap-5 mt-3">
-//             <CountryStateCitySelector
-//               address={formData.address}
-//               setAddress={(updatedFields) =>
-//                 dispatch(
-//                   setCustomerFormField({
-//                     name: "address",
-//                     value: {
-//                       ...formData.address,
-//                       ...updatedFields,
-//                     },
-//                   })
-//                 )
-//               }
-//             />
-
-//             <Input
-//               label={
-//                 <>
-//                   <span>Pin</span>
-//                   <span className="font-bold text-red-500">*</span>
-//                 </>
-//               }
-//               type="text"
-//               placeholder="Enter pin"
-//               size="lg"
-//               name="zipCode"
-//               value={formData.address.zipCode}
-//               onChange={handleInputChange}
-//               readOnly={formMode === "view"}
-//             />
-//           </div>
-//         </div>
-
-//         {/* Contact Info */}
-//         <div className="p-5 bg-white border border-gray-100 rounded-2xl">
-//           <h3 className="font-semibold text-lime">Society Contact Details</h3>
-//           <div className="grid items-center grid-cols-3 gap-5 mt-3">
-//             <Input
-//               label={
-//                 <>
-//                   <span>Mobile Number</span>
-//                   <span className="font-bold text-red-500">*</span>
-//                 </>
-//               }
-//               type="text"
-//               placeholder="Enter mobile number"
-//               size="lg"
-//               name="phone"
-//               value={formData.phone}
-//               onChange={handleInputChange}
-//               readOnly={formMode === "view"}
-//             />
-//             <Input
-//               label={
-//                 <>
-//                   <span>Email</span>
-//                   <span className="font-bold text-red-500">*</span>
-//                 </>
-//               }
-//               type="text"
-//               placeholder="Enter email"
-//               size="lg"
-//               name="email"
-//               value={formData.email}
-//               onChange={handleInputChange}
-//               readOnly={formMode === "view"}
-//             />
-//           </div>
-//         </div>
-
-//         {/* Submit Button */}
-//         <div className="flex justify-center py-5">
-//           {formMode === "create" && (
-//             <Button onClick={onSubmit} className="w-full max-w-lg">
-//               Submit
-//             </Button>
-//           )}
-
-//           {formMode === "edit" && (
-//             <Button onClick={() => onEditHandler()} className="w-full max-w-lg">
-//               Edit
-//             </Button>
-//           )}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default SocietyCreateForm;
-
-
 import React from "react";
 import Input from "../../../../components/shared/Input";
 import Select from "../../../../components/ui/Select";
 import Button from "../../../../components/ui/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { setCustomerFormField } from "../../../../redux/slices/customerSlice";
-import CountryStateCitySelector from "../../../../components/shared/CountryStateCitySelector";
-import CustomerHandler from "../../../../handlers/superadmin/CustomerHandler"; 
 
-const SocietyCreateForm = ({ onEditHandler }) => {
+const SocietyCreateForm = ({ onSubmit, onEditHandler }) => {
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.customer.customerForm);
-  const societyTypeOptions = useSelector((state) => state.customer.societyTypeOptions);
-  const subscriptionPlans = useSelector((state) => state.customer.subscriptionPlans);
-  const customerTypeOptions = useSelector((state) => state.customer.customerTypeOptions);
+  const societyTypeOptions = useSelector(
+    (state) => state.customer.societyTypeOptions
+  );
+  const subscriptionPlans = useSelector(
+    (state) => state.customer.subscriptionPlans
+  );
+  const customerTypeOptions = useSelector(
+    (state) => state.customer.customerTypeOptions
+  );
   const formMode = useSelector((state) => state.customer.formOperationType);
+
+  console.log(formMode);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log(name, value);
     dispatch(setCustomerFormField({ name, value }));
-  };
-
-  const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
-    dispatch(setCustomerFormField({ name: "photo", value: file }));
-  };
-
-  const handleSubmit = async () => {
-    try {
-      const form = new FormData();
-
-      for (const key in formData) {
-        if (key === "address") {
-          for (const subKey in formData.address) {
-            form.append(`address[${subKey}]`, formData.address[subKey]);
-          }
-        } else if (key === "photo" && formData.photo) {
-          form.append("photo", formData.photo);
-        } else {
-          form.append(key, formData[key]);
-        }
-      }
-
-      await CustomerHandler.createCustomer(form); // Ensure this handler supports FormData
-      alert("Customer created successfully!");
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
   };
 
   return (
     <div className="flex">
       <div className="w-full space-y-5">
-        {/* Customer Info */}
         <div className="p-5 bg-white border border-gray-100 rounded-2xl">
           <h3 className="font-semibold text-lime">Customer Info</h3>
           <div className="grid items-center grid-cols-3 gap-5 mt-3">
             <Input
-              label="Customer Name *"
+              label={<><span>Customer Name</span><span className="font-bold text-red-500">*</span></>}
               type="text"
               placeholder="Enter customer name"
               size="lg"
@@ -1316,25 +744,29 @@ const SocietyCreateForm = ({ onEditHandler }) => {
               readOnly={formMode !== "create"}
             />
             <Select
-              label="Select Customer Type *"
+              label={<><span>Select Customer Type</span><span className="font-bold text-red-500">*</span></>}
               options={customerTypeOptions}
               value={formData.customerType}
               onChange={handleInputChange}
+              color="blue"
+              size="md"
               name="customerType"
               className="py-[14px]"
               readOnly={formMode !== "create"}
             />
             <Select
-              label="Select Subscription Plan *"
+              label={<><span>Select Subscription Plan</span><span className="font-bold text-red-500">*</span></>}
               options={subscriptionPlans}
               value={formData.subscriptionId}
               onChange={handleInputChange}
+              color="blue"
+              size="md"
               name="subscriptionId"
               className="py-[14px]"
               readOnly={formMode === "view"}
             />
             <Input
-              label="Establishment Year *"
+              label={<><span>Establisment Year</span><span className="font-bold text-red-500">*</span></>}
               type="number"
               placeholder="Enter year"
               size="lg"
@@ -1345,38 +777,20 @@ const SocietyCreateForm = ({ onEditHandler }) => {
             />
             {formData.customerType === "society" && (
               <Select
-                label="Select Society Type *"
+                label={<><span>Select Society Type</span><span className="font-bold text-red-500">*</span></>}
                 options={societyTypeOptions}
                 value={formData.societyType}
                 onChange={handleInputChange}
+                color="blue"
+                size="md"
                 name="societyType"
                 className="py-[14px]"
                 readOnly={formMode === "view"}
               />
             )}
-            {/* Profile Photo Upload */}
-            <div className="col-span-3">
-              <label className="block font-medium text-gray-700 mb-2">
-                Profile Photo <span className="text-red-500 font-bold">*</span>
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handlePhotoChange}
-                disabled={formMode === "view"}
-              />
-              {formData.photo && typeof formData.photo === "object" && (
-                <img
-                  src={URL.createObjectURL(formData.photo)}
-                  alt="Preview"
-                  className="mt-2 h-24 w-24 object-cover rounded"
-                />
-              )}
-            </div>
           </div>
         </div>
 
-        {/* Builder Info */}
         <div className="p-5 bg-white border border-gray-100 rounded-2xl">
           <h3 className="font-semibold text-lime">Builder Info</h3>
           <div className="grid items-center grid-cols-3 gap-5 mt-3">
@@ -1403,12 +817,13 @@ const SocietyCreateForm = ({ onEditHandler }) => {
           </div>
         </div>
 
-        {/* Address Section */}
         <div className="p-5 bg-white border border-gray-100 rounded-2xl">
-          <h3 className="font-semibold text-lime">Society Location / Address</h3>
+          <h3 className="font-semibold text-lime">
+            Society Location / Address
+          </h3>
           <div className="grid items-center grid-cols-3 gap-5 mt-3">
             <Input
-              label="Address Line 1 *"
+              label={<><span>Address Line 1</span><span className="font-bold text-red-500">*</span></>}
               type="text"
               placeholder="Enter address line 1"
               size="lg"
@@ -1418,7 +833,7 @@ const SocietyCreateForm = ({ onEditHandler }) => {
               readOnly={formMode === "view"}
             />
             <Input
-              label="Address Line 2 *"
+              label={<><span>Address Line 2 </span><span className="font-bold text-red-500">*</span></>}
               type="text"
               placeholder="Enter address line 2"
               size="lg"
@@ -1429,22 +844,28 @@ const SocietyCreateForm = ({ onEditHandler }) => {
             />
           </div>
           <div className="grid items-center grid-cols-3 gap-5 mt-3">
-            <CountryStateCitySelector
-              address={formData.address}
-              setAddress={(updatedFields) =>
-                dispatch(
-                  setCustomerFormField({
-                    name: "address",
-                    value: {
-                      ...formData.address,
-                      ...updatedFields,
-                    },
-                  })
-                )
-              }
+            <Input
+              label={<><span>City</span><span className="font-bold text-red-500">*</span></>}
+              type="text"
+              placeholder="Enter city"
+              size="lg"
+              name="city"
+              value={formData.address.city}
+              onChange={handleInputChange}
+              readOnly={formMode === "view"}
             />
             <Input
-              label="Pin *"
+              label={<><span>State</span><span className="font-bold text-red-500">*</span></>}
+              type="text"
+              placeholder="Enter state"
+              size="lg"
+              name="state"
+              value={formData.address.state}
+              onChange={handleInputChange}
+              readOnly={formMode === "view"}
+            />
+            <Input
+              label={<><span>Pin</span><span className="font-bold text-red-500">*</span></>}
               type="text"
               placeholder="Enter pin"
               size="lg"
@@ -1456,12 +877,11 @@ const SocietyCreateForm = ({ onEditHandler }) => {
           </div>
         </div>
 
-        {/* Contact Info */}
         <div className="p-5 bg-white border border-gray-100 rounded-2xl">
           <h3 className="font-semibold text-lime">Society Contact Details</h3>
           <div className="grid items-center grid-cols-3 gap-5 mt-3">
             <Input
-              label="Mobile Number *"
+              label={<><span>Mobile Number</span><span className="font-bold text-red-500">*</span></>}
               type="text"
               placeholder="Enter mobile number"
               size="lg"
@@ -1471,7 +891,7 @@ const SocietyCreateForm = ({ onEditHandler }) => {
               readOnly={formMode === "view"}
             />
             <Input
-              label="Email *"
+              label={<><span>Email</span><span className="font-bold text-red-500">*</span></>}
               type="text"
               placeholder="Enter email"
               size="lg"
@@ -1483,13 +903,13 @@ const SocietyCreateForm = ({ onEditHandler }) => {
           </div>
         </div>
 
-        {/* Submit Button */}
         <div className="flex justify-center py-5">
           {formMode === "create" && (
-            <Button onClick={handleSubmit} className="w-full max-w-lg">
+            <Button onClick={onSubmit} className="w-full max-w-lg">
               Submit
             </Button>
           )}
+
           {formMode === "edit" && (
             <Button onClick={() => onEditHandler()} className="w-full max-w-lg">
               Edit
