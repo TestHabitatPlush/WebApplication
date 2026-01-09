@@ -498,14 +498,14 @@ export const QuickLinks = {
         },
       ],
 
-      help:[
-        {
-          name: "Software HelpDesk",
-          url: "/softwarehelpdesk",
-          icon: helpIcon, 
-          linkOf: "help",
-        },
-      ]
+      // help:[
+      //   {
+      //     name: "Software HelpDesk",
+      //     url: "/softwarehelpdesk",
+      //     icon: helpIcon, 
+      //     linkOf: "help",
+      //   },
+      // ]
     },
     
   },

@@ -1,49 +1,54 @@
-// // routes/softwareHelpDeskRoutes.js
-// const express = require("express");
-// const router = express.Router();
-// const SoftwareHelpDeskController = require("../controllers/softwareHelpDeskController");
-
-// router.post("/status", SoftwareHelpDeskController.createSoftwareRefTicketStatus);
-// router.get("/status", SoftwareHelpDeskController.getSoftwareRefTicketStatus);
-
-// router.post("/:societyId/:userId/purpose", SoftwareHelpDeskController.createSoftwareTicketPurpose);
-// router.get("/:societyId/purpose", SoftwareHelpDeskController.getSoftwareTicketPurpose);
-
-// router.post("/:societyId/:userId/ticket", SoftwareHelpDeskController.createSoftwareTicket);
-// router.get("/:societyId/:userId/tickets", SoftwareHelpDeskController.getSoftwareTicketTable);
-
-// router.put("/tickets/:ticket_Id/status", SoftwareHelpDeskController.updateSoftwareTicketStatusAndRemarks);
-
-// router.post("/access", SoftwareHelpDeskController.createSoftwareAccessManagement);
-
-// module.exports = router;
-
-
-
-
-
 const express = require("express");
 const router = express.Router();
-const softwarehelpdeskController = require("../controllers/softwareHelpDeskController");
-
-
+const softwareHelpdeskController = require("../controllers/softwareHelpDeskController");
 
 // 1. Ticket Status
-router.post("/refticketstatus", softwarehelpdeskController.createSoftwareRefTicketStatus);
-router.get("/refticketstatus", softwarehelpdeskController.getSoftwareRefTicketStatus);
-
+router.post(
+  "/softwarerefticketstatus",
+  softwareHelpdeskController.createRefTicketStatus
+);
+router.get(
+  "/softwarerefticketstatus",
+  softwareHelpdeskController.getRefTicketStatus
+);
 
 // 2. Ticket Purpose
-router.post("/ticket-purpose/:societyId/:userId", softwarehelpdeskController.createSoftwareTicketPurpose);
-router.get("/ticket-purpose/:societyId", softwarehelpdeskController.getSoftwareTicketPurpose);
-router.put("/ticket-purpose/:ticket_purpose_Id", softwarehelpdeskController.updateSoftwareTicketPurpose);
-router.get("/ticket-purpose/dropdown/:societyId", softwarehelpdeskController.getSoftwareTicketListView);
+router.post(
+  "/software-ticket-purpose/:societyId/:userId",
+  softwareHelpdeskController.createTicketPurpose
+);
+router.get(
+  "/software-ticket-purpose/:societyId",
+  softwareHelpdeskController.getTicketPurpose
+);
+router.put(
+  "/software-ticket-purpose/:ticket_purpose_Id",
+  softwareHelpdeskController.updateTicketPurpose
+);
+router.get(
+  "/software-ticket-purpose/dropdown/:societyId",
+  softwareHelpdeskController.getTicketListView
+);
 
-router.post("/ticket/create/:userId/:societyId", softwarehelpdeskController.createSoftwareTicket);
-router.get("/ticket/:userId/:societyId", softwarehelpdeskController.getSoftwareTicketTable);
-router.put("/ticket/:ticket_Id", softwarehelpdeskController.updateSoftwareTicketStatusAndRemarks);
-router.get("/accessmanagement/:societyId", softwarehelpdeskController.getAccessManagementMember);
-// router.get("/access-management", softwarehelpdeskController.getAccessManagementMember);
-router.post("/socityaccessmanagementcreate/:societyId/:userId", softwarehelpdeskController.createSoftwareAccessManagement);
+router.post(
+  "/software-ticket/create/:userId/:societyId",
+  softwareHelpdeskController.createTicket
+);
+router.get(
+  "/software-ticket/:userId/:societyId",
+  softwareHelpdeskController.getTicketTable
+);
+router.put(
+  "/software-ticket/:ticket_Id",
+  softwareHelpdeskController.updateTicketStatusAndRemarks
+);
+router.get(
+  "/software-accessmanagement/:societyId",
+  softwareHelpdeskController.getAccessManagementMember
+);
+// router.get("/access-management",  softwareHelpdeskController.getAccessManagementMember);
+router.post(
+  "/softwareaccessmanagementcreate/:societyId/:userId",
+  softwareHelpdeskController.createAccessManagementtable
+);
 module.exports = router;
-

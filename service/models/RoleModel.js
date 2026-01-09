@@ -41,4 +41,5 @@ const Role = sequelize.define(
   }
 );
 
+
 module.exports = Role;

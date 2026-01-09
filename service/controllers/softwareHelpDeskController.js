@@ -1,21 +1,23 @@
-
 const { Op } = require("sequelize");
-const upload = require("../middleware/upload");
-const { sendErrorResponse, sendSuccessResponse } = require("../utils/response");
-const { checkCreatorAccess, checkSoftwareUpdateAccess } = require("../utils/access");
-
 const {
   Software_Ticket_Purpose,
   Software_Ticket_Summary,
   Software_Ticket_Details,
   Software_Ref_Ticket_Status,
-  Software_HelpDesk_Access_Management,
   User,
+  Software_HelpDesk_Access_Management,
   Role,
 } = require("../models");
 
-// ------------------- Ticket Status -------------------
-exports.createSoftwareRefTicketStatus = async (req, res) => {
+const upload = require("../middleware/upload");
+const { sendErrorResponse, sendSuccessResponse } = require("../utils/response");
+
+const {
+  checkCreatorAccess,
+  checkSocietyUpdateAccess,
+} = require("../utils/access");
+
+exports.createRefTicketStatus = async (req, res) => {
   try {
     const { ticket_status_description } = req.body;
     if (!ticket_status_description)
@@ -36,7 +38,7 @@ exports.createSoftwareRefTicketStatus = async (req, res) => {
   }
 };
 
-exports.getSoftwareRefTicketStatus = async (req, res) => {
+exports.getRefTicketStatus = async (req, res) => {
   try {
     const all = await Software_Ref_Ticket_Status.findAll();
     return sendSuccessResponse(res, "Statuses fetched", all, 200);
@@ -46,8 +48,7 @@ exports.getSoftwareRefTicketStatus = async (req, res) => {
   }
 };
 
-// ------------------- Ticket Purpose -------------------
-exports.createSoftwareTicketPurpose = async (req, res) => {
+exports.createTicketPurpose = async (req, res) => {
   try {
     const { purpose_Details } = req.body;
     const { societyId, userId } = req.params;
@@ -72,7 +73,7 @@ exports.createSoftwareTicketPurpose = async (req, res) => {
   }
 };
 
-exports.getSoftwareTicketPurpose = async (req, res) => {
+exports.getTicketPurpose = async (req, res) => {
   try {
     const { societyId } = req.params;
     const { page = 0, pageSize = 10 } = req.query;
@@ -99,24 +100,30 @@ exports.getSoftwareTicketPurpose = async (req, res) => {
   }
 };
 
-exports.updateSoftwareTicketPurpose = async (req, res) => {
+exports.updateTicketPurpose = async (req, res) => {
   try {
     const { ticket_purpose_Id } = req.params;
+
     const [updatedRows] = await Software_Ticket_Purpose.update(req.body, {
       where: { ticket_purpose_Id },
     });
 
-    if (!updatedRows)
+    if (!updatedRows) {
       return sendErrorResponse(
         res,
         "Ticket purpose not found or no changes made",
         404
       );
+    }
+
+    const updatedPurpose = await Software_Ticket_Purpose.findByPk(
+      ticket_purpose_Id
+    );
 
     return sendSuccessResponse(
       res,
       "Ticket purpose updated successfully",
-      null,
+      updatedPurpose,
       200
     );
   } catch (err) {
@@ -125,7 +132,8 @@ exports.updateSoftwareTicketPurpose = async (req, res) => {
   }
 };
 
-exports.getSoftwareTicketListView = async (req, res) => {
+
+exports.getTicketListView = async (req, res) => {
   try {
     const { societyId } = req.params;
     if (!societyId)
@@ -148,8 +156,7 @@ exports.getSoftwareTicketListView = async (req, res) => {
   }
 };
 
-// ------------------- Create Ticket -------------------
-exports.createSoftwareTicket = (req, res) => {
+exports.createTicket = (req, res) => {
   upload.fields([{ name: "ticket_attachment_details" }])(
     req,
     res,
@@ -182,7 +189,9 @@ exports.createSoftwareTicket = (req, res) => {
         if (!user)
           return sendErrorResponse(res, "User not found in this society", 404);
 
-        const purpose = await Software_Ticket_Purpose.findByPk(ticket_purpose_Id);
+        const purpose = await Software_Ticket_Purpose.findByPk(
+          ticket_purpose_Id
+        );
         if (!purpose)
           return sendErrorResponse(res, "Invalid ticket purpose", 400);
 
@@ -202,7 +211,7 @@ exports.createSoftwareTicket = (req, res) => {
           request_type,
           userId,
           societyId,
-          ticket_status_Id: initialStatus.ticket_status_Id, 
+          ticket_status_Id: initialStatus.ticket_status_Id,
           ticket_attachment_details: attachmentFile?.filename || null,
         });
 
@@ -216,9 +225,13 @@ exports.createSoftwareTicket = (req, res) => {
           ticket_attachment_details: attachmentFile?.filename || null,
         });
 
-        return sendSuccessResponse(res, "Ticket created successfully", summary); 
+        return sendSuccessResponse(
+          res,
+          "Ticket created successfully",
+          summary,
+          201
+        );
       } catch (error) {
-        console.error(error);
         return sendErrorResponse(
           res,
           "Failed to create ticket",
@@ -230,104 +243,157 @@ exports.createSoftwareTicket = (req, res) => {
   );
 };
 
-// ------------------- Ticket Table -------------------
-exports.getSoftwareTicketTable = async (req, res) => {
-  const { userId, societyId } = req.params;
-  const {
-    page = 1,
-    pageSize = 10,
-    ticketNumber,
-    ticketTitle,
-    startDate,
-    endDate,
-    status,
-  } = req.query;
-
-  const offset = (page - 1) * pageSize;
-
-  const where = {
-    societyId,
-    userId,
-    ...(ticketNumber ? { ticket_Id: Number(ticketNumber) } : {}),
-    ...(ticketTitle ? { ticket_title: { [Op.like]: `%${ticketTitle}%` } } : {}),
-    ...(startDate && endDate
-      ? {
-          createdAt: {
-            [Op.between]: [
-              new Date(startDate + "T00:00:00"),
-              new Date(endDate + "T23:59:59"),
-            ],
-          },
-        }
-      : startDate
-      ? {
-          createdAt: { [Op.gte]: new Date(startDate + "T00:00:00") },
-        }
-      : endDate
-      ? {
-          createdAt: { [Op.lte]: new Date(endDate + "T23:59:59") },
-        }
-      : {}),
-  };
-
+exports.getTicketTable = async (req, res) => {
   try {
-    const tickets = await Software_Ticket_Summary.findAndCountAll({
+    const { userId, societyId } = req.params;
+    const {
+      page = 1,
+      pageSize = 10,
+      ticketNumber,
+      ticketTitle,
+      startDate,
+      endDate,
+      status,
+    } = req.query;
+
+    const canAccess = await checkCreatorAccess(userId);
+    if (!canAccess) {
+      return sendErrorResponse(res, "User not allowed to view tickets", 403);
+    }
+
+    const user = await User.findByPk(userId, {
+      include: [{ model: Role, attributes: ["roleCategory"] }],
+    });
+
+    if (!user || !user.Role) {
+      return sendErrorResponse(res, "User role not found", 403);
+    }
+
+    const roleCategory = user.Role.roleCategory;
+    const offset = (page - 1) * pageSize;
+
+    // ---------- WHERE condition ----------
+    const where = {
+      societyId,
+
+      ...(roleCategory === "society_moderator" ||
+      roleCategory === "management_committee"
+        ? {}
+        : { userId }),
+
+      ...(ticketNumber ? { ticket_Id: Number(ticketNumber) } : {}),
+
+      ...(ticketTitle
+        ? { ticket_title: { [Op.like]: `%${ticketTitle}%` } }
+        : {}),
+
+      ...(startDate && endDate
+        ? {
+            createdAt: {
+              [Op.between]: [
+                new Date(`${startDate}T00:00:00`),
+                new Date(`${endDate}T23:59:59`),
+              ],
+            },
+          }
+        : startDate
+        ? { createdAt: { [Op.gte]: new Date(`${startDate}T00:00:00`) } }
+        : endDate
+        ? { createdAt: { [Op.lte]: new Date(`${endDate}T23:59:59`) } }
+        : {}),
+    };
+
+    if (status) {
+      const statusRow = await Software_Ref_Ticket_Status.findOne({
+        where: { ticket_status_description: status },
+        attributes: ["ticket_status_Id"],
+      });
+
+      if (!statusRow) {
+        return sendSuccessResponse(res, "Tickets fetched successfully", {
+          rows: [],
+          total: 0,
+          totalPages: 0,
+        });
+      }
+
+      where.ticket_status_Id = statusRow.ticket_status_Id;
+    }
+
+    const { count, rows } = await Software_Ticket_Summary.findAndCountAll({
       where,
       offset,
       limit: parseInt(pageSize),
+      order: [["ticket_Id", "DESC"]],
+      distinct: true,
+
       include: [
         {
-          model: Software_Ticket_Purpose,
-          attributes: ["ticket_purpose_Id", "purpose_Details"],
-        },
-        {
           model: Software_Ticket_Details,
+          as: "Software_Ticket_Details",
+          limit: 1,
+          order: [["createdAt", "DESC"]],
+          required: false,
+
           include: [
             {
               model: Software_Ref_Ticket_Status,
-              attributes: ["ticket_status_Id", "ticket_status_description"],
-              ...(status
-                ? { where: { ticket_status_description: status } }
-                : {}),
+              as: "software_ref_ticket_status",
+              attributes: ["ticket_status_description"],
             },
             {
               model: User,
-              as: "assignedUser",
-              attributes: ["userId", "firstName", "lastName"],
+              as: "assignedTo",
+              attributes: ["firstName", "lastName"],
             },
             {
               model: User,
-              as: "updatedUser",
-              attributes: ["userId", "firstName", "lastName"],
+              as: "updatedBy",
+              attributes: ["firstName", "lastName"],
+            },
+            {
+              model: User,
+              as: "createdBy",
+              attributes: ["firstName", "lastName"],
             },
           ],
         },
       ],
-      distinct: true,
-      order: [["ticket_Id", "DESC"]],
     });
 
-    res.status(200).json({ success: true, data: tickets });
+    return sendSuccessResponse(res, "Tickets fetched successfully", {
+      rows,
+      total: count,
+      totalPages: Math.ceil(count / pageSize),
+    });
   } catch (error) {
     console.error("Error fetching tickets:", error);
-    res.status(500).json({ success: false, message: "Server Error" });
+    return sendErrorResponse(
+      res,
+      "Server error fetching tickets",
+      500,
+      error.message
+    );
   }
 };
 
-// ------------------- Ticket Update -------------------
-exports.updateSoftwareTicketStatusAndRemarks = async (req, res) => {
+exports.updateTicketStatusAndRemarks = async (req, res) => {
   try {
     const { ticket_Id } = req.params;
     const { userId, assigned_to, ticket_status_description, ticket_comment } =
       req.body;
 
-    const canUpdate = await checkSoftwareUpdateAccess(userId);
-    if (!canUpdate) {
-      return sendErrorResponse(res, "Not allowed to update ticket", 403);
-    }
-
     if (!ticket_status_description || !userId) {
       return sendErrorResponse(res, "Missing status or userId", 400);
+    }
+
+    const canUpdate = await checkSocietyUpdateAccess(userId);
+    if (!canUpdate) {
+      return sendErrorResponse(
+        res,
+        "User not allowed to update ticket status",
+        403
+      );
     }
 
     const ticketSummary = await Software_Ticket_Summary.findByPk(ticket_Id);
@@ -342,13 +408,9 @@ exports.updateSoftwareTicketStatusAndRemarks = async (req, res) => {
       return sendErrorResponse(res, "Invalid ticket status", 400);
     }
 
-    let currentStatus = null;
-    if (ticketSummary.ticket_status_Id) {
-      currentStatus = await Software_Ref_Ticket_Status.findByPk(
-        ticketSummary.ticket_status_Id
-      );
-    }
-
+    const currentStatus = await Software_Ref_Ticket_Status.findByPk(
+      ticketSummary.ticket_status_Id
+    );
     const validTransitions = {
       NEW: ["OPEN"],
       OPEN: ["IN-PROGRESS"],
@@ -370,6 +432,7 @@ exports.updateSoftwareTicketStatusAndRemarks = async (req, res) => {
       );
     }
 
+    // Remarks required
     if (!ticket_comment || ticket_comment.trim() === "") {
       return sendErrorResponse(
         res,
@@ -385,7 +448,7 @@ exports.updateSoftwareTicketStatusAndRemarks = async (req, res) => {
     ticketSummary.updated_by_user_id = userId;
     await ticketSummary.save();
 
-    const newDetail = await Software_Ticket_Details.create({
+    await Software_Ticket_Details.create({
       ticket_Id,
       userId,
       societyId: ticketSummary.societyId,
@@ -396,31 +459,58 @@ exports.updateSoftwareTicketStatusAndRemarks = async (req, res) => {
       ticket_details_description: ticket_comment,
     });
 
+    const updatedTicket = await Software_Ticket_Summary.findByPk(ticket_Id, {
+      include: [
+        {
+          model: Software_Ticket_Details,
+          as: "Software_Ticket_Details",
+          include: [
+            {
+              model: User,
+              as: "assignedTo",
+              attributes: ["userId", "firstName", "lastName"],
+            },
+            {
+              model: User,
+              as: "updatedBy",
+              attributes: ["userId", "firstName", "lastName"],
+            },
+            {
+              model: User,
+              as: "createdBy",
+              attributes: ["userId", "firstName", "lastName"],
+            },
+            {
+              model: Software_Ref_Ticket_Status,
+              as: "software_ref_ticket_status",
+            },
+          ],
+        },
+        { model: Software_Ticket_Purpose, as: "ticketPurpose" },
+      ],
+    });
+
     return sendSuccessResponse(
       res,
       "Ticket updated successfully",
-      { summary: ticketSummary, details_log: newDetail },
+      updatedTicket,
       200
     );
   } catch (err) {
-    console.error(err);
+    console.error("Error updating ticket:", err);
     return sendErrorResponse(res, "Failed to update ticket", 500, err.message);
   }
 };
 
-// ------------------- Access Management -------------------
-exports.createSoftwareAccessManagement = async (req, res) => {
+exports.createAccessManagementtable = async (req, res) => {
   try {
-    const { societyId, userId, approval } = req.body;
-
-    const canUpdate = await checkSoftwareUpdateAccess(userId);
-    if (!canUpdate) {
-      return sendErrorResponse(res, "Not allowed to manage access", 403);
-    }
+    const { societyId, userId } = req.params;
+    const { approval } = req.body;
 
     if (!societyId || !userId || !approval) {
       return res.status(400).json({ message: "All Fields are required" });
     }
+
     const result = await Software_HelpDesk_Access_Management.create({
       societyId,
       userId,
@@ -430,44 +520,52 @@ exports.createSoftwareAccessManagement = async (req, res) => {
 
     return sendSuccessResponse(
       res,
-      "Access management created successfully",
+      "access management created successfully",
       result,
       201
     );
   } catch (error) {
-    console.error("Error creating Software Access:", error);
-    res.status(500).json({ message: "Error creating Software Access", error });
+    console.error("Error creating Access Management:", error);
+    res
+      .status(500)
+      .json({ message: "Error creating Access Management", error });
   }
 };
 
 exports.getAccessManagementMember = async (req, res) => {
   try {
+    console.log(req.query);
+
     const { societyId } = req.params;
 
     if (!societyId) {
-      return sendErrorResponse(res, "Enter Society Id", 400);
+      return sendErrorResponse(res, "Enter Socity Id", 400);
     }
 
-    const page = parseInt(req.query.page) || 0;
-    const pageSize = parseInt(req.query.pageSize) || 10;
+    const pagination = {
+      page: parseInt(req.query.page) || 0,
+      pageSize: parseInt(req.query.pageSize) || 10,
+    };
+    const whereClause = { isManagementCommittee: true };
 
-    const whereClause = { societyId, isManagementCommittee: true }; // ✅ FIX: Ensure both applied
+    if (societyId) {
+      whereClause.societyId = societyId;
+    }
 
     const { count, rows } = await User.findAndCountAll({
       where: whereClause,
-      limit: pageSize,
-      offset: page * pageSize,
+      limit: pagination.pageSize,
+      offset: pagination.page * pagination.pageSize,
     });
-
-    const totalPages = Math.ceil(count / pageSize);
-
-    return sendSuccessResponse(res, "Members fetched successfully", {
-      rows,
+    const totalPages = Math.ceil(count / pagination.pageSize);
+    res.status(200).json({
+      message: "Visitor Matrix fetched successfully",
+      data: rows,
       total: count,
       totalPages,
     });
   } catch (err) {
-    console.error("Error fetching access members:", err);
+    console.error("Error creating notice:", err);
     return sendErrorResponse(res, "Internal server error", 500, err.message);
   }
 };

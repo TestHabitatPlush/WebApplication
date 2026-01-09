@@ -51,7 +51,7 @@ const DashboardLeftContents = () => {
       url:"help",
       name: "Software Helpdesk",
       icon: TbProgressHelp,
-      click: () => customNavigation("/helpdesk"),
+      click: () => customNavigation("/softwarehelpdesk"),
     }
   ];
 

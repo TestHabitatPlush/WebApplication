@@ -1,10 +1,8 @@
-
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 const Customer = require("./Customer");
 const User = require("./User");
 const Software_Ticket_Purpose = require("./Software_Ticket_Purpose");
-
 const Software_Ticket_Summary = sequelize.define(
   "Software_Ticket_Summary",
   {

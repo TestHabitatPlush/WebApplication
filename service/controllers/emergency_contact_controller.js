@@ -237,7 +237,7 @@ const getEmergencyContactsBySocietyId = async (req, res) => {
 };
 
 
-// Update emergency contact
+
 // Update Emergency Contact
 const updateEmergencyContacts = async (req, res) => {
   try {
@@ -290,118 +290,6 @@ const deleteEmergencyContacts = async (req, res) => {
     return sendErrorResponse(res, "Internal Server Error", 500, error.message);
   }
 };
-
-// Resident - Create Emergency Contact
-// const createEmergencyContactByResident = async (req, res) => {
-//   try {
-//     const { userId } = req.params;
-
-//     const {
-//       name,
-//       econtactNo1,
-//       econtactNo2,
-//       emergencyContactType,
-//       address,
-//       state,
-//       city,
-//       pin,
-//       viewStatus,
-//     } = req.body;
-
-//     const user = await User.findByPk(userId);
-//     if (!user) return sendErrorResponse(res, "User not found", 404);
-
-//     const role = await Role.findByPk(user.roleId);
-//     if (!role) return sendErrorResponse(res, "Role not found", 404);
-
-//     const residentRoles = [
-//       "super_admin",
-//       "super_admin_it",
-//       "society_moderator",
-//       "management_committee",
-//       "owner",
-//       "owner_family",
-//       "tenant",
-//       "tenant_family",
-//       "security_guard",
-//       "security_supervisor",
-//       "security_manager",
-//     ];
-
-//     if (!residentRoles.includes(role.roleCategory)) {
-//       return sendErrorResponse(res, "Only residents can create contacts", 403);
-//     }
-
-//     // Create emergency contact
-//     const contact = await Emergency_Contact.create({
-//       userId: user.userId,
-//       roleId: user.roleId,
-//       roleCategories: [role.roleCategory],
-//       societyId: user.societyId,
-//       name,
-//       econtactNo1,
-//       econtactNo2,
-//       emergencyContactType,
-//       address,
-//       state,
-//       city,
-//       pin,
-//       viewStatus,
-//     });
-
-//     return sendSuccessResponse(
-//       res,
-//       "Resident Emergency Contact created",
-//       contact,
-//       201
-//     );
-//   } catch (error) {
-//     console.error("Resident contact creation error:", error);
-//     return sendErrorResponse(res, "Internal Server Error", 500, error.message);
-//   }
-// };
-
-// // Resident - View Own Emergency Contacts
-// const getEmergencyContactsByResident = async (req, res) => {
-//   try {
-//     const { userId } = req.params;
-
-//     const user = await User.findByPk(userId);
-//     if (!user) return sendErrorResponse(res, "User not found", 404);
-
-//     const role = await Role.findByPk(user.roleId);
-//     if (!role) return sendErrorResponse(res, "Role not found", 404);
-
-//     const residentRoles = [
-//       "society_owner",
-//       "society_owner_family",
-//       "society_tenant",
-//       "society_tenant_family",
-//       "society_builder",
-//     ];
-
-//     if (!residentRoles.includes(role.roleCategory)) {
-//       return sendErrorResponse(
-//         res,
-//         "Only residents can view their contacts",
-//         403
-//       );
-//     }
-
-//     const contacts = await Emergency_Contact.findAll({
-//       where: { userId },
-//     });
-
-//     return sendSuccessResponse(
-//       res,
-//       "Resident Emergency Contacts retrieved",
-//       contacts
-//     );
-//   } catch (error) {
-//     console.error("Resident contact fetch error:", error);
-//     return sendErrorResponse(res, "Internal Server Error", 500, error.message);
-//   }
-// };
 
 module.exports = {
   createEmergencyContactByUserId,

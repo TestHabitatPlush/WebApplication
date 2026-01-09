@@ -31,7 +31,7 @@ const SocietyHelpDeskHandler = () => {
   const societyId = useSelector((state) => state.society.selectedSocietyId);
   console.log("societyId from redux", societyId);
   const userId = useSelector((state) => state.auth.user?.userId);
-  console.log("SoftwareHelpDeskHandler", societyId, userId);
+  console.log("SocietyHelpDeskHandler", societyId, userId);
   const createRefTicketStatus = async (data) => {
     try {
       const response = await createRefTicketStatusService(data, token);

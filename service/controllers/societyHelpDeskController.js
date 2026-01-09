@@ -105,21 +105,26 @@ exports.getTicketPurpose = async (req, res) => {
 exports.updateTicketPurpose = async (req, res) => {
   try {
     const { ticket_purpose_Id } = req.params;
+
     const [updatedRows] = await Ticket_Purpose.update(req.body, {
       where: { ticket_purpose_Id },
     });
 
-    if (!updatedRows)
+    if (!updatedRows) {
       return sendErrorResponse(
         res,
         "Ticket purpose not found or no changes made",
         404
       );
+    }
+
+  
+    const updatedPurpose = await Ticket_Purpose.findByPk(ticket_purpose_Id);
 
     return sendSuccessResponse(
       res,
       "Ticket purpose updated successfully",
-      null,
+      updatedPurpose,
       200
     );
   } catch (err) {
@@ -127,6 +132,7 @@ exports.updateTicketPurpose = async (req, res) => {
     return sendErrorResponse(res, "Internal server error", 500, err.message);
   }
 };
+
 
 exports.getTicketListView = async (req, res) => {
   try {

@@ -64,9 +64,11 @@ const DocumentUploadFacilityForm = () => {
 
   const validateFields = () => {
     let tempErrors = {};
-    if (!form.documentName.trim()) tempErrors.documentName = "Document name is required.";
+    if (!form.documentName.trim())
+      tempErrors.documentName = "Document name is required.";
     if (!form.document) tempErrors.document = "Document file is required.";
-    if (!form.visibilityOption) tempErrors.visibilityOption = "Please select a visibility option.";
+    if (!form.visibilityOption)
+      tempErrors.visibilityOption = "Please select a visibility option.";
 
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
@@ -77,12 +79,15 @@ const DocumentUploadFacilityForm = () => {
 
     try {
       setIsSubmitting(true);
-      await createDocumentBySocietyHandler(form);
-      toast.success("Document uploaded successfully!");
+      const res = await createDocumentBySocietyHandler(form);
 
-      setForm({ documentName: "", visibilityOption: "", document: null });
-      setDocumentPreview(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
+      if (res?.status === 201) {
+        toast.success("Document uploaded successfully!");
+
+        setForm({ documentName: "", visibilityOption: "", document: null });
+        setDocumentPreview(null);
+        if (fileInputRef.current) fileInputRef.current.value = "";
+      }
     } catch (error) {
       toast.error("Upload failed. Please try again.");
       console.error("Upload error:", error);
@@ -117,14 +122,20 @@ const DocumentUploadFacilityForm = () => {
                 accept=".pdf,.doc,.docx,image/*"
               />
             </div>
-            {errors.documentName && <p className="mt-1 text-sm text-red-500">{errors.documentName}</p>}
-            {errors.document && <p className="mt-1 text-sm text-red-500">{errors.document}</p>}
+            {errors.documentName && (
+              <p className="mt-1 text-sm text-red-500">{errors.documentName}</p>
+            )}
+            {errors.document && (
+              <p className="mt-1 text-sm text-red-500">{errors.document}</p>
+            )}
           </div>
 
           {/* Preview & Cancel */}
           {documentPreview && (
             <div className="flex items-center col-span-1 gap-2 mt-2 sm:col-span-2">
-              <span className="text-sm truncate max-w-[180px]">{documentPreview}</span>
+              <span className="text-sm truncate max-w-[180px]">
+                {documentPreview}
+              </span>
               <MdOutlineCancel
                 className="text-red-500 cursor-pointer"
                 onClick={() => {
@@ -156,7 +167,9 @@ const DocumentUploadFacilityForm = () => {
             </div>
           ))}
         </div>
-        {errors.visibilityOption && <p className="text-sm text-red-500">{errors.visibilityOption}</p>}
+        {errors.visibilityOption && (
+          <p className="text-sm text-red-500">{errors.visibilityOption}</p>
+        )}
 
         {/* Submit */}
         <div className="flex justify-center mt-5">
