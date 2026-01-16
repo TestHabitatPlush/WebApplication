@@ -1,9 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useTable, usePagination, useSortBy } from "react-table";
+import { useTable, useSortBy } from "react-table";
 import { FaEye, FaTrashAlt, FaQrcode } from "react-icons/fa";
-import VisitHandler from "@/handlers/VisitHandler";
+import VisitHandler from "@/handlers/VisitorHandler";
 import toast from "react-hot-toast";
+import ViewVisitorModal from "./ViewVisitorModal";
 
 const VisitorList = () => {
   const { getVisitorListBySenderId, handleViewQRCodeById, getVisitorById, deleteVisitorById } =
@@ -12,23 +13,35 @@ const VisitorList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [transformedData, setTransformedData] = useState([]);
-  const [totalPages, setTotalPages] = useState(0);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [pageSize, setPageSize] = useState(5);
   const [qrCodeData, setQrCodeData] = useState(null);
+  const [selectedVisitor, setSelectedVisitor] = useState(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+
+const handleView = async (row) => {
+  try {
+    const response = await getVisitorById(row.visit_entry_Id);
+
+    // ✅ FIX: extract actual visitor object
+    const visitorData = response?.data || response;
+
+    if (visitorData) {
+      setSelectedVisitor(visitorData);
+      setIsViewModalOpen(true);
+    }
+  } catch (error) {
+    console.error("Error fetching visitor details:", error);
+  }
+};
+
 
   // Fetch visitor list
   const fetchVisitorList = async () => {
     try {
-      const result = await getVisitorListBySenderId({
-        page: currentPage,
-        pageSize,
-      });
-      if (result && result.data) {
-        const fetchedData = result.data.data || [];
-        setTransformedData(fetchedData);
-        setFilteredData(fetchedData);
-        setTotalPages(result.data.totalPages || 0);
+      const result = await getVisitorListBySenderId();
+      console.log("Visitor API result:", result); // Debug
+      if (Array.isArray(result)) {
+        setTransformedData(result);
+        setFilteredData(result);
       } else {
         setTransformedData([]);
         setFilteredData([]);
@@ -42,14 +55,14 @@ const VisitorList = () => {
 
   useEffect(() => {
     fetchVisitorList();
-  }, [currentPage, pageSize]);
+  }, []);
 
   // Handle view QR code
   const handleViewQRCode = async (row) => {
     try {
-      const response = await handleViewQRCodeById(row.visit_entry_Id);
-      if (response && response.qrCode) {
-        setQrCodeData({ id: row.visit_entry_Id, qrCode: response.qrCode });
+      const qrCode = await handleViewQRCodeById(row.visit_entry_Id);
+      if (qrCode) {
+        setQrCodeData({ id: row.visit_entry_Id, qrCode });
         toast.success("QR Code fetched successfully.");
       } else {
         toast.error("Failed to fetch QR Code.");
@@ -71,78 +84,17 @@ const VisitorList = () => {
   };
 
   // Handle view visitor details
-  const handleView = async (row) => {
-    try {
-      const viewData = await getVisitorById(row.visit_entry_Id);
-      if (viewData?.data) {
-        console.log("Visitor Details:", viewData.data);
-        toast.success("Visitor details fetched successfully.");
-      }
-    } catch (error) {
-      console.error("Error fetching visitor details:", error);
-    }
-  };
-
-  // Define table columns
-  const columns = React.useMemo(
-    () => [
-      { Header: "ID", accessor: "visit_entry_Id" },
-      { Header: "Name", accessor: "visit_name" },
-      { Header: "Phone", accessor: "visit_mobileno" },
-      { Header: "Purpose", accessor: "visit_purpose" },
-      { Header: "Address", accessor: "visit_location" },
-      { Header: "Entry Date", accessor: "visit_expect_date_of_entry_date" },
-      {
-        Header: "Actions",
-        Cell: ({ row }) => (
-          <div className="flex gap-2">
-            <button
-              onClick={() => handleView(row.original)}
-              className="text-blue-500 hover:text-blue-700"
-            >
-              <FaEye />
-            </button>
-            <button
-              onClick={() => handleViewQRCode(row.original)}
-              className="text-black-500 hover:text-green-700"
-            >
-              <FaQrcode />
-            </button>
-            <button
-              onClick={() => handleDelete(row.original)}
-              className="text-red-500 hover:text-red-700"
-            >
-              <FaTrashAlt />
-            </button>
-          </div>
-        ),
-      },
-    ],
-    []
-  );
-
-  // Table setup
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    page,
-    prepareRow,
-    canNextPage,
-    canPreviousPage,
-    pageCount,
-    state: { pageIndex },
-  } = useTable(
-    {
-      columns,
-      data: filteredData,
-      initialState: { pageIndex: 0, pageSize },
-      manualPagination: true,
-      pageCount: totalPages,
-    },
-    useSortBy,
-    usePagination
-  );
+  // const handleView = async (row) => {
+  //   try {
+  //     const viewData = await getVisitorById(row.visit_entry_Id);
+  //     if (viewData) {
+  //       console.log("Visitor Details:", viewData);
+  //       toast.success("Visitor details fetched successfully.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching visitor details:", error);
+  //   }
+  // };
 
   // Handle search
   const handleSearch = () => {
@@ -155,11 +107,54 @@ const VisitorList = () => {
     setFilteredData(filtered);
   };
 
+  // Table columns
+  const columns = React.useMemo(
+    () => [
+      { Header: "ID", accessor: "visit_entry_Id" },
+      { Header: "Name", accessor: "visit_name" },
+      { Header: "Phone", accessor: "visit_mobileno" },
+      { Header: "Purpose", accessor: "visit_purpose" },
+      { Header: "Address", accessor: "visit_location" },
+      {
+          Header: "Entry Date",
+          accessor: "visit_expect_date_of_entry_date",
+          Cell: ({ value }) => {
+            if (!value) return "-";
+            return new Date(value).toLocaleDateString("en-IN"); // DD/MM/YYYY
+          },
+        },
+
+      {
+        Header: "Actions",
+        Cell: ({ row }) => (
+          <div className="flex gap-2">
+            <button onClick={() => handleView(row.original)} className="text-blue-500 hover:text-blue-700">
+              <FaEye />
+            </button>
+            <button onClick={() => handleViewQRCode(row.original)} className="text-black-500 hover:text-green-700">
+              <FaQrcode />
+            </button>
+            <button onClick={() => handleDelete(row.original)} className="text-red-500 hover:text-red-700">
+              <FaTrashAlt />
+            </button>
+          </div>
+        ),
+      },
+    ],
+    []
+  );
+
+  // Table setup
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
+    { columns, data: filteredData },
+    useSortBy
+  );
+
   return (
     <div className="p-6">
       <h3 className="mb-4 text-2xl font-bold">Visitor List</h3>
 
-      {/* Search Bar */}
+      {/* Search */}
       <div className="flex gap-2 mb-4">
         <input
           type="text"
@@ -176,43 +171,32 @@ const VisitorList = () => {
         </button>
       </div>
 
-      {/* Table Section */}
+      {/* Table */}
       <div className="overflow-x-auto">
-        <table
-          className="w-full border border-collapse border-gray-200 table-auto"
-          {...getTableProps()}
-        >
+        <table className="w-full border border-collapse border-gray-200 table-auto" {...getTableProps()}>
           <thead className="bg-gray-100">
             {headerGroups.map((headerGroup, index) => (
               <tr {...headerGroup.getHeaderGroupProps()} key={index}>
-                {headerGroup.headers.map((column, columnIndex) => (
+                {headerGroup.headers.map((column, colIndex) => (
                   <th
+                    key={colIndex}
                     className="px-4 py-2 text-left border border-gray-200"
                     {...column.getHeaderProps(column.getSortByToggleProps())}
-                    key={columnIndex}
                   >
                     {column.render("Header")}
-                    {column.isSorted
-                      ? column.isSortedDesc
-                        ? " 🔽"
-                        : " 🔼"
-                      : ""}
+                    {column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}
                   </th>
                 ))}
               </tr>
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {page.map((row) => {
+            {rows.map((row) => {
               prepareRow(row);
               return (
                 <tr {...row.getRowProps()} key={row.original.visit_entry_Id}>
-                  {row.cells.map((cell, cellIndex) => (
-                    <td
-                      key={cellIndex}
-                      className="px-4 py-2 border border-gray-200"
-                      {...cell.getCellProps()}
-                    >
+                  {row.cells.map((cell, idx) => (
+                    <td key={idx} className="px-4 py-2 border border-gray-200" {...cell.getCellProps()}>
                       {cell.render("Cell")}
                     </td>
                   ))}
@@ -222,27 +206,23 @@ const VisitorList = () => {
           </tbody>
         </table>
       </div>
+{isViewModalOpen && (
+  <ViewVisitorModal
+    visitor={selectedVisitor}
+    onClose={() => {
+      setIsViewModalOpen(false);
+      setSelectedVisitor(null);
+    }}
+  />
+)}
 
-      {/* Pagination Controls */}
-      <div className="flex items-center justify-between mt-4">
-        <button
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
-          disabled={!canPreviousPage}
-          className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50"
-        >
-          Previous
-        </button>
-        <span>
-          Page {pageIndex + 1} of {pageCount}
-        </span>
-        <button
-          onClick={() => setCurrentPage((prev) => prev + 1)}
-          disabled={!canNextPage}
-          className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
+      {/* QR Code Display */}
+      {qrCodeData && (
+        <div className="mt-4">
+          <h4>QR Code for ID: {qrCodeData.id}</h4>
+          <img src={qrCodeData.qrCode} alt="QR Code" className="w-32 h-32" />
+        </div>
+      )}
     </div>
   );
 };

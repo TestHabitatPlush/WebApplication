@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import Input from "../../../../components/shared/Input";
 import UrlPath from "../../../../components/shared/UrlPath";
@@ -12,10 +13,6 @@ import DefineUnitHandler from "../../../../handlers/DefineUnitHandler";
 import BuildingHandler from "../../../../handlers/BuildingHandler";
 import FloorHandler from "../../../../handlers/FloorHandler";
 import UnitTypeHandler from "../../../../handlers/building_management/UnitTypeHandler";
-
-import { useRef } from "react";
-
-
 import { FaCamera,FaTrashAlt } from "react-icons/fa";
 import PhoneCodeSelector from "../../../../components/shared/PhoneCodeSelector";
 import CountryStateCitySelector from "../../../../components/shared/CountryStateCitySelector"
@@ -440,13 +437,21 @@ const AddUser = () => {
 const [selectedUnits, setSelectedUnits] = useState([]);
 
   // ✅ Handle checkbox selection
+  // const handleSelect = (unitId) => {
+  //   setSelectedUnits((prev) =>
+  //     prev.includes(unitId)
+  //       ? prev.filter((id) => id !== unitId)
+  //       : [...prev, unitId]
+  //   );
+  // };
   const handleSelect = (unitId) => {
-    setSelectedUnits((prev) =>
-      prev.includes(unitId)
-        ? prev.filter((id) => id !== unitId)
-        : [...prev, unitId]
-    );
-  };
+  setSelectedUnits([unitId]);      // keep UI
+  setFormData((prev) => ({
+    ...prev,
+    unitId: unitId,               // ✅ THIS WAS MISSING
+  }));
+};
+
 
   // ✅ Handle delete
   const handleDelete = (unitId) => {
@@ -484,76 +489,109 @@ const columns = [
 ];
 
 
-const submitProfileUser = async () => {
+// const submitProfileUser = async () => {
+//   if (!selectedRoleId) {
+//     toast.error("Please select a role.");
+//     return;
+//   }
+//   if (!validateForm()) return;
+
+//   const form = new FormData();
+//   form.append("salutation", formData.salutation);
+//   form.append("firstName", formData.firstName);
+//   form.append("lastName", formData.lastName);
+//   form.append("countryCode", formData.countryCode || "91");
+//   form.append("mobileNumber", formData.mobileNumber);
+//   form.append("alternateCountryCode", formData.alternateCountryCode || "91");
+//   form.append("alternateNumber", formData.alternateNumber || "");
+//   form.append("email", formData.email);
+//   form.append("roleId", selectedRoleId);
+//   form.append("unitId", formData.unitId);
+//   form.append("address", JSON.stringify(formData.address));
+
+//   if (formData.photo) {
+//     form.append("photo", formData.photo);
+//   }
+
+//   try {
+//     const response = await createSocietyResidentUserHandler(societyId, form);
+//     if (response.status === 201) {
+//       toast.success("User profile created successfully.");
+
+//       // Reset form
+//       setFormData({
+//         salutation: "",
+//         firstName: "",
+//         lastName: "",
+//         countryCode: "",
+//         mobileNumber: "",
+//         alternateCountryCode: "",
+//         alternateNumber: "",
+//         email: "",
+//         address: {
+//           addressLine1: "",
+//           addressLine2: "",
+//           state: "",
+//           city: "",
+//           country: "",
+//           zipCode: "",
+//         },
+//         liveshere: false,
+//         primarycontact: false,
+//         ismaemberofassociationcommite: false,
+//         membertype: "",
+//         remark: "",
+//         societyId,
+//         roleId: "",
+//         unitId: "",
+//         photo: "",
+//       });
+//       setSelectedRoleId(null);
+//       setUnits([]);
+//       setProfilePhoto("");
+//     } else {
+//       toast.error("Failed to create user profile.");
+//     }
+//   } catch (error) {
+//     console.error("Error creating resident:", error);
+//     toast.error("Failed to create user profile.");
+//   }
+// };
+
+  const submitProfileUser = async () => {
   if (!selectedRoleId) {
     toast.error("Please select a role.");
     return;
   }
+
+  if (selectedUnits.length === 0) {
+    toast.error("Please select at least one unit.");
+    return;
+  }
+
   if (!validateForm()) return;
 
   const form = new FormData();
   form.append("salutation", formData.salutation);
   form.append("firstName", formData.firstName);
   form.append("lastName", formData.lastName);
+  form.append("email", formData.email);
   form.append("countryCode", formData.countryCode || "91");
   form.append("mobileNumber", formData.mobileNumber);
-  form.append("alternateCountryCode", formData.alternateCountryCode || "91");
-  form.append("alternateNumber", formData.alternateNumber || "");
-  form.append("email", formData.email);
   form.append("roleId", selectedRoleId);
-  form.append("unitId", formData.unitId);
+
+  // ✅ FIX HERE
+ form.append("unitId", formData.unitId);
+
   form.append("address", JSON.stringify(formData.address));
 
   if (formData.photo) {
     form.append("photo", formData.photo);
   }
 
-  try {
-    const response = await createSocietyResidentUserHandler(societyId, form);
-    if (response.status === 201) {
-      toast.success("User profile created successfully.");
-
-      // Reset form
-      setFormData({
-        salutation: "",
-        firstName: "",
-        lastName: "",
-        countryCode: "",
-        mobileNumber: "",
-        alternateCountryCode: "",
-        alternateNumber: "",
-        email: "",
-        address: {
-          addressLine1: "",
-          addressLine2: "",
-          state: "",
-          city: "",
-          country: "",
-          zipCode: "",
-        },
-        liveshere: false,
-        primarycontact: false,
-        ismaemberofassociationcommite: false,
-        membertype: "",
-        remark: "",
-        societyId,
-        roleId: "",
-        unitId: "",
-        photo: "",
-      });
-      setSelectedRoleId(null);
-      setUnits([]);
-      setProfilePhoto("");
-    } else {
-      toast.error("Failed to create user profile.");
-    }
-  } catch (error) {
-    console.error("Error creating resident:", error);
-    toast.error("Failed to create user profile.");
-  }
+  await createSocietyResidentUserHandler(societyId, form);
 };
 
-  
   return (
     <div className="px-5 ">
       <div className="flex items-center gap-2 my-2 text-sm font-semibold text-gray-200">
@@ -1388,4 +1426,3 @@ const submitProfileUser = async () => {
   );
 };
 export default AddUser;
-

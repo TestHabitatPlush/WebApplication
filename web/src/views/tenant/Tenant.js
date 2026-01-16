@@ -2,7 +2,7 @@ import DashboardLayout from "@/components/layouts/DashboardLayout";
 import React from "react";
 import DashboardHeader from "../dashboard/DashboardHeader";
 import DashboardLeftContents from "../dashboard/DashboardLeftContents";
-import AddTenant from "./AddTenant";
+import ViewTenant from "./ViewTenant";
 
 
 
@@ -14,7 +14,7 @@ const Tenant = () => {
       leftContent={<DashboardLeftContents />}
       rightContent={
         <React.Fragment>
-          <AddTenant />
+          <ViewTenant />
        </React.Fragment>
       }
     />

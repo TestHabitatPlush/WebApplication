@@ -30,6 +30,13 @@ export const QuickLinks = {
           icon: img,
           linkOf: "myUnit",
         },
+         {
+          name: "Member",
+          url: "/memeber",
+          icon: img,
+          linkOf: "myUnit",
+        },
+        
         {
           name: "Vendors",
           url: "/vendors",

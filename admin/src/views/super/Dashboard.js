@@ -2,19 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 
-import SubscriptionHandler from "../../../handlers/superadmin/SubscriptionHandler";
-import DashboardCard from "../../../components/shared/DashboardCard";
-import ReusableTable from "../../../components/shared/ReusableTable"; 
-
-
-
-import ViewSocietyDetailsModal from "../society/view_society/components/ViewSocietyDetailsModal";
-import CustomerHandler from "../../../handlers/superadmin/CustomerHandler";
-import {   setPage,setPageSize } from "../../../redux/slices/societySlice";
+import {   setPage,setPageSize } from "../../redux/slices/societySlice";
 import { resetCustomerFormOperationType,
   setCustomerId,
-  setFormOperationType, } from "../../../redux/slices/customerSlice";
-
+  setFormOperationType, } from "../../redux/slices/customerSlice";
+import CustomerHandler from "../../handlers/superadmin/CustomerHandler";
+import ViewSocietyDetailsModal from "./society/view_society/components/ViewSocietyDetailsModal";
+import ReusableTable from "../../components/shared/ReusableTable";
+import DashboardCard from "../../components/shared/DashboardCard";
+import SubscriptionHandler from "../../handlers/superadmin/SubscriptionHandler";
 // Action buttons for each row
 const ActionData = ({ data, openModal }) => {
   const dispatch = useDispatch();
@@ -30,15 +26,14 @@ const ActionData = ({ data, openModal }) => {
         }}
       >
         View
-      </button>
+      </button> 
     </div>
   );
 };
 
 const Dashboard = () => {
   const dispatch = useDispatch();
-
-  const token = useSelector((state) => state.auth.token);
+    const token = useSelector((state) => state.auth.token);
   const societyId = useSelector(
     (state) => state.auth.user?.Customer?.customerId
   );

@@ -26,7 +26,7 @@ const {
   getNoticesByUserId,
   updateNoticeById,
   deleteNoticeById,
-} = require("../controllers/noticeAnController");
+} = require("../controllers/noticeController");
 
 router.post("/create/:societyId/:userId", createNoticeBySocietyId);
 router.get("/get/:societyId/:userId", getNoticesBySocietyId);

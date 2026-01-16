@@ -75,11 +75,11 @@ export const getAllApprovedUserDataService = (societyId, token, data) => {
   return axios.get(url, {
     headers: {
       Authorization: `Bearer ${token}`,
-    },
+    
     params: data,
+    },
   });
 };
-
 
 
 export const getAllDeactiveUserDataService = (societyId, token, { page, pageSize }) => {

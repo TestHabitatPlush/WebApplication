@@ -1,87 +1,169 @@
-import { useEffect } from "react";
-import CommunityDirectories from "./components/directories/CommunityDirectories";
-// import PostPreview from "./components/post/PostPreview";
+"use client";
+
+import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { AnnoucementPreview } from "../announcement";
-import { FaCar, FaUserTie , FaUsers , FaUsersGear  } from "react-icons/fa6";
+import { useSelector } from "react-redux";
+import Link from "next/link";
+
+import PaymentDueReminder from "./components/payment/PaymentDueReminder";
 import InitSocietySetter from "@/components/shared/InitSocietySetter";
 
-const Dashboard = ({ children }) => {
-  useEffect(() => {
-    console.log(Cookies.get("auth"));
-    console.log(document.cookie);
+import MemberHandler from "@/handlers/MemberHandler";
+import VehicleHandler from "@/handlers/VehicleHandler";
+import JobProfileHandler from "@/handlers/JobProfileHandler";
+import ManagementCommitteeHandler from "@/handlers/ManagementCommitteeHandler";
+import VisitorHandler from "@/handlers/VisitorHandler";
 
-  }, []);
-  
-  
-  const Info = () => {
-    return (
-      <div className="p-5 rounded-lg">
-        <h1 className="text-xl font-semibold text-center text-turquoise">
-       
-        </h1>
-  
-        <div className="grid grid-cols-2 gap-4 mt-5 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 md:gap-5 lg:gap-6">
-          <div className="bg-blue-100 hover:bg-blue-200 transition-all duration-300 p-5 rounded-xl cursor-pointer hover:scale-[102%] flex flex-col items-center">
-            <div className="flex items-center justify-center w-12 h-12 mb-3 text-lg font-semibold text-white rounded-full bg-turquoise">
-              10 
-            </div>
-            <span className="p-3 border rounded-full border-turquoise">
-              <FaUsers className="text-3xl text-turquoise" />
-            </span>
-            <h3 className="mt-2 font-semibold text-center text-md">Members</h3>
-          </div>
-  
-         
-          <div className="bg-blue-100 hover:bg-blue-200 transition-all duration-300 p-5 rounded-xl cursor-pointer hover:scale-[102%] flex flex-col items-center">
-            <div className="flex items-center justify-center w-12 h-12 mb-3 text-lg font-semibold text-white rounded-full bg-turquoise">
-              5 
-            </div>
-            <span className="p-3 border rounded-full border-turquoise">
-              <FaCar className="text-3xl text-turquoise" />
-            </span>
-            <h3 className="mt-2 font-semibold text-center text-md">Vehicles</h3>
-          </div>
-  
-          
-          <div className="bg-blue-100 hover:bg-blue-200 transition-all duration-300 p-5 rounded-xl cursor-pointer hover:scale-[102%] flex flex-col items-center">
-            <div className="flex items-center justify-center w-12 h-12 mb-3 text-lg font-semibold text-white rounded-full bg-turquoise">
-              7 
-            </div>
-            <span className="p-3 border rounded-full border-turquoise">
-              <FaUsersGear  className="text-3xl text-turquoise" />
-            </span>
-            <h3 className="mt-2 font-semibold text-center text-md">Tenants</h3>
-          </div>
-  
-       
-          <div className="bg-blue-100 hover:bg-blue-200 transition-all duration-300 p-5 rounded-xl cursor-pointer hover:scale-[102%] flex flex-col items-center">
-            <div className="flex items-center justify-center w-12 h-12 mb-3 text-lg font-semibold text-white rounded-full bg-turquoise">
-              3
-            </div>
-            <span className="p-3 border rounded-full border-turquoise">
-              <FaUserTie className="text-3xl text-turquoise" />
-            </span>
-            <h3 className="mt-2 font-semibold text-center text-md">Staffs</h3>
-          </div>
+import {
+  FaCar,
+  FaUsers,
+  FaUserFriends,
+  FaUserTie,
+  FaUser,
+  FaUserClock,
+} from "react-icons/fa";
+
+/* ===================== STAT CARD (FIXED) ===================== */
+const StatCard = ({ icon, count, label, href }) => {
+  return (
+    <Link href={href} className="block">
+      <div
+        className="
+          flex flex-col items-center justify-center
+          h-[140px] rounded-lg bg-blue-100
+          cursor-pointer transition
+          hover:scale-105 hover:shadow-md
+        "
+      >
+        {/* COUNT */}
+        <div className="text-4xl font-bold text-teal-800">
+          {count}
+        </div>
+
+        {/* LABEL + ICON */}
+        <div className="flex items-center gap-2 mt-3 text-sm font-medium text-gray-700">
+          <span className="text-lg text-teal-600">{icon}</span>
+          <span>{label}</span>
         </div>
       </div>
-    );
+    </Link>
+  );
+};
+
+/* ===================== DASHBOARD ===================== */
+const Dashboard = ({ children }) => {
+  const society = useSelector((state) => state.society.selectedSocietyId);
+
+  const { fetchAllMembers } = MemberHandler();
+  const { getVehicleByUserHandler } = VehicleHandler();
+  const { getAllCommitteeHandler } = ManagementCommitteeHandler();
+  const { getVisitorListBySenderId } = VisitorHandler();
+
+  const [counts, setCounts] = useState({
+    members: 0,
+    vehicles: 0,
+    tenants: 0,
+    staffs: 0,
+    management: 0,
+    visitor: 0,
+  });
+
+  useEffect(() => {
+    if (society?.id) {
+      fetchAllCounts();
+    }
+  }, [society?.id]);
+
+  const fetchAllCounts = async () => {
+    try {
+      const [
+        members,
+        vehicles,
+        staffs,
+        committee,
+        visitor,
+      ] = await Promise.all([
+        fetchAllMembers(),
+        getVehicleByUserHandler(),
+        JobProfileHandler.getStaffBySociety({
+          societyId: society.id,
+          token: Cookies.get("auth"),
+        }),
+        getAllCommitteeHandler(),
+        getVisitorListBySenderId(),
+      ]);
+
+      const tenants = Array.isArray(members)
+        ? members.filter((m) => m.role === "tenant").length
+        : 0;
+
+      setCounts({
+        members: members?.length || 0,
+        vehicles: vehicles?.length || 0,
+        tenants,
+        staffs: staffs?.length || 0,
+        management: committee?.members?.length || 0,
+        visitor: visitor?.length || 0,
+      });
+    } catch (error) {
+      console.error("Dashboard count error:", error);
+    }
   };
-  
+
+  const allCards = [
+    { count: counts.members, icon: <FaUsers />, label: "Members", href: "/member" },
+    { count: counts.vehicles, icon: <FaCar />, label: "Vehicles", href: "/vehicle" },
+    { count: counts.tenants, icon: <FaUserFriends />, label: "Tenants", href: "/tenant" },
+    { count: counts.management, icon: <FaUserTie />, label: "Management", href: "/management" },
+    { count: counts.staffs, icon: <FaUser />, label: "Staffs", href: "/staff" },
+    { count: counts.visitor, icon: <FaUserClock />, label: "Visitors", href: "/visitors" },
+  ];
+
   return (
-    <div className="space-y-10">
-      <InitSocietySetter />{ children } 
-      {/* <PaymentDueReminder
+    <div className="p-5 space-y-10">
+      {/* TOP SECTION */}
+      <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+        <InitSocietySetter />
+      </div>
+
+      {/* PAYMENT REMINDER */}
+      <PaymentDueReminder
         amountDue={4000}
         dueDate={new Date().toLocaleDateString()}
-      /> */}
-       <section className="space-y-10">
-          <Info />
-       </section>
-      <AnnoucementPreview/>
-      <CommunityDirectories />
-      {/* <PostPreview/> */}
+      />
+
+      {children}
+
+      {/* STAT CARDS GRID */}
+      <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-6">
+        {allCards.map((card, index) => (
+          <StatCard key={index} {...card} />
+        ))}
+      </div>
+
+      {/* OPTIONAL SECTIONS */}
+      <div className="grid grid-cols-1 gap-6 mt-10 lg:grid-cols-3">
+        <div className="p-6 bg-white border shadow-sm rounded-xl hover:shadow-md">
+          <h3 className="mb-4 text-xl font-semibold">Recent Members</h3>
+          <p className="text-gray-500">
+            List or summary of latest members can go here.
+          </p>
+        </div>
+
+        <div className="p-6 bg-white border shadow-sm rounded-xl hover:shadow-md">
+          <h3 className="mb-4 text-xl font-semibold">Vehicles</h3>
+          <p className="text-gray-500">
+            Summary of vehicles or latest registrations.
+          </p>
+        </div>
+
+        <div className="p-6 bg-white border shadow-sm rounded-xl hover:shadow-md">
+          <h3 className="mb-4 text-xl font-semibold">Visitors</h3>
+          <p className="text-gray-500">
+            Recent visitors or pending approvals.
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

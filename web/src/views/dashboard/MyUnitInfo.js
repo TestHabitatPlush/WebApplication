@@ -151,7 +151,7 @@ const Info = () => {
         </span>
         <div className="">
           <h3 className="text-sm font-semibold md:text-md lg:text-lg">
-            Add Staffs
+             <a href="/staff"> Add Staff</a>
           </h3>
         </div>
       </div>

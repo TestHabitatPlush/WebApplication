@@ -1247,56 +1247,62 @@
 
 // export default SocietyCreateForm;
 
-
-import React from "react";
 import Input from "../../../../components/shared/Input";
 import Select from "../../../../components/ui/Select";
 import Button from "../../../../components/ui/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { setCustomerFormField } from "../../../../redux/slices/customerSlice";
 import CountryStateCitySelector from "../../../../components/shared/CountryStateCitySelector";
-import CustomerHandler from "../../../../handlers/superadmin/CustomerHandler"; 
 
-const SocietyCreateForm = ({ onEditHandler }) => {
+const SocietyCreateForm = ({ onSubmit, onEditHandler }) => {
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.customer.customerForm);
-  const societyTypeOptions = useSelector((state) => state.customer.societyTypeOptions);
-  const subscriptionPlans = useSelector((state) => state.customer.subscriptionPlans);
-  const customerTypeOptions = useSelector((state) => state.customer.customerTypeOptions);
+  const societyTypeOptions = useSelector(
+    (state) => state.customer.societyTypeOptions
+  );
+  const subscriptionPlans = useSelector(
+    (state) => state.customer.subscriptionPlans
+  );
+  const customerTypeOptions = useSelector(
+    (state) => state.customer.customerTypeOptions
+  );
   const formMode = useSelector((state) => state.customer.formOperationType);
+
+  console.log(formMode);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log(name, value);
     dispatch(setCustomerFormField({ name, value }));
   };
 
-  const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
-    dispatch(setCustomerFormField({ name: "photo", value: file }));
-  };
+  // const handlePhotoChange = (e) => {
+  //   const file = e.target.files[0];
+  //   dispatch(setCustomerFormField({ name: "photo", value: file }));
+  // };
 
-  const handleSubmit = async () => {
-    try {
-      const form = new FormData();
+  // const handleSubmit = async () => {
+  //   try {
+  //     const form = new FormData();
 
-      for (const key in formData) {
-        if (key === "address") {
-          for (const subKey in formData.address) {
-            form.append(`address[${subKey}]`, formData.address[subKey]);
-          }
-        } else if (key === "photo" && formData.photo) {
-          form.append("photo", formData.photo);
-        } else {
-          form.append(key, formData[key]);
-        }
-      }
+  //     for (const key in formData) {
+  //       if (key === "address") {
+  //         for (const subKey in formData.address) {
+  //           form.append(`address[${subKey}]`, formData.address[subKey]);
+  //         }
+  //       } else if (key === "photo" && formData.photo) {
+  //         form.append("photo", formData.photo);
+  //       } else {
+  //         form.append(key, formData[key]);
+  //       }
+  //     }
 
-      await CustomerHandler.createCustomer(form); // Ensure this handler supports FormData
-      alert("Customer created successfully!");
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
-  };
+  //     await CustomerHandler.createCustomer(form); // Ensure this handler supports FormData
+  //     alert("Customer created successfully!");
+  //   } catch (error) {
+  //     console.error("Error submitting form:", error);
+  //   }
+  // };
 
   return (
     <div className="flex">
@@ -1354,10 +1360,10 @@ const SocietyCreateForm = ({ onEditHandler }) => {
                 readOnly={formMode === "view"}
               />
             )}
-            {/* Profile Photo Upload */}
+            {/* Profile Photo Upload
             <div className="col-span-3">
-              <label className="block font-medium text-gray-700 mb-2">
-                Profile Photo <span className="text-red-500 font-bold">*</span>
+              <label className="block mb-2 font-medium text-gray-700">
+                Profile Photo <span className="font-bold text-red-500">*</span>
               </label>
               <input
                 type="file"
@@ -1369,10 +1375,10 @@ const SocietyCreateForm = ({ onEditHandler }) => {
                 <img
                   src={URL.createObjectURL(formData.photo)}
                   alt="Preview"
-                  className="mt-2 h-24 w-24 object-cover rounded"
+                  className="object-cover w-24 h-24 mt-2 rounded"
                 />
               )}
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -1486,7 +1492,7 @@ const SocietyCreateForm = ({ onEditHandler }) => {
         {/* Submit Button */}
         <div className="flex justify-center py-5">
           {formMode === "create" && (
-            <Button onClick={handleSubmit} className="w-full max-w-lg">
+            <Button onClick={onSubmit} className="w-full max-w-lg">
               Submit
             </Button>
           )}

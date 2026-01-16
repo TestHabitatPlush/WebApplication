@@ -9,7 +9,7 @@ const SideBarMenu = {
      {
       name: "Dashboard",
       isAvailable: true,
-       icon: FaTachometerAlt ,
+      icon: FaTachometerAlt ,
       children: [
         {
           name: "Dashboard",
@@ -384,15 +384,10 @@ const SideBarMenu = {
     {
       name: "Dashboard",
       isAvailable: true,
-       icon: FaTachometerAlt ,
-      children: [
-        {
-          name: "Dashboard",
-          url: "dashboard",
-        },
-       
-      ],
-    },
+      icon: FaTachometerAlt,
+      children: [], // ✅ add this
+   },
+
     {
       name: "Society Management",
       isAvailable: true,

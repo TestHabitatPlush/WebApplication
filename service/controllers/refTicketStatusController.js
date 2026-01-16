@@ -1,7 +1,5 @@
-
 const ref_ticket_status = require("../models/ref_ticket_status");
 const { sendSuccessResponse, sendErrorResponse } = require("../utils/response");
-
 
 exports.createRefTicketStatus = async (req, res) => {
   try {
@@ -31,19 +29,17 @@ exports.createRefTicketStatus = async (req, res) => {
     const newStatus = await ref_ticket_status.create({ ticket_status_description });
 
     return sendSuccessResponse(res, "Status created", newStatus, 201);
+
   } catch (err) {
     console.error(err);
     return sendErrorResponse(res, "Internal server error", 500, err.message);
   }
 };
 
+
+
 exports.getRefTicketStatus = async (req, res) => {
   try {
-    const all = await ref_ticket_status.findAll();
-    return sendSuccessResponse(res, "Statuses fetched", all, 200);
-  } catch (err) {
-    console.error(err);
-    return sendErrorResponse(res, "Internal server error", 500, err.message);
     const all = await ref_ticket_status.findAll();
     return sendSuccessResponse(res, "Statuses fetched", all, 200);
   } catch (err) {

@@ -11,7 +11,7 @@ import DefinePorpousForm from "./softwarehelpdesk/setup/defineporpous/DefinePorp
 import TicketListForm from "./softwarehelpdesk/ticketlist/TicketListForm";
 import SocietyModeratorList from "./society/society_user/SocietyModeratorList";
 import PlanDetails from "../super/subcriptionPlan/PlanDetails";
-import Dashboard from "../super/Dashboard/dashboard";
+import Dashboard from "../super/Dashboard";
 import SubscriptionList from "./Product Subscription Management/SubscriptionList/SubscriptionList";
 import CreateProduct from "./Product Subscription Management/CreateProduct";
 import CustomerSubscriptionList from "./Product Subscription Management/CustomerSubscriptionList/CustomerSubscription";
@@ -20,7 +20,7 @@ import CustomerSubscriptionList from "./Product Subscription Management/Customer
 const SuperAdminContents = () => {
   return (
     <Routes>
-      <Route path="/dashboard" element={<Dashboard/>} />
+      <Route path="/" element={<Dashboard/>} />
       <Route path="/society/create" element={<CreateSociety />} />
       <Route path="/society/view" element={<SocietyList />} />
       <Route path="/society/createuser" element={<CreateSocietyModerator />} />
