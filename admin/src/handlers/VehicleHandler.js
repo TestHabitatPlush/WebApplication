@@ -6,8 +6,7 @@ import {
   updateVehicleBySocietyService,
   getVehicleBySocietyService,
   getVehicleDataByIdService,
-  createVehicleByUserService,
-  getVehicleByUserService,
+  
 } from "../services/vehicleService";
 
 const useVehicleHandler = () => {
@@ -86,8 +85,6 @@ const updateVehicleHandler = async (societyId, vehicleId, payload) => {
     createVehicleBySocietyHandler,
     updateVehicleHandler,
     getVehicleBySocietyHandler,
-    createVehicleByUserHandler,
-    getVehicleByUserHandler,
     getVehicleDataByIdHandler
     //deactivateVehicleHandler
   };
