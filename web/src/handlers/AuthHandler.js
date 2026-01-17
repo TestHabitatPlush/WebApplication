@@ -183,124 +183,12 @@
 // export default AuthHandler;
 
 
-// "use client";
-// import { useDispatch } from "react-redux";
-// import { toast } from "react-hot-toast";
-// import {
-//   loginService,
-//   jobProfileLoginService,
-// } from "@/services/authServices";
-// import { setUser, setToken, clearAuth } from "@/redux/slices/authSlice";
-// import { setSelectedSociety } from "@/redux/slices/societySlice";
-// import NavigationHandler from "./NavigationHandler";
-
-// const AuthHandler = () => {
-//   const { navigateToHomePage } = NavigationHandler();
-//   const dispatch = useDispatch();
-
-//   const loginHandler = async (data) => {
-//     try {
-//       const result = await loginService(data);
-//       const { token, redirectUrl = null, user } = result.data;
-
-//       if (redirectUrl) {
-//         toast.success("Going to redirect!");
-//         window.location.href = redirectUrl;
-//       } else if (result?.status === 200) {
-//         const authData = { user, token };
-//         setReduxAuthState(authData);
-//         setLocalStorage(authData);
-//         toast.success("Successfully logged in!");
-//       }
-//     } catch (error) {
-//       handleAuthError(error);
-//     }
-//   };
-
-//   const jobProfileLoginHandler = async (data) => {
-//     try {
-//       const result = await jobProfileLoginService(data);
-//       const { token, redirectUrl = null, profile } = result.data;
-
-//       if (redirectUrl) {
-//         toast.success("Redirecting...");
-//         window.location.href = redirectUrl;
-//         return;
-//       }
-
-//       if (result.status === 200) {
-//         const authData = { user: profile, token };
-//         setReduxAuthState(authData);
-//         setLocalStorage(authData);
-//         toast.success("Successfully logged in!");
-//       }
-//     } catch (error) {
-//       handleAuthError(error);
-//     }
-//   };
-  
-
-//   const handleAuthError = (error) => {
-//     if (error?.response?.data?.message) {
-//       toast.error(error.response.data.message);
-//     } else {
-//       toast.error("An unexpected error occurred.");
-//     }
-//   };
-
-//   const setLocalStorage = ({ user, token }) => {
-//     localStorage.setItem("authData", JSON.stringify({ user, token }));
-//   };
-
-//   const setReduxAuthState = ({ user, token }) => {
-//     dispatch(setUser(user));
-//     dispatch(setToken(token));
-
-//     if (user?.societyId) {
-//       dispatch(setSelectedSociety(user.societyId));
-//     } else if (user?.Customer?.customerId) {
-//       dispatch(setSelectedSociety(user.Customer.customerId));
-//     }
-//   };
-
-//   const getLocalStorage = () => {
-//     const storageData = localStorage.getItem("authData");
-//     return storageData ? JSON.parse(storageData) : null;
-//   };
-
-//   const setIntitalReduxState = () => {
-//     const data = getLocalStorage();
-//     if (data?.token && data?.user) {
-//       setReduxAuthState(data);
-//     }
-//   };
-
-//   const logoutHandler = () => {
-//     localStorage.removeItem("authData");
-//     dispatch(clearAuth());
-//     dispatch(setSelectedSociety(null));
-//   };
-
-//   return {
-//     loginHandler,
-//     jobProfileLoginHandler, 
-//     setLocalStorage,
-//     getLocalStorage,
-//     setReduxAuthState,
-//     setIntitalReduxState,
-//     logoutHandler,
-//   };
-// };
-
-// export default AuthHandler;
 "use client";
 import { useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
 import {
   loginService,
   jobProfileLoginService,
-  tokenSignInService,
-  loginTokenService,
 } from "@/services/authServices";
 import { setUser, setToken, clearAuth } from "@/redux/slices/authSlice";
 import { setSelectedSociety } from "@/redux/slices/societySlice";
@@ -310,19 +198,15 @@ const AuthHandler = () => {
   const { navigateToHomePage } = NavigationHandler();
   const dispatch = useDispatch();
 
-  /* ---------------- NORMAL LOGIN ---------------- */
   const loginHandler = async (data) => {
     try {
       const result = await loginService(data);
       const { token, redirectUrl = null, user } = result.data;
 
       if (redirectUrl) {
-        toast.success("Redirecting to admin login...");
+        toast.success("Going to redirect!");
         window.location.href = redirectUrl;
-        return;
-      }
-
-      if (result.status === 200) {
+      } else if (result?.status === 200) {
         const authData = { user, token };
         setReduxAuthState(authData);
         setLocalStorage(authData);
@@ -330,18 +214,16 @@ const AuthHandler = () => {
       }
     } catch (error) {
       handleAuthError(error);
-      console.error("Login error:", error);
     }
   };
 
-  /* ---------------- JOB PROFILE LOGIN ---------------- */
   const jobProfileLoginHandler = async (data) => {
     try {
       const result = await jobProfileLoginService(data);
       const { token, redirectUrl = null, profile } = result.data;
 
       if (redirectUrl) {
-        // Redirect user to frontend token login screen
+        toast.success("Redirecting...");
         window.location.href = redirectUrl;
         return;
       }
@@ -354,48 +236,20 @@ const AuthHandler = () => {
       }
     } catch (error) {
       handleAuthError(error);
-      console.error("Job Profile Login error:", error);
+    }
+  };
+  
+
+  const handleAuthError = (error) => {
+    if (error?.response?.data?.message) {
+      toast.error(error.response.data.message);
+    } else {
+      toast.error("An unexpected error occurred.");
     }
   };
 
-  /* ---------------- TOKEN SIGN-IN (Society Users) ---------------- */
-  const tokenSignInHandler = async (token) => {
-    try {
-      const result = await tokenSignInService(token);
-      const { token: newToken, user } = result.data;
-      setReduxAuthState({ user, token: newToken });
-      setLocalStorage({ user, token: newToken });
-      toast.success("Admin login successful via token!");
-      return result.data;
-    } catch (error) {
-      handleAuthError(error);
-      throw error;
-    }
-  };
-
-  /* ---------------- LOGIN TOKEN (Job Profiles / Staff) ---------------- */
-  const loginTokenHandler = async (token) => {
-    try {
-      const result = await loginTokenService(token);
-      const { token: newToken, profile } = result.data;
-      setReduxAuthState({ user: profile, token: newToken });
-      setLocalStorage({ user: profile, token: newToken });
-      toast.success("Staff/Partner login successful via token!");
-      return result.data;
-    } catch (error) {
-      handleAuthError(error);
-      throw error;
-    }
-  };
-
-  /* ---------------- REDUX & LOCAL STORAGE ---------------- */
   const setLocalStorage = ({ user, token }) => {
     localStorage.setItem("authData", JSON.stringify({ user, token }));
-  };
-
-  const getLocalStorage = () => {
-    const storageData = localStorage.getItem("authData");
-    return storageData ? JSON.parse(storageData) : null;
   };
 
   const setReduxAuthState = ({ user, token }) => {
@@ -409,6 +263,11 @@ const AuthHandler = () => {
     }
   };
 
+  const getLocalStorage = () => {
+    const storageData = localStorage.getItem("authData");
+    return storageData ? JSON.parse(storageData) : null;
+  };
+
   const setIntitalReduxState = () => {
     const data = getLocalStorage();
     if (data?.token && data?.user) {
@@ -416,28 +275,15 @@ const AuthHandler = () => {
     }
   };
 
-  /* ---------------- LOGOUT ---------------- */
   const logoutHandler = () => {
     localStorage.removeItem("authData");
     dispatch(clearAuth());
     dispatch(setSelectedSociety(null));
-    toast.success("Logged out successfully!");
-  };
-
-  /* ---------------- ERROR HANDLER ---------------- */
-  const handleAuthError = (error) => {
-    if (error?.response?.data?.message) {
-      toast.error(error.response.data.message);
-    } else {
-      toast.error("An unexpected error occurred.");
-    }
   };
 
   return {
     loginHandler,
-    jobProfileLoginHandler,
-    tokenSignInHandler,
-    loginTokenHandler,
+    jobProfileLoginHandler, 
     setLocalStorage,
     getLocalStorage,
     setReduxAuthState,

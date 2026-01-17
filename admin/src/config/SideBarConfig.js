@@ -531,7 +531,7 @@ const SideBarMenu = {
         },
       ],
     },
-      {
+    {
       name: "Document Management",
       isAvailable: true,
       icon: FaFileAlt,
@@ -581,41 +581,42 @@ const SideBarMenu = {
     },
   ],
 
-
-society_security_guard: [
-  {
-      name: "Software HelpDesk Management",
+  society_security_guard: [
+   {
+      name: "Gate Management",
       isAvailable: true,
-      icon: FaLaptopCode,
+      icon: GiGate,
       children: [
         {
-          name: "SetUp",
-          url: "softwarehelpdesk/softwarehelpdesksetup",
+          name: "Define Gate",
+          url: "gate/definegate",
+        },
+        {
+          name: "Guard Profile Creation",
+          url: "gate/guardCreation",
           children: [
             {
-              name: "Approval Matrix",
-              url: "softwarehelpdesk/softwarehelpdesksetup/softwareapprovalmatrix",
-            },
-            {
-              name: "Define Purpose",
-              url: "softwarehelpdesk/softwarehelpdesksetup/softwaredefinepurpose",
+              name: "Gate Allocation",
+              url: "gate/allocation",
             },
           ],
         },
         {
-          name: "Create Ticket",
-          url: "softwarehelpdesk/softwarehelpdeskcreateticket",
+          name: "Gate List",
+          url: "gate/view",
+        },
+
+        {
+          name: "Approved Gate Users",
+          url: "gate/approvedusers",
         },
         {
-          name: "Ticket List",
-          url: "softwarehelpdesk/softwarehelpdeskticketlist",
+          name: "Deactivated Gate Users",
+          url: "gate/deactivatedusers",
         },
       ],
     },
-  ]
-
-
-  
+  ],
 };
 export default SideBarMenu;
 

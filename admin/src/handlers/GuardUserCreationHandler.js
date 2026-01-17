@@ -5,7 +5,9 @@ import { GuardUserCreationService } from "../services/GuardUserCreationService"
 
 const GuardUserCreationHandler = () => {
   const token = useSelector((state) => state.auth.token);
-  const societyId = useSelector((state) => state.auth.user.Customer.customerId);
+  // const societyId = useSelector((state) => state.auth.user.Customer.customerId);
+    const societyId =
+    user?.societyId || user?.customerId || user?.assignedSocietyId || null;
 
   const GuardRelationshipHandler = async (profileData) => {
     try {

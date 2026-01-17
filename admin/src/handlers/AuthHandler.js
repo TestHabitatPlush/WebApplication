@@ -86,28 +86,64 @@ import axios from "axios";
 import { clearAuth, setToken, setUser } from "../redux/slices/authSlice";
 import NavigationHandler from "./NavigationHandler";
 
-const API_URL = process.env.REACT_APP_PUBLIC_API_URL || "http://localhost:5000/api";
-const FRONTEND_URL = process.env.REACT_APP_PUBLIC_FRONTEND_URL || "http://localhost:3001";
+const API_URL =
+  process.env.REACT_APP_PUBLIC_API_URL || "http://localhost:5000/api";
+const FRONTEND_URL =
+  process.env.REACT_APP_PUBLIC_FRONTEND_URL || "http://localhost:3001";
 
 const AuthHandler = () => {
   const dispatch = useDispatch();
   const { customNavigation } = NavigationHandler();
 
+  /* ---------------- TOKEN LOGIN (REDIRECT FLOW) ---------------- */
   const loginHandler = async (token) => {
     try {
-      console.log("Sending login request...");
-      const res = await axios.post(`${API_URL}/auth/token-signin`, { token });
-      console.log("Login response:", res.data);
-      setReduxAuthState(res.data);
-      setLocalStorage(res.data);
+      //  decode token payload (frontend only)
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      const endpoint = payload.profileId
+        ? "/auth/login-token"
+        : "/auth/token-signin";
+
+      const res = await axios.post(`${API_URL}${endpoint}`, { token });
+
+      const { user, profile, token: newToken } = res.data;
+      const authUser = user || profile;
+
+      dispatch(setUser(authUser));
+      dispatch(setToken(newToken));
+
+      localStorage.setItem(
+        "authData",
+        JSON.stringify({ user: authUser, token: newToken })
+      );
+
       toast.success("Successfully logged in!");
-      customNavigation('/');
+      customNavigation("/");
     } catch (error) {
       console.error("Login error:", error);
       toast.error("Login failed. Please try again.");
     }
   };
 
+  /* ---------------- INIT REDUX FROM LOCAL STORAGE ---------------- */
+  const setInitialReduxState = () => {
+    const data = localStorage.getItem("authData");
+    if (!data) return;
+
+    const { user, token } = JSON.parse(data);
+    dispatch(setUser(user));
+    dispatch(setToken(token));
+  };
+
+
+
+  /* ---------------- LOGOUT ---------------- */
+  const logoutHandler = () => {
+    console.log("Logging out...");
+    clearLocalStorage();
+    dispatch(clearAuth());
+    window.location.href = FRONTEND_URL;
+  };
   const setLocalStorage = ({ user, token }) => {
     localStorage.setItem("authData", JSON.stringify({ token, user }));
     console.log("Local storage set:", { user, token });
@@ -124,34 +160,21 @@ const AuthHandler = () => {
     return storageData ? JSON.parse(storageData) : null;
   };
 
-  const setIntitalReduxState = () => {
-    const data = getLocalStorage();
-    if (data?.token && data?.user) {
-      dispatch(setUser(data.user));
-      dispatch(setToken(data.token));
-      console.log("Redux initialized from local storage.");
-    }
-  };
+ 
 
   const clearLocalStorage = () => {
     localStorage.removeItem("authData");
     console.log("Local storage cleared.");
   };
 
-  const logoutHandler = () => {
-    console.log("Logging out...");
-    clearLocalStorage();
-    dispatch(clearAuth());
-    window.location.href = FRONTEND_URL;
-  };
-
   return {
-    loginHandler,
-    setLocalStorage,
-    getLocalStorage,
-    setReduxAuthState,
-    setIntitalReduxState,
-    logoutHandler,
+     loginHandler,
+     logoutHandler,
+     setInitialReduxState,
+     setLocalStorage,
+     getLocalStorage,
+     setReduxAuthState,
+   
   };
 };
 

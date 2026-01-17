@@ -7,7 +7,9 @@ import React from 'react'
 
 const GateAllocationHandler = () => {
     const token = useSelector((state) => state.auth.token);
-    const societyId = useSelector((state) => state.auth.user.Customer.customerId);
+    // const societyId = useSelector((state) => state.auth.user.Customer.customerId);
+      const societyId =
+    user?.societyId || user?.customerId || user?.assignedSocietyId || null;
 
     const makeGateAllocation = async(data) => {
         try {
