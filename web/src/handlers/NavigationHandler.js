@@ -33,6 +33,13 @@ const NavigationHandler = () => {
 
   const navigateToHelp = () => {
     router.push("/help");
+<<<<<<< HEAD
+=======
+  };
+
+  const customNavigation = (route) => {
+    router.push(route);
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
   };
 
   // const customNavigation = (route) => {

@@ -167,7 +167,11 @@ const AuthHandler = () => {
   const logoutHandler = () => {
     clearLocalStorage();
     dispatch(clearAuth());
+<<<<<<< HEAD
     dispatch(setSelectedSociety(null)); 
+=======
+    dispatch(setSelectedSociety(null)); t
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
   };
 
   return {

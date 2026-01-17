@@ -42,7 +42,10 @@ const UserHandler = () => {
   const createSocietyResidentUserHandler = async (societyId, formData) => {
     try {
       const response = await createSocietyResidentService(societyId, token, formData);
+<<<<<<< HEAD
       
+=======
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
       console.log("society response",response);
       if (response.status === 201) {
         toast.success('Society Resident created successfully!');
@@ -66,6 +69,7 @@ const UserHandler = () => {
 //       ...rest
 //     } = residentData;
 
+<<<<<<< HEAD
 //     if (!units.length) {
 //       toast.error("Please select at least one unit");
 //       return null;
@@ -127,6 +131,8 @@ const UserHandler = () => {
 //   }
 // };
 
+=======
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
   const getResidentBySocietyIdHandler = async (societyId, { page, pageSize }) => {
     try {
       const response = await getResidentBySocietyIdService(societyId, token, { page, pageSize });

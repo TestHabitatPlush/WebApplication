@@ -11,8 +11,11 @@ export { default as Notice } from "./notice/Notice";
 export { default as Email } from "./email/Email";
 export { default as Documents } from "./documents/Documents";
 export {default as Vehicle} from "./vehicle/Vehicle";
+<<<<<<< HEAD
 export { default as CommunityDirectories } from "./communityDirectories";
 
+=======
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
 
 console.log('NODE_ENV:', process.env.NODE_ENV);
 console.log('API_URL:', process.env.NEXT_PUBLIC_ENVIRONMENT); // Replace with actual key

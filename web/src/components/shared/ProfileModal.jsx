@@ -2,11 +2,18 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import UserHandler from "@/handlers/UserHandler";
+<<<<<<< HEAD
 import Logo from "../../../assets/svg&pngicon/user (1).png";
 
 const ProfileModal = ({ isOpen, onClose, user }) => {
   const { updateResidentBySocietyIdHandler } = UserHandler();
   const society = useSelector((state) => state.society.selectedSocietyId);
+=======
+
+const ProfileModal = ({ isOpen, onClose, user }) => {
+  const { updateResidentBySocietyIdHandler } = UserHandler();
+  const societyId = useSelector((state) => state.auth.user?.societyId);
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
 
   const [isEditing, setIsEditing] = useState(false);
   const [formState, setFormState] = useState({
@@ -15,9 +22,13 @@ const ProfileModal = ({ isOpen, onClose, user }) => {
     mobileNumber: user?.mobileNumber || "",
   });
   const [photoFile, setPhotoFile] = useState(null);
+<<<<<<< HEAD
   const profileImageUrl = user?.photo
   ? `${process.env.NEXT_PUBLIC_BASE_URL}/${user.photo.replace(/\\/g, "/")}`
   : Logo;
+=======
+
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
   if (!isOpen) return null;
 
   const handleChange = (e) => {
@@ -28,6 +39,7 @@ const ProfileModal = ({ isOpen, onClose, user }) => {
     setPhotoFile(e.target.files[0]);
   };
 
+<<<<<<< HEAD
  const handleSubmit = async (e) => {
   e.preventDefault();
 
@@ -45,6 +57,30 @@ const ProfileModal = ({ isOpen, onClose, user }) => {
     console.error(error);
   }
 };
+=======
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("token");
+
+      const residentData = {
+        userId: user?.userId,
+        firstName: formState.firstName,
+        lastName: formState.lastName,       
+        mobileNumber: formState.mobileNumber,
+        photo: photoFile,
+      };
+
+      await updateResidentBySocietyIdHandler({ societyId, residentData, token });
+      alert("Profile updated successfully.");
+      setIsEditing(false);
+      onClose();
+    } catch (error) {
+      alert("Failed to update profile.");
+      console.error(error);
+    }
+  };
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
@@ -103,6 +139,7 @@ const ProfileModal = ({ isOpen, onClose, user }) => {
           </form>
         ) : (
           <div className="space-y-2 text-sm">
+<<<<<<< HEAD
                <div>
                 {profileImageUrl ? (
                     <img
@@ -118,13 +155,19 @@ const ProfileModal = ({ isOpen, onClose, user }) => {
                    
              </div>
        
+=======
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
             <div><strong>Name:</strong> {user?.firstName} {user?.lastName}</div>
             <div><strong>Email:</strong> {user?.email}</div>
             <div><strong>Mobile:</strong> {user?.mobileNumber}</div>
             <div><strong>Role:</strong> {user?.role?.roleName}</div>
             <div><strong>Role Category:</strong> {user?.role?.roleCategory}</div>
             <div><strong>Occupancy Status:</strong> {user?.role?.occupancyStatus}</div>
+<<<<<<< HEAD
           
+=======
+            <div><strong>Group ID:</strong> {user?.role?.userGroupId}</div>
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
 
             <div className="flex justify-between mt-6">
               <button

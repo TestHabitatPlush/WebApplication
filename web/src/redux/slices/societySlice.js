@@ -102,8 +102,12 @@ const societySlice = createSlice({
       state.data = action.payload;
     },
 
+<<<<<<< HEAD
     setSelectedSociety: (state, action) =>
        {
+=======
+    setSelectedSociety: (state, action) => {
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
       state.selectedSocietyId = action.payload;
     },
   },

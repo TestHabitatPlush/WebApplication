@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
 import React, { useEffect, useState } from "react";
 import UrlPath from "../../../../components/shared/UrlPath";
 import PageHeading from "../../../../components/shared/PageHeading";
@@ -10,7 +15,10 @@ const CreateTicketForm = () => {
   const [fileError, setFileError] = useState("");
   const [ticketPurpousList, setTicketPurpousList] = useState([]);
   const [attachmentFile, setAttachmentFile] = useState(null);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
   const [formData, setFormData] = useState({
     request_type: "",
     ticket_purpose_Id: "",
@@ -63,7 +71,14 @@ const CreateTicketForm = () => {
     submissionFormData.append("request_type", formData.request_type);
     submissionFormData.append("ticket_purpose_Id", formData.ticket_purpose_Id);
     submissionFormData.append("ticket_title", formData.ticket_title);
+<<<<<<< HEAD
     submissionFormData.append("ticket_description", formData.ticket_description);
+=======
+    submissionFormData.append(
+      "ticket_description",
+      formData.ticket_description
+    );
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
 
     if (attachmentFile) {
       submissionFormData.append("ticket_attachment_details", attachmentFile);
@@ -91,14 +106,26 @@ const CreateTicketForm = () => {
             <input
               type="text"
               className="bg-gray-100 border border-gray-300 text-black-400 text-sm rounded-lg w-full p-3.5"
+<<<<<<< HEAD
               placeholder="Ticket Number"
               disabled
+=======
+              value=""
+              placeholder="Ticket Number"
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
             />
           </div>
 
           {/* REQUEST TYPE */}
           <div>
+<<<<<<< HEAD
             <label className="block mb-2 text-sm font-medium text-gray-700">
+=======
+            <label
+              htmlFor="request_type"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
               Type of Request
             </label>
             <select
@@ -108,15 +135,28 @@ const CreateTicketForm = () => {
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-3.5"
             >
               <option value="">Select Type Of Request</option>
+<<<<<<< HEAD
               <option value="Suggestion">Suggestion</option>
               <option value="Complain">Complaint</option>
               <option value="Clarification">Clarification</option>
+=======
+              <option value="suggestion">Suggestion</option>
+              <option value="complaint">Complaint</option>
+              <option value="clarification">Clarification</option>
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
             </select>
           </div>
 
           {/* PURPOSE */}
           <div>
+<<<<<<< HEAD
             <label className="block mb-2 text-sm font-medium text-gray-700">
+=======
+            <label
+              htmlFor="ticket_purpose_Id"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
               Ticket Purpose
             </label>
             <select
@@ -155,6 +195,10 @@ const CreateTicketForm = () => {
           value={formData.ticket_description}
           onChange={handleInputChange}
           name="ticket_description"
+<<<<<<< HEAD
+=======
+          size="lg"
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
           rows={5}
         />
 
@@ -167,6 +211,7 @@ const CreateTicketForm = () => {
             size="lg"
           />
           {fileError && (
+<<<<<<< HEAD
             <p className="mt-2 text-sm text-red-600">{fileError}</p>
           )}
         </div>
@@ -174,6 +219,25 @@ const CreateTicketForm = () => {
         {/* SUBMIT BUTTON */}
         <div className="flex justify-center mt-5">
           <Button className="max-w-sm" onClick={handleSubmit} size="xl">
+=======
+            <p className="text-red-600 text-sm mt-2">{fileError}</p>
+          )}
+        </div>
+
+        {/* <div className="flex justify-center mt-6">
+          <Button onClick={handleSubmit} type="submit" size="lg">
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
+            Submit
+          </Button>
+        </div> */}
+
+        <div className="flex justify-center mt-5">
+          <Button
+            className="max-w-sm"
+            onClick={handleSubmit}
+            type="submit"
+            size="xl"
+          >
             Submit
           </Button>
         </div>

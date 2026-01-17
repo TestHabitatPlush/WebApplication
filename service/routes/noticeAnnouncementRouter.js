@@ -26,7 +26,11 @@ const {
   getNoticesByUserId,
   updateNoticeById,
   deleteNoticeById,
+<<<<<<< HEAD
 } = require("../controllers/noticeController");
+=======
+} = require("../controllers/noticeAnController");
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
 
 router.post("/create/:societyId/:userId", createNoticeBySocietyId);
 router.get("/get/:societyId/:userId", getNoticesBySocietyId);

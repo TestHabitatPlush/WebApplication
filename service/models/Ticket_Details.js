@@ -166,4 +166,8 @@ const Ticket_Details = sequelize.define(
 Ticket_Details.belongsTo(User, { as: "assignedUser", foreignKey: "assigned_to" });
 Ticket_Details.belongsTo(User, { as: "updatedUser", foreignKey: "updated_by_user_id" });
 
+<<<<<<< HEAD
 module.exports = Ticket_Details;
+=======
+module.exports = Ticket_Details;
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6

@@ -249,7 +249,11 @@ const NoticeHandler = () => {
       const res = await getNoticesByUserService(userId, token);
       if (res.status === 200) return res.data;
     } catch (err) {
+<<<<<<< HEAD
      //toast.error("Failed to fetch user notices.");
+=======
+      toast.error("Failed to fetch user notices.");
+>>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
       console.error(err);
     }
   };
