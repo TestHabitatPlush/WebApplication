@@ -1,5 +1,4 @@
 "use client";
-<<<<<<< HEAD
 
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
@@ -8,11 +7,6 @@ import {
   getVehicleByUserService,
   deleteVehicleByIdService,
 } from "@/services/vehicleService";
-=======
-import { useSelector } from "react-redux";
-import toast from "react-hot-toast";
-import  {createVehicleBySocietyService} from "@/services/vehicleService";
->>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
 
 const VehicleHandler = () => {
   const token = useSelector((state) => state.auth.token);

@@ -49,11 +49,7 @@ const Vehicle  = sequelize.define(
       allowNull: true,
       validate: {
         len: [12, 16],
-<<<<<<< HEAD:service/models/Vehicle.js
         is: /^[A-Z0-9]+$/i,
-=======
-        is: /^[A-Z0-9]+$/i, 
->>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6:service/models/VehicleDetails.js
       },
     },
     vehicleType: {

@@ -1,8 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-<<<<<<< HEAD
 import { useSelector, useDispatch } from "react-redux";
-=======
->>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
 import toast from "react-hot-toast";
 import Input from "../../../../components/shared/Input";
 import UrlPath from "../../../../components/shared/UrlPath";
@@ -367,7 +364,6 @@ const AddUser = () => {
   const handleIconClick = () => {
     fileInputRef.current.click();
   };
-<<<<<<< HEAD
 
   const profileHandleFileChange = (event) => {
     const file = event.target.files[0];
@@ -596,195 +592,6 @@ const columns = [
   await createSocietyResidentUserHandler(societyId, form);
 };
 
-=======
-
-  const profileHandleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      if (file.size > 1 * 1024 * 1024) {
-        setPhotomsg(
-          "The image size is above 1MB. Please choose a smaller file."
-        );
-        return;
-      } else {
-        setPhotomsg("");
-      }
-
-      setProfilePhoto(URL.createObjectURL(file)); // For preview
-      setFormData((prevData) => ({
-        ...prevData,
-        photo: file, // Set file object directly
-      }));
-    }
-  };
-  // const submitProfileUser = async () => {
-  //   if (!selectedRoleId) {
-  //     toast.error("Please select a role.");
-  //     return;
-  //   }
-  //   if (!validateForm()) return;
-
-  //   const updatedFormData = {
-  //     ...formData,
-  //     societyId,
-  //     roleId: selectedRoleId,
-  //   };
-
-  //   try {
-  //     await createSocietyResidentUserHandler(societyId, updatedFormData);
-  //     toast.success("User profile created successfully.");
-  //     setFormData({
-  //       salutation: "",
-  //       firstName: "",
-  //       lastName: "",
-  //       countryCode: "",
-  //       mobileNumber: "",
-  //       alternateCountryCode: "",
-  //       alternateNumber: "",
-  //       email: "",
-  //       address: {
-  //         addressLine1: "",
-  //         addressLine2: "",
-  //         state: "",
-  //         city: "",
-  //         country: "",
-  //         zipCode: "",
-  //       },
-  //       liveshere: false,
-  //       primarycontact: false,
-  //       ismaemberofassociationcommite: false,
-  //       membertype: "",
-  //       remark: "",
-  //       societyId,
-  //       roleId: "",
-  //       unitId: "",
-  //       photo:""
-  //     });
-  //     setSelectedRoleId(null);
-  //     setUnits([]);
-  //   } catch (error) {
-  //     console.error("Error creating resident:", error);
-  //     toast.error("Failed to create user profile.");
-  //   }
-  // };
-const [selectedUnits, setSelectedUnits] = useState([]);
-
-  // ✅ Handle checkbox selection
-  const handleSelect = (unitId) => {
-    setSelectedUnits((prev) =>
-      prev.includes(unitId)
-        ? prev.filter((id) => id !== unitId)
-        : [...prev, unitId]
-    );
-  };
-
-  // ✅ Handle delete
-  const handleDelete = (unitId) => {
-    setUnits((prev) => prev.filter((u) => u.id !== unitId));
-    setSelectedUnits((prev) => prev.filter((id) => id !== unitId));
-  };
-const columns = [
-  {
-    Header: "Select",
-    accessor: "unitId",
-    Cell: ({ row }) => (
-      <input
-        type="checkbox"
-        checked={selectedUnits.includes(row.original.unitId)}
-        onChange={() => handleSelect(row.original.unitId)}
-        className="w-4 h-4 accent-blue-600"
-      />
-    )
-  },
-  { Header: "Building", accessor: "buildingName" },
-  { Header: "Floor", accessor: "floorName" },
-  { Header: "Unit Number", accessor: "unitNumber" },
-  { Header: "Unit Name", accessor: "unitName" },
-  {
-    Header: "Delete",
-    Cell: ({ row }) => (
-      <button
-        className="text-red-500 hover:text-red-700"
-        onClick={() => handleDeleteUnit(row.original.unitId)}
-      >
-        <FaTrashAlt />
-      </button>
-    )
-  },
-];
-
-
-const submitProfileUser = async () => {
-  if (!selectedRoleId) {
-    toast.error("Please select a role.");
-    return;
-  }
-  if (!validateForm()) return;
-
-  const form = new FormData();
-  form.append("salutation", formData.salutation);
-  form.append("firstName", formData.firstName);
-  form.append("lastName", formData.lastName);
-  form.append("countryCode", formData.countryCode || "91");
-  form.append("mobileNumber", formData.mobileNumber);
-  form.append("alternateCountryCode", formData.alternateCountryCode || "91");
-  form.append("alternateNumber", formData.alternateNumber || "");
-  form.append("email", formData.email);
-  form.append("roleId", selectedRoleId);
-  form.append("unitId", formData.unitId);
-  form.append("address", JSON.stringify(formData.address));
-
-  if (formData.photo) {
-    form.append("photo", formData.photo);
-  }
-
-  try {
-    const response = await createSocietyResidentUserHandler(societyId, form);
-    if (response.status === 201) {
-      toast.success("User profile created successfully.");
-
-      // Reset form
-      setFormData({
-        salutation: "",
-        firstName: "",
-        lastName: "",
-        countryCode: "",
-        mobileNumber: "",
-        alternateCountryCode: "",
-        alternateNumber: "",
-        email: "",
-        address: {
-          addressLine1: "",
-          addressLine2: "",
-          state: "",
-          city: "",
-          country: "",
-          zipCode: "",
-        },
-        liveshere: false,
-        primarycontact: false,
-        ismaemberofassociationcommite: false,
-        membertype: "",
-        remark: "",
-        societyId,
-        roleId: "",
-        unitId: "",
-        photo: "",
-      });
-      setSelectedRoleId(null);
-      setUnits([]);
-      setProfilePhoto("");
-    } else {
-      toast.error("Failed to create user profile.");
-    }
-  } catch (error) {
-    console.error("Error creating resident:", error);
-    toast.error("Failed to create user profile.");
-  }
-};
-
-  
->>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
   return (
     <div className="px-5 ">
       <div className="flex items-center gap-2 my-2 text-sm font-semibold text-gray-200">
@@ -1618,9 +1425,4 @@ const submitProfileUser = async () => {
     </div>
   );
 };
-<<<<<<< HEAD
 export default AddUser;
-=======
-export default AddUser;
-
->>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6

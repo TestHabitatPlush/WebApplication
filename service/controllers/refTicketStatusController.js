@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-
->>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
 const ref_ticket_status = require("../models/ref_ticket_status");
 const { sendSuccessResponse, sendErrorResponse } = require("../utils/response");
 

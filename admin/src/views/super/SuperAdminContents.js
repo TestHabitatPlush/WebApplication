@@ -11,11 +11,7 @@ import DefinePorpousForm from "./softwarehelpdesk/setup/defineporpous/DefinePorp
 import TicketListForm from "./softwarehelpdesk/ticketlist/TicketListForm";
 import SocietyModeratorList from "./society/society_user/SocietyModeratorList";
 import PlanDetails from "../super/subcriptionPlan/PlanDetails";
-<<<<<<< HEAD
 import Dashboard from "../super/Dashboard";
-=======
-import Dashboard from "../super/Dashboard/dashboard";
->>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
 import SubscriptionList from "./Product Subscription Management/SubscriptionList/SubscriptionList";
 import CreateProduct from "./Product Subscription Management/CreateProduct";
 import CustomerSubscriptionList from "./Product Subscription Management/CustomerSubscriptionList/CustomerSubscription";
@@ -24,11 +20,7 @@ import CustomerSubscriptionList from "./Product Subscription Management/Customer
 const SuperAdminContents = () => {
   return (
     <Routes>
-<<<<<<< HEAD
       <Route path="/" element={<Dashboard/>} />
-=======
-      <Route path="/dashboard" element={<Dashboard/>} />
->>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
       <Route path="/society/create" element={<CreateSociety />} />
       <Route path="/society/view" element={<SocietyList />} />
       <Route path="/society/createuser" element={<CreateSocietyModerator />} />

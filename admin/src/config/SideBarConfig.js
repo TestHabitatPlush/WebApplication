@@ -384,22 +384,10 @@ const SideBarMenu = {
     {
       name: "Dashboard",
       isAvailable: true,
-<<<<<<< HEAD
       icon: FaTachometerAlt,
       children: [], // ✅ add this
    },
 
-=======
-       icon: FaTachometerAlt ,
-      children: [
-        {
-          name: "Dashboard",
-          url: "dashboard",
-        },
-       
-      ],
-    },
->>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
     {
       name: "Society Management",
       isAvailable: true,

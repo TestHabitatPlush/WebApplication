@@ -32,7 +32,6 @@ export const getVehicleByUserService = (userId, token) => {
   });
 };
 
-<<<<<<< HEAD
 // DELETE VEHICLE
 export const deleteVehicleByIdService = (vehicleId, token) => {
   return axios.delete(`${BASE_URL}/vehicle/${vehicleId}`, {
@@ -41,12 +40,3 @@ export const deleteVehicleByIdService = (vehicleId, token) => {
     },
   });
 };
-=======
-//   return axios.get(url, {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//     },
-//     params: data,
-//   });
-// };
->>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6

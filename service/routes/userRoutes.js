@@ -69,10 +69,4 @@ userRouter.get('/superadmin/moderator', userController.getAllSuper_admin_itAndMo
 userRouter.put('/User/:userId', userController.updateUserIdStatus);
 // userRouter.post("/resident/reject", userController.rejectUser);
  userRouter.get('/resident/deactive/:societyId', userController.getAllDeactiveUsers);
-<<<<<<< HEAD
 module.exports = userRouter;
-=======
-module.exports = userRouter;
-
-
->>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6

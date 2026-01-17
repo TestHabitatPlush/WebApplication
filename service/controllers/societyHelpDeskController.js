@@ -521,10 +521,6 @@
 // };
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
 const { Op } = require("sequelize");
 const {
   Ticket_Purpose,

@@ -88,10 +88,6 @@ const ViewDocumentModal = ({ isOpen, onClose, formData }) => {
   const imageUrl = getImageUrl(formData.document);
 
   return (
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
   <Dialog
        isOpen={isOpen}
        onClose={onClose}
@@ -141,63 +137,3 @@ const ViewDocumentModal = ({ isOpen, onClose, formData }) => {
 
 
 export default ViewDocumentModal;
-<<<<<<< HEAD
-=======
-=======
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="w-full max-w-4xl bg-white rounded-lg p-6 overflow-auto max-h-[90vh] relative">
-        <button
-          className="absolute text-gray-500 top-2 right-2 hover:text-gray-700"
-          onClick={onClose}
-        >
-          ✕
-        </button>
-
-        <h2 className="mb-6 text-2xl font-semibold text-gray-800">
-          Document Details
-        </h2>
-
-        {imageUrl && (
-          <div className="flex items-start gap-4 p-4 mb-4 bg-white rounded-md shadow-sm">
-            <FaImage className="mt-1 text-xl text-blue-600" />
-            <div>
-              <h4 className="text-sm text-gray-500">Uploaded Image</h4>
-              <div className="relative w-full h-auto max-w-md mt-2 overflow-hidden border border-gray-300 rounded-lg">
-                <Image
-                  src={imageUrl}
-                  alt="Uploaded Document"
-                  width={400}
-                  height={300}
-                  className="object-contain w-full h-auto"
-                  unoptimized
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {documentUrl && (
-          <div className="flex items-start gap-4 p-4 bg-white rounded-md shadow-sm">
-            <FaFileAlt className="mt-1 text-xl text-blue-600" />
-            <div>
-              <h4 className="text-sm text-gray-500">Attached Document</h4>
-              <a
-                href={documentUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block mt-1 text-sm text-blue-600 underline hover:text-blue-800"
-              >
-                View Document
-              </a>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-
-export default ViewDocumentModal;
->>>>>>> origin/himansu
->>>>>>> 94127e2f3a1c741a8f58f809a9c418279221d1f6
