@@ -11,12 +11,12 @@ const SecurityContent = () => {
   return (
     <Routes>
       <Route path="/dashboard" element={<DashBoard />} />
-      <Route path="/gate/definegate" element={<DefineGate />} />
+      {/* <Route path="/gate/definegate" element={<DefineGate />} /> */}
       <Route path="/gate/allocation" element={<GateAllocation />} />
-      <Route path="/gate/guardCreation" element={<GuardUserCreation />} />
+      {/* <Route path="/gate/guardCreation" element={<GuardUserCreation />} /> */}
       <Route path="/gate/view" element={<GateList />} />
       <Route path="/gate/approvedusers" element={<ApprovedGateUser />} />
-      <Route path="/gate/deactivatedusers" element={<DeactivateGateUsers />} />
+      {/* <Route path="/gate/deactivatedusers" element={<DeactivateGateUsers />} /> */}
     </Routes>
   );
 };

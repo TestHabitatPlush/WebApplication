@@ -582,7 +582,7 @@ const SideBarMenu = {
   ],
 
   society_security_guard: [
-   {
+    {
       name: "Gate Management",
       isAvailable: true,
       icon: GiGate,
@@ -613,6 +613,147 @@ const SideBarMenu = {
         {
           name: "Deactivated Gate Users",
           url: "gate/deactivatedusers",
+        },
+      ],
+    },
+      {
+      name: "Notice Announcement",
+      isAvailable: true,
+      icon: FaBullhorn,
+
+      children: [
+        {
+          name: "Add New Notice",
+          url: "notice/create",
+        },
+        {
+          name: "Notice List",
+          url: "notice/list",
+        },
+      ],
+    },
+      {
+      name: "Visitors Management",
+      isAvailable: true,
+      icon: FaIdCard,
+      children: [
+        {
+          // name: "Setup",
+          // url: "visitor/setup",
+          children: [
+            {
+              name: "Approval Matrix",
+              url: "visitor/setup/visitorapprovalmatrix",
+            },
+            {
+              name: "Define Visitor Catagories",
+              url: "visitor/setup/visitordefinevisitor",
+            },
+          ],
+        },
+
+        {
+          name: "New Visitor Entry",
+          url: "visitor/newvisitorentry",
+        },
+        {
+          name: "Visitor List",
+          url: "visitor/visitorlist",
+        },
+        // {
+        //   name: "Visitor Report",
+        //   url: "visitor/report",
+        // },
+      ],
+    },
+    {
+      name: "Parking Management",
+      isAvailable: true,
+      icon: FaParking,
+      children: [
+        {
+          name: "Add New Parking Slot",
+          url: "parking/newslot",
+        },
+        {
+          name: "Parking List",
+          url: "parking/list",
+        },
+        {
+          name: "Add New Booking Request",
+          url: "parking/bookingrequest",
+        },
+        {
+          name: "Parking Booking Details",
+          url: "parking/bookingdetails",
+        },
+
+        {
+          name: "Add Vechicle Details",
+          url: "parking/vechicledetails",
+        },
+
+        {
+          name: "Vehicle List",
+          url: "vehicle/list",
+        },
+      ],
+    },
+      {
+      name: "Socity HelpDesk Management",
+      isAvailable: true,
+      icon: FaHeadset,
+      children: [
+        {
+          name: "SetUp",
+          url: "socityhelpdesk/socityhelpdesksetup",
+          children: [
+            {
+              name: "Approval Matrix",
+              url: "socityhelpdesk/socityhelpdesksetup/socityapprovalmatrix",
+            },
+            {
+              name: "Define Purpose",
+              url: "socityhelpdesk/socityhelpdesksetup/socitydefinepurpose",
+            },
+          ],
+        },
+        {
+          name: "Create Ticket",
+          url: "socityhelpdesk/socityhelpdeskcreateticket",
+        },
+        {
+          name: "Ticket List",
+          url: "socityhelpdesk/socityhelpdeskticketlist",
+        },
+      ],
+    },
+     {
+      name: "Software HelpDesk Management",
+      isAvailable: true,
+      icon: FaLaptopCode,
+      children: [
+        {
+          name: "SetUp",
+          url: "softwarehelpdesk/softwarehelpdesksetup",
+          children: [
+            {
+              name: "Approval Matrix",
+              url: "softwarehelpdesk/softwarehelpdesksetup/softwareapprovalmatrix",
+            },
+            {
+              name: "Define Purpose",
+              url: "softwarehelpdesk/softwarehelpdesksetup/softwaredefinepurpose",
+            },
+          ],
+        },
+        {
+          name: "Create Ticket",
+          url: "softwarehelpdesk/softwarehelpdeskcreateticket",
+        },
+        {
+          name: "Ticket List",
+          url: "softwarehelpdesk/softwarehelpdeskticketlist",
         },
       ],
     },
