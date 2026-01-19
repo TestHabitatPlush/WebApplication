@@ -53,8 +53,8 @@ const TicketListView = ({ ticket, onClose }) => {
   const attachmentPath = ticket.Ticket_Details?.[0]?.ticket_attachment_details;
   const attachment = getImageUrl(attachmentPath);
 
-  console.log("Attachment path from DB:", attachmentPath);
-  console.log("Final image URL:", attachment);
+  // console.log("Attachment path from DB:", attachmentPath);
+  // console.log("Final image URL:", attachment);
 
   return (
     <Dialog

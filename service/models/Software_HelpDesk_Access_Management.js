@@ -37,15 +37,6 @@ const Software_HelpDesk_Access_Management = sequelize.define(
   }
 );
 
-Software_HelpDesk_Access_Management.belongsTo(User, {
-  foreignKey: "userId",
-});
-
-User.hasMany(Software_HelpDesk_Access_Management, {
-  foreignKey: "userId",
-});
-
-
 module.exports = Software_HelpDesk_Access_Management;
 
 

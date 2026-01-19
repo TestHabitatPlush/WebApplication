@@ -102,6 +102,8 @@ const TicketListForm = () => {
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         )[0];
 
+        
+
         return (
           latestDetail?.software_ref_ticket_status?.ticket_status_description ||
           "N/A"
@@ -110,17 +112,16 @@ const TicketListForm = () => {
     },
     {
       Header: "Assigned To",
-      accessor: "latestAssignedTo",
       Cell: ({ row }) => {
-        const details = row.original.Software_Ticket_Details || [];
-        if (!details.length) return "—";
+        const latestDetail = [
+          ...(row.original.Software_Ticket_Details || []),
+        ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
 
-        const latestDetail = [...details].sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        )[0];
+        const assignedUser =
+          latestDetail?.assignedUser || latestDetail?.assignedTo;
 
-        return latestDetail?.assignedUser
-          ? `${latestDetail.assignedUser.firstName} ${latestDetail.assignedUser.lastName}`
+        return assignedUser
+          ? `${assignedUser.firstName} ${assignedUser.lastName}`
           : "—";
       },
     },

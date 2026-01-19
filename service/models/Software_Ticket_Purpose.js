@@ -39,6 +39,4 @@ const Software_Ticket_Purpose = sequelize.define(
 );
 
 
-
-
 module.exports = Software_Ticket_Purpose;

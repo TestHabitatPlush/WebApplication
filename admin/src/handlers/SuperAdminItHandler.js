@@ -101,22 +101,42 @@ const SuperAdminItHandler = () => {
     }
   };
 
+  // const createTicket = async (formData) => {
+  //   try {
+  //     const result = await createTicketService(
+  //       userId,
+  //       societyId,
+  //       formData,
+  //       token
+  //     );
+  //     console.log("createTicket result", result);
+  //     toast.success("Ticket created successfully");
+  //     return result;
+  //   } catch (err) {
+  //     toast.error("Error creating ticket");
+  //     console.error(err);
+  //   }
+  // };
+
   const createTicket = async (formData) => {
-    try {
-      const result = await createTicketService(
-        userId,
-        societyId,
-        formData,
-        token
-      );
-      console.log("createTicket result", result);
+  try {
+    const res = await createTicketService(
+      userId,
+      societyId,
+      formData,
+      token
+    );
+
+    if (res.status === 201 || res.status === 200) {
       toast.success("Ticket created successfully");
-      return result;
-    } catch (err) {
-      toast.error("Error creating ticket");
-      console.error(err);
+      return res.data; 
     }
-  };
+  } catch (err) {
+    console.error("Error creating ticket:", err);
+    toast.error(err.response?.data?.message || "Error creating ticket");
+    return null;
+  }
+};
 
   const getTicketTable = async (params = {}) => {
     try {

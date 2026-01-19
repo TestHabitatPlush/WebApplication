@@ -12,6 +12,17 @@ const visibilityOptions = [
   { value: "primary", label: "Primary Member" },
   { value: "all", label: "All" },
 ];
+const VISIBILITY_ROLE_MAP = {
+  owner: ["society_owner", "society_owner_family"],
+  tenant: ["society_tenant", "society_tenant_family"],
+  primary: ["primary_member"],
+  all: [
+    "society_owner",
+    "society_owner_family",
+    "society_tenant",
+    "society_tenant_family",
+  ],
+};
 
 const DocumentListTable = () => {
   const [visibilityFilter, setVisibilityFilter] = useState("");
@@ -31,29 +42,42 @@ const DocumentListTable = () => {
   const toggleViewDocumentDetailModal = () => {
     setViewModal((prev) => !prev);
   };
-
   useEffect(() => {
     const fetchDocuments = async () => {
       setLoading(true);
       try {
-        let userDocs = await getDocumentByUserHandler();
-        let societyDocs = await getDocumentBySocietyHandler();
+        const userRes = await getDocumentByUserHandler();
+        const societyRes = await getDocumentBySocietyHandler();
 
-        let allDocs = [
-          ...(userDocs?.documents || []),
-          ...(societyDocs?.documents || []),
-        ];
+        let userDocs = userRes?.documents || [];
+        let societyDocs = societyRes?.data?.documents || [];
 
-        if (visibilityFilter) {
-          allDocs = allDocs.filter((doc) =>
-            Array.isArray(doc.roleCategories)
-              ? doc.roleCategories.includes(
-                  visibilityFilter === "primary"
-                    ? "primary_member"
-                    : `society_${visibilityFilter}`
-                )
-              : false
-          );
+        let allDocs = [...userDocs, ...societyDocs];
+
+        // remove duplicates
+        const uniqueMap = new Map();
+        allDocs.forEach((doc) => uniqueMap.set(doc.documentId, doc));
+        allDocs = Array.from(uniqueMap.values());
+
+        if (visibilityFilter && VISIBILITY_ROLE_MAP[visibilityFilter]) {
+          allDocs = allDocs.filter((doc) => {
+            if (!doc.roleCategories) return false;
+
+            let roles = doc.roleCategories;
+
+            // 🔑 Parse if string
+            if (typeof roles === "string") {
+              try {
+                roles = JSON.parse(roles);
+              } catch {
+                return false;
+              }
+            }
+
+            return roles.some((role) =>
+              VISIBILITY_ROLE_MAP[visibilityFilter].includes(role)
+            );
+          });
         }
 
         setDocuments(allDocs);
@@ -185,6 +209,7 @@ const DocumentListTable = () => {
         },
         className: "text-left",
       },
+<<<<<<< HEAD
       //   {
       //   Header: "Applicable For",
       //   accessor: "visibilityOption",
@@ -203,12 +228,26 @@ const DocumentListTable = () => {
       //   },
       //   className: "text-left",
       // },,
+=======
+>>>>>>> priyanka
 
       {
         Header: "Applicable For",
         accessor: "roleCategories",
-        Cell: ({ value }) => {
-          if (!Array.isArray(value) || value.length === 0) return "All";
+         Cell: ({ value }) => {
+          if (!value) return "All";
+
+          let roles = value;
+
+          if (typeof roles === "string") {
+            try {
+              roles = JSON.parse(roles);
+            } catch {
+              return "All";
+            }
+          }
+
+          if (!Array.isArray(roles) || roles.length === 0) return "All";
 
           const labelMap = {
             society_owner: "Owner",
@@ -216,8 +255,6 @@ const DocumentListTable = () => {
             society_tenant: "Tenant",
             society_tenant_family: "Tenant",
             primary_member: "Primary Member",
-           // management_committee: "Management Committee",
-           // society_moderator: "Moderator",
           };
 
           const allRoles = [
@@ -228,12 +265,12 @@ const DocumentListTable = () => {
           ];
 
           const isAll =
-            allRoles.every((role) => value.includes(role)) && value.length === allRoles.length;
+            allRoles.every((r) => roles.includes(r)) &&
+            roles.length === allRoles.length;
 
           if (isAll) return "All";
 
-          const uniqueLabels = [...new Set(value.map((v) => labelMap[v] || v))];
-
+          const uniqueLabels = [...new Set(roles.map((r) => labelMap[r] || r))];
           return uniqueLabels.join(", ");
         },
         className: "text-left",

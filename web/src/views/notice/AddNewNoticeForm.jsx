@@ -15,7 +15,7 @@ const visibilityOptions = [
 ];
 
 const AddNewNoticeForm = () => {
-  const { createNoticeByUserHandler } = NoticeHandler();
+  const { createNoticeBySocietyHandler } = NoticeHandler();
   const [noticeform, setNoticeForm] = useState({
     noticeHeading: "",
     noticeDescription: "",
@@ -24,6 +24,8 @@ const AddNewNoticeForm = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
+
 
   const handleInput = (e) => {
     const { name, value } = e.target;
@@ -47,12 +49,13 @@ const AddNewNoticeForm = () => {
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
   };
-
   const submitHandler = async () => {
+    if (submitting) return;
     if (!validateFields()) return;
 
     try {
-      await createNoticeByUserHandler(noticeform);
+      setSubmitting(true);
+      await createNoticeBySocietyHandler(noticeform);
       setNoticeForm({
         noticeHeading: "",
         noticeDescription: "",
@@ -61,7 +64,9 @@ const AddNewNoticeForm = () => {
       });
       setErrors({});
     } catch (err) {
-      console.error("Error submitting form:", err);
+      console.error(err);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -131,7 +136,10 @@ const AddNewNoticeForm = () => {
 
         <div className="grid items-center grid-cols-4 gap-5 my-5">
           {visibilityOptions.map((option) => (
-            <div key={option.value} className="flex flex-row items-center gap-3">
+            <div
+              key={option.value}
+              className="flex flex-row items-center gap-3"
+            >
               <label>{option.label}</label>
               <input
                 type="radio"
@@ -154,8 +162,9 @@ const AddNewNoticeForm = () => {
             type="button"
             onClick={submitHandler}
             size="lg"
+            disabled={submitting}
           >
-            Submit
+            {submitting ? "Submitting..." : "Submit"}
           </Button>
         </div>
       </div>

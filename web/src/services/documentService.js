@@ -41,7 +41,7 @@ export const getDocumentBySocietyService = (societyId, userId, token) => {
 };
 export const getDocumentByUserService = (userId, token) => {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/documents/user/${userId}`;
-  console.log("Fetching documents for user at URL:", url);
+  // console.log("Fetching documents for user at URL:", url);
   return axios.get(url, {
     headers: {
       Authorization: `Bearer ${token}`,

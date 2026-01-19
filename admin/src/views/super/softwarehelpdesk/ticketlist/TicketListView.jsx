@@ -1,6 +1,3 @@
-
-
-
 import React from "react";
 import Dialog from "../../../../components/ui/Dialog";
 import TextArea from "../../../../components/ui/TextArea";
@@ -21,41 +18,41 @@ const getImageUrl = (path) => {
   return `${process.env.REACT_APP_PUBLIC_BASE_URL}/uploads/${path}`;
 };
 
-
 const TicketListView = ({ ticket, onClose }) => {
   if (!ticket) return null;
 
+  const latestDetail = [...(ticket.Software_Ticket_Details || [])].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  )[0];
+
   const description =
-    ticket.Software_Ticket_Details?.[0]?.ticket_details_description ||
+    latestDetail?.ticket_details_description ||
     ticket.ticket_description ||
     "—";
 
   const status =
-     ticket.Software_Ticket_Details?.[0]?.software_ref_ticket_status?.ticket_status_description ||
-    "—";
+    latestDetail?.software_ref_ticket_status?.ticket_status_description || "—";
 
-  const remark = ticket.Software_Ticket_Details?.[0]?.ticket_comment || "—";
-  // const assignedTo = ticket.Ticket_Details?.[0]?.assignedUser.firstName .assignedUser.lastName || "—";
+  const remark = latestDetail?.ticket_comment || "—";
 
-// const assignedTo = ticket.Software_Ticket_Details?.[0]?.assignedUser ? `${ticket.Software_Ticket_Details[0].assignedUser.firstName} ${ticket.Software_Ticket_Details[0].assignedUser.lastName}`
-//   : "—";
+  const assignedUser =
+    latestDetail?.assignedUser || latestDetail?.assignedTo || null;
 
-  // console.log("assignedTo:", assignedTo);
+  const assignedTo = assignedUser
+    ? `${assignedUser.firstName} ${assignedUser.lastName}`
+    : "—";
 
+  const updatedBy = latestDetail?.updatedBy
+    ? `${latestDetail.updatedBy.firstName} ${latestDetail.updatedBy.lastName}`
+    : "—";
 
-// const updatedBy = ticket.Ticket_Details?.[0]?.updatedUser
-//   ? `${ticket.Ticket_Details[0].updatedUser.firstName} ${ticket.Ticket_Details[0].updatedUser.lastName}`
-//   : "—";
-// console.log("updatedBy:", updatedBy);
+  const createdBy = latestDetail?.createdBy
+    ? `${latestDetail.createdBy.firstName} ${latestDetail.createdBy.lastName}`
+    : "—";
 
-
-  // const updatedBy = ticket.Ticket_Details?.[0]?.updated_by_user_id || "—";
-
-  const attachmentPath = ticket.Software_Ticket_Details?.[0]?.ticket_attachment_details ;
-  const attachment = getImageUrl(attachmentPath);
-
-  console.log("Attachment path from DB:", attachmentPath);
-  console.log("Final image URL:", attachment);
+  const attachment = getImageUrl(
+    latestDetail?.ticket_attachment_details
+  );
 
   return (
     <Dialog
@@ -71,78 +68,78 @@ const TicketListView = ({ ticket, onClose }) => {
         </h2>
 
         <ul className="space-y-4">
-          <li className="flex items-start gap-4 p-4 bg-white rounded-md shadow-sm">
-            <FaHashtag className="mt-1 text-xl text-blue-600" />
+          <li className="flex gap-4 p-4 bg-white rounded shadow">
+            <FaHashtag className="mt-1 text-blue-600" />
             <div>
               <h4 className="text-sm text-gray-500">Ticket ID</h4>
-              <p className="text-gray-800 font-medium">
-                {ticket.ticket_Id || "—"}
-              </p>
+              <p className="font-medium">{ticket.ticket_Id || "—"}</p>
             </div>
           </li>
 
-          <li className="flex items-start gap-4 p-4 bg-white rounded-md shadow-sm">
-            <FaHeading className="mt-1 text-xl text-blue-600" />
+          <li className="flex gap-4 p-4 bg-white rounded shadow">
+            <FaHeading className="mt-1 text-blue-600" />
             <div>
               <h4 className="text-sm text-gray-500">Title</h4>
-              <p className="text-gray-800 font-medium">
-                {ticket.ticket_title || "—"}
-              </p>
+              <p className="font-medium">{ticket.ticket_title || "—"}</p>
             </div>
           </li>
 
-          <li className="flex items-start gap-4 p-4 bg-white rounded-md shadow-sm">
-            <FaRegCalendarCheck className="mt-1 text-xl text-blue-600" />
+          <li className="flex gap-4 p-4 bg-white rounded shadow">
+            <FaRegCalendarCheck className="mt-1 text-blue-600" />
             <div>
               <h4 className="text-sm text-gray-500">Status</h4>
-              <p className="text-gray-800 font-medium">{status}</p>
+              <p className="font-medium">{status}</p>
             </div>
           </li>
 
-          {/* <li className="flex items-start gap-4 p-4 bg-white rounded-md shadow-sm">
-            <FaUserCheck className="mt-1 text-xl text-blue-600" />
+          <li className="flex gap-4 p-4 bg-white rounded shadow">
+            <FaUserCheck className="mt-1 text-blue-600" />
             <div>
               <h4 className="text-sm text-gray-500">Assigned To</h4>
-              <p className="text-gray-800 font-medium">{assignedTo}</p>
+              <p className="font-medium">{assignedTo}</p>
             </div>
-          </li> */}
- 
-           {/* <li className="flex items-start gap-4 p-4 bg-white rounded-md shadow-sm">
-            <FaUserEdit className="mt-1 text-xl text-blue-600" />
+          </li>
+
+          <li className="flex gap-4 p-4 bg-white rounded shadow">
+            <FaUserEdit className="mt-1 text-blue-600" />
             <div>
               <h4 className="text-sm text-gray-500">Updated By</h4>
-              <p className="text-gray-800 font-medium">{updatedBy}</p>
+              <p className="font-medium">{updatedBy}</p>
             </div>
-          </li>  */}
+          </li>
 
-          <li className="flex items-start gap-4 p-4 bg-white rounded-md shadow-sm">
-            <FaPaperclip className="mt-1 text-xl text-blue-600" />
-            <div className="w-full">
+          <li className="flex gap-4 p-4 bg-white rounded shadow">
+            <FaUserCheck className="mt-1 text-blue-600" />
+            <div>
+              <h4 className="text-sm text-gray-500">Created By</h4>
+              <p className="font-medium">{createdBy}</p>
+            </div>
+          </li>
+
+          <li className="flex gap-4 p-4 bg-white rounded shadow">
+            <FaPaperclip className="mt-1 text-blue-600" />
+            <div>
               <h4 className="text-sm text-gray-500 mb-1">Attachment</h4>
               {attachment ? (
-                <img
-                  src={attachment}
-                  alt="Ticket Attachment"
-                  className="max-w-xs border rounded shadow"
-                />
+                <img src={attachment} alt="Attachment" className="max-w-xs rounded border" />
               ) : (
-                <p className="text-gray-800 font-medium">—</p>
+                "—"
               )}
             </div>
           </li>
 
-          <li className="flex items-start gap-4 p-4 bg-white rounded-md shadow-sm">
-            <FaAlignLeft className="mt-1 text-xl text-blue-600" />
+          <li className="flex gap-4 p-4 bg-white rounded shadow">
+            <FaAlignLeft className="mt-1 text-blue-600" />
             <div className="w-full">
-              <h4 className="text-sm text-gray-500 mb-1">Description</h4>
+              <h4 className="text-sm text-gray-500">Description</h4>
               <TextArea value={description} rows={5} disabled />
             </div>
           </li>
 
-          <li className="flex items-start gap-4 p-4 bg-white rounded-md shadow-sm">
-            <FaCommentDots className="mt-1 text-xl text-blue-600" />
+          <li className="flex gap-4 p-4 bg-white rounded shadow">
+            <FaCommentDots className="mt-1 text-blue-600" />
             <div className="w-full">
-              <h4 className="text-sm text-gray-500 mb-1">Remarks</h4>
+              <h4 className="text-sm text-gray-500">Remarks</h4>
               <TextArea value={remark} rows={3} disabled />
             </div>
           </li>
@@ -153,3 +150,4 @@ const TicketListView = ({ ticket, onClose }) => {
 };
 
 export default TicketListView;
+

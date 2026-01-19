@@ -131,7 +131,6 @@ app.use("/api/softwarehelpdesk", softwareHelpDeskRouter);
 
 
 // softwarehelpdesk refticketstatus
-app.use("/api/softwarehelpdesk", refTicketStatusRouter);
 app.get("/init-database", initController);
 app.use("/api/filter", filterRoutes);
 app.use("/api/facilityManagement", facilityManagement);

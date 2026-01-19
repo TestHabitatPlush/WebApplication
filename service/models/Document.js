@@ -48,15 +48,18 @@ const Document = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
-    picture: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
+    // picture: {
+    //   type: DataTypes.STRING,
+    //   allowNull: true,
+    // },
   },
   {
     tableName: "Documents",
     timestamps: true,
   }
 );
+
+
+
 
 module.exports = Document;

@@ -57,10 +57,8 @@
 //     };
 //   }, []);
 
-
-  
 // // const ViewProfileDetails=async () => {
-  
+
 // // };
 
 //   return (
@@ -127,8 +125,6 @@ import AuthHandler from "../../handlers/AuthHandler";
 import CustomerHandler from "../../handlers/superadmin/CustomerHandler";
 import ProfileModal from "../../components/shared/ProfileModal";
 
-
-
 const Header = () => {
   const [isopen, setIsopen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -158,11 +154,15 @@ const Header = () => {
     }
   };
 
+
+
   useEffect(() => {
     if (user?.societyId) {
       fetchSocietiesData();
     }
   }, [user]);
+
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -184,6 +184,7 @@ const Header = () => {
           <div className="font-sans font-bold text-[19px] text-slate">
             {customerName || "Loading..."}
           </div>
+        
         </div>
 
         <div className="flex flex-row items-center space-x-3">
@@ -209,9 +210,7 @@ const Header = () => {
                   >
                     Profile
                   </span>
-                  <span
-                    className="block px-4 py-2 text-base text-gray-700 cursor-pointer hover:bg-gray-200"
-                  >
+                  <span className="block px-4 py-2 text-base text-gray-700 cursor-pointer hover:bg-gray-200">
                     Contact Us
                   </span>
                   <span
@@ -240,4 +239,3 @@ const Header = () => {
 };
 
 export default Header;
-

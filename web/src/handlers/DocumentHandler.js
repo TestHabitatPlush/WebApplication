@@ -13,11 +13,11 @@
 // const DocumentHandler = () => {
 //   const token = useSelector((state) => state.auth.token);
 //   const userId = useSelector((state) => state.auth.user?.userId);
-//   // const societyId = useSelector((state) => state.auth.user?.Customer?.customerId); 
+//   // const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
 // const userId = 3;
 // //   // //useSelector((state) => state.auth.user?.userId);
 // // // const societyId =2;
-// //   // //  useSelector((state) => state.auth.user?.Customer?.customerId); 
+// //   // //  useSelector((state) => state.auth.user?.Customer?.customerId);
 // // // const token = useSelector((state) => state.auth.token);
 // //  const userId = useSelector((state) => state.auth.user?.id);
 // // const societyId = useSelector(
@@ -26,11 +26,9 @@
 
 // const user = useSelector((state) => state.auth.user);
 
-
 // //const userId = user?.Customer?.customerId || user?.id;
 
 // const societyId = user?.societyId || user?.Customer?.customerId;
-
 
 //   const buildFormData = (data) => {
 //     const formData = new FormData();
@@ -68,8 +66,6 @@
 //     return [];
 //   }
 // };
-
-
 
 //   const createDocumentByUserHandler = async (data) => {
 //     try {
@@ -161,7 +157,7 @@
 // const DocumentHandler = () => {
 //   const token = useSelector((state) => state.auth.token);
 //   const userId = useSelector((state) => state.auth.user?.userId);
-//    const societyId = useSelector((state) => state.auth.user?.Customer?.customerId); 
+//    const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
 // //const societyId =2;
 //   const buildFormData = (data) => {
 //     const formData = new FormData();
@@ -291,20 +287,19 @@ import {
 const DocumentHandler = () => {
   const token = useSelector((state) => state.auth.token);
   const userId = useSelector((state) => state.auth.user?.userId);
-  const societyId = useSelector(
-    (state) => state.auth.user?.Customer?.customerId
-  );
+  const societyId = useSelector((state) => state.society.selectedSocietyId);
 
   const buildFormData = (data) => {
     const formData = new FormData();
     if (data.documentName) formData.append("documentName", data.documentName);
+    if (data.visibilityOption)
+      formData.append("visibility", data.visibilityOption);
+    if (data.societyId) formData.append("societyId", data.societyId);
     if (data.document) formData.append("document", data.document);
-    if (data.picture) formData.append("picture", data.picture);
     return formData;
   };
 
-  /* ---------------- Society Documents ---------------- */
-
+  // ===== SOCIETY =====
   const createDocumentBySocietyHandler = async (data) => {
     try {
       const formData = buildFormData(data);
@@ -314,88 +309,64 @@ const DocumentHandler = () => {
         userId,
         token
       );
-      if (res.status === 201) toast.success("Document created for society.");
       return res;
     } catch (err) {
-      toast.error("Failed to create society document.");
       console.error(err);
+      throw err;
     }
   };
 
   const getDocumentBySocietyHandler = async () => {
     try {
-      const res = await getDocumentBySocietyService(
-        societyId,
-        userId,
-        token
-      );
-      if (res.status === 200) return res.data.documents;
+      const res = await getDocumentBySocietyService(societyId, userId, token);
+      if (res.status === 200) return res;
     } catch (err) {
-      toast.error("Failed to fetch society documents.");
       console.error(err);
+      throw err;
     }
   };
 
-  /* ---------------- User Documents ---------------- */
-
+  // ===== USER =====
   const createDocumentByUserHandler = async (data) => {
     try {
       const formData = buildFormData(data);
       const res = await createDocumentByUserService(formData, userId, token);
-      if (res.status === 201) toast.success("Document created for user.");
       return res;
     } catch (err) {
-      toast.error("Failed to create user document.");
       console.error(err);
+      throw err;
     }
   };
 
   const getDocumentByUserHandler = async () => {
     try {
-      if (!userId) {
-        toast.error("User not authenticated");
-        return;
-      }
-
       const res = await getDocumentByUserService(userId, token);
-      if (res.status === 200) return res.data.documents;
+      if (res.status === 200) return res.data;
     } catch (err) {
-      toast.error("Failed to fetch user documents.");
       console.error(err);
+      throw err;
     }
   };
 
-  /* ---------------- Common ---------------- */
-
-  const updateDocumentHandler = async (
-    data,
-    documentId,
-    isSociety = true
-  ) => {
+  // ===== COMMON =====
+  const updateDocumentHandler = async (data, documentId, isSociety = true) => {
     try {
       const formData = buildFormData(data);
-      const res = isSociety
+      return isSociety
         ? await updateDocumentBySocietyService(formData, documentId, token)
         : await updateDocumentByUserService(formData, documentId, token);
-
-      if (res.status === 200)
-        toast.success("Document updated successfully.");
-      return res;
     } catch (err) {
-      toast.error("Failed to update document.");
       console.error(err);
+      throw err;
     }
   };
 
   const deleteDocumentHandler = async (documentId) => {
     try {
-      const res = await deleteDocumentService(documentId, token);
-      if (res.status === 200)
-        toast.success("Document permanently deleted.");
-      return res;
+      return await deleteDocumentService(documentId, token);
     } catch (err) {
-      toast.error("Failed to delete document.");
       console.error(err);
+      throw err;
     }
   };
 
