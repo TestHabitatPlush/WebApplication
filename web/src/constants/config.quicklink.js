@@ -60,7 +60,6 @@ export const QuickLinks = {
         { name: "My File", url: "/documents", icon: FaFolderOpen },
         { name: "Facility", url: "/facility", icon: FaWarehouse },
         { name: "Announcements", url: "/announcements", icon: FaBullhorn },
-         { name: "Chat", url: "/chat", icon: FaWarehouse },
       ],
 
       help: [
