@@ -209,27 +209,6 @@ const DocumentListTable = () => {
         },
         className: "text-left",
       },
-<<<<<<< HEAD
-      //   {
-      //   Header: "Applicable For",
-      //   accessor: "visibilityOption",
-      //   Cell: ({ value }) => {
-      //     if (!Array.isArray(value) || value.length === 0) return "—";
-      //     const roleMap = {
-      //       owner: "Owner",
-      //       tenant: "Tenant",
-      //       primary: "Primary Member",
-      //       all: "All",
-      //     };
-      //     const readableRoles = value
-      //       .map((role) => roleMap[role] || role)
-      //       .join(", ");
-      //     return <span>{readableRoles}</span>;
-      //   },
-      //   className: "text-left",
-      // },,
-=======
->>>>>>> priyanka
 
       {
         Header: "Applicable For",

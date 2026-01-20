@@ -245,10 +245,7 @@ const getEmergencyContactsBySocietyId = async (req, res) => {
 
 
 
-<<<<<<< HEAD
 // Update emergency contact
-=======
->>>>>>> priyanka
 // Update Emergency Contact
 const updateEmergencyContacts = async (req, res) => {
   try {

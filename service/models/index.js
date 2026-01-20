@@ -104,6 +104,8 @@
 //   Society_HelpDesk_Access_Management,
 //   Software_HelpDesk_Access_Management
 // };
+
+
 const User = require("./User");
 const UserUnit = require("./UserUnit");
 const Address = require("./Address");
@@ -114,11 +116,7 @@ const SubscriptionPlan = require("./SubscriptionPlan");
 const Module = require("./Module");
 const SubscriptionModule = require("./SubscriptionModule");
 const Parking = require("./Parking");
-<<<<<<< HEAD
 const Vehicle = require("./Vehicle");
-=======
-const Vehicle = require("./VehicleDetails");
->>>>>>> priyanka
 const JobProfile = require("./JobProfile");
 const Document = require("./Document");
 const Role = require("./RoleModel");
@@ -145,18 +143,13 @@ const Software_Ref_Ticket_Status = require("./Software_Ref_Ticket_Status");
 const Software_Ticket_Details = require("./Software_Ticket_Details");
 const Software_Ticket_Purpose = require("./Software_Ticket_Purpose");
 
-<<<<<<< HEAD
 /* ================= ADDRESS ================= */
-=======
-// ===================== GENERAL RELATIONS =====================
->>>>>>> priyanka
 Address.hasMany(Customer, { foreignKey: "addressId" });
 Customer.belongsTo(Address, { foreignKey: "addressId" });
 
 Address.hasMany(User, { foreignKey: "addressId" });
 User.belongsTo(Address, { foreignKey: "addressId" });
 
-<<<<<<< HEAD
 /* ================= SUBSCRIPTION ================= */
 SubscriptionPlan.hasMany(Customer, { foreignKey: "subscriptionId" });
 Customer.belongsTo(SubscriptionPlan, { foreignKey: "subscriptionId" });
@@ -205,19 +198,13 @@ User.belongsTo(Unit, {
 });
 
 /* ================= UNIT STRUCTURE ================= */
-=======
->>>>>>> priyanka
 Unit.hasMany(Floor, { foreignKey: "floorId" });
 Unit.hasMany(UnitType, { foreignKey: "unitTypeId" });
 Building.belongsTo(UnitType, { foreignKey: "unitTypeId" });
 
-<<<<<<< HEAD
-/* ================= TICKETS ================= */
-=======
 // ===================== TICKET SYSTEM =====================
 
 // Ticket_Summary -> Ticket_Details
->>>>>>> priyanka
 Ticket_Summary.hasMany(Ticket_Details, { foreignKey: "ticket_Id" });
 Ticket_Details.belongsTo(Ticket_Summary, { foreignKey: "ticket_Id" });
 
@@ -226,10 +213,7 @@ Ticket_Purpose.hasMany(Ticket_Summary, { foreignKey: "ticket_purpose_Id" });
 
 Ticket_Summary.belongsTo(User, { foreignKey: "userId" });
 
-<<<<<<< HEAD
-=======
 // Ticket_Details -> User relations
->>>>>>> priyanka
 Ticket_Details.belongsTo(User, { foreignKey: "userId", as: "createdBy" });
 Ticket_Details.belongsTo(User, { foreignKey: "assigned_to", as: "assignedTo" });
 Ticket_Details.belongsTo(User, { foreignKey: "updated_by_user_id", as: "updatedBy" });
@@ -237,18 +221,6 @@ Ticket_Details.belongsTo(User, { foreignKey: "updated_by_user_id", as: "updatedB
 Ticket_Details.belongsTo(ref_ticket_status, { foreignKey: "ticket_status_Id" });
 ref_ticket_status.hasMany(Ticket_Details, { foreignKey: "ticket_status_Id" });
 
-<<<<<<< HEAD
-/* ================= SOFTWARE TICKETS ================= */
-Software_Ticket_Summary.hasMany(Software_Ticket_Details, { foreignKey: "ticket_Id" });
-Software_Ticket_Details.belongsTo(Software_Ticket_Summary, { foreignKey: "ticket_Id" });
-
-Software_Ticket_Summary.belongsTo(Software_Ticket_Purpose, { foreignKey: "ticket_purpose_Id" });
-Software_Ticket_Purpose.hasMany(Software_Ticket_Summary, { foreignKey: "ticket_purpose_Id" });
-
-Software_Ticket_Summary.belongsTo(User, { foreignKey: "userId" });
-
-Software_Ticket_Details.belongsTo(User, { foreignKey: "userId", as: "createdBy" });
-=======
 // ===================== SOFTWARE TICKETS =====================
 // Summary ↔ Details
 // Software_Ticket_Summary.hasMany(Software_Ticket_Details, {
@@ -329,20 +301,12 @@ Software_Ticket_Details.belongsTo(Software_Ref_Ticket_Status, {
 // Software_Ticket_Details.belongsTo(User, { foreignKey: "userId", as: "createdBy" });
 
 // Software_Ticket_Details -> User
->>>>>>> priyanka
 Software_Ticket_Details.belongsTo(User, { foreignKey: "assigned_to", as: "assignedTo" });
 Software_Ticket_Details.belongsTo(User, { foreignKey: "updated_by_user_id", as: "updatedBy" });
 Software_Ticket_Details.belongsTo(User, { foreignKey: "userId", as: "createdBy" });
 
-<<<<<<< HEAD
-Software_Ticket_Details.belongsTo(Software_Ref_Ticket_Status, { foreignKey: "ticket_status_Id" });
-Software_Ref_Ticket_Status.hasMany(Software_Ticket_Details, { foreignKey: "ticket_status_Id" });
-
-/* ================= EXPORT ================= */
-=======
 
 
->>>>>>> priyanka
 module.exports = {
   User,
   UserUnit,
@@ -376,16 +340,8 @@ module.exports = {
   Ticket_Purpose,
   Society_HelpDesk_Access_Management,
   Software_HelpDesk_Access_Management,
-<<<<<<< HEAD
-  Software_Ticket_Summary,
-  Software_Ref_Ticket_Status,
-  Software_Ticket_Details,
-  Software_Ticket_Purpose,
-};
-=======
   Software_Ref_Ticket_Status,
   Software_Ticket_Purpose,
   Software_Ticket_Summary,
   Software_Ticket_Details,
 };
->>>>>>> priyanka

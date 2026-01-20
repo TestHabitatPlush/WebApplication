@@ -22,11 +22,7 @@ import DocumentListTable from "./documentmanagement/documentlist/DocumentList";
 const SuperAdminContents = () => {
   return (
     <Routes>
-<<<<<<< HEAD
       <Route path="/" element={<Dashboard/>} />
-=======
-      <Route path="/dashboard" element={<Dashboard />} />
->>>>>>> priyanka
       <Route path="/society/create" element={<CreateSociety />} />
       <Route path="/society/view" element={<SocietyList />} />
       <Route path="/society/createuser" element={<CreateSocietyModerator />} />

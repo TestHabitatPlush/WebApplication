@@ -17,7 +17,6 @@ import { FaCamera,FaTrashAlt } from "react-icons/fa";
 import PhoneCodeSelector from "../../../../components/shared/PhoneCodeSelector";
 import CountryStateCitySelector from "../../../../components/shared/CountryStateCitySelector"
 import ReusableTable from "../../../../components/shared/ReusableTable";
-import { useDispatch, useSelector } from "react-redux";
 const AddUser = () => {
   const paths = ["User Management", "Add User"];
   const Heading = ["Add Resident User"];

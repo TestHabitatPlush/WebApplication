@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 // import React, { useState } from "react";
 // import Input from "../../../../components/shared/Input";
 // import Button from "../../../../components/ui/Button";
@@ -190,7 +188,6 @@
 
 // export default AddNewNoticeForm;
 
->>>>>>> priyanka
 import React, { useState } from "react";
 import Input from "../../../../components/shared/Input";
 import Button from "../../../../components/ui/Button";
@@ -239,12 +236,8 @@ const AddNewNoticeForm = () => {
     if (submitting) return;
     if (!validateFields()) return;
     try {
-<<<<<<< HEAD
-      await createNoticeBySocietyHandler({ ...noticeForm });
-=======
       setSubmitting(true);
       await createNoticeBySocietyHandler(noticeform);
->>>>>>> priyanka
       setNoticeForm({
         noticeHeading: "",
         noticeDescription: "",
@@ -303,14 +296,10 @@ const AddNewNoticeForm = () => {
 
         <div className="grid items-center grid-cols-4 gap-5 my-5">
           {visibilityOptions.map((option) => (
-<<<<<<< HEAD
-            <div key={option.value} className="flex items-center gap-3">
-=======
             <div
               key={option.value}
               className="flex flex-row items-center gap-3"
             >
->>>>>>> priyanka
               <label>{option.label}</label>
               <input
                 type="radio"
@@ -325,10 +314,6 @@ const AddNewNoticeForm = () => {
         {errors.visibilityOption && <p className="text-sm text-red-500">{errors.visibilityOption}</p>}
 
         <div className="flex justify-center mt-5">
-<<<<<<< HEAD
-          <Button type="button" onClick={submitHandler} size="lg" className="max-w-sm">
-            Submit
-=======
           <Button
             className="max-w-sm"
             type="button"
@@ -337,7 +322,6 @@ const AddNewNoticeForm = () => {
             disabled={submitting}
           >
             {submitting ? "Submitting..." : "Submit"}
->>>>>>> priyanka
           </Button>
         </div>
       </div>
