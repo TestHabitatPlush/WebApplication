@@ -1,6 +1,6 @@
 //#### Unit Controller ####
 
-const { Unit, UnitType, Floor } = require("../models");
+const { Unit, UnitType, Floor,User,Role } = require("../models");
 
 const createUnit = async (req, res) => {
   console.log("Create Unit Called!");
@@ -200,4 +200,30 @@ const deleteUnit = async (req,res) =>{
   }
 }
 
-module.exports = { createUnit, getUnit,getAllUnits,updateUnit, deleteUnit};
+const GetUserByUnitId = async (req, res) => {
+  try {
+    const { unitId } = req.params;
+    if (!unitId) return res.status(400).json({ message: "Unit Id is required" });
+
+    const users = await User.findAll({
+      where: { unitId },
+      attributes: ["userId", "firstName", "lastName"],
+      include: [
+        { model: Role, as: "role", attributes: ["roleId", "roleName", "roleCategory"] },
+        { model: Unit, attributes: ["unitId", "unitName"] },
+      ],
+    });
+
+    return res.status(200).json({
+      message: "Users fetched successfully",
+      totalAssignedUsers: users.length, 
+      data: users
+    });
+
+  } catch (err) {
+    console.error("Error fetching users: ", err);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+module.exports = { createUnit, getUnit,getAllUnits,GetUserByUnitId,updateUnit, deleteUnit};

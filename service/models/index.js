@@ -227,7 +227,7 @@ User.belongsTo(Role, {
 
 Role.hasMany(User, {
   foreignKey: "roleId",
-  as: "userRole",
+  as: "users",
 });
 
 /* ================= USER ↔ UNIT (M:N SOURCE OF TRUTH) ================= */
@@ -333,6 +333,7 @@ ChatMessage.belongsTo(ChatMessage, {
   foreignKey: "replyToMessageId",
   as: "replyTo",
 });
+
 /* ================= EXPORT ================= */
 
 module.exports = {
