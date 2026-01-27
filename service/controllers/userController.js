@@ -2157,7 +2157,7 @@ const getAllSuper_admin_itAndModrerator = async (req, res) => {
           },
           isDeleted: 0,
         },
-        include: [{ model: Role, as: "role" }],
+        include: [{ model: Role, as: "userRole" }],
       });
       res.status(200).json({
         message: "Super Admins, IT Admins, and IT Moderators fetched successfully",

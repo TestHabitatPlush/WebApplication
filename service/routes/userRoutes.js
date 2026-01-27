@@ -72,3 +72,57 @@ userRouter.put('/User/:userId', userController.updateUserIdStatus);
 module.exports = userRouter;
 
 
+// const express = require("express");
+// const userRouter = express.Router();
+
+// const userController = require("../controllers/userController");
+// const upload = require("../middleware/upload");
+// const { checkAuth } = require("../middleware/authMiddleware.js");
+// const { resolveAdmin } = require("../middleware/resolveAdmin.js");
+// const { adminOnly } = require("../middleware/adminOnly.js");
+
+// /* ---------------- AUTH REQUIRED ---------------- */
+// userRouter.use(checkAuth);
+
+// /* ---------------- RESIDENT ROUTES (ALL USERS) ---------------- */
+
+// userRouter.post("/", userController.createUser);
+// userRouter.get("/", userController.getAllUsers);
+// userRouter.get("/:id", userController.getUserById);
+
+// userRouter.get("/society/:societyId/users", userController.getUserBySocietyId);
+
+// userRouter.post("/create-resident/:societyId", userController.createSocietyResident);
+// userRouter.get("/resident/:societyId", userController.getResidentBySocietyId);
+// userRouter.put("/resident/:societyId", userController.updateResidentBySocietyId);
+
+// userRouter.post(
+//   "/bulk-create/:societyId",
+//   upload.single("file"),
+//   userController.bulkCreateResidents
+// );
+
+// /* ---------------- ADMIN-ONLY ROUTES ---------------- */
+// userRouter.use(resolveAdmin); // admin permission resolved here
+
+// userRouter.get("/moderator/:societyId", adminOnly, userController.getSocietyModerator);
+// userRouter.get("/management/:societyId", adminOnly, userController.getManagement_committee);
+
+// userRouter.put(
+//   "/moderator/:userId",
+//   adminOnly,
+//   upload.fields([{ name: "photo", maxCount: 1 }]),
+//   userController.updateSocietyModerator
+// );
+
+// userRouter.put("/moderators/:id", adminOnly, userController.updateSocietyStatus);
+
+// userRouter.get("/superadmin/moderator", adminOnly, userController.getAllSuper_admin_itAndModrerator);
+
+// userRouter.put("/User/:userId", adminOnly, userController.updateUserIdStatus);
+
+// /* ---------------- STATUS ROUTES ---------------- */
+// userRouter.get("/resident/approvedUser/:societyId", userController.getAllApprovedUsers);
+// userRouter.get("/resident/deactive/:societyId", userController.getAllDeactiveUsers);
+
+// module.exports = userRouter;

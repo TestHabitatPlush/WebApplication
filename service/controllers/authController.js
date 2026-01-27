@@ -25,7 +25,7 @@ const loginUser = async (req, res) => {
       where: { email },
       include: [
         { model: Role, as: "userRole" },
-        { model: Customer, as: "society" }, // ✅ alias fixed
+        { model: Customer, as: "society" }, // alias fixed
       ],
     });
 

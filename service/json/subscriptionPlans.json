@@ -1,15 +1,9 @@
 [
   {
-    "planName": "Silver",
-    "planDetails": "This plan is Basic."
-  },
-   {
-     "planName": "Gold",
-     "planDetails": "This plan is Gold."
-   },
-   {
-     "planName": "Platinum",
-     "planDetails": "This plan is Platinum."
-   }
-
+  "planName": "Silver",
+  "billingCycle": "monthly",
+  "startDate": "2026-02-01",
+  "price": 1999.00,
+  "discountPercentage": 10
+  }
 ]
