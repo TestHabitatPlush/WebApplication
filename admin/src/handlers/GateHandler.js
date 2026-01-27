@@ -1,11 +1,20 @@
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { gateAllocationService, gateAllocationListService, gateListServices, CreateGateService, ChangeGateNameService } from "../services/gateService"
+import {
+  gateAllocationService,
+  gateAllocationListService,
+  gateListServices,
+  CreateGateService,
+  ChangeGateNameService,
+} from "../services/gateService";
 import { delay } from "framer-motion";
 
 const GateHandler = () => {
   const token = useSelector((state) => state.auth.token);
-  const societyId = useSelector((state) => state.auth.user.Customer.customerId);
+  const user = useSelector((state) => state.auth.user);
+  const societyId =
+    user?.societyId || user?.customerId || user?.assignedSocietyId || null;
+  // const societyId = useSelector((state) => state.auth.user.Customer.customerId);
 
   const GateRelationshipHandler = async (gates) => {
     try {
@@ -29,7 +38,8 @@ const GateHandler = () => {
         toast.success("Gates submitted successfully.");
         return response;
       } else {
-        const errorMessage = response.data?.message || "Failed to submit gates.";
+        const errorMessage =
+          response.data?.message || "Failed to submit gates.";
         toast.error(errorMessage);
         throw new Error(errorMessage);
       }
@@ -41,7 +51,6 @@ const GateHandler = () => {
   };
 
   const getGateListHandler = async (data) => {
-
     return await gateListServices({ ...data, societyId }, token)
       .then((res) => {
         return res;
@@ -51,18 +60,16 @@ const GateHandler = () => {
       });
   };
 
-
-
   const makeGateAllocation = async (data) => {
     try {
       console.log("Handler Called!!");
       console.log(data);
-      console.log(typeof (data));
+      console.log(typeof data);
 
       const payload = data.map((value) => ({
         societyId: societyId,
         gate: value.gate,
-        allocatedTo: value.allocatedTo
+        allocatedTo: value.allocatedTo,
       }));
 
       console.log("Final Payload:", JSON.stringify(payload, null, 2));
@@ -70,7 +77,6 @@ const GateHandler = () => {
       const response = await gateAllocationService(payload, token);
       // console.log("Response From Gate Handler:",response);
       toast.success(response.data.message);
-
     } catch (error) {
       console.error("Gateallocation Error", error);
       // toast.error(error.message || "Faild to submit gate!");
@@ -87,31 +93,26 @@ const GateHandler = () => {
       })
       .catch((err) => {
         console.log(err);
-      })
+      });
   };
-
 
   const getChangeGateName = async (data) => {
     try {
-      const {gateId, ...payLoad} = data;
+      const { gateId, ...payLoad } = data;
       await ChangeGateNameService(payLoad, token, data.gateId)
         .then((res) => {
-          if(res.data.data === 200){
+          if (res.data.data === 200) {
             toast.success("Gate Name Changed !!");
           }
         })
         .catch((err) => {
           console.log(err);
-
-        })
-
+        });
     } catch (error) {
       console.error("Error in Gatename Change: ", error);
       throw error;
     }
-  }
-
-
+  };
 
   return {
     getChangeGateName,

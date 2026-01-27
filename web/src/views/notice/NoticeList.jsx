@@ -46,54 +46,54 @@ const NoticeList = () => {
 
   const {
     getNoticesByUserHandler,
-    // getNoticesBySocietyHandler,
+    getNoticesBySocietyHandler,
     updateNoticeHandler,
     deleteNoticeHandler,
   } = NoticeHandler();
 
   const toggleViewModal = () => setViewModal((prev) => !prev);
+useEffect(() => {
+  const fetchAllNotices = async () => {
+    setLoading(true);
+    try {
+      const userRes = await getNoticesByUserHandler();
+      const societyRes = await getNoticesBySocietyHandler();
 
-  useEffect(() => {
-    const fetchAllNotices = async () => {
-      setLoading(true);
-      try {
-        const userRes = await getNoticesByUserHandler();
-        // const societyRes = await getNoticesBySocietyHandler();
+      let allNotices = [
+        ...(userRes?.data?.data || []),
+        ...(societyRes?.data?.data || []),
+      ];
 
-        let allNotices = [
-          ...(userRes?.data?.data?.notices || []),
-          // ...(societyRes?.data || []),
-        ];
-
-        console.log("userRes", userRes);
-        // console.log("societyRes", societyRes);
-        console.log("allNotices (before filter)", allNotices);
-
-        // Filtering using roleCategories from backend (JSON field)
-        if (visibilityFilter && visibilityMap[visibilityFilter]) {
-          const filterCategories = visibilityMap[visibilityFilter];
-          allNotices = allNotices.filter((notice) =>
-            Array.isArray(notice.roleCategories)
-              ? filterCategories.some((category) =>
-                  notice.roleCategories.includes(category)
-                )
-              : false
-          );
-        }
-
-        setNotices(allNotices);
-        setPageIndex(0);
-      } catch (err) {
-        toast.error("Failed to fetch notices");
-        console.error("Notice fetch error:", err);
-        setNotices([]);
-      } finally {
-        setLoading(false);
+      // ✅ VISIBILITY FILTER
+      if (visibilityFilter && visibilityMap[visibilityFilter]) {
+        const filterCategories = visibilityMap[visibilityFilter];
+        allNotices = allNotices.filter((notice) =>
+          Array.isArray(notice.roleCategories)
+            ? notice.roleCategories.some((role) =>
+                filterCategories.includes(role)
+              )
+            : false
+        );
       }
-    };
 
-    fetchAllNotices();
-  }, [visibilityFilter, pageSize]);
+      // ✅ REMOVE DUPLICATES
+      const uniqueNotices = Array.from(
+        new Map(allNotices.map((n) => [n.noticeId, n])).values()
+      );
+
+      setNotices(uniqueNotices);
+      setPageIndex(0);
+    } catch (err) {
+      toast.error("Failed to fetch notices");
+      console.error("Notice fetch error:", err);
+      setNotices([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchAllNotices();
+}, [visibilityFilter, pageSize]);
 
   const pagedNotices = useMemo(() => {
     const reversed = [...notices].reverse();

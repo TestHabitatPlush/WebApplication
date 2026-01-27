@@ -14,11 +14,10 @@ import {
 
 const NoticeHandler = () => {
   const token = useSelector((state) => state.auth.token);
-  const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
-  console.log("societyId",societyId)
+  const societyId = useSelector((state) => state.society.selectedSocietyId);
+  console.log("societyId from redux", societyId);
   const userId = useSelector((state) => state.auth.user?.userId);
   console.log("user",userId)
-
   const createNoticeBySocietyHandler = async (data) => {
     try {
       const res = await createNoticeBySocietyService(data, societyId, userId, token);
@@ -32,15 +31,15 @@ const NoticeHandler = () => {
     }
   };
 
-  const getNoticesBySocietyHandler = async () => {
-    try {
-      const res = await getNoticesBySocietyService(societyId, userId, token);
-      if (res.status === 200) return res.data;
-    } catch (err) {
-      toast.error("Failed to fetch society notices.");
-      console.error(err);
-    }
-  };
+const getNoticesBySocietyHandler = async () => {
+  try {
+    const res = await getNoticesBySocietyService(societyId, userId, token);
+    return res; 
+  } catch (err) {
+    toast.error("Failed to fetch society notices.");
+    console.error(err);
+  }
+};
 
   const createNoticeByUserHandler = async (data) => {
     try {
@@ -55,27 +54,15 @@ const NoticeHandler = () => {
     }
   };
 
-  // const getNoticesByUserHandler = async () => {
-  //   try {
-  //     const res = await getNoticesByUserService(userId, token);
-  //     if (res.status === 200) return res.data;
-  //   } catch (err) {
-  //     toast.error("Failed to fetch user notices.");
-  //     console.error(err);
-  //   }
-  // };
-
-  const getNoticesByUserHandler = async () => {
+const getNoticesByUserHandler = async () => {
   try {
-    const res = await getNoticesByUserService(token, userId);
-    console.log("getNoticesByUserHandler res", res);
-    return res; 
+    const res = await getNoticesByUserService(userId, token);
+    return res;
   } catch (err) {
-    console.error("getNoticesByUserHandler error", err);
-    throw err;
+    toast.error("Failed to fetch user notices.");
+    console.error(err);
   }
 };
-
 
   const updateNoticeHandler = async (noticeId, data) => {
     try {

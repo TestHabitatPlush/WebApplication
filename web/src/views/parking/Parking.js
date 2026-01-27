@@ -3,6 +3,7 @@ import React from "react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import DashboardHeader from "@/views/dashboard/DashboardHeader";
 import DashboardLeftContents from "@/views/dashboard/DashboardLeftContents";
+import ViewParking from "./ViewParking";
 
 const Parking = () => {
   return (
@@ -10,7 +11,7 @@ const Parking = () => {
       <DashboardLayout
         header={<DashboardHeader />}
         leftContent={<DashboardLeftContents />}
-        rightContent={<React.Fragment> Parking </React.Fragment>}
+        rightContent={<React.Fragment> <ViewParking/> </React.Fragment>}
       />
     </main>
   );

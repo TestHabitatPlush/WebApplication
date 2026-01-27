@@ -17,7 +17,6 @@ export const createNoticeBySocietyService = (formData, societyId, userId, token)
 
 export const createNoticeByUserService = (formData, userId, token) => {
   const url = `${API}/noticeAnnouncement/create/${userId}`;
-  console.log("createNoticeByUserService",url);
   return axios.post(url, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -36,11 +35,12 @@ export const getNoticesBySocietyService = (societyId, userId, token) => {
   });
 };
 
-export const getNoticesByUserService = (token, userId) => {
+export const getNoticesByUserService = (userId, token) => {
   const url = `${API}/noticeAnnouncement/user/${userId}`;
-  console.log("fhghgferygf",url);
   return axios.get(url, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 };
 
@@ -52,12 +52,14 @@ export const updateNoticeService = (noticeId, updatedData, token) => {
     },
   });
 };
-
-export const deleteNoticeService = (noticeId, token) => {
+export const deleteNoticeService = (noticeId, userId, token) => {
   const url = `${API}/noticeAnnouncement/delete/${noticeId}`;
   return axios.delete(url, {
     headers: {
       Authorization: `Bearer ${token}`,
+    },
+    data: {
+      userId,
     },
   });
 };

@@ -1,7 +1,8 @@
 import React from "react";
 import TopicofDiscussion from "./components/topicofdiscussion/TopicofDiscussion";
-import CommunityDirectories from "./components/directories/CommunityDirectories";
-import PostPreview from "./components/post/PostPreview";
+
+// import PostPreview from "./components/post/PostPreview";
+import CommunityDirectories from "../communityDirectories/CommunityDirectories";
 
 const Buttons = () => {
   const data = [
@@ -41,7 +42,7 @@ const Tablecontent = () => {
   return (
     <div>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg  mt-[5px]">
-        <table className="w-full text-sm text-left rtl:text-right text-black">
+        <table className="w-full text-sm text-left text-black rtl:text-right">
           <thead className="text-xs text-white uppercase bg-turquoise">
             <tr>
               <th
@@ -124,8 +125,8 @@ const Post = () => {
 const Community = () => {
   return (
     <section>
-      <PostPreview/>
-      <CommunityDirectories />
+      {/* <PostPreview/> */}
+      {/* <CommunityDirectories /> */}
     </section>
   );
 };

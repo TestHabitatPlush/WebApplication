@@ -1,10 +1,11 @@
+"use client";
 import axios from "axios";
 
-const BASE_URL = `${process.env.REACT_APP_PUBLIC_API_URL}/visitormanagement`;
+const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/visitormanagement`;
 
-// Create Visitor Entry
-export const createVisitorEntryService = async (data, token) => {
-  return axios.post(`${BASE_URL}`, data, {
+// CREATE VISITOR ENTRY
+export const createVisitorEntryService = (data, token) => {
+  return axios.post(`${BASE_URL}/new-visit-entry`, data, {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
@@ -12,47 +13,40 @@ export const createVisitorEntryService = async (data, token) => {
   });
 };
 
-// Get Visitor Relationships by SocietyId
-export const getVisitorRelationshipService = async (data, token) => {
-  return axios.get(`${BASE_URL}/relationship`, {
-    headers: { Authorization: `Bearer ${token}` },
-    params: data,
+// GET VISITOR RELATIONSHIP (Visitor Types)
+export const getVisitorRelationshipService = (societyId, token) => {
+  if (!societyId) throw new Error("societyId is required");
+
+  return axios.get(`${BASE_URL}/visitor-relationship`, {
+    params: { societyId },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 };
 
-// Get Visitor List for Resident by senderId
-export const getVisitorListForResidentService = async (senderId, token, data = {}) => {
-  return axios.get(`${BASE_URL}/resident/${senderId}`, {
-    headers: { Authorization: `Bearer ${token}` },
-    params: data,
+
+// Get all visitor entries by senderId
+export const getVisitorEntriesBySenderService = async (senderId, page = 0, pageSize = 5) => {
+  const response = await axios.get(`${BASE_URL}/visitor-entries/sender/${senderId}`, {
+    params: { page, pageSize },
   });
+  return response.data;
+};
+// Get visitor by ID
+export const getVisitorByIdService = async (visit_entry_Id) => {
+  const response = await axios.get(`${BASE_URL}/visitor/${visit_entry_Id}`);
+  return response.data;
 };
 
-// Get QR Code by Visit Entry ID
-export const getQrCodeByIdService = async (visitEntryId, token) => {
-  return axios.get(`${BASE_URL}/qrcode/${visitEntryId}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+// Get QR code by visitor ID
+export const getQRCodeService = async (visit_entry_Id) => {
+  const response = await axios.get(`${BASE_URL}/qrCode/${visit_entry_Id}`);
+  return response.data;
 };
 
-// Delete Visitor
-export const deleteVisitorService = async (id, token) => {
-  return axios.delete(`${BASE_URL}/${id}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-};
-
-// Get Visitor Entry by ID
-export const getVisitorEntryByIdService = async (id, token) => {
-  return axios.get(`${BASE_URL}/${id}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-};
-
-// Get Visitor Entry Table
-export const getVisitorEntryTableService = async (data, token) => {
-  return axios.get(`${BASE_URL}/table`, {
-    headers: { Authorization: `Bearer ${token}` },
-    params: data,
-  });
+// Delete visitor by ID
+export const deleteVisitorService = async (visit_entry_Id) => {
+  const response = await axios.delete(`${BASE_URL}  `);
+  return response.data;
 };

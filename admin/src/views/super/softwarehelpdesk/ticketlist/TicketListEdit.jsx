@@ -18,47 +18,48 @@ const TicketListEdit = ({ formData, onClose, onRefresh }) => {
   const [statusList, setStatusList] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("");
   const [remarks, setRemarks] = useState("");
-
   const [assignableUsers, setAssignableUsers] = useState([]);
   const [assignedTo, setAssignedTo] = useState("");
+
+  const latestDetail = [...(formData?.Software_Ticket_Details || [])].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  )[0];
 
   useEffect(() => {
     (async () => {
       const list = await getRefTicketStatus();
       setStatusList(list || []);
-      const currentStatus =
-        formData.Software_Ticket_Details?.[0]?.Software_ref_ticket_status
-          ?.ticket_status_description || "";
-      setSelectedStatus(currentStatus);
-      setRemarks(formData.Software_Ticket_Details?.[0]?.ticket_comment || "");
+
+      setSelectedStatus(
+        latestDetail?.Software_Ref_Ticket_Status?.ticket_status_description || ""
+      );
+      setRemarks(latestDetail?.ticket_comment || "");
+      setAssignedTo(latestDetail?.assigned_to || "");
     })();
   }, [formData]);
 
   useEffect(() => {
     if (!formData) return;
-
     (async () => {
-      const response = await getAssignableUsers(formData.societyId);
-      console.log("getAssignableUsers response:", response);
-
-      // response already has { rows, total, totalPages }
-      setAssignableUsers(response?.rows || []);
-      setAssignedTo(formData.assigned_to || "");
+      const users = await getAssignableUsers(formData.societyId);
+      setAssignableUsers(users || []);
     })();
   }, [formData]);
 
   const handleUpdate = async () => {
+    if (!selectedStatus) return alert("Please select status");
+    if (!remarks.trim()) return alert("Please add remarks");
+
     await updateTicketStatusAndRemarks(formData.ticket_Id, {
       ticket_status_description: selectedStatus,
       ticket_comment: remarks,
       assigned_to: assignedTo,
-      userId: userId,
+      userId,
     });
 
-    await onRefresh();
+    onRefresh();
     onClose();
   };
-
   return (
     <Dialog
       isOpen={!!formData}
@@ -78,9 +79,7 @@ const TicketListEdit = ({ formData, onClose, onRefresh }) => {
             <FaHashtag className="mt-1 text-xl text-blue-600" />
             <div>
               <h4 className="text-sm text-gray-500">Ticket ID</h4>
-              <p className="font-medium text-gray-800">
-                {formData.ticket_Id || "—"}
-              </p>
+              <p className="font-medium text-gray-800">{formData.ticket_Id || "—"}</p>
             </div>
           </li>
 
@@ -96,10 +95,7 @@ const TicketListEdit = ({ formData, onClose, onRefresh }) => {
               >
                 <option value="">Select status</option>
                 {statusList.map((el) => (
-                  <option
-                    key={el.ticket_status_Id}
-                    value={el.ticket_status_description}
-                  >
+                  <option key={el.ticket_status_Id} value={el.ticket_status_description}>
                     {el.ticket_status_description}
                   </option>
                 ))}
@@ -113,20 +109,18 @@ const TicketListEdit = ({ formData, onClose, onRefresh }) => {
             <div className="w-full">
               <h4 className="text-sm text-gray-500 mb-1">Assign To</h4>
               <select
-                value={assignedTo}
+                value={assignedTo || ""}
                 onChange={(e) => setAssignedTo(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded-md text-sm"
               >
                 <option value="">Select user</option>
-                {assignableUsers.length > 0 ? (
-                  assignableUsers.map((user) => (
-                    <option key={user.userId} value={user.userId}>
-                      {user.firstName} ({user.lastName})
-                    </option>
-                  ))
-                ) : (
-                  <option disabled>No users found</option>
-                )}
+                {assignableUsers.length > 0
+                  ? assignableUsers.map((user) => (
+                      <option key={user.userId} value={user.userId}>
+                        {user.firstName} {user.lastName}
+                      </option>
+                    ))
+                  : <option disabled>No users found</option>}
               </select>
             </div>
           </li>
@@ -147,9 +141,7 @@ const TicketListEdit = ({ formData, onClose, onRefresh }) => {
 
         {/* Action Buttons */}
         <div className="flex justify-end gap-3 mt-8">
-          <Button onClick={onClose} variant="outline">
-            Cancel
-          </Button>
+          <Button onClick={onClose} variant="outline">Cancel</Button>
           <Button onClick={handleUpdate}>Update</Button>
         </div>
       </div>

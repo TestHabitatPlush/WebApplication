@@ -5,7 +5,10 @@ import { GuardUserCreationService, RemoveGuardProfile, gateUserListService, Edit
 
 const ProfileHandler = () => {
   const token = useSelector((state) => state.auth.token);
-  const societyId = useSelector((state) => state.auth.user.Customer.customerId);
+  // const societyId = useSelector((state) => state.auth.user.Customer.customerId);
+    const user = useSelector((state) => state.auth.user);
+  const societyId =
+    user?.societyId || user?.customerId || user?.assignedSocietyId || null;
 
   const GuardRelationshipHandler = async (profileData) => {
     try {

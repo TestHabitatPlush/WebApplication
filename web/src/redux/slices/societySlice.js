@@ -102,7 +102,8 @@ const societySlice = createSlice({
       state.data = action.payload;
     },
 
-    setSelectedSociety: (state, action) => {
+    setSelectedSociety: (state, action) =>
+       {
       state.selectedSocietyId = action.payload;
     },
   },

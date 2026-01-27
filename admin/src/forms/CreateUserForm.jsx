@@ -9,6 +9,7 @@ import UserHandler from "../handlers/UserHandler";
 import UserRoleHandler from "../handlers/UserRoleHandler";
 import CustomerHandler from "../handlers/superadmin/CustomerHandler";
 
+
 const CreateUserForm = () => {
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.societyModeratorForm.formData);
@@ -32,7 +33,7 @@ const CreateUserForm = () => {
   }
 
   const newData = result.data
-    .filter((el) => el.roleCategory === "society_moderator" || el.roleCategory === "super_admin_it")
+    .filter((el) => el.roleCategory === "society_moderator" || el.roleCategory === "super_admin_it" )
     .map((el) => ({ label: el.roleCategory, value: el.roleId }));
 
   dispatch({

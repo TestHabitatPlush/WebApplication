@@ -7,6 +7,7 @@ const ReusableTable = ({
   data,
   pageIndex,
   pageSize,
+  totalCount,
   totalPages,
   setPageIndex,
   setPageSize
@@ -15,11 +16,13 @@ const ReusableTable = ({
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    page,
+    page, // Instead of rows, we'll use page
     prepareRow,
     canPreviousPage,
     canNextPage,
     gotoPage,
+    nextPage,
+    previousPage,
     setPageSize: internalSetPageSize,
     state: { pageIndex: internalPageIndex, pageSize: internalPageSize }
   } = useTable(
@@ -27,33 +30,26 @@ const ReusableTable = ({
       columns,
       data,
       initialState: { pageIndex },
-      manualPagination: true,
+      manualPagination: true, // Use manual pagination
       pageCount: totalPages,
     },
     usePagination
   );
 
-  // Prevent infinite loop
   useEffect(() => {
-    if (internalPageIndex !== pageIndex) {
-      gotoPage(pageIndex);
-    }
-  }, [pageIndex, gotoPage, internalPageIndex]);
+    gotoPage(pageIndex);
+  }, [pageIndex, gotoPage]);
 
   useEffect(() => {
     internalSetPageSize(pageSize);
   }, [pageSize, internalSetPageSize]);
 
   const onNextPage = () => {
-    if (pageIndex < totalPages - 1) {
-      setPageIndex(pageIndex + 1);
-    }
+    setPageIndex(parseInt(pageIndex)+1)
   };
 
   const onPreviousPage = () => {
-    if (pageIndex > 0) {
-      setPageIndex(pageIndex - 1);
-    }
+    setPageIndex(parseInt(pageIndex)-1)
   };
 
   return (
@@ -61,11 +57,10 @@ const ReusableTable = ({
       <table {...getTableProps()} className="min-w-full border border-collapse border-gray-300 table-auto">
         <thead className="bg-gray-200">
           {headerGroups.map(headerGroup => (
-            <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
+            <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
                 <th
                   {...column.getHeaderProps()}
-                  key={column.id}
                   className="px-4 py-2 text-sm font-medium text-left text-gray-600 border-b border-gray-300"
                 >
                   {column.render('Header')}
@@ -78,11 +73,10 @@ const ReusableTable = ({
           {page.map(row => {
             prepareRow(row);
             return (
-              <tr {...row.getRowProps()} key={row.id}>
+              <tr {...row.getRowProps()}>
                 {row.cells.map(cell => (
                   <td
                     {...cell.getCellProps()}
-                    key={cell.column.id}
                     className="px-4 py-2 text-sm text-gray-700 border-b border-gray-300"
                   >
                     {cell.render('Cell')}
@@ -123,8 +117,7 @@ const ReusableTable = ({
               type="number"
               value={pageIndex + 1}
               onChange={e => {
-                let page = Number(e.target.value) - 1;
-                if (page < 0 || page >= totalPages) return;
+                const page = e.target.value ? Number(e.target.value) - 1 : 0;
                 setPageIndex(page);
                 gotoPage(page);
               }}
@@ -158,10 +151,10 @@ ReusableTable.propTypes = {
   data: PropTypes.array.isRequired,
   pageIndex: PropTypes.number.isRequired,
   pageSize: PropTypes.number.isRequired,
+  totalCount: PropTypes.number.isRequired,
   totalPages: PropTypes.number.isRequired,
   setPageIndex: PropTypes.func.isRequired,
   setPageSize: PropTypes.func.isRequired,
 };
 
 export default ReusableTable;
-

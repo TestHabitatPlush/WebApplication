@@ -51,7 +51,7 @@ const DashboardLeftContents = () => {
       url:"help",
       name: "Software Helpdesk",
       icon: TbProgressHelp,
-      click: () => customNavigation("/helpdesk"),
+      click: () => customNavigation("/softwarehelpdesk"),
     }
   ];
 
@@ -76,7 +76,7 @@ const DashboardLeftContents = () => {
 
   return (
     <section className="h-full">
-      <div className="h-full flex flex-col justify-between items-between">
+      <div className="flex flex-col justify-between h-full items-between">
         <div className="space-y-1">
           {data.map((el, index) => (
             <div key={index} className={getStyles(el)} onClick={el.click}>
@@ -91,18 +91,18 @@ const DashboardLeftContents = () => {
             </div>
           ))}
         </div>
-        <div className="space-y-1 text-sm pr-4">
-          <div className="w-full rounded-md p-2 cursor-pointer bg-gray-50 text-turquoise flex items-center gap-2">
+        <div className="pr-4 space-y-1 text-sm">
+          {/* <div className="flex items-center w-full gap-2 p-2 rounded-md cursor-pointer bg-gray-50 text-turquoise">
             {<TbProgressHelp className="text-base text-turquoise" />}
             Help center
-          </div>
-          <div
-            className="w-full rounded-md p-2 cursor-pointer bg-red-100 text-red-500 flex items-center gap-2"
+          </div> */}
+          {/* <div
+            className="flex items-center w-full gap-2 p-2 text-red-500 bg-red-100 rounded-md cursor-pointer"
             onClick={logoutHandler}
           >
             {<FiLogOut className="text-base text-red-500" />}
             logout
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

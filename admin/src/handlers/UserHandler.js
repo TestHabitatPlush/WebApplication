@@ -42,6 +42,7 @@ const UserHandler = () => {
   const createSocietyResidentUserHandler = async (societyId, formData) => {
     try {
       const response = await createSocietyResidentService(societyId, token, formData);
+      
       console.log("society response",response);
       if (response.status === 201) {
         toast.success('Society Resident created successfully!');
@@ -53,6 +54,78 @@ const UserHandler = () => {
       return null;
     }
   };
+// const createSocietyResidentUserHandler = async (societyId, residentData) => {
+//   try {
+//     const {
+//       units = [], // array of selected unit IDs
+//       firstName,
+//       lastName,
+//       mobileNumber,
+//       email,
+//       photo,
+//       ...rest
+//     } = residentData;
+
+//     if (!units.length) {
+//       toast.error("Please select at least one unit");
+//       return null;
+//     }
+
+//     // ✅ FIRST UNIT → User table
+//     const primaryUnitId = units[0];
+
+//     // ✅ OTHER UNITS → UserUnit table
+//     const userUnits = units.slice(1).map((unitId) => ({
+//       unitId,
+//     }));
+
+//     const formData = new FormData();
+
+//     // basic fields
+//     formData.append("firstName", firstName);
+//     formData.append("lastName", lastName);
+//     formData.append("mobileNumber", mobileNumber);
+//     formData.append("email", email);
+
+//     // ✅ MAIN UNIT
+//     formData.append("unitId", primaryUnitId);
+
+//     // ✅ EXTRA UNITS
+//     if (userUnits.length) {
+//       formData.append("userUnits", JSON.stringify(userUnits));
+//     }
+
+//     // photo
+//     if (photo instanceof File) {
+//       formData.append("photo", photo);
+//     }
+
+//     // any extra fields
+//     Object.keys(rest).forEach((key) => {
+//       if (rest[key] !== undefined && rest[key] !== null) {
+//         formData.append(key, rest[key]);
+//       }
+//     });
+
+//     const response = await createSocietyResidentService(
+//       societyId,
+//       token,
+//       formData
+//     );
+
+//     if (response.status === 201) {
+//       toast.success("Society Resident created successfully!");
+//     }
+
+//     return response;
+//   } catch (error) {
+//     console.error("Error creating resident:", error);
+//     toast.error(
+//       error?.response?.data?.message || "Failed to create resident"
+//     );
+//     return null;
+//   }
+// };
 
   const getResidentBySocietyIdHandler = async (societyId, { page, pageSize }) => {
     try {

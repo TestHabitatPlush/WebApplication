@@ -2,10 +2,11 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import UserHandler from "@/handlers/UserHandler";
+import Logo from "../../../assets/svg&pngicon/user (1).png";
 
 const ProfileModal = ({ isOpen, onClose, user }) => {
   const { updateResidentBySocietyIdHandler } = UserHandler();
-  const societyId = useSelector((state) => state.auth.user?.societyId);
+  const society = useSelector((state) => state.society.selectedSocietyId);
 
   const [isEditing, setIsEditing] = useState(false);
   const [formState, setFormState] = useState({
@@ -14,7 +15,9 @@ const ProfileModal = ({ isOpen, onClose, user }) => {
     mobileNumber: user?.mobileNumber || "",
   });
   const [photoFile, setPhotoFile] = useState(null);
-
+  const profileImageUrl = user?.photo
+  ? `${process.env.NEXT_PUBLIC_BASE_URL}/${user.photo.replace(/\\/g, "/")}`
+  : Logo;
   if (!isOpen) return null;
 
   const handleChange = (e) => {
@@ -25,28 +28,23 @@ const ProfileModal = ({ isOpen, onClose, user }) => {
     setPhotoFile(e.target.files[0]);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const token = localStorage.getItem("token");
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-      const residentData = {
-        userId: user?.userId,
-        firstName: formState.firstName,
-        lastName: formState.lastName,       
-        mobileNumber: formState.mobileNumber,
-        photo: photoFile,
-      };
+  try {
+    await updateResidentBySocietyIdHandler(user.userId, {
+      firstName: formState.firstName,
+      lastName: formState.lastName,
+      mobileNumber: formState.mobileNumber,
+      photo: photoFile,
+    });
 
-      await updateResidentBySocietyIdHandler({ societyId, residentData, token });
-      alert("Profile updated successfully.");
-      setIsEditing(false);
-      onClose();
-    } catch (error) {
-      alert("Failed to update profile.");
-      console.error(error);
-    }
-  };
+    setIsEditing(false);
+    onClose();
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
@@ -105,13 +103,28 @@ const ProfileModal = ({ isOpen, onClose, user }) => {
           </form>
         ) : (
           <div className="space-y-2 text-sm">
+               <div>
+                {profileImageUrl ? (
+                    <img
+                      src={profileImageUrl}
+                      alt="Profile"
+                      className="object-cover w-24 h-24 border rounded-full"
+                    />
+                 ) : (
+                      <div className="flex items-center justify-center w-24 h-24 text-xs text-gray-400 border rounded-full">
+                        No Image
+                      </div>
+                    )}
+                   
+             </div>
+       
             <div><strong>Name:</strong> {user?.firstName} {user?.lastName}</div>
             <div><strong>Email:</strong> {user?.email}</div>
             <div><strong>Mobile:</strong> {user?.mobileNumber}</div>
             <div><strong>Role:</strong> {user?.role?.roleName}</div>
             <div><strong>Role Category:</strong> {user?.role?.roleCategory}</div>
             <div><strong>Occupancy Status:</strong> {user?.role?.occupancyStatus}</div>
-            <div><strong>Group ID:</strong> {user?.role?.userGroupId}</div>
+          
 
             <div className="flex justify-between mt-6">
               <button

@@ -209,8 +209,6 @@ const Admincontent = () => {
     <Route path="/emerencycontact/EmergencyList" 
      element={<EmergencyList />} /> 
     
-
-  
     </Routes>
 
   );

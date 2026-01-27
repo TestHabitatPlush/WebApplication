@@ -1,12 +1,26 @@
 import axios from "axios";
 
-const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/family`;
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export const createMemberService = async (data, token) => {
-  return axios.post(`${BASE_URL}/create`, data, {
+// ✅ Get tenant's unit
+export const getMyUnitMembersService = (userId, token) => {
+  if (!token) return Promise.reject("TOKEN_MISSING");
+  if (!userId) return Promise.reject("USER_ID_MISSING");
+
+  return axios.get(`${BASE_URL}/userUnit/${userId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
+    },
+  });
+};
+
+// ✅ Get members of owner's units
+export const getAllMembersService = (token) => {
+  if (!token) return Promise.reject("TOKEN_MISSING");
+
+  return axios.get(`${BASE_URL}/family/myunits/members`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
   });
 };

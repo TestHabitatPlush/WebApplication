@@ -1,17 +1,20 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import Button from "@/components/ui/Button";
-import VisitHandler from "@/handlers/VisitHandler";
+import VisitHandler from "@/handlers/VisitorHandler";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedSociety } from "@/redux/slices/societySlice"; // ✅
+import { setSelectedSociety } from "@/redux/slices/societySlice";
 
 const AddVisitor = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user); // ✅ user object
+  const user = useSelector((state) => state.auth.user);
+  const society = useSelector((state) => state.society.selectedSocietyId);
 
   const { fetchVisitorRelationship, createNewVisitorEntry } = VisitHandler();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [visitorTypes, setVisitorTypes] = useState([]);
   const [errors, setErrors] = useState({});
@@ -21,47 +24,39 @@ const AddVisitor = () => {
     visit_type_Id: "",
     visit_mobileno: "",
     visit_location: "",
+    relationship: "",
     visit_expect_date_of_entry_date: new Date().toISOString().split("T")[0],
     visit_valid_till_date: new Date().toISOString().split("T")[0],
     visit_purpose: "",
   });
 
-  // ✅ Dynamically set selectedSociety from user.Customer
+  // SET SOCIETY
   useEffect(() => {
-    const society = user?.Customer || user?.customer;
-    if (society?.customerId) {
+    const societyData = user?.Customer || user?.customer;
+    if (societyData?.customerId) {
       dispatch(
         setSelectedSociety({
-          id: society.customerId,
-          name: society.customerName,
-          type: society.customerType,
+          id: societyData.customerId,
+          name: societyData.customerName,
+          type: societyData.customerType,
         })
       );
-    } else {
-      console.warn("❗ No society info in user object");
     }
-  }, [user]);
+  }, [user, dispatch]);
 
-  // ✅ Fetch visitor types when modal opens
+  // FETCH VISITOR TYPES
   useEffect(() => {
-    if (isModalOpen) {
+    if (isModalOpen && society?.id) {
       fetchVisitorTypes();
     }
-  }, [isModalOpen]);
+  }, [isModalOpen, society]);
 
   const fetchVisitorTypes = async () => {
     try {
-      const result = await fetchVisitorRelationship();
-      if (Array.isArray(result)) {
-        setVisitorTypes(result);
-      } else {
-        setVisitorTypes([]);
-      }
-    } catch (error) {
-      setVisitorTypes([
-        { Visit_relation_Id: "3", Visit_relation_Description: "Guest" },
-        { Visit_relation_Id: "7", Visit_relation_Description: "Staff" },
-      ]);
+      const data = await fetchVisitorRelationship(society?.id);
+      setVisitorTypes(data);
+    } catch {
+      setVisitorTypes([]);
     }
   };
 
@@ -72,46 +67,50 @@ const AddVisitor = () => {
   };
 
   const validateForm = () => {
-    const requiredFields = [
+    const required = [
       "visit_name",
       "visit_type_Id",
       "visit_mobileno",
-      "visit_location",
       "visit_purpose",
+      "visit_expect_date_of_entry_date",
+      "visit_valid_till_date",
     ];
-    const newErrors = {};
 
-    requiredFields.forEach((field) => {
-      if (!visitorDetails[field]) {
-        newErrors[field] = "This field is required.";
-      }
+    const err = {};
+    required.forEach((f) => {
+      if (!visitorDetails[f]) err[f] = "This field is required";
     });
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setErrors(err);
+    return Object.keys(err).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    try {
-      const payload = {
-        ...visitorDetails,
-        visit_mobileno: parseInt(visitorDetails.visit_mobileno, 10) || 0,
-        visit_type_Id: parseInt(visitorDetails.visit_type_Id, 10) || 0,
-      };
+    // Construct payload for backend
+    const payload = {
+      visit_name: visitorDetails.visit_name,
+      visit_type_Id: Number(visitorDetails.visit_type_Id),
+      visit_mobileno: visitorDetails.visit_mobileno,
+      visit_location: visitorDetails.visit_location || null,
+      relationship: visitorDetails.relationship || null,
+      visit_expect_date_of_entry_date: visitorDetails.visit_expect_date_of_entry_date,
+      visit_valid_till_date: visitorDetails.visit_valid_till_date,
+      visit_purpose: visitorDetails.visit_purpose,
+      societyId: society?.id,
+      senderId: user?.userId,
+    };
 
-      const response = await createNewVisitorEntry(payload);
-      if (response.success) {
-        toast.success("Visitor entry created successfully.");
-        resetForm();
-        setIsModalOpen(false);
-      } else {
-        toast.error(response.message || "Error creating visitor entry.");
-      }
-    } catch (error) {
-      toast.error("Failed to create visitor entry.");
+    try {
+      await createNewVisitorEntry(payload);
+      toast.success("Visitor added successfully!");
+      resetForm();
+      setIsModalOpen(false);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to create visitor");
     }
   };
 
@@ -121,6 +120,7 @@ const AddVisitor = () => {
       visit_type_Id: "",
       visit_mobileno: "",
       visit_location: "",
+      relationship: "",
       visit_expect_date_of_entry_date: new Date().toISOString().split("T")[0],
       visit_valid_till_date: new Date().toISOString().split("T")[0],
       visit_purpose: "",
@@ -135,102 +135,78 @@ const AddVisitor = () => {
           className="ml-5 text-lg cursor-pointer text-turquoise"
           onClick={() => setIsModalOpen(true)}
         />
-        <h1 className="mb-1 text-xl font-semibold">Add Visitor</h1>
+        <h1 className="text-xl font-semibold">Add Visitor</h1>
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[1050]">
-          <div className="bg-white max-w-[1300px] w-[90%] max-h-[90vh] overflow-y-auto p-6 rounded-lg shadow-md relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white w-[90%] max-w-4xl p-6 rounded-lg relative">
             <button
               onClick={() => setIsModalOpen(false)}
-              className="absolute text-xl text-gray-600 top-2 right-2 hover:text-gray-800"
+              className="absolute text-xl top-2 right-3"
             >
               &times;
             </button>
-            <h2 className="mb-8 text-xl font-semibold">Add New Visitor</h2>
+
+            <h2 className="mb-6 text-xl font-semibold">Add New Visitor</h2>
 
             <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label
-                  htmlFor="visitorType"
-                  className="block mb-1 text-sm font-medium text-gray-700"
-                >
-                  Visitor Type <span className="text-red-500">*</span>
-                </label>
-                <select
-                  id="visitorType"
-                  name="visit_type_Id"
-                  value={visitorDetails.visit_type_Id}
-                  onChange={handleChange}
-                  className="block w-full p-3 text-sm border border-gray-300 rounded-lg"
-                >
-                  <option value="" disabled>
-                    Select type of Visitor
+              <label className="block mb-2">
+                Visitor Type <span className="text-red-500">*</span>
+              </label>
+              <select
+                name="visit_type_Id"
+                value={visitorDetails.visit_type_Id}
+                onChange={handleChange}
+                className="w-full p-2 mb-4 border rounded"
+              >
+                <option value="">Select Visitor Type</option>
+                {visitorTypes.map((t) => (
+                  <option
+                    key={t.Visit_relation_Id}
+                    value={t.Visit_relation_Id}
+                  >
+                    {t.Visit_relation_Description}
                   </option>
-                  {visitorTypes.map((type) => (
-                    <option
-                      key={type.Visit_relation_Id}
-                      value={type.Visit_relation_Id}
-                    >
-                      {type.Visit_relation_Description}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                ))}
+              </select>
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {[ 
-                  { label: "Name", name: "visit_name", type: "text" },
-                  { label: "Mobile Number", name: "visit_mobileno", type: "number" },
-                  { label: "Expected Entry Date", name: "visit_expect_date_of_entry_date", type: "date" },
-                  { label: "Valid Till Date", name: "visit_valid_till_date", type: "date" },
-                  { label: "Purpose of Visit", name: "visit_purpose", type: "text" },
-                  { label: "Address", name: "visit_location", type: "textarea" },
-                ].map((field, idx) => (
-                  <div key={idx} className="mb-4">
-                    <label
-                      htmlFor={field.name}
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      {field.label} <span className="text-red-600">*</span>
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  ["Visitor Name", "visit_name"],
+                  ["Visitor Mobile", "visit_mobileno"],
+                  ["Expected Entry Date", "visit_expect_date_of_entry_date", "date"],
+                  ["Valid Till Date", "visit_valid_till_date", "date"],
+                  ["Visit Purpose", "visit_purpose"],
+                  ["Visitor Address", "visit_location"],
+                  ["Relationship", "relationship"],
+                ].map(([label, name, type]) => (
+                  <div key={name}>
+                    <label className="block text-sm font-medium">
+                      {label} {name !== "relationship" && <span className="text-red-500">*</span>}
                     </label>
-                    {field.type === "textarea" ? (
-                      <textarea
-                        id={field.name}
-                        name={field.name}
-                        value={visitorDetails[field.name]}
-                        onChange={handleChange}
-                        className="block w-full p-2 mt-1 border border-gray-300 rounded-md"
-                      />
-                    ) : (
-                      <input
-                        id={field.name}
-                        name={field.name}
-                        type={field.type}
-                        value={visitorDetails[field.name]}
-                        onChange={handleChange}
-                        className="block w-full p-2 mt-1 border border-gray-300 rounded-md"
-                      />
-                    )}
-                    {errors[field.name] && (
-                      <span className="text-sm text-red-600">
-                        {errors[field.name]}
-                      </span>
+                    <input
+                      type={type || "text"}
+                      name={name}
+                      value={visitorDetails[name]}
+                      onChange={handleChange}
+                      className="w-full p-2 border rounded"
+                    />
+                    {errors[name] && (
+                      <p className="text-sm text-red-600">{errors[name]}</p>
                     )}
                   </div>
                 ))}
               </div>
 
               <div className="flex justify-center gap-4 mt-6">
-                <Button
-                  type="submit"
-                  className="w-32 px-4 py-2 text-white bg-green-500 hover:bg-green-600"
-                >
+                <Button type="submit" className="text-white bg-green-600">
                   Submit
                 </Button>
                 <Button
+                  type="button"
+                  className="text-white bg-red-600"
                   onClick={() => setIsModalOpen(false)}
-                  className="w-32 px-4 py-2 text-white bg-red-500 hover:bg-red-600"
                 >
                   Cancel
                 </Button>

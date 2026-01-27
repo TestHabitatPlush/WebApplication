@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState } from "react";
 import UrlPath from "../../../../components/shared/UrlPath";
 import PageHeading from "../../../../components/shared/PageHeading";
@@ -64,10 +62,7 @@ const CreateTicketForm = () => {
     submissionFormData.append("request_type", formData.request_type);
     submissionFormData.append("ticket_purpose_Id", formData.ticket_purpose_Id);
     submissionFormData.append("ticket_title", formData.ticket_title);
-    submissionFormData.append(
-      "ticket_description",
-      formData.ticket_description
-    );
+    submissionFormData.append("ticket_description", formData.ticket_description);
 
     if (attachmentFile) {
       submissionFormData.append("ticket_attachment_details", attachmentFile);
@@ -81,30 +76,28 @@ const CreateTicketForm = () => {
 
   return (
     <div className="px-5">
-      <div className="text-sm font-semibold my-2 flex items-center gap-2 text-gray-500">
+      <div className="flex items-center gap-2 my-2 text-sm font-semibold text-gray-500">
         <UrlPath paths={paths} />
       </div>
       <PageHeading heading={Heading} />
 
-      <div className="p-10 my-5 border rounded-lg bg-white shadow-sm space-y-6">
+      <div className="p-10 my-5 space-y-6 bg-white border rounded-lg shadow-sm">
         <div className="grid grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block mb-2 text-sm font-medium text-gray-700">
               Ticket Number
             </label>
             <input
               type="text"
               className="bg-gray-100 border border-gray-300 text-black-400 text-sm rounded-lg w-full p-3.5"
-              value=""
               placeholder="Ticket Number"
+              disabled
             />
           </div>
 
+          {/* REQUEST TYPE */}
           <div>
-            <label
-              htmlFor="request_type"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
+            <label className="block mb-2 text-sm font-medium text-gray-700">
               Type of Request
             </label>
             <select
@@ -114,17 +107,15 @@ const CreateTicketForm = () => {
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-3.5"
             >
               <option value="">Select Type Of Request</option>
-              <option value="suggestion">Suggestion</option>
-              <option value="complaint">Complaint</option>
-              <option value="clarification">Clarification</option>
+              <option value="Suggestion">Suggestion</option>
+              <option value="Complain">Complaint</option>
+              <option value="Clarification">Clarification</option>
             </select>
           </div>
 
+          {/* PURPOSE */}
           <div>
-            <label
-              htmlFor="ticket_purpose_Id"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
+            <label className="block mb-2 text-sm font-medium text-gray-700">
               Ticket Purpose
             </label>
             <select
@@ -142,6 +133,7 @@ const CreateTicketForm = () => {
             </select>
           </div>
 
+          {/* TITLE */}
           <div>
             <Input
               label="Ticket Title"
@@ -155,16 +147,17 @@ const CreateTicketForm = () => {
           </div>
         </div>
 
+        {/* DESCRIPTION */}
         <TextArea
           label="Description"
           placeholder="Enter a detailed description..."
           value={formData.ticket_description}
           onChange={handleInputChange}
           name="ticket_description"
-          size="lg"
           rows={5}
         />
 
+        {/* FILE UPLOAD */}
         <div>
           <Input
             label="Attachment (Max. Allowed 2MB)"
@@ -173,15 +166,16 @@ const CreateTicketForm = () => {
             size="lg"
           />
           {fileError && (
-            <p className="text-red-600 text-sm mt-2">{fileError}</p>
+            <p className="mt-2 text-sm text-red-600">{fileError}</p>
           )}
         </div>
 
-        {/* <div className="flex justify-center mt-6">
-          <Button onClick={handleSubmit} type="submit" size="lg">
+        {/* SUBMIT BUTTON */}
+        <div className="flex justify-center mt-5">
+          <Button className="max-w-sm" onClick={handleSubmit} size="xl">
             Submit
           </Button>
-        </div> */}
+        </div> 
 
         <div className="flex justify-center mt-5">
           <Button
@@ -199,3 +193,4 @@ const CreateTicketForm = () => {
 };
 
 export default CreateTicketForm;
+
