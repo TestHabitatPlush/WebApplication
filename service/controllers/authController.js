@@ -23,7 +23,10 @@ const loginUser = async (req, res) => {
 
     const user = await User.findOne({
       where: { email },
-      include: [{ model: Role, as: "role" }, { model: Customer }],
+      include: [
+        { model: Role, as: "userRole" },
+        { model: Customer, as: "society" }, // ✅ alias fixed
+      ],
     });
 
     if (!user) {
@@ -44,11 +47,11 @@ const loginUser = async (req, res) => {
     const payload = {
       userId: user.userId,
       email: user.email,
-      role: user.role.roleCategory,
+      role: user.userRole.roleCategory,
     };
 
     /* ---- Admin Redirect Login ---- */
-    if (ADMIN_ROLES.includes(user.role.roleCategory)) {
+    if (ADMIN_ROLES.includes(user.userRole.roleCategory)) {
       const token = generateToken(payload, "1h");
       const baseUrl = process.env.ADMIN_BASE_URL.replace(/\/+$/, "");
 
@@ -65,8 +68,8 @@ const loginUser = async (req, res) => {
 
     return res.status(200).json({
       message: "Login successful.",
-      user,
       token,
+      user,
     });
   } catch (error) {
     console.error("Login Error:", error);
@@ -78,12 +81,17 @@ const loginUser = async (req, res) => {
 const tokenSignIn = async (req, res) => {
   try {
     const { token } = req.body;
-    if (!token) return res.status(401).json({ message: "Token required." });
+    if (!token) {
+      return res.status(401).json({ message: "Token required." });
+    }
 
     const decoded = verifyToken(token);
 
     const user = await User.findByPk(decoded.userId, {
-      include: [{ model: Role, as: "role" }, { model: Customer }],
+      include: [
+        { model: Role, as: "userRole" },
+        { model: Customer, as: "society" }, // ✅ alias fixed
+      ],
     });
 
     if (!user) {
@@ -94,7 +102,7 @@ const tokenSignIn = async (req, res) => {
       {
         userId: user.userId,
         email: user.email,
-        role: user.role.roleCategory,
+        role: user.userRole.roleCategory,
       },
       "7d"
     );
@@ -169,6 +177,10 @@ const jobProfileLogin = async (req, res) => {
 const loginToken = async (req, res) => {
   try {
     const { token } = req.body;
+    if (!token) {
+      return res.status(401).json({ message: "Token required." });
+    }
+
     const decoded = verifyToken(token);
 
     const profile = await JobProfile.findByPk(decoded.profileId, {

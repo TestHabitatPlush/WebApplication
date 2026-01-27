@@ -307,19 +307,19 @@ const User = sequelize.define(
   }
 );
 
-Address.hasMany(User, { foreignKey: "addressId" });
-User.belongsTo(Address, { foreignKey: "addressId" });
+// Address.hasMany(User, { foreignKey: "addressId" });
+// User.belongsTo(Address, { foreignKey: "addressId" });
 
-// Customer.hasMany(User, { foreignKey: 'societyId', as: 'users' });
-// User.belongsTo(Customer, { foreignKey: 'societyId', as: 'customer' });
+// // Customer.hasMany(User, { foreignKey: 'societyId', as: 'users' });
+// // User.belongsTo(Customer, { foreignKey: 'societyId', as: 'customer' });
 
-Customer.hasMany(User, { foreignKey: "societyId" });
-User.belongsTo(Customer, { foreignKey: "societyId" });
+// Customer.hasMany(User, { foreignKey: "societyId" });
+// User.belongsTo(Customer, { foreignKey: "societyId" });
 
-// Unit.hasMany(User, { foreignKey: "unitId" });
-// User.belongsTo(Unit, { foreignKey: "unitId" });
+// // Unit.hasMany(User, { foreignKey: "unitId" });
+// // User.belongsTo(Unit, { foreignKey: "unitId" });
 
-Role.hasMany(User, { foreignKey: "roleId", as: "role" });
-User.belongsTo(Role, { foreignKey: "roleId", as: "role" });
+// Role.hasMany(User, { foreignKey: "roleId", as: "role" });
+// User.belongsTo(Role, { foreignKey: "roleId", as: "role" });
 
 module.exports = User;

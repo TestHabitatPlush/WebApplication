@@ -6,18 +6,27 @@ const app = require("./app");
 const sequelize = require("./config/database");
 const { setupSocket } = require("./utils/socket");
 
+// IMPORTANT: load ALL models BEFORE sync
+require("./models");   // must exist and import all models
+
 const PORT = process.env.PORT || 5001;
 
 (async function startServer() {
   try {
-    // Connect database first
+    //  Connect DB
     await sequelize.authenticate();
-    console.log("Database connected successfully");
+    console.log("Database connected");
+
+    //  DROP & RECREATE all tables (DATA WILL BE LOST)
+    
+    // await sequelize.sync({ force: true }); // use only first time 
+    await sequelize.sync({}); 
+    console.log("All tables dropped & recreated");
 
     //  Create HTTP server
     const server = http.createServer(app);
 
-    // Initialize Socket.IO
+    //  Initialize Socket.IO
     setupSocket(server);
 
     //  Start listening
@@ -26,10 +35,11 @@ const PORT = process.env.PORT || 5001;
     });
 
   } catch (error) {
-    console.error(" Server startup failed:", error);
-    process.exit(1); // important for cloud restart
+    console.error("Server startup failed:", error);
+    process.exit(1);
   }
 })();
+
 
 
 

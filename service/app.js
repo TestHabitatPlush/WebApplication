@@ -251,7 +251,7 @@ const facilityManagement = require("./routes/facilityManagementRoutes");
 const unitTypeRouter = require("./routes/unitTypeRoutes");
 const gateRouter = require("./routes/gateRouter");
 const refUserGroupRouter = require("./routes/refUserGroupRouter");
-const { initController } = require("./auto-creating-handlers");
+const {initController} = require("./auto-creating-handlers");
 const noticeAnnouncementRouter = require("./routes/noticeAnnouncementRouter");
 const visitorManagementRouter = require("./routes/visitorManagementRouter");
 const unitRouter = require("./routes/unitRoutes");
@@ -303,7 +303,7 @@ app.use("/api/softwarehelpdesk", softwareHelpDeskRouter);
 
 // softwarehelpdesk refticketstatus
 app.use("/api/softwarehelpdesk", refTicketStatusRouter);
-app.get("/init-database", initController);
+app.get("/api/init-database", initController);
 app.use("/api/filter", filterRoutes);
 app.use("/api/facilityManagement", facilityManagement);
 app.use("/api", parkingRoutes);
