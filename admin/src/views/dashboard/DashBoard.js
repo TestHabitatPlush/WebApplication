@@ -70,7 +70,7 @@ import SecurityContent from "../security/SecurityContent";
 
 const DashBoard = () => {
   const user = useSelector((state) => state.auth.user);
-  const roleCategory = user?.role?.roleCategory;
+  const roleCategory = user?.userRole?.roleCategory;
 
   if (!roleCategory) {
     return (
@@ -85,7 +85,7 @@ const DashBoard = () => {
       case "society_moderator":
         return <Admincontent />;
 
-      case "super_admin":
+       case "super_admin":
       case "super_admin_it":
         return <SuperAdminContents />;
 
