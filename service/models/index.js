@@ -169,7 +169,7 @@
 
 const User = require("./User");
 const UserUnit = require("./UserUnit");
-const UserAdminAccess = require("./UserAdminAccess");
+ const UserAdminAccess = require("./UserAdminAccess");
 const Address = require("./Address");
 const Customer = require("./Customer");
 const DiscussionForum = require("./Discussion_Forum");

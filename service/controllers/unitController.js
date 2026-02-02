@@ -26,7 +26,12 @@ const createUnit = async (req, res) => {
       return res.status(400).json({ message: "All fields are required!" });
     }
 
-    const isUnitExists = await Unit.findOne({ where: { unitName: unitName } });
+    const isUnitExists = await Unit.findOne({ where:
+       { unitNumber,
+        societyId,
+        buildingId,
+        floorId
+        } });
 
     if (isUnitExists) {
       return res.status(400).json({ message: "Unit Already Exists" });
@@ -47,6 +52,11 @@ const createUnit = async (req, res) => {
       .json({ message: "Unit created successfully!", data: newUnit });
   } catch (error) {
     console.error("Error creating unit: ", error);
+    if(error.name == "Sequelize unique Constraint Error"){
+      return res.status(409).jso({
+        message:"Unit Already Exists (database constraint)"
+      })
+    }
     res.status(500).json({ message: "Internal server error" });
   }
 };

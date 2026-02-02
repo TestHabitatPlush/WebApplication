@@ -145,6 +145,12 @@ const Unit = sequelize.define(
   {
     tableName: "unit",
     timestamps: true,
+    indexes:[
+      {
+        unique:true,
+        fields:["societyId","buildingId","floorId","unitNumber"],
+      }
+    ]
   }
 );
 

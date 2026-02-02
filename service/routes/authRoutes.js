@@ -1,8 +1,10 @@
 const express = require("express");
-const { loginUser, tokenSignIn,jobProfileLogin,loginToken } = require("../controllers/authController");
+const { loginUser, tokenSignIn,jobProfileLogin,loginToken, getAdminRedirect } = require("../controllers/authController");
+const { checkAuth } = require("../middleware/authMiddleware");
 const authRouter = express.Router();
 
 authRouter.post("/login", loginUser);
+authRouter.get("/admin-redirect",checkAuth,getAdminRedirect)
 
 authRouter.post("/token-signin", tokenSignIn);
 
