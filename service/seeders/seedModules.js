@@ -83,8 +83,6 @@ async function seedModules() {
       "visitor_new_visitentry",
       "parking",
       "maintenance",
-      "poll",
-      "complaint",
       "customers",
       "subscription",
       "roles",
