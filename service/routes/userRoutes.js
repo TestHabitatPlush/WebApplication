@@ -78,6 +78,7 @@ const userRouter = express.Router();
 const userController = require("../controllers/userController");
 const upload = require("../middleware/upload");
 
+
 const { checkAuth } = require("../middleware/authMiddleware");
 const { checkAdmin } = require("../middleware/adminOnly");
 
@@ -97,6 +98,7 @@ userRouter.post("/create-resident/:societyId",checkAuth,checkAdmin,userControlle
 userRouter.post("/bulk-create/:societyId",checkAuth,checkAdmin,upload.single("file"),userController.bulkCreateResidents);
 userRouter.put("/moderator/:userId",checkAuth,checkAdmin,upload.fields([{ name: "photo", maxCount: 1 }]),userController.updateSocietyModerator);
 userRouter.put("/moderators/:id",checkAuth,checkAdmin,userController.updateSocietyStatus);
+//userRouter.put("/moderators/:id",checkAuth,userController.updateSocietyStatus);
 userRouter.get("/superadmin/moderator",checkAuth,checkAdmin,userController.getAllSuper_admin_itAndModrerator);
 
 /* ---------------- RESIDENT + ADMIN ---------------- */

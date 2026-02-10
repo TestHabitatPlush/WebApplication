@@ -176,6 +176,7 @@ const dotenv = require("dotenv");
 const session = require("express-session");
 const Keycloak = require("keycloak-connect");
 const apiKeyMiddleware = require("./middleware/apiKeyMiddleware.js")
+const globalModuleGuard = require("./middleware/globalModuleGuard.js");
 
 dotenv.config();
 
@@ -273,6 +274,7 @@ app.get("/getenv", (req, res) => {
 //app.use("/api", keycloak.protect(), userRouter);
 
 app.use("/api",apiKeyMiddleware)
+app.use("/api", globalModuleGuard);  // cd seeders // node seedModules.js
 
 // --- Public / Semi-protected Routes ---
 app.use("/api/users", userRouter);

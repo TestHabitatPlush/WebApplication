@@ -41,3 +41,30 @@ Module.belongsToMany(SubscriptionPlan, {
 });
 
 module.exports = SubcriptionModule;
+
+// const sequelize = require("../config/database");
+// const SubscriptionPlan = require("./SubscriptionPlan");
+// const Module = require("./Module");
+
+// const SubscriptionModule = sequelize.define(
+//   "SubscriptionModule",
+//   {},
+//   {
+//     tableName: "SubscriptionModules",
+//     timestamps: false
+//   }
+// );
+
+// SubscriptionPlan.belongsToMany(Module, 
+//   {
+//   through: SubscriptionModule,
+//   foreignKey: "subscriptionId",
+// });
+
+// Module.belongsToMany(SubscriptionPlan, 
+//   {
+//   through: SubscriptionModule,
+//   foreignKey: "moduleId",
+// });
+
+// module.exports = SubscriptionModule;
