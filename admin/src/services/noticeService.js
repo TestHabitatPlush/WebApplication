@@ -26,8 +26,6 @@ export const createNoticeByUserService = (formData, userId, token) => {
 
 export const getNoticesBySocietyService = (societyId, userId, token) => {
   const url = `${API}/noticeAnnouncement/get/${societyId}/${userId}`;
-
-  console.log("kjcdgik",url);
   return axios.get(url, {
     headers: {
       Authorization: `Bearer ${token}`,

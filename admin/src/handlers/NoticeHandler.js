@@ -13,7 +13,7 @@ import {
 
 const NoticeHandler = () => {
   const token = useSelector((state) => state.auth.token);
-  const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
+  const societyId = useSelector((state) =>state.auth.user?.societyId);
   const userId = useSelector((state) => state.auth.user?.userId);
 
   // ===== SOCIETY NOTICE HANDLER =====
@@ -33,6 +33,7 @@ const NoticeHandler = () => {
 const getNoticesBySocietyHandler = async () => {
   try {
     const res = await getNoticesBySocietyService(societyId, userId, token);
+    console.log(res)
     return res; 
   } catch (err) {
     toast.error("Failed to fetch society notices.");
@@ -58,7 +59,10 @@ const getNoticesBySocietyHandler = async () => {
 const getNoticesByUserHandler = async () => {
   try {
     const res = await getNoticesByUserService(userId, token);
+    console.log(res)
     return res; 
+   
+
   } catch (err) {
     toast.error("Failed to fetch user notices.");
     console.error(err);

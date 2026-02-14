@@ -2,19 +2,6 @@
 
 import axios from "axios";
 
-export const createSocietyModeratorService = (data, token) => {
-  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/admin/create-society-user`;
-
-  return axios.post(url, data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      // "Content-Type": "multipart/form-data",
-      "Content-Type": "application/json",
-      
-    },
-  });
-};
-
 
 export const getResidentBySocietyIdService = (societyId, token, { page, pageSize }) => {
   const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/resident/${societyId}`;
@@ -41,18 +28,25 @@ export const getUserByIdService = (id, token) => {
 };
 
 
-export const createSocietyResidentService = async (societyId, token, data) => {
- 
-  const url =`${process.env.REACT_APP_PUBLIC_API_URL}/users/create-resident/${societyId}`;
 
-  return axios.post(url, data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-     // "Content-Type": "application/json",
+
+export const createSocietyResidentService = async (
+  societyId,
+  token,
+  formData
+) => {
+  return axios.post(
+    `${process.env.REACT_APP_PUBLIC_API_URL}/users/create-resident/${societyId}`,
+    formData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
-    },
-  });
+      },
+    }
+  );
 };
+
 
 
 
@@ -121,43 +115,38 @@ export const updateModeratorStatusService = async ( data, token) => {
   });
 };
 
-export const updateSocietyModeratorService = async (userId, formData, token) => {
-  if (!token || !userId) throw new Error("Missing token or user ID");
+// export const updateSocietyModeratorService = async (userId, formData, token) => {
+//   if (!token || !userId) throw new Error("Missing token or user ID");
 
-  return await axios.put(
+//   return await axios.put(
+//     `${process.env.REACT_APP_PUBLIC_API_URL}/users/moderator/${userId}`,
+//     formData,
+//     {
+//       headers: {
+//         "Content-Type": "multipart/form-data",
+//         Authorization: `Bearer ${token}`,
+//       },
+//     }
+//   );
+// };
+
+
+//update status
+export const updateSocietyModeratorService = (userId, formData, token) => {
+  return axios.put(
     `${process.env.REACT_APP_PUBLIC_API_URL}/users/moderator/${userId}`,
     formData,
     {
       headers: {
-        "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
+        // ❌ DO NOT manually set multipart boundary
+        // 'Content-Type': 'multipart/form-data'
       },
     }
   );
 };
 
-export const getSocietyModeratorService = (societyId, token, params = {}) => {
-  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/moderator/${societyId}`;
-  return axios.get(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    params, // will be ignored if empty
-  });
-};
-//get status 
-export const getAllSuperAdminItAndModeratorService = (token, data) => {
-  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/superadmin/moderator`;
 
-  return axios.get(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,  // ✅ correct
-    },
-    params: data,
-  });
-};
-
-//update status
 export const updateUserIdStatusService = (userId, token, data) => {
   const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/User/${userId}`;
   return axios.put(url, data, {
@@ -191,4 +180,50 @@ export const createMultipleSocietyUserService = async (societyId, token, users) 
       "Content-Type": "application/json",
     },
   });
+};
+export const updateResidentBySocietyIdService = async (societyId, formData) => {
+  try {
+    const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/resident/${societyId}`;
+    
+    const response = await axios.put(url, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response.data; // return only the data if needed
+  } catch (error) {
+    console.error("Error updating resident:", error);
+    throw error; // re-throw so the calling function can handle it
+  }
+};
+
+export const getSocietyModeratorService = (societyId, token, params = {}) => {
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/moderator/${societyId}`;
+  return axios.get(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params, // will be ignored if empty
+  });
+};
+//update super admin it 
+export const updateSuperAdminITService = async (data, token) => {
+  try {
+    const response = await axios.put(
+      `${process.env.REACT_APP_PUBLIC_API_URL}/users/super-admin-it`, // Change base URL if needed
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data; 
+  } catch (error) {
+    console.error("Update Error:", error.response?.data || error.message);
+    throw error;
+  }
 };

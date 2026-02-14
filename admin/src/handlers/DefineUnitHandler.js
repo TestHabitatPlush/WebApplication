@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 const DefineUnitHandler = () => {
   // Safely accessing Redux state using optional chaining (?.) to avoid errors
   const token = useSelector((state) => state.auth?.token);
-  const societyId = useSelector((state) => state.auth?.user?.Customer?.customerId);
+   const societyId = useSelector((state) => state.auth.user?.societyId);
 
   // Debugging logs to check Redux state
   const userState = useSelector((state) => state.auth?.user);

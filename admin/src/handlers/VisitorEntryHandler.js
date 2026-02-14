@@ -12,14 +12,20 @@ import {
 import { getVisitorRelationshipService } from "../services/visitorRelationshipService"; 
 
 const VisitEntryHandler = () => {
-  const [qrCodeData, setQrCodeData] = useState(null); // Define state for QR Code data
+  const [qrCodeData, setQrCodeData] = useState(null); 
 
   const token = useSelector((state) => state.auth.token);
-  const societyId = useSelector((state) => state.auth.user.Customer.customerId);
-  const senderId = useSelector((state) => state.auth.user.userId);
+  // const societyId = useSelector((state) =>state.auth.user.Customer.customerId);
+
+  const societyId = useSelector((state) => state.auth.user?.societyId);
+  // const senderId = useSelector((state) => state.auth.user.userId);
+  const senderId = useSelector((state) => state.auth?.user?.userId);
 
   // Function to fetch visitor relationships
-  const fetchVisitorRelationship = async () => {
+  const fetchVisitorRelationship = async () => { 
+
+    if(!societyId || !token) return [];
+
     try {
       const response = await getVisitorRelationshipService({ societyId }, token);
       if (response.status === 200) {
@@ -35,7 +41,9 @@ const VisitEntryHandler = () => {
 
   // Function to create a new visitor entry
   const createNewVisitorEntry = async (data) => {
-    console.log("create visitor entry");
+    // console.log("create visitor entry");
+    if (!societyId || !senderId || !token )return ;
+
     return await createvisitorEntryService(
       { ...data, societyId, senderId },
       token
@@ -48,7 +56,9 @@ const VisitEntryHandler = () => {
 
   // Function to get visitor entry table
   const getNewVisitorEntryTable = async (data) => {
-    console.log("visitor list table", data);
+    // console.log("visitor list table", data);
+    if(!societyId || !token) return;
+
     return await getVisitorEntryTableService({ ...data, societyId }, token)
       .then((res) => {
         return res;
@@ -60,7 +70,9 @@ const VisitEntryHandler = () => {
 
   // Function to get types of visitors
   const getTypeofVisitor = async () => {
-    console.log("get type of visitor ");
+    // console.log("get type of visitor ");
+
+    if(!token) return;
 
     return await getvisitorEntryService(token)
       .then((res) => {
@@ -74,6 +86,9 @@ const VisitEntryHandler = () => {
 
   // Function to delete visitor by ID
   const deleteVisitorById = async (id) => {
+
+    if(!token) return;
+
     try {
       const response = await deleteVisitorService(id, token);
       if (response.status === 200) {
@@ -90,6 +105,9 @@ const VisitEntryHandler = () => {
 
   // Function to fetch visitor details by ID
   const getVisitorById = async (id) => {
+
+    if (!token) return;
+    
     try {
       const response = await getvisitorEntryByIdService(id, token);
       return response.data;  
@@ -103,7 +121,8 @@ const handleViewQRCodeById = async (visitEntryId) => {
   try {
     const response = await getQrCodeByIdService(visitEntryId); // Call API
     if (response && response.status === 200) {
-      console.log("Valid API response:", response.data);
+      // console.log("Valid API response:", response.data);
+      setQrCodeData( response.data);
       return response.data; // Return the expected data object
     } else {
       console.error("Unexpected response status:", response?.status);

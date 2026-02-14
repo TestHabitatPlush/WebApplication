@@ -1,7 +1,7 @@
 
 
 import React, { useEffect, useMemo, useState } from "react";
-import { FiEye, FiTrash, FiEdit } from "react-icons/fi";
+import { FaEdit, FaEye, FaTrashAlt } from "react-icons/fa";
 import {
   MdKeyboardDoubleArrowLeft,
   MdKeyboardDoubleArrowRight,
@@ -51,7 +51,6 @@ const NoticeList = () => {
   } = NoticeHandler();
 
   const toggleViewModal = () => setViewModal((prev) => !prev);
-
 useEffect(() => {
   const fetchAllNotices = async () => {
     setLoading(true);
@@ -59,24 +58,37 @@ useEffect(() => {
       const userRes = await getNoticesByUserHandler();
       const societyRes = await getNoticesBySocietyHandler();
 
-      let allNotices = [
-        ...(userRes?.data?.data || []),
-        ...(societyRes?.data?.data || []),
-      ];
+      const userNotices = Array.isArray(userRes?.data?.data)
+          ? userRes.data.data
+          : Array.isArray(userRes?.data?.data?.notices)
+          ? userRes.data.data.notices
+          : [];
 
-      // ✅ VISIBILITY FILTER
+
+      const societyNotices = Array.isArray(societyRes?.data?.data)
+        ? societyRes.data.data
+        : Array.isArray(societyRes?.data?.data?.notices)
+        ? societyRes.data.data.notices
+        : [];
+
+      let allNotices = [...userNotices, ...societyNotices];
+
       if (visibilityFilter && visibilityMap[visibilityFilter]) {
         const filterCategories = visibilityMap[visibilityFilter];
-        allNotices = allNotices.filter((notice) =>
-          Array.isArray(notice.roleCategories)
-            ? notice.roleCategories.some((role) =>
-                filterCategories.includes(role)
-              )
-            : false
-        );
+
+        allNotices = allNotices.filter((notice) => {
+          const roles =
+            notice.roleCategories ||
+            notice.roles ||
+            notice.visibleFor ||
+            [];
+
+          return Array.isArray(roles)
+            ? roles.some((role) => filterCategories.includes(role))
+            : true;
+        });
       }
 
-      // ✅ REMOVE DUPLICATES
       const uniqueNotices = Array.from(
         new Map(allNotices.map((n) => [n.noticeId, n])).values()
       );
@@ -93,7 +105,12 @@ useEffect(() => {
   };
 
   fetchAllNotices();
-}, [visibilityFilter, pageSize]);
+}, [
+  visibilityFilter,
+  pageSize,
+  
+]);
+
 
 
   const pagedNotices = useMemo(() => {
@@ -137,19 +154,19 @@ useEffect(() => {
 
   return (
     <div className="relative px-4 py-6">
-      <div className="text-2xl font-semibold text-lime mt-4">Notice List</div>
-      <div className="text-gray-700 font-sans text-lg mt-2">
+      <div className="mt-4 text-2xl font-semibold text-lime">Notice List</div>
+      <div className="mt-2 font-sans text-lg text-gray-700">
         TOTAL {notices.length} NOTICES
       </div>
 
-      <div className="flex flex-col md:flex-row justify-end items-center mt-4 gap-2">
+      <div className="flex flex-col items-center justify-end gap-2 mt-4 md:flex-row">
         <select
           value={visibilityFilter}
           onChange={(e) => {
             setPageIndex(0);
             setVisibilityFilter(e.target.value);
           }}
-          className="px-3 py-2 uppercase border border-gray-300 rounded-md text-sm"
+          className="px-3 py-2 text-sm uppercase border border-gray-300 rounded-md"
         >
           {visibilityOptions.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -199,7 +216,7 @@ useEffect(() => {
       )}
 
       {loading ? (
-        <div className="text-center mt-6 text-gray-500">Loading notices...</div>
+        <div className="mt-6 text-center text-gray-500">Loading notices...</div>
       ) : pagedNotices.length > 0 ? (
         <div className="mt-4 space-y-4">
           {pagedNotices.map((notice, index) => (
@@ -219,32 +236,32 @@ useEffect(() => {
 
               <div className="absolute flex gap-2 right-2 top-2">
                 <div className="relative group">
-                  <FiEye
-                    className="text-orange-600 hover:text-orange-800 cursor-pointer"
+                  <FaEye
+                    className="text-lg text-orange-600 cursor-poiner hover:text-orange-700"
                     size={18}
                     onClick={() => handleView(notice)}
                   />
-                  <span className="absolute px-2 py-1 mb-2 text-xs text-white bg-orange-600 rounded opacity-0 bottom-full left-1/2 transform -translate-x-1/2 group-hover:opacity-100">
+                  <span className="absolute px-2 py-1 mb-2 text-xs text-white transform -translate-x-1/2 bg-orange-600 rounded opacity-0 bottom-full left-1/2 group-hover:opacity-100">
                     View
                   </span>
                 </div>
                 <div className="relative group">
-                  <FiEdit
-                    className="text-blue-600 hover:text-blue-800 cursor-pointer"
-                    size={18}
+                  <FaEdit
+                    className="text-lg text-green-600 cursor-pointer hover:text-blue-700"
+                    
                     onClick={() => handleEdit(notice)}
                   />
-                  <span className="absolute px-2 py-1 mb-2 text-xs text-white bg-blue-600 rounded opacity-0 bottom-full left-1/2 transform -translate-x-1/2 group-hover:opacity-100">
+                  <span className="absolute px-2 py-1 mb-2 text-xs text-white transform -translate-x-1/2 bg-green-600 rounded opacity-0 bottom-full left-1/2 group-hover:opacity-100">
                     Edit
                   </span>
                 </div>
                 <div className="relative group">
-                  <FiTrash
-                    className="text-red-600 hover:text-red-800 cursor-pointer"
-                    size={18}
+                  <FaTrashAlt
+                    className="text-lg text-red-600 cursor-pointer hover:text-red-700"
+                   
                     onClick={() => handleDelete(notice.noticeId)}
                   />
-                  <span className="absolute px-2 py-1 mb-2 text-xs text-white bg-red-600 rounded opacity-0 bottom-full left-1/2 transform -translate-x-1/2 group-hover:opacity-100">
+                  <span className="absolute px-2 py-1 mb-2 text-xs text-white transform -translate-x-1/2 bg-red-600 rounded opacity-0 bottom-full left-1/2 group-hover:opacity-100">
                     Delete
                   </span>
                 </div>
@@ -253,7 +270,7 @@ useEffect(() => {
           ))}
         </div>
       ) : (
-        <div className="text-center mt-6 text-gray-500">
+        <div className="mt-6 text-center text-gray-500">
           No notices to display.
         </div>
       )}
@@ -302,7 +319,7 @@ useEffect(() => {
             setPageSize(Number(e.target.value));
             setPageIndex(0);
           }}
-          className="ml-4 px-2 py-1 border border-gray-300 rounded-md text-sm"
+          className="px-2 py-1 ml-4 text-sm border border-gray-300 rounded-md"
         >
           <option value={5}>5</option>
           <option value={10}>10</option>

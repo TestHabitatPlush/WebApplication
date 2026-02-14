@@ -13,23 +13,23 @@ const AddNewVendor = () => {
   const Heading = ["Add new vendor"];
   return (
     <div className="px-5 ">
-      <div className="text-sm font-semibold my-2 flex items-center gap-2 text-gray-200">
+      <div className="flex items-center gap-2 my-2 text-sm font-semibold text-gray-200">
         <UrlPath paths={paths} />
       </div>
       <PageHeading heading={Heading} />
-      <div className="p-10 my-5 border rounded-lg bg-gray-100">
-        <div className="text-xl font-sans font-semibold text-lime">
+      <div className="p-10 my-5 bg-gray-100 border rounded-lg">
+        <div className="font-sans text-xl font-semibold text-lime">
           Vendor Details
         </div>
         <div className="flex flex-row pt-[45px] items-center gap-4">
           <div>Make Vendor Active :</div>
           <div className="flex flex-row items-center gap-3">
-            <div className="flex flex-row items-center gap-3 px-4 py-1 rounded-lg border bg-white">
+            <div className="flex flex-row items-center gap-3 px-4 py-1 bg-white border rounded-lg">
               <input type="radio" name="drone" checked className="text-lg" />
 
               <label className="text-lg">Active</label>
             </div>
-            <div className=" flex flex-row items-center gap-3  px-4 py-1 rounded-lg border bg-white">
+            <div className="flex flex-row items-center gap-3 px-4 py-1 bg-white border rounded-lg ">
               <input type="radio" name="drone" checked />
 
               <label>Inactive</label>
@@ -39,24 +39,24 @@ const AddNewVendor = () => {
         <div className="flex flex-row items-center gap-4 py-4">
           <div>Vendor Legal Type :</div>
           <div className="flex flex-row items-center gap-3">
-            <div className="flex flex-row items-center gap-3  px-4 py-1 rounded-lg border bg-white">
+            <div className="flex flex-row items-center gap-3 px-4 py-1 bg-white border rounded-lg">
               <input type="radio" name="drone" checked className="text-lg" />
 
               <label className="text-lg">Company</label>
             </div>
-            <div className=" flex flex-row items-center gap-3  px-4 py-1 rounded-lg border bg-white">
+            <div className="flex flex-row items-center gap-3 px-4 py-1 bg-white border rounded-lg ">
               <input type="radio" name="drone" checked />
 
               <label>Individual</label>
             </div>
-            <div className=" flex flex-row items-center gap-3  px-4 py-1 rounded-lg border bg-white">
+            <div className="flex flex-row items-center gap-3 px-4 py-1 bg-white border rounded-lg ">
               <input type="radio" name="drone" checked />
 
               <label>Professional</label>
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-1 gap-3 items-center py-4">
+        <div className="grid items-center grid-cols-1 gap-3 py-4">
           <Input
             label={<div>Vendor Legal Name</div>}
             type="text"
@@ -70,7 +70,7 @@ const AddNewVendor = () => {
             size={"lg"}
           />
         </div>
-        <div className="grid grid-cols-3 gap-3 items-center py-4">
+        <div className="grid items-center grid-cols-3 gap-3 py-4">
           <Input
             label={<div>Vendor Contact Name</div>}
             type="text"
@@ -97,26 +97,26 @@ const AddNewVendor = () => {
           />
         </div>
       </div>
-      <div className="p-10 my-5 border rounded-lg bg-gray-100">
-        <div className="text-xl font-sans font-semibold text-lime">
+      <div className="p-10 my-5 bg-gray-100 border rounded-lg">
+        <div className="font-sans text-xl font-semibold text-lime">
           Vendor Payment Details
         </div>
         <div className="flex flex-row items-center gap-4 mt-[40px] pb-[20px]">
           <div>TDS Applicability :</div>
           <div className="flex flex-row items-center gap-3">
-            <div className="flex flex-row items-center gap-3  px-4 py-1 rounded-lg border bg-white">
+            <div className="flex flex-row items-center gap-3 px-4 py-1 bg-white border rounded-lg">
               <input type="radio" name="drone" checked className="text-lg" />
 
               <label className="text-lg">Yes</label>
             </div>
-            <div className=" flex flex-row items-center gap-3  px-4 py-1 rounded-lg border bg-white">
+            <div className="flex flex-row items-center gap-3 px-4 py-1 bg-white border rounded-lg ">
               <input type="radio" name="drone" checked />
 
               <label>No</label>
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-5 items-center">
+        <div className="grid items-center grid-cols-3 gap-5">
           <Input
             label={<div>TDS Rate</div>}
             type="text"
@@ -142,7 +142,7 @@ const AddNewVendor = () => {
             size={"lg"}
           />
         </div>
-        {/* <div className="grid grid-cols-3 gap-5 items-center">
+        {/* <div className="grid items-center grid-cols-3 gap-5">
           <Input
             label={<div>City</div>}
             type="text"
@@ -163,9 +163,9 @@ const AddNewVendor = () => {
           />
         </div> */}
       </div>
-      <div className="p-10 bg-gray-100 border border rounded-2xl">
+      <div className="p-10 bg-gray-100 border rounded-2xl">
         <h3 className="font-semibold text-lime">Society Location / Address</h3>
-        <div className="mt-3 grid grid-cols-3 gap-5 items-center">
+        <div className="grid items-center grid-cols-3 gap-5 mt-3">
           <Input
             label="Address Line 1"
             type="text"
@@ -185,7 +185,7 @@ const AddNewVendor = () => {
             // onChange={handleInputChange}
           />
         </div>
-        <div className="mt-3 grid grid-cols-3 gap-5 items-center">
+        <div className="grid items-center grid-cols-3 gap-5 mt-3">
           <Input
             label="City"
             type="text"
@@ -215,12 +215,12 @@ const AddNewVendor = () => {
           />
         </div>
       </div>
-      <div className="p-10 my-5 border rounded-lg bg-gray-100">
-        <div className="text-xl font-sans font-semibold text-lime">
+      <div className="p-10 my-5 bg-gray-100 border rounded-lg">
+        <div className="font-sans text-xl font-semibold text-lime">
           Vendor Bank Details
         </div>
 
-        <div className="grid grid-cols-5 gap-5 items-center">
+        <div className="grid items-center grid-cols-5 gap-5">
           <Input
             label={<div>Bank Account Number</div>}
             type="text"
@@ -247,11 +247,11 @@ const AddNewVendor = () => {
           />
         </div>
       </div>
-      <div className="p-10 my-5 border rounded-lg bg-gray-100">
-        <div className="text-xl font-sans font-semibold text-lime">
+      <div className="p-10 my-5 bg-gray-100 border rounded-lg">
+        <div className="font-sans text-xl font-semibold text-lime">
           Documents
         </div>
-        <div className="flex flex-row w-full items-center gap-3">
+        <div className="flex flex-row items-center w-full gap-3">
           <Input
             label={<div>Vendor Cheque Image</div>}
             type="file"

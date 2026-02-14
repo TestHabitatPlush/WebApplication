@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import Dialog from "../../../../../components/ui/Dialog";
 import SocietyCreateForm from "../../components/SocietyCreateForm";
 import CustomerHandler from "../../../../../handlers/superadmin/CustomerHandler";
-import { setCustomerFormData, setSubscriptionPlans } from "../../../../../redux/slices/customerSlice";
+import { setCustomerForm, setSubscriptionPlans } from "../../../../../redux/slices/customerSlice";
 import { useDispatch, useSelector } from "react-redux";
 import SubscriptionHandler from "../../../../../handlers/superadmin/SubscriptionHandler";
 
@@ -41,7 +41,7 @@ const ViewSocietyDetailsModal = ({ onClose, isOpen }) => {
             getCustomerDetailsByIdHandler(customerId).then(res => {
                 const { Address, ...formData } = res.data.data;
                 console.log(Address, formData);
-                dispatch(setCustomerFormData({ address: Address, ...formData }));
+                dispatch(setCustomerForm({ address: Address, ...formData }));
 
             }).catch(err => {
                 console.log(err);

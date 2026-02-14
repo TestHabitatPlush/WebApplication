@@ -41,10 +41,10 @@ const ParkingListTable = () => {
     fetchParkingList();
   }, [page, pageSize]);
 
-  const handleViewParking = async (id) => {
+  const handleViewParking = async (parkingId) => {
     try {
-      console.log("Fetching Parking details for ID:", id); // Debugging
-      const viewData = await getParkingDataByIdHandler(id);
+      console.log("Fetching Parking details for ID:", parkingId); // Debugging
+      const viewData = await getParkingDataByIdHandler(parkingId);
       console.log("API Response:", viewData);  // Debugging the response
 
       if (viewData) {

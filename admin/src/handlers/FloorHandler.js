@@ -4,10 +4,12 @@ import toast from "react-hot-toast";
 import { createFloorService, getFloorBySocietyIdService ,deleteFloorService,updateFloorService} from "../services/floorService";
 
 const FloorHandler = () => {
-  const token = useSelector((state) => state.auth.token);
-  const societyId = useSelector((state) => state.auth.user.Customer.customerId);
+  const token = useSelector((state) => state.auth?.token);
+  const societyId = useSelector((state) => state.auth.user?.societyId);;
 
   const createFloorHandler = async (data) => {
+    if (!token || !societyId) return;
+
     const { floorName, shortForm } = data;
    // if (!floorName || !shortForm) {
     //  toast.error("Fill all the fields !");
@@ -22,22 +24,31 @@ const FloorHandler = () => {
         return res;
       })
       .catch((err) => {
-        if (err.status === 400) {
+        if (err.response?.status === 400) {
           toast.error(err.response.data.message);
         }
         console.log(err);
       });
   };
 
+  // const getFloorHandler = async () => {
+  //   return await getFloorBySocietyIdService( societyId, token)
+  //   .then((res)=> res)
+  //   .catch((err)=>{
+  //     console.error("Error featching floor:",err)
+  //   })
+  // };
   const getFloorHandler = async () => {
-    return await getFloorBySocietyIdService( societyId, token)
-    .then((res)=> res)
-    .catch((err)=>{
-      console.error("Error featching floor:",err)
-    })
+    if (!token || !societyId) return;
+
+    try {
+      return await getFloorBySocietyIdService(societyId, token);
+    } catch (err) {
+      console.error("Error fetching floor:", err);
+    }
   };
-  
   const deleteFloorHandler = async (floorId) => {
+    if (!token) return; 
     try {
       const res = await deleteFloorService(floorId, token);
       return res;
@@ -47,6 +58,7 @@ const FloorHandler = () => {
     }
   };
 const updateFloorHandler = async (data) => {
+  if (!token || !data?.floorId) return;
   if (!data.floorId) {
     console.error("Error: Missing floorId in update data", data);
     return;

@@ -4,7 +4,7 @@ import { createFacilityService, getFacilityService,deleteFacilityService ,getFac
 
 const FacilityHandler = () => {
   const token = useSelector((state) => state.auth.token);
-  const societyId = useSelector((state) => state.auth.user.Customer.customerId);
+  const societyId = useSelector((state) => state.auth.user?.societyId);
 
   
 

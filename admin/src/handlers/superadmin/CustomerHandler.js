@@ -25,6 +25,7 @@ const CustomerHandler = () => {
       "address.zipCode",
       "address.street",
       "address.address1",
+      "address.address2",
     ];
 
     const missingFields = requiredFields.filter((field) => {
@@ -52,7 +53,8 @@ const CustomerHandler = () => {
     createCustomerService(data).then((res) => {
       if (res.status === 201) {
         toast.success("Customer created successfully.");
-      }
+      } 
+    
     });
   };
 

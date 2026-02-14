@@ -1,111 +1,135 @@
 import React, { useEffect, useState } from "react";
-import { FaEye, FaTimes } from "react-icons/fa";
+import { FaEye, FaTimes, FaEdit } from "react-icons/fa";
 import UrlPath from "../../../../components/shared/UrlPath";
 import PageHeading from "../../../../components/shared/PageHeading";
 import ReusableTable from "../../../../components/shared/ReusableTable";
 import UserHandler from "../../../../handlers/UserHandler";
 import { useSelector } from "react-redux";
 import ViewUserAllDetailsModal from "../deactivateuser/ViewUserAllDetailsModal";
+import UpdateUserModal from "./UpdateUserModal";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const ApprovedUser = () => {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(5);
-  const [transformedData, setTransformedData] = useState([]);
+  const [users, setUsers] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [total, setTotal] = useState(0);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [viewModal, setViewModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
-  const { getAllApprovedUserDataHandler, updateUserForApprovedAndRejectHandler } = UserHandler();
+  const {
+    getAllApprovedUserDataHandler,
+    updateUserForApprovedAndRejectHandler
+  } = UserHandler();
+
   const token = useSelector((state) => state.auth.token);
-  const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
+   const societyId = useSelector((state) => state.auth.user?.societyId);
 
   const paths = ["User Management", "Approved Users"];
   const Heading = ["Approved Users"];
 
   useEffect(() => {
-    if (societyId) {
-      fetchApprovedUserList();
-    }
+    if (societyId) fetchUsers();
   }, [societyId, page, pageSize]);
 
-  const fetchApprovedUserList = async () => {
+  const fetchUsers = async () => {
     try {
-      const result = await getAllApprovedUserDataHandler(societyId, token, { page, pageSize });
-      if (result && result.users) {
-        setTransformedData(result.users);
-        setTotal(result.total);
-        setTotalPages(Math.ceil(result.total / pageSize));
+      const res = await getAllApprovedUserDataHandler(
+        societyId,
+        token,
+        { page, pageSize }
+      );
+
+      if (res?.users) {
+        setUsers(res.users);
+        setTotal(res.total);
+        setTotalPages(Math.ceil(res.total / pageSize));
       } else {
-        setTransformedData([]);
-        setTotal(0);
-        setTotalPages(0);
+        setUsers([]);
       }
-    } catch (err) {
-      console.error("Error fetching approved users:", err);
+    } catch (error) {
+      console.error(error);
     }
   };
 
   const handleView = (user) => {
     setSelectedUser(user);
-    setIsModalOpen(true);
+    setViewModal(true);
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedUser(null);
+  const handleEdit = (user) => {
+    setSelectedUser(user);
+    setEditModal(true);
   };
 
-  const handleDelete = async (userId) => {
+
+// const handleEdit = async (row) => {
+//   try {
+//     const res = await getUserByIdHandler(row.userId);
+
+//     if (res?.user) {
+//       setSelectedUser(res.user);   // ✅ FULL user data
+//       setEditModal(true);
+//     } else {
+//       toast.error("User details not found");
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     toast.error("Failed to fetch user details");
+//   }
+// };
+
+
+
+  const handleDeactivate = async (userId) => {
     try {
-      if (!societyId || !token) {
-        console.error("Society ID or token is missing.");
-        return;
-      }
-
-      const updatedUser = {
+      const payload = {
         userId,
-        status: "inactive",
         societyId,
+        status: "inactive",
       };
 
-      const response = await updateUserForApprovedAndRejectHandler(updatedUser);
-
-      if (response && response.status === 200) {
-        toast.success("User deactivated successfully!");
-        fetchApprovedUserList();
-      } else {
-        toast.error("Failed to deactivate user.");
+      const res = await updateUserForApprovedAndRejectHandler(payload);
+      if (res?.status === 200) {
+        toast.success("User deactivated");
+        fetchUsers();
       }
-    } catch (error) {
-      toast.error("Error: " + (error.response?.data?.message || error.message));
+    } catch (err) {
+      toast.error("Failed to deactivate user");
     }
   };
 
   const columns = [
     {
-      Header: "Sl. No",
-      accessor: "serialNumber",
+      Header: "Sl No",
       Cell: ({ row }) => page * pageSize + row.index + 1,
     },
     { Header: "First Name", accessor: "firstName" },
     { Header: "Last Name", accessor: "lastName" },
     { Header: "Role", accessor: "roleId" },
-    { Header: "Mobile No.", accessor: "mobileNumber" },
+    { Header: "Unit ID", accessor: "unitId" },
+    { Header: "Mobile", accessor: "mobileNumber" },
     { Header: "Status", accessor: "status" },
     {
       Header: "Action",
-      accessor: "action",
       Cell: ({ row }) => (
-        <div className="flex space-x-4">
-          <button className="text-yellow-500 hover:text-yellow-700" onClick={() => handleView(row.original)}>
-            <FaEye className="text-lg" />
-          </button>
-          <button className="text-red-500 hover:text-red-700" onClick={() => handleDelete(row.original.userId)}>
-            <FaTimes className="text-lg" />
-          </button>
+        <div className="flex gap-4">
+          <FaEye
+            className="text-yellow-500 cursor-pointer hover:text-yellow-700"
+            onClick={() => handleView(row.original)}
+          />
+          <FaEdit
+            className="text-lg text-green-600 cursor-pointer hover:text-green-700"
+            onClick={() => handleEdit(row.original)}
+          />
+          <FaTimes
+            className="text-lg text-red-600 cursor-pointer hover:text-red-700"
+            onClick={() => handleDeactivate(row.original.userId)}
+          />
         </div>
       ),
     },
@@ -114,33 +138,36 @@ const ApprovedUser = () => {
   return (
     <div>
       <UrlPath paths={paths} />
-      <div className="flex">
-        <div className="w-full">
-          <PageHeading heading={Heading} />
-          <div className="flex flex-row font-sans text-lg font-medium text-gray-700">
-            TOTAL {total} USERS
-          </div>
+      <PageHeading heading={Heading} />
 
-          <ReusableTable
-            columns={columns}
-            data={transformedData}
-            pageIndex={page}
-            pageSize={pageSize}
-            totalCount={total}
-            totalPages={totalPages}
-            setPageIndex={setPage}
-            setPageSize={setPageSize}
-          />
-        </div>
-      </div>
+      <ReusableTable
+        columns={columns}
+        data={users}
+        pageIndex={page}
+        pageSize={pageSize}
+        totalCount={total}
+        totalPages={totalPages}
+        setPageIndex={setPage}
+        setPageSize={setPageSize}
+      />
 
-      {isModalOpen && selectedUser && (
+      {viewModal && (
         <ViewUserAllDetailsModal
-          isOpen={isModalOpen}
-          onClose={closeModal}
+          isOpen={viewModal}
+          onClose={() => setViewModal(false)}
           formData={selectedUser}
         />
       )}
+
+      {editModal && (
+        <UpdateUserModal
+          isOpen={editModal}
+          onClose={() => setEditModal(false)}
+          userData={selectedUser}
+          refreshList={fetchUsers}
+        />
+      )}
+     
     </div>
   );
 };

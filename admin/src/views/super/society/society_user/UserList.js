@@ -169,17 +169,17 @@ const UserList = () => {
 
   return (
     <div>
-      <h1>User List</h1>
-
-      <ReusableTable
+      <h1>society List</h1>
+ <ReusableTable
         columns={columns}
-        data={data}
+        data={paginatedData}     // ✅ sliced data
         pageIndex={page}
         pageSize={pageSize}
-        totalCount={total}
-        totalPages={totalPages}
-        setPageIndex={(index) => dispatch(setPage(index))}
-        setPageSize={(size) => dispatch(setPageSize(size))}
+        totalCount={totalCount} // ✅ frontend total
+        totalPages={totalPages} // ✅ frontend pages
+        setPageIndex={setPage}
+        setPageSize={setPageSize}
+        manualPagination={false}   // ✅ VERY IMPORTANT
       />
 
       {viewModal && (

@@ -6,6 +6,7 @@ import Select from "../components/ui/Select";
 import { FaCamera } from "react-icons/fa";
 import Button from "../components/ui/Button";
 import UserHandler from "../handlers/UserHandler";
+import AdminHandler from "../handlers/superadmin/AdminHandler";
 import UserRoleHandler from "../handlers/UserRoleHandler";
 import CustomerHandler from "../handlers/superadmin/CustomerHandler";
 
@@ -16,7 +17,7 @@ const CreateUserForm = () => {
   const selectOptions = useSelector(
     (state) => state.societyModeratorForm.selectOptions
   );
-  const { createSocietyModeratorHandler } = UserHandler();
+  const { createSocietyModeratorHandler } = AdminHandler();
   const { getCustomerHandler } = CustomerHandler();
 
   const fileInputRef = useRef(null);

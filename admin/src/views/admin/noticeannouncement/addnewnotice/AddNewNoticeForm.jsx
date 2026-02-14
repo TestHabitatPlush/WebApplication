@@ -237,7 +237,7 @@ const AddNewNoticeForm = () => {
     if (!validateFields()) return;
     try {
       setSubmitting(true);
-      await createNoticeBySocietyHandler(noticeform);
+      await createNoticeBySocietyHandler(noticeForm);
       setNoticeForm({
         noticeHeading: "",
         noticeDescription: "",

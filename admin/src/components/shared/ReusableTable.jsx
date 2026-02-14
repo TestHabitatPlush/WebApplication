@@ -1,363 +1,313 @@
-// import React, { useEffect } from 'react';
-// import { useTable, usePagination } from 'react-table';
-// import PropTypes from 'prop-types';
-
-// const ReusableTable = ({
-//   columns,
-//   data,
-//   pageIndex,
-//   pageSize,
-//   totalCount,
-//   totalPages,
-//   setPageIndex,
-//   setPageSize
-// }) => {
-//   const {
-//     getTableProps,
-//     getTableBodyProps,
-//     headerGroups,
-//     page, // Instead of rows, we'll use page
-//     prepareRow,
-//     canPreviousPage,
-//     canNextPage,
-//     gotoPage,
-//     nextPage,
-//     previousPage,
-//     setPageSize: internalSetPageSize,
-//     state: { pageIndex: internalPageIndex, pageSize: internalPageSize }
-//   } = useTable(
-//     {
-//       columns,
-//       data,
-//       initialState: { pageIndex },
-//       manualPagination: true, // Use manual pagination
-//       pageCount: totalPages,
-//     },
-//     usePagination
-//   );
-
-//   useEffect(() => {
-//     gotoPage(pageIndex);
-//   }, [pageIndex, gotoPage]);
-
-//   useEffect(() => {
-//     internalSetPageSize(pageSize);
-//   }, [pageSize, internalSetPageSize]);
-
-//   const onNextPage = () => {
-//     setPageIndex(parseInt(pageIndex)+1)
-//   };
-
-//   const onPreviousPage = () => {
-//     setPageIndex(parseInt(pageIndex)-1)
-//   };
-
-//   return (
-//     <div>
-//       <table {...getTableProps()} className="min-w-full border border-collapse border-gray-300 table-auto">
-//         <thead className="bg-gray-200">
-//           {headerGroups.map(headerGroup => (
-//             <tr {...headerGroup.getHeaderGroupProps()}>
-//               {headerGroup.headers.map(column => (
-//                 <th
-//                   {...column.getHeaderProps()}
-//                   className="px-4 py-2 text-sm font-medium text-left text-gray-600 border-b border-gray-300"
-//                 >
-//                   {column.render('Header')}
-//                 </th>
-//               ))}
-//             </tr>
-//           ))}
-//         </thead>
-//         <tbody {...getTableBodyProps()} className="bg-white divide-y divide-gray-200">
-//           {page.map(row => {
-//             prepareRow(row);
-//             return (
-//               <tr {...row.getRowProps()}>
-//                 {row.cells.map(cell => (
-//                   <td
-//                     {...cell.getCellProps()}
-//                     className="px-4 py-2 text-sm text-gray-700 border-b border-gray-300"
-//                   >
-//                     {cell.render('Cell')}
-//                   </td>
-//                 ))}
-//               </tr>
-//             );
-//           })}
-//         </tbody>
-//       </table>
-
-//       {/* Pagination Controls */}
-//       <div className="flex items-center justify-between mt-4">
-//         <div>
-//           <button
-//             onClick={onPreviousPage}
-//             disabled={!canPreviousPage}
-//             className="px-3 py-1 mr-2 text-white bg-blue-500 rounded-md disabled:opacity-50"
-//           >
-//             {'<'}
-//           </button>
-//           <button
-//             onClick={onNextPage}
-//             disabled={!canNextPage}
-//             className="px-3 py-1 mr-2 text-white bg-blue-500 rounded-md disabled:opacity-50"
-//           >
-//             {'>'}
-//           </button>
-//         </div>
-
-//         <div className="flex items-center">
-//           <span className="text-sm text-gray-700">
-//             Page <strong>{pageIndex + 1} of {totalPages}</strong>
-//           </span>
-//           <span className="ml-4 text-sm text-gray-700">
-//             | Go to page: 
-//             <input
-//               type="number"
-//               value={pageIndex + 1}
-//               onChange={e => {
-//                 const page = e.target.value ? Number(e.target.value) - 1 : 0;
-//                 setPageIndex(page);
-//                 gotoPage(page);
-//               }}
-//               className="w-16 ml-2 text-center border rounded-md"
-//             />
-//           </span>
-//         </div>
-
-//         <select
-//           value={internalPageSize}
-//           onChange={e => {
-//             const newSize = Number(e.target.value);
-//             setPageSize(newSize);
-//             internalSetPageSize(newSize);
-//           }}
-//           className="p-1 ml-4 border rounded-md"
-//         >
-//           {[10, 20, 30, 40, 50].map(size => (
-//             <option key={size} value={size}>
-//               Show {size}
-//             </option>
-//           ))}
-//         </select>
-//       </div>
-//     </div>
-//   );
-// };
-
-// ReusableTable.propTypes = {
-//   columns: PropTypes.array.isRequired,
-//   data: PropTypes.array.isRequired,
-//   pageIndex: PropTypes.number.isRequired,
-//   pageSize: PropTypes.number.isRequired,
-//   totalCount: PropTypes.number.isRequired,
-//   totalPages: PropTypes.number.isRequired,
-//   setPageIndex: PropTypes.func.isRequired,
-//   setPageSize: PropTypes.func.isRequired,
-// };
-
-// export default ReusableTable;
-
-
-
-import React, { useEffect, useState } from 'react';
-import { useTable, usePagination } from 'react-table';
-import PropTypes from 'prop-types';
-// import { CSVLink } from 'react-csv';
-import { utils, writeFile } from 'xlsx';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import React, { useMemo, useEffect } from "react";
+import { useTable } from "react-table";
+import PropTypes from "prop-types";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const ReusableTable = ({
-  columns,
-  data,
+  columns = [],
+  data = [],
+  fullData = [],
   pageIndex,
   pageSize,
-  totalCount,
-  totalPages,
+  totalCount, // kept for compatibility
+  totalPages, // kept for compatibility
   setPageIndex,
-  setPageSize
+  setPageSize,
+  onSearchChange,
+  searchValue = "",
+  fileName = "table-data",
+  onVisibleCountChange,
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const safeData = Array.isArray(data) ? data : [];
+  const safeFullData = Array.isArray(fullData) ? fullData : [];
 
-  // Filter data based on search query
-  const filteredData = data.filter(row => {
-    return columns.some(column => {
-      const cellValue = row[column.accessor];
-      return cellValue && cellValue.toString().toLowerCase().includes(searchQuery.toLowerCase());
-    });
-  });
+  /*
+    We decide which base data to use.
+    If fullData is supplied -> it is the real source.
+    Otherwise fallback to data.
+  */
+  const baseData = safeFullData.length ? safeFullData : safeData;
+
+  /* ---------------- internal search (fallback) ---------------- */
+  const displayData = useMemo(() => {
+    if (!searchValue) return baseData;
+
+    const q = searchValue.toLowerCase();
+
+    return baseData.filter((row) =>
+      columns
+        .filter((c) => c.accessor)
+        .some((c) =>
+          String(row?.[c.accessor] ?? "")
+            .toLowerCase()
+            .includes(q)
+        )
+    );
+  }, [baseData, searchValue, columns]);
+
+  /* ✅ notify parent about visible (filtered) count */
+  useEffect(() => {
+    if (typeof onVisibleCountChange === "function") {
+      onVisibleCountChange(displayData.length);
+    }
+  }, [displayData.length, onVisibleCountChange]);
+
+  /* ---------------- pagination ---------------- */
+
+  const computedTotalPages =
+    Math.ceil(displayData.length / pageSize) || 1;
+
+  const paginatedData = useMemo(() => {
+    const start = pageIndex * pageSize;
+    const end = start + pageSize;
+    return displayData.slice(start, end);
+  }, [displayData, pageIndex, pageSize]);
+
+  const dataWithSlNo = useMemo(() => {
+    return paginatedData.map((row, i) => ({
+      ...row,
+      slNo: pageIndex * pageSize + i + 1,
+    }));
+  }, [paginatedData, pageIndex, pageSize]);
 
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    page,
+    rows,
     prepareRow,
-    canPreviousPage,
-    canNextPage,
-    gotoPage,
-    nextPage,
-    previousPage,
-    setPageSize: internalSetPageSize,
-    state: { pageIndex: internalPageIndex, pageSize: internalPageSize }
-  } = useTable(
-    {
-      columns,
-      data: filteredData,
-      initialState: { pageIndex },
-      manualPagination: true,
-      pageCount: totalPages,
-    },
-    usePagination
-  );
+  } = useTable({
+    columns,
+    data: dataWithSlNo,
+  });
 
-  useEffect(() => {
-    gotoPage(pageIndex);
-  }, [pageIndex, gotoPage]);
+  /* ---------------- Copy / PDF / Print ---------------- */
 
-  useEffect(() => {
-    internalSetPageSize(pageSize);
-  }, [pageSize, internalSetPageSize]);
+  const handleCopy = () => {
+    if (!Array.isArray(displayData) || !columns.length) return;
 
-  const onNextPage = () => {
-    setPageIndex(pageIndex + 1);
+    const headers = columns
+      .filter((c) => c.accessor)
+      .map((c) => c.Header);
+
+    const body = displayData.map((row, index) =>
+      columns
+        .filter((c) => c.accessor)
+        .map((c) => {
+          if (c.accessor === "slNo") return index + 1;
+          return row?.[c.accessor] ?? "";
+        })
+        .join("\t")
+    );
+
+    const text = [headers.join("\t"), ...body].join("\n");
+    navigator.clipboard.writeText(text);
   };
 
-  const onPreviousPage = () => {
-    setPageIndex(pageIndex - 1);
-  };
+  const handlePdf = () => {
+    if (!Array.isArray(displayData) || !columns.length) return;
 
-  const handleExcelExport = () => {
-    const ws = utils.json_to_sheet(filteredData);
-    const wb = utils.book_new();
-    utils.book_append_sheet(wb, ws, 'Sheet1');
-    writeFile(wb, 'table_data.xlsx');
-  };
+    const doc = new jsPDF();
 
-  const handlePDFExport = () => {
-    const input = document.getElementById('table-container');
-    html2canvas(input).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF();
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save('table_data.pdf');
+    const headers = columns
+      .filter((c) => c.accessor)
+      .map((c) => c.Header);
+
+    const body = displayData.map((row, index) =>
+      columns
+        .filter((c) => c.accessor)
+        .map((c) => {
+          if (c.accessor === "slNo") return index + 1;
+          return row?.[c.accessor] ?? "";
+        })
+    );
+
+    autoTable(doc, {
+      head: [headers],
+      body,
     });
+
+    doc.save(`${fileName}.pdf`);
   };
 
   const handlePrint = () => {
-    const printContents = document.getElementById('table-container').innerHTML;
-    const printWindow = window.open('', '', 'height=600,width=800');
-    printWindow.document.write('<html><head><title>Print Table</title></head><body>');
-    printWindow.document.write(printContents);
-    printWindow.document.write('</body></html>');
-    printWindow.document.close();
-    printWindow.print();
+    if (!Array.isArray(displayData) || !columns.length) return;
+
+    const headers = columns
+      .filter((c) => c.accessor)
+      .map((c) => `<th>${c.Header}</th>`)
+      .join("");
+
+    const rowsHtml = displayData
+      .map(
+        (row, index) =>
+          `<tr>
+            ${columns
+              .filter((c) => c.accessor)
+              .map((c) => {
+                if (c.accessor === "slNo")
+                  return `<td>${index + 1}</td>`;
+                return `<td>${row?.[c.accessor] ?? ""}</td>`;
+              })
+              .join("")}
+          </tr>`
+      )
+      .join("");
+
+    const html = `
+      <html>
+        <head><title>${fileName}</title></head>
+        <body>
+          <table border="1" style="border-collapse:collapse;width:100%">
+            <thead><tr>${headers}</tr></thead>
+            <tbody>${rowsHtml}</tbody>
+          </table>
+        </body>
+      </html>
+    `;
+
+    const win = window.open("", "", "height=700,width=900");
+    win.document.write(html);
+    win.document.close();
+    win.print();
   };
 
-  // const handleCopy = async () => {
-  //   const copyText = filteredData.map(row =>
-  //     columns.map(col => row[col.accessor]).join('\t')
-  //   ).join('\n');
-  //   await navigator.clipboard.writeText(copyText);
-  //   alert('Table copied to clipboard!');
-  // };
+  /* ---------------- pagination controls ---------------- */
+
+  const onNextPage = () => {
+    if (pageIndex + 1 < computedTotalPages) {
+      setPageIndex(pageIndex + 1);
+    }
+  };
+
+  const onPreviousPage = () => {
+    if (pageIndex > 0) {
+      setPageIndex(pageIndex - 1);
+    }
+  };
 
   return (
     <div>
-      {/* Search and Export Buttons */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex gap-2">
-          {/* <button onClick={handleCopy} className="px-3 py-1 text-white bg-gray-700 rounded">Copy</button>
-          <CSVLink data={filteredData} filename="table_data.csv" className="px-3 py-1 text-white bg-green-600 rounded">CSV</CSVLink> */}
-          <button onClick={handleExcelExport} className="px-3 py-1 text-white bg-blue-600 rounded">Excel</button>
-          <button onClick={handlePDFExport} className="px-3 py-1 text-white bg-red-600 rounded">PDF</button>
-          <button onClick={handlePrint} className="px-3 py-1 text-white bg-purple-600 rounded">Print</button>
-        </div>
-
-        {/* Search Input */}
+      <div className="flex items-center justify-between mb-3">
         <input
           type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search..."
-          className="p-2 border rounded-md"
+          value={searchValue}
+          onChange={(e) => {
+            onSearchChange?.(e.target.value);
+            setPageIndex(0);
+          }}
+          className="px-3 py-2 border rounded w-72"
         />
+
+        <div className="flex gap-2">
+          <button
+            onClick={handleCopy}
+            className="px-3 py-1 text-white bg-gray-600 rounded"
+          >
+            Copy
+          </button>
+          <button
+            onClick={handlePrint}
+            className="px-3 py-1 text-white bg-blue-600 rounded"
+          >
+            Print
+          </button>
+          <button
+            onClick={handlePdf}
+            className="px-3 py-1 text-white bg-red-600 rounded"
+          >
+            PDF
+          </button>
+        </div>
       </div>
 
-      {/* Table */}
-      <div id="table-container">
-        <table {...getTableProps()} className="min-w-full border border-collapse border-gray-300 table-auto">
+      <div className="overflow-x-auto">
+        <table
+          {...getTableProps()}
+          className="min-w-full border border-collapse border-gray-300 table-auto"
+        >
           <thead className="bg-gray-200">
-            {headerGroups.map(headerGroup => (
+            {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map(column => (
+                {headerGroup.headers.map((column) => (
                   <th
                     {...column.getHeaderProps()}
                     className="px-4 py-2 text-sm font-medium text-left text-gray-600 border-b border-gray-300"
                   >
-                    {column.render('Header')}
+                    {column.render("Header")}
                   </th>
                 ))}
               </tr>
             ))}
           </thead>
-          <tbody {...getTableBodyProps()} className="bg-white divide-y divide-gray-200">
-            {page.map(row => {
+
+          <tbody {...getTableBodyProps()}>
+            {rows.map((row) => {
               prepareRow(row);
               return (
                 <tr {...row.getRowProps()}>
-                  {row.cells.map(cell => (
+                  {row.cells.map((cell) => (
                     <td
                       {...cell.getCellProps()}
                       className="px-4 py-2 text-sm text-gray-700 border-b border-gray-300"
                     >
-                      {cell.render('Cell')}
+                      {cell.render("Cell")}
                     </td>
                   ))}
                 </tr>
               );
             })}
+
+            {!rows.length && (
+              <tr>
+                <td
+                  colSpan={columns.length}
+                  className="px-4 py-6 text-center text-gray-500"
+                >
+                  No data found
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
 
-      {/* Pagination Controls */}
       <div className="flex items-center justify-between mt-4">
         <div>
           <button
             onClick={onPreviousPage}
-            disabled={!canPreviousPage}
+            disabled={pageIndex === 0}
             className="px-3 py-1 mr-2 text-white bg-blue-500 rounded-md disabled:opacity-50"
           >
-            {'<'}
+            {"<"}
           </button>
+
           <button
             onClick={onNextPage}
-            disabled={!canNextPage}
-            className="px-3 py-1 mr-2 text-white bg-blue-500 rounded-md disabled:opacity-50"
+            disabled={pageIndex + 1 >= computedTotalPages}
+            className="px-3 py-1 text-white bg-blue-500 rounded-md disabled:opacity-50"
           >
-            {'>'}
+            {">"}
           </button>
         </div>
 
         <div className="flex items-center">
           <span className="text-sm text-gray-700">
-            Page <strong>{pageIndex + 1} of {totalPages}</strong>
+            Page <strong>{pageIndex + 1}</strong> of {computedTotalPages}
           </span>
+
           <span className="ml-4 text-sm text-gray-700">
             | Go to page:
             <input
               type="number"
+              min={1}
+              max={computedTotalPages}
               value={pageIndex + 1}
-              onChange={e => {
-                const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                setPageIndex(page);
-                gotoPage(page);
+              onChange={(e) => {
+                const p = Number(e.target.value) - 1;
+                if (p >= 0 && p < computedTotalPages) setPageIndex(p);
               }}
               className="w-16 ml-2 text-center border rounded-md"
             />
@@ -365,15 +315,14 @@ const ReusableTable = ({
         </div>
 
         <select
-          value={internalPageSize}
-          onChange={e => {
-            const newSize = Number(e.target.value);
-            setPageSize(newSize);
-            internalSetPageSize(newSize);
+          value={pageSize}
+          onChange={(e) => {
+            setPageSize(Number(e.target.value));
+            setPageIndex(0);
           }}
           className="p-1 ml-4 border rounded-md"
         >
-          {[10, 20, 30, 40, 50].map(size => (
+          {[10, 20, 30, 40, 50].map((size) => (
             <option key={size} value={size}>
               Show {size}
             </option>
@@ -386,14 +335,18 @@ const ReusableTable = ({
 
 ReusableTable.propTypes = {
   columns: PropTypes.array.isRequired,
-  data: PropTypes.array.isRequired,
+  data: PropTypes.array,
+  fullData: PropTypes.array,
   pageIndex: PropTypes.number.isRequired,
   pageSize: PropTypes.number.isRequired,
-  totalCount: PropTypes.number.isRequired,
-  totalPages: PropTypes.number.isRequired,
+  totalCount: PropTypes.number,
+  totalPages: PropTypes.number,
   setPageIndex: PropTypes.func.isRequired,
   setPageSize: PropTypes.func.isRequired,
+  onSearchChange: PropTypes.func,
+  searchValue: PropTypes.string,
+  fileName: PropTypes.string,
+  onVisibleCountChange: PropTypes.func,
 };
 
 export default ReusableTable;
-

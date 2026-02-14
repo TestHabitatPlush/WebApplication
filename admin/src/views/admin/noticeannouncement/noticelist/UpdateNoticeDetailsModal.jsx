@@ -38,11 +38,11 @@
 //     <Dialog
 //       isOpen={isOpen}
 //       onClose={onClose}
-//       className="h-full w-full overflow-auto p-10"
+//       className="w-full h-full p-10 overflow-auto"
 //       contentClassName={`w-full h-full bg-white lg:max-w-6xl rounded-lg overflow-auto scrollbar p-5`}
 //       overlayClassName="backdrop-blur"
 //     >
-//       <div className="p-10 my-5 border rounded-lg bg-gray-100">
+//       <div className="p-10 my-5 bg-gray-100 border rounded-lg">
 //         <div className="flex flex-col w-full gap-5 py-6">
 //           <div>
 //             <Input
@@ -88,7 +88,7 @@
 //           </div>
 
 //           {/* Radio Buttons */}
-//           <div className="grid grid-cols-4 gap-5 items-center my-5">
+//           <div className="grid items-center grid-cols-4 gap-5 my-5">
 //             <div className="flex flex-row items-center gap-3">
 //               <label>Only for Owners</label>
 //               <input
@@ -168,12 +168,12 @@ const formatDate = (date) => {
 };
 
 const UpdateNoticeDetailsModal = ({ isOpen, onClose, formData, onEditHandler }) => {
-  const [noticeForm, setNoticeForm] = useState(formData);
-
-  useEffect(() => {
+ 
+ 
+const [noticeForm, setNoticeForm] = useState({});
+ useEffect(() => {
     setNoticeForm(formData);
   }, [formData]);
-
   const handleInput = (e) => {
     const { name, value } = e.target;
     setNoticeForm({ ...noticeForm, [name]: value });
@@ -199,7 +199,7 @@ const UpdateNoticeDetailsModal = ({ isOpen, onClose, formData, onEditHandler }) 
           <li className="flex items-start gap-4 p-4 bg-white rounded-md shadow-sm">
             <FaHeading className="mt-1 text-xl text-blue-600" />
             <div className="w-full">
-              <h4 className="text-sm text-gray-500 mb-1">Notice Heading</h4>
+              <h4 className="mb-1 text-sm text-gray-500">Notice Heading</h4>
               <Input
                 value={noticeForm?.noticeHeading || ""}
                 type="text"
@@ -214,13 +214,13 @@ const UpdateNoticeDetailsModal = ({ isOpen, onClose, formData, onEditHandler }) 
           <li className="flex items-start gap-4 p-4 bg-white rounded-md shadow-sm">
             <FaStickyNote className="mt-1 text-xl text-blue-600" />
             <div className="w-full">
-              <h4 className="text-sm text-gray-500 mb-1">Notice Description</h4>
+              <h4 className="mb-1 text-sm text-gray-500">Notice Description</h4>
               <textarea
                 rows="4"
                 name="noticeDescription"
                 value={noticeForm?.noticeDescription || ""}
                 onChange={handleInput}
-                className="w-full p-2 border border-gray-300 rounded-md text-sm"
+                className="w-full p-2 text-sm border border-gray-300 rounded-md"
                 placeholder="Write your notice description here..."
               ></textarea>
             </div>
@@ -230,7 +230,7 @@ const UpdateNoticeDetailsModal = ({ isOpen, onClose, formData, onEditHandler }) 
           <li className="flex items-start gap-4 p-4 bg-white rounded-md shadow-sm">
             <FaRegCalendarAlt className="mt-1 text-xl text-blue-600" />
             <div className="w-full">
-              <h4 className="text-sm text-gray-500 mb-1">Expiry Date</h4>
+              <h4 className="mb-1 text-sm text-gray-500">Expiry Date</h4>
               <Input
                 type="date"
                 name="noticeExpireDate"
@@ -244,14 +244,13 @@ const UpdateNoticeDetailsModal = ({ isOpen, onClose, formData, onEditHandler }) 
           <li className="flex items-start gap-4 p-4 bg-white rounded-md shadow-sm">
             <FaUsers className="mt-1 text-xl text-blue-600" />
             <div className="w-full">
-              <h4 className="text-sm text-gray-500 mb-2">User Group Visibility</h4>
+              <h4 className="mb-2 text-sm text-gray-500">User Group Visibility</h4>
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <label className="flex items-center gap-2">
                   <input
                     type="radio"
                     name="userGroupId"
-                    checked={noticeForm.userGroupId === 1}
-                    onChange={() => handleRadioChange(1)}
+                    checked={Number(noticeForm?.userGroupId) === 1} onChange={() => handleRadioChange(2)}
                   />
                   Only for Owners
                 </label>

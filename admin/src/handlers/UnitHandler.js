@@ -6,19 +6,30 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 
 const UnitHandler = () => {
-  const token = useSelector((state) => state.auth.token);
-  const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
+  const token = useSelector((state) => state.auth?.token);
+  const societyId = useSelector((state) => state.auth.user?.societyId);
 
 
- const getAllUnitHandler = async () => {
-    return await getAllUnitBySocietyIdService(societyId, token) // Pass societyId
-      .then((res) => res)
-      .catch((err) => {
-        console.error("Error fetching Units:", err);
-      });
-  };
+//  const getAllUnitHandler = async () => {
+//     return await getAllUnitBySocietyIdService(societyId, token) 
+//       .then((res) => res)
+//       .catch((err) => {
+//         console.error("Error fetching Units:", err);
+//       });
+//   };
+
+const getAllUnitHandler = async()=>{
+  if(!societyId || !token) return;
+
+  try{
+    return await getAllUnitBySocietyIdService(societyId,token);
+  } catch(err){
+    console.error("Error fetching Units:",err)
+  }
+}
 
   const deleteUnitHandler = async (id) => {
+    if (!token) return;
     try {
          const response = await deleteUnitByIdService(id, token);
          if (response.status === 200) {
@@ -34,6 +45,7 @@ const UnitHandler = () => {
   };
 
   const updateUnitHandler = async (data) => {
+    if(!token || !data?.unitId) return;
         try {
           console.log("Updating parking data:", data);
           const response = await updateUnitService(

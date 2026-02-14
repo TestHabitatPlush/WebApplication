@@ -2,7 +2,7 @@
 
 import toast from 'react-hot-toast';
 import {
-  createSocietyModeratorService,
+  
   createSocietyResidentService,
   createBulkSocietyUserService,
   getResidentBySocietyIdService,
@@ -15,7 +15,6 @@ import {
   updateSocietyModeratorService,
   getSocietyModeratorService,
   createMultipleSocietyUserService,
-  getAllSuperAdminItAndModeratorService,
   updateUserIdStatusService
 } from '../services/userService';
 import { useSelector } from 'react-redux';
@@ -23,21 +22,7 @@ import { useSelector } from 'react-redux';
 const UserHandler = () => {
   const token = useSelector((state) => state.auth.token);
   const userId = useSelector((state) => state.auth.user?.userId);
-
-  const createSocietyModeratorHandler = async (formData) => {
-    try {
-      const response = await createSocietyModeratorService(formData, token);
-      console.log("societymoderator",response)
-      if (response.status === 201) {
-        toast.success('Society Moderator created successfully!');
-      }
-      return response;
-    } catch (error) {
-      console.error('Error creating moderator:', error);
-      toast.error(error.response?.data?.message || error.message);
-      return null;
-    }
-  };
+  
 
   const createSocietyResidentUserHandler = async (societyId, formData) => {
     try {
@@ -297,18 +282,7 @@ const createBulkSocietyUserHandler = async (societyId, token, file) => {
   }
 };
 
- const getAllSuperAdminItAndModeratorHandler = async (token, data = {}) => {
-  try {
-    const response = await getAllSuperAdminItAndModeratorService(token, data);
-    return response.data;
-  } catch (error) {
-    console.error(
-      "Error fetching Super Admin, IT and Moderator list:",
-      error.response?.data || error.message
-    );
-    throw error;
-  }
-};
+
   const updateUserIdStatusHandler = async (userId, token, data) => {
     try {
       const response = await updateUserIdStatusService(userId, token, data);
@@ -323,7 +297,7 @@ const createBulkSocietyUserHandler = async (societyId, token, file) => {
   };
 
   return {
-    createSocietyModeratorHandler,
+   
     createSocietyResidentUserHandler,
     getResidentBySocietyIdHandler,
     getUserByIdHandler,
@@ -337,7 +311,7 @@ const createBulkSocietyUserHandler = async (societyId, token, file) => {
     getSocietyModeratorHandler,
     createBulkSocietyUserHandler,
     createMultipleSocietyUserHandler,
-    getAllSuperAdminItAndModeratorHandler,
+    
     updateUserIdStatusHandler
   };
 };

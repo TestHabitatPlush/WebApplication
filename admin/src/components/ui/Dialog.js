@@ -2,7 +2,7 @@ import React from "react";
 import Modal from "react-modal";
 import classNames from "classnames";
 import PropTypes from "prop-types";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import CloseButton from "./CloseButton";
 
 const Dialog = (props) => {
@@ -11,7 +11,7 @@ const Dialog = (props) => {
     className,
     closable,
     width,
-    height,
+    height, // keep prop (optional)
     style,
     isOpen,
     onClose,
@@ -23,66 +23,59 @@ const Dialog = (props) => {
     ...rest
   } = props;
 
-  const onCloseClick = (e) => {
-    onClose(e);
-  };
+  const onCloseClick = (e) => onClose && onClose(e);
 
-  const renderCloseButton = <CloseButton onClick={onCloseClick} absolute />;
+  const renderCloseButton =
+    closable && <CloseButton onClick={onCloseClick} absolute />;
 
+  // ✅ FIXED: removed height forcing
   const contentStyle = {
-    content: {
-      inset: "unset",
-    },
+    content: { inset: "unset", width: width ?? 520 },
     ...style,
   };
 
-  if (width !== undefined) {
-    contentStyle.content.width = width;
-    contentStyle.content.width = "auto";
-  }
-  if (height !== undefined) {
-    contentStyle.content.height = height;
-  }
-
-  const defaultDialogContentClass = "dialog-content";
-
-  const dialogClass = classNames(defaultDialogContentClass, contentClassName);
-
-  const default_overlay_class = "bg-opacity-60 bg-black";
-  const overlay_class = classNames(overlayClassName, default_overlay_class);
+  const dialogClass = classNames("dialog-content", contentClassName);
+  const overlayClass = classNames(
+    "dialog-overlay",
+    overlayClassName,
+    "bg-opacity-60 bg-black"
+  );
 
   return (
-    <Modal
-      shouldCloseOnOverlayClick={closable}
-      className={{
-        base: classNames("dialog", className),
-        afterOpen: "dialog-after-open",
-        beforeClose: "dialog-before-close",
-      }}
-      overlayClassName={{
-        base: classNames("dialog-overlay", overlay_class),
-        afterOpen: "dialog-overlay-after-open",
-        beforeClose: "dialog-overlay-before-close",
-      }}
-      portalClassName={classNames("dialog-portal", portalClassName)}
-      bodyOpenClassName={classNames("dialog-open", bodyOpenClassName)}
-      ariaHideApp={false}
-      isOpen={isOpen}
-      style={{ ...contentStyle }}
-      closeTimeoutMS={closeTimeoutMS}
-      {...rest}
-    >
-      <motion.div
-        className={dialogClass}
-        initial={{ transform: "scale(0.9)" }}
-        animate={{
-          transform: isOpen ? "scale(1)" : "scale(0.9)",
+    <AnimatePresence>
+      <Modal
+        shouldCloseOnOverlayClick={closable}
+        isOpen={isOpen}
+        onRequestClose={onClose}
+        ariaHideApp={false}
+        portalClassName={classNames("dialog-portal", portalClassName, props.key)}
+        bodyOpenClassName={classNames("dialog-open", bodyOpenClassName)}
+        className={{
+          base: classNames("dialog", className),
+          afterOpen: "dialog-after-open",
+          beforeClose: "dialog-before-close",
         }}
+        overlayClassName={{
+          base: overlayClass,
+          afterOpen: "dialog-overlay-after-open",
+          beforeClose: "dialog-overlay-before-close",
+        }}
+        style={contentStyle}
+        closeTimeoutMS={closeTimeoutMS}
+        {...rest}
       >
-        {closable && renderCloseButton}
-        {children}
-      </motion.div>
-    </Modal>
+        <motion.div
+          key="dialog-motion"
+          className={dialogClass}
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.9, opacity: 0 }}
+        >
+          {renderCloseButton}
+          {children}
+        </motion.div>
+      </Modal>
+    </AnimatePresence>
   );
 };
 

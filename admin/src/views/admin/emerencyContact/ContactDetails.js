@@ -11,7 +11,7 @@ const ContactDetails = () => {
 
   const token = useSelector((state) => state.auth.token);
   const userId = useSelector((state) => state.auth.user.userId);
-  const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
+  const societyId = useSelector((state) => state.auth.user?.societyId);
 
   const paths = ["Emergency Contact", "Contact Details"];
   const Heading = ["Add Contact Information"];

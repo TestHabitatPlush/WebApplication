@@ -302,15 +302,15 @@
 // export default CreateProduct;
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import UrlPath from "../../../components/shared/UrlPath";
-import PageHeading from "../../../components/shared/PageHeading";
-import Input from "../../../components/shared/Input";
-import Button from "../../../components/ui/Button";
-import SubscriptionHandler from "../../../handlers/superadmin/SubscriptionHandler";
+import UrlPath from "../../../../components/shared/UrlPath";
+import PageHeading from "../../../../components/shared/PageHeading";
+import Input from "../../../../components/shared/Input";
+import Button from "../../../../components/ui/Button";
+import SubscriptionHandler from "../../../../handlers/superadmin/SubscriptionHandler";
 
 const { getAllModulesHandler, createPlanHandler } = SubscriptionHandler();
 
-const CreateProduct = () => {
+const CreatePackage = () => {
   const token = useSelector((state) => state.auth.token);
 
   const [formData, setFormData] = useState({
@@ -551,4 +551,4 @@ const CreateProduct = () => {
   );
 };
 
-export default CreateProduct;
+export default CreatePackage;

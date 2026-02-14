@@ -4,25 +4,27 @@ import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 
 import SubscriptionHandler from "../../../handlers/superadmin/SubscriptionHandler";
 import DashboardCard from "../../../components/shared/DashboardCard";
-import ReusableTable from "../../../components/shared/ReusableTable"; 
-
-
+import ReusableTable from "../../../components/shared/ReusableTable";
 
 import ViewSocietyDetailsModal from "../society/view_society/components/ViewSocietyDetailsModal";
 import CustomerHandler from "../../../handlers/superadmin/CustomerHandler";
-import {   setPage,setPageSize } from "../../../redux/slices/societySlice";
-import { resetCustomerFormOperationType,
-  setCustomerId,
-  setFormOperationType, } from "../../../redux/slices/customerSlice";
 
-// Action buttons for each row
+import { setPage, setPageSize } from "../../../redux/slices/societySlice";
+import {
+  resetCustomerFormOperationType,
+  setCustomerId,
+  setFormOperationType,
+} from "../../../redux/slices/customerSlice";
+
+/* ---------------- Action Button Component ---------------- */
+
 const ActionData = ({ data, openModal }) => {
   const dispatch = useDispatch();
 
   return (
     <div className="flex gap-2">
       <button
-        className="px-2 py-1 text-xs text-white rounded-md bg-lime"
+        className="px-3 py-1 text-xs text-white rounded-md bg-[#1C8696] hover:bg-[#166F7C] transition"
         onClick={() => {
           dispatch(setCustomerId(data.customerId));
           dispatch(setFormOperationType("view"));
@@ -34,6 +36,8 @@ const ActionData = ({ data, openModal }) => {
     </div>
   );
 };
+
+/* ---------------- Main Dashboard ---------------- */
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -52,12 +56,13 @@ const Dashboard = () => {
   );
 
   const { getSubscriptionStatsHandler } = SubscriptionHandler();
-  const { getCustomerHandler } = CustomerHandler(); // ✅ now available here
+  const { getCustomerHandler } = CustomerHandler();
 
   const [subscriptionStats, setSubscriptionStats] = useState({
     active: 0,
     inactive: 0,
   });
+
   const [viewModal, setViewModal] = useState(false);
 
   const openModal = () => setViewModal(true);
@@ -65,6 +70,8 @@ const Dashboard = () => {
     setViewModal(false);
     dispatch(resetCustomerFormOperationType());
   };
+
+  /* ---------------- Fetch Customer List ---------------- */
 
   const fetchUserList = async () => {
     try {
@@ -78,18 +85,15 @@ const Dashboard = () => {
         data: result.data.data.map((item) => ({
           customerId: item.customerId,
           customerName: item.customerName,
-          customerType: item.customerType, 
-          subscriptionId:item.subscriptionId,
-          email:item.email,
-          phone:item.phone,
+          customerType: item.customerType,
+          subscriptionId: item.subscriptionId,
+          email: item.email,
+          phone: item.phone,
           establishedYear: item.establishedYear,
           societyType: item.societyType,
           status: item.status,
           actions: (
-            <ActionData
-              data={item}
-              openModal={openModal}
-            />
+            <ActionData data={item} openModal={openModal} />
           ),
         })),
         total: result.data.total,
@@ -107,7 +111,9 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchUserList();
-  }, [dispatch, page, pageSize, filters]);
+  }, [page, pageSize, filters]);
+
+  /* ---------------- Fetch Subscription Stats ---------------- */
 
   const fetchSubscriptionStats = async () => {
     try {
@@ -129,10 +135,14 @@ const Dashboard = () => {
     }
   }, [societyId, token, userId]);
 
+  /* ---------------- Render ---------------- */
+
   return (
-    <div className="flex flex-col h-full p-6 bg-gray-100">
-      {/* Subscription Tracker */}
-      <div className="grid grid-cols-3 gap-4 mb-4">
+    <div className="flex flex-col min-h-screen p-6 bg-[#F3F4F6]">
+
+      {/* ================= Dashboard Cards ================= */}
+      <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-3">
+
         <DashboardCard
           title="Subscription Tracker"
           count={subscriptionStats.active + subscriptionStats.inactive}
@@ -150,11 +160,88 @@ const Dashboard = () => {
             icon: <FaTimesCircle className="text-red-500" />,
           }}
         />
+
+        <DashboardCard
+          title="Emergency"
+          count={subscriptionStats.active}
+          description="Total Requests"
+          subItems={[
+            {
+              label: "Resolved",
+              value: subscriptionStats.active,
+              icon: <FaCheckCircle className="text-green-500" />,
+            },
+          ]}
+          rightItem={{
+            label: "Pending",
+            value: subscriptionStats.inactive,
+            icon: <FaTimesCircle className="text-red-500" />,
+          }}
+        />
+
+        <DashboardCard
+          title="Notice"
+          count={subscriptionStats.active}
+          description="Total Notices"
+          subItems={[
+            {
+              label: "Published",
+              value: subscriptionStats.active,
+              icon: <FaCheckCircle className="text-green-500" />,
+            },
+          ]}
+          rightItem={{
+            label: "Draft",
+            value: subscriptionStats.inactive,
+            icon: <FaTimesCircle className="text-red-500" />,
+          }}
+        />
+
+        <DashboardCard
+          title="Document"
+          count={subscriptionStats.active}
+          description="Total Documents"
+          subItems={[
+            {
+              label: "Available",
+              value: subscriptionStats.active,
+              icon: <FaCheckCircle className="text-green-500" />,
+            },
+          ]}
+          rightItem={{
+            label: "Archived",
+            value: subscriptionStats.inactive,
+            icon: <FaTimesCircle className="text-red-500" />,
+          }}
+        />
+
+        <DashboardCard
+          title="Vendor"
+          count={subscriptionStats.active}
+          description="Total Vendors"
+          subItems={[
+            {
+              label: "Active",
+              value: subscriptionStats.active,
+              icon: <FaCheckCircle className="text-green-500" />,
+            },
+          ]}
+          rightItem={{
+            label: "Inactive",
+            value: subscriptionStats.inactive,
+            icon: <FaTimesCircle className="text-red-500" />,
+          }}
+        />
+
       </div>
 
-      {/* User List */}
-      <div>
-        <h1 className="mb-4 text-xl font-bold">Customer Overview</h1>
+      {/* ================= Table Section ================= */}
+
+      <div className="p-6 bg-white shadow rounded-xl">
+        <h1 className="mb-4 text-xl font-semibold text-gray-800">
+          Customer Overview
+        </h1>
+
         <ReusableTable
           columns={columns}
           data={data}
@@ -165,11 +252,14 @@ const Dashboard = () => {
           setPageIndex={(index) => dispatch(setPage(index))}
           setPageSize={(size) => dispatch(setPageSize(size))}
         />
-
-        {viewModal && (
-          <ViewSocietyDetailsModal isOpen={viewModal} onClose={closeModal} />
-        )}
       </div>
+
+      {viewModal && (
+        <ViewSocietyDetailsModal
+          isOpen={viewModal}
+          onClose={closeModal}
+        />
+      )}
     </div>
   );
 };

@@ -12,8 +12,8 @@ import TicketListForm from "./softwarehelpdesk/ticketlist/TicketListForm";
 import SocietyModeratorList from "./society/society_user/SocietyModeratorList";
 import PlanDetails from "../super/subcriptionPlan/PlanDetails";
 import Dashboard from "../super/Dashboard";
-import SubscriptionList from "./Product Subscription Management/SubscriptionList/SubscriptionList";
-import CreateProduct from "./Product Subscription Management/CreateProduct";
+import SubscriptionList from "./subcriptionPlan/SubscriptionList/SubscriptionList";
+import CreatePackage from "./Product Subscription Management/PackageDetails/CreatePackage";
 import CustomerSubscriptionList from "./Product Subscription Management/CustomerSubscriptionList/CustomerSubscription";
 import AddNewNoticeForm from "./noticeannouncement/addnewnotice/AddNewNoticeForm";
 import NoticeList from "./noticeannouncement/noticelist/NoticeList";
@@ -23,6 +23,7 @@ const SuperAdminContents = () => {
   return (
     <Routes>
       <Route path="/" element={<Dashboard/>} />
+      <Route path="/dashboard" element={<Dashboard/>} />
       <Route path="/society/create" element={<CreateSociety />} />
       <Route path="/society/view" element={<SocietyList />} />
       <Route path="/society/createuser" element={<CreateSocietyModerator />} />
@@ -53,7 +54,7 @@ const SuperAdminContents = () => {
       />
       <Route path="/subscription-plan/details" element={<PlanDetails />} />
       {/* <Route path="/subscription-plan/list" element={<SubscriptionList/>} /> */}
-      <Route path="/product/create" element={<CreateProduct />} />
+      <Route path="/product/create" element={<CreatePackage />} />
       <Route path="/product/list" element={<SubscriptionList />} />
       <Route path="/notice/create" element={<AddNewNoticeForm />} />
       <Route path="/notice/list" element={<NoticeList />} />

@@ -116,24 +116,24 @@ const handleUpdateVehicle = async (updatedData) => {
       Cell: ({ row }) => (
         <div className="flex gap-4">
           <button
-            className="text-yellow-600"
+            className="text-yellow-600 "
             onClick={() => handleViewVehicle(row.original.vehicleId)}
           >
-            <FaEye />
+            <FaEye className="text-lg" />
           </button>
 
           <button
-            className="text-green-700"
+            className="text-green-600"
             onClick={() => handleEditVehicle(row.original.vehicleId)}
           >
-            <FaEdit />
+            <FaEdit className="text-lg"/>
           </button>
 
           <button
             className="text-red-600"
             onClick={() => handleDeactivateVehicle(row.original.vehicleId)}
           >
-            <FaTimes />
+            <FaTimes className="text-lg"/>
           </button>
         </div>
       ),

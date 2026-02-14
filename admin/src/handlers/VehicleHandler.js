@@ -13,7 +13,7 @@ const useVehicleHandler = () => {
   const token = useSelector((state) => state.auth.token);
   const userId = useSelector((state) => state.auth.user?.userId);
   const societyId = useSelector(
-    (state) => state.auth.user?.Customer?.customerId
+    (state) => state.auth.user?.societyId
   );
 
   /* ========== ADMIN ========== */

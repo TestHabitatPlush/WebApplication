@@ -428,11 +428,11 @@ const SideBarMenu = {
       icon: FaCog,
       children: [
         {
-          name: "Create Product",
+          name: "Create Package",
           url: "product/create",
         },
         {
-          name: "Subscription List",
+          name: "Package List",
           url: "product/list",
         },
         {
@@ -511,7 +511,7 @@ const SideBarMenu = {
         },
         {
           name: "Subcription Plan List",
-          url: "/subscription-plan/list",
+           url: "product/list",
         },
       ],
     },

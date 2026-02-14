@@ -2,18 +2,17 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import UrlPath from "../../../../components/shared/UrlPath";
 import PageHeading from "../../../../components/shared/PageHeading";
-import UpdateSubscriptionDetailsModal from "../../subcriptionPlan/SubscriptionList/SubscriptionList";
-import ViewSubscriptionListModal from "../../subcriptionPlan/SubscriptionList/ViewSubscriptionListModal";
+import UpdateSubscriptionDetailsModal from "../SubscriptionList/UpdateSubscriptionDetailsModal";
+import ViewSubscriptionListModal from "../SubscriptionList/ViewSubscriptionListModal";
 import ReusableTable from "../../../../components/shared/ReusableTable";
 import { FaEye, FaTrashAlt, FaEdit } from "react-icons/fa";
-
 import { format } from "date-fns";
 import { toast } from "react-toastify";
 import SubscriptionHandler from "../../../../handlers/superadmin/SubscriptionHandler";
 
-const CustomerSubscriptionList = () => {
-  const paths = ["Subscription Plan", "Subscription Plan List"];
-  const Heading = ["Subscription Plan List"];
+const PackageList = () => {
+  const paths = ["Product Subscription Management", "Product List"];
+  const Heading = ["Product List"];
 
   const token = useSelector((state) => state.auth.token);
   const [subscription, setSubscription] = useState([]);
@@ -138,21 +137,22 @@ const CustomerSubscriptionList = () => {
       accessor: "serialNumber",
       Cell: ({ row }) => (page - 1) * pageSize + (row.index + 1),
     },
-    { Header: "Name", accessor: "planName" },
-    { Header: "Billing Cycle", accessor: "billingCycle" },
-    { Header: "Status", accessor: "status" },
-    {
-      Header: "Booking From",
-      accessor: "startDate",
-      Cell: ({ value }) =>
-        value ? format(new Date(value), "dd-MM-yyyy") : "N/A",
-    },
-    {
-      Header: "Booking To",
-      accessor: "endDate",
-      Cell: ({ value }) =>
-        value ? format(new Date(value), "dd-MM-yyyy") : "N/A",
-    },
+    { Header: "Status", accessor: "Package Id" },
+    { Header: "Name", accessor: "Package Name" },
+    { Header: "Billing Cycle", accessor: "Packag Type" },
+
+    // {
+    //   Header: "Booking From",
+    //   accessor: "startDate",
+    //   Cell: ({ value }) =>
+    //     value ? format(new Date(value), "dd-MM-yyyy") : "N/A",
+    // },
+    // {
+    //   Header: "Booking To",
+    //   accessor: "endDate",
+    //   Cell: ({ value }) =>
+    //     value ? format(new Date(value), "dd-MM-yyyy") : "N/A",
+    // },
     {
       Header: "Action",
       accessor: "action",
@@ -236,4 +236,4 @@ const CustomerSubscriptionList = () => {
   );
 };
 
-export default CustomerSubscriptionList;
+export default PackageList;

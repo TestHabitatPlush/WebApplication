@@ -64,15 +64,17 @@ const ViewSubscriptionListModal = ({ isOpen, onClose, formData }) => {
   ];
 
   return (
-    <Dialog
-      isOpen={isOpen}
-      onClose={onClose}
-      className="w-full h-full p-10 overflow-auto"
-      contentClassName="w-full h-full bg-white lg:max-w-4xl rounded-lg overflow-auto p-5"
-      overlayClassName="backdrop-blur"
-    >
+  <Dialog
+        isOpen={isOpen}
+        onClose={onClose}
+        closable={false}
+         className="w-full h-full p-10"
+  contentClassName="w-full bg-white lg:max-w-4xl rounded-lg p-0"
+  overlayClassName="backdrop-blur"
+      >
       {/* Header */}
-      <div className="pb-4 mb-6 border-b">
+       <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-white border-b">
+
         <h2 className="text-2xl font-semibold text-gray-800">
           Subscription Details
         </h2>

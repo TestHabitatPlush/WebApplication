@@ -24,7 +24,7 @@ const UnapprovedUser = () => {
   const Heading = ["Unapproved Users"];
 
   const token = useSelector((state) => state.auth.token);
-  const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
+  const societyId = useSelector((state) => state.auth.user?.societyId);
 
 
 
@@ -151,20 +151,20 @@ const UnapprovedUser = () => {
       Cell: ({ row }) => (
         <div className="flex space-x-4">
        <button
-  className="text-green-600 hover:text-green-700"
+  className="text-green-500 cursor-pointer hover:text-green-700"
   onClick={() => handleActivate(row.original.userId)}
 >
   <FaCheck className="text-lg" />
 </button>
 
           <button
-            className="text-yellow-500 hover:text-yellow-700"
+            className="text-yellow-500 cursor-pointer hover:text-yellow-700"
             onClick={() => viewUnapprovedData("view", row.original)}
           >
             <FaEye className="text-lg" />
           </button>
           <button
-            className="text-red-500 hover:text-red-700"
+            className="text-red-500 cursor-pointer hover:text-red-700"
             onClick={() => handleDeactive(row.original.userId)}
           >
             <FaTimes className="text-lg" />

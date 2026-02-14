@@ -1,359 +1,186 @@
-// import React, { useEffect, useState } from "react";
-// import { useSelector, useDispatch } from "react-redux";
-// import ReusableTable from "../../../../components/shared/ReusableTable";
-// import {
-//   setPage,
-//   setPageSize,
-//   setFilters,
-// } from "../../../../redux/slices/societySlice";
-// import CustomerHandler from "../../../../handlers/superadmin/CustomerHandler";
-// import ViewSocietyDetailsModal from "./components/ViewSocietyDetailsModal";
-// import {
-//   resetCustomerFormOperationType,
-//   setCustomerId,
-//   setFormOperationType,
-// } from "../../../../redux/slices/customerSlice";
+import React, { useEffect, useState, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { FaEye, FaEdit, FaCheck, FaTimes } from "react-icons/fa";
 
-// import Button from "../../../../components/ui/Button";
-// import  Dialog  from "../../../../components/ui/Dialog";
-// import UserHandler from "../../../../handlers/UserHandler";
-
-// const ActionData = ({ data, openModal }) => {
-//   const dispatch = useDispatch();
-//   const [status, setStatus] = useState(data.status);
-//   const [showConfirmModal, setShowConfirmModal] = useState(false);
-//   const { activateModeratorHandler, inactivateModeratorHandler } = UserHandler();
-
-//   const handleActivateClick = async () => {
-//     const newStatus = await activateModeratorHandler(data.customerId);
-//     if (newStatus) setStatus(newStatus);
-//   };
-
-//   const confirmInactivate = async () => {
-//     const newStatus = await inactivateModeratorHandler(data.customerId);
-//     if (newStatus) setStatus(newStatus);
-//     setShowConfirmModal(false);
-//   };
-
-//   const openInactivateModal = () => setShowConfirmModal(true);
-//   const closeInactivateModal = () => setShowConfirmModal(false);
-
-//   return (
-//     <div className="flex gap-2">
-//       <button
-//         className="px-2 py-1 text-xs text-white rounded-md bg-lime"
-//         onClick={() => {
-//           dispatch(setCustomerId(data.customerId));
-//           dispatch(setFormOperationType("view"));
-//           openModal();
-//         }}
-//       >
-//         View
-//       </button>
-
-//       <button
-//         className="px-2 py-1 text-xs text-white bg-gray-900 rounded-md"
-//         onClick={() => {
-//           dispatch(setCustomerId(data.customerId));
-//           dispatch(setFormOperationType("edit"));
-//           openModal();
-//         }}
-//       >
-//         Edit
-//       </button>
-
-//       {status !== "active" && (
-//           <Button
-//             onClick={handleActivateClick}
-//             className="px-2 py-1 text-xs text-white bg-green-600 rounded hover:bg-green-700 w-fit"
-
-//           >
-//             Active
-//           </Button>
-//         )}
-
-//         {status === "active" && (
-//           <Button
-//             onClick={openInactivateModal}
-//             className="text-xs text-white bg-red-600 rounded-md hover:bg-red-700"
-//           >
-//             Inactive
-//           </Button>
-//         )}
-
-//       {/* Confirmation Modal */}
-//       <Dialog isOpen={showConfirmModal} onClose={closeInactivateModal}>
-//         <div className="p-4 bg-white">
-//           <h2 className="mb-2 text-lg font-bold">Confirm Inactivation</h2>
-//           <p>Are you sure you want to inactivate this moderator?</p>
-//           <div className="flex justify-end gap-2 mt-4">
-//             <Button className="bg-gray-400 hover:bg-gray-500" onClick={closeInactivateModal}>
-//               Cancel
-//             </Button>
-//             <Button className="bg-red-600 hover:bg-red-700" onClick={confirmInactivate}>
-//               Confirm
-//             </Button>
-//           </div>
-//         </div>
-//       </Dialog>
-//     </div>
-//   );
-// };
-
-// const SocietyList = () => {
-//   const dispatch = useDispatch();
-//   const { getCustomerHandler } = CustomerHandler();
-//   const { data, page, pageSize, total, totalPages, columns, status, filters } =
-//     useSelector((state) => state.society);
-//   const [viewModal, setViewModal] = useState(false);
-
-//   const openModal = () => {
-//     setViewModal(true);
-//   };
-
-//   const closeModal = () => {
-//     setViewModal(false);
-//     dispatch(resetCustomerFormOperationType());
-//   };
-
-//   const fetchSocietiesData = async () => {
-//     try {
-//       const result = await getCustomerHandler({
-//         page,
-//         pageSize,
-//         ...filters,
-//       });
-
-//       const transformedData = {
-//         data: result.data.data.map((item) => ({
-//           customerId: item.customerId,
-//           customerName: item.customerName,
-//           customerType: item.customerType,
-//           email: item.email,
-//           phone: item.phone,
-//           establishedYear: item.establishedYear,
-//           societyType: item.societyType,
-//           status: item.status,
-//           actions: <ActionData data={item} openModal={openModal} />,
-//         })),
-//         total: result.data.total,
-//         totalPages: result.data.totalPages,
-//       };
-
-//       dispatch({
-//         type: "society/updateData",
-//         payload: transformedData,
-//       });
-//     } catch (error) {
-//       console.error("Failed to fetch societies data:", error);
-//     }
-//   };
-
-//   useEffect(() => {
-//     fetchSocietiesData();
-//   }, [dispatch, page, pageSize, filters]);
-
-//   if (status === "loading") {
-//     return <div>Loading...</div>;
-//   }
-
-//   return (
-//     <div>
-//       <h1>Customer List</h1>
-
-//       <ReusableTable
-//         columns={columns}
-//         data={data}
-//         pageIndex={page}
-//         pageSize={pageSize}
-//         totalCount={total}
-//         totalPages={totalPages}
-//         setPageIndex={(index) => dispatch(setPage(index))}
-//         setPageSize={(size) => dispatch(setPageSize(size))}
-//       />
-
-//       {viewModal && (
-//         <ViewSocietyDetailsModal isOpen={viewModal} onClose={closeModal} />
-//       )}
-//     </div>
-//   );
-// };
-
-// export default SocietyList;
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import ReusableTable from "../../../../components/shared/ReusableTable";
-import {
-  setPage,
-  setPageSize,
-  setFilters,
-} from "../../../../redux/slices/societySlice";
 import {
   resetCustomerFormOperationType,
   setCustomerId,
   setFormOperationType,
 } from "../../../../redux/slices/customerSlice";
-import ViewSocietyDetailsModal from "../view_society/components/ViewSocietyDetailsModal";
-import Dialog from "../../../../components/ui/Dialog";
-import Button from "../../../../components/ui/Button";
+
+import { setPage, setPageSize } from "../../../../redux/slices/societySlice";
 import CustomerHandler from "../../../../handlers/superadmin/CustomerHandler";
 
-const ActionData = ({ data, openModal, refreshList }) => {
-  const dispatch = useDispatch();
-  const { updateCustomerStatusHandler } = CustomerHandler();
-  const token = useSelector((state) => state.auth.token); // ✅ get token from Redux
-
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleActivateClick = async () => {
-    setIsLoading(true);
-    const newStatus = await updateCustomerStatusHandler(data.customerId, "active", token); // ✅ pass token
-    if (newStatus === "active") refreshList();
-    setIsLoading(false);
-  };
-
-  const confirmInactivate = async () => {
-    setIsLoading(true);
-    const newStatus = await updateCustomerStatusHandler(data.customerId, "inactive", token); // ✅ pass token
-    if (newStatus === "inactive") refreshList();
-    setShowConfirmModal(false);
-    setIsLoading(false);
-  };
-
-  return (
-    <div className="flex gap-2">
-      {/* View and Edit buttons unchanged */}
-      {data.status !== "active" && (
-        <Button
-          onClick={handleActivateClick}
-          className="px-2 py-1 text-xs text-white bg-green-600 rounded hover:bg-green-700"
-          disabled={isLoading}
-        >
-          Activate
-        </Button>
-      )}
-
-      {data.status === "active" && (
-        <>
-          <Button
-            onClick={() => setShowConfirmModal(true)}
-            className="px-2 py-1 text-xs text-white bg-red-600 rounded hover:bg-red-700"
-            disabled={isLoading}
-          >
-            Inactivate
-          </Button>
-
-          <Dialog isOpen={showConfirmModal} onClose={() => setShowConfirmModal(false)}>
-            <div className="p-4 bg-white">
-              <h2 className="mb-2 text-lg font-bold">Confirm Inactivation</h2>
-              <p>Are you sure you want to inactivate this customer?</p>
-              <div className="flex justify-end gap-2 mt-4">
-                <Button
-                  className="bg-gray-400 hover:bg-gray-500"
-                  onClick={() => setShowConfirmModal(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="bg-red-600 hover:bg-red-700"
-                  onClick={confirmInactivate}
-                >
-                  Confirm
-                </Button>
-              </div>
-            </div>
-          </Dialog>
-        </>
-      )}
-    </div>
-  );
-};
+import ReusableTable from "../../../../components/shared/ReusableTable";
+import UrlPath from "../../../../components/shared/UrlPath";
+import PageHeading from "../../../../components/shared/PageHeading";
+import ViewSocietyDetailsModal from "./components/ViewSocietyDetailsModal";
 
 const SocietyList = () => {
   const dispatch = useDispatch();
-  const { getCustomerHandler } = CustomerHandler();
-  const { data, page, pageSize, total, totalPages, columns, status, filters } =
-    useSelector((state) => state.society);
-  const [viewModal, setViewModal] = useState(false);
+  const { getCustomerHandler, updateCustomerStatus } = CustomerHandler();
 
-  const openModal = () => setViewModal(true);
+  const { data, page, pageSize, columns, status, filters } = useSelector(
+    (state) => state.society
+  );
 
+  const [search, setSearch] = useState("");
+  const [selectedSociety, setSelectedSociety] = useState(null);
+  const [modalMode, setModalMode] = useState("view"); // view | edit
+  const [visibleCount, setVisibleCount] = useState(0);
+
+  // Fetch society list
+  const fetchSocieties = useCallback(async () => {
+    try {
+      const result = await getCustomerHandler({ page, pageSize, ...filters });
+      if (!result?.data?.data) return;
+
+      const transformed = {
+        data: result.data.data.map((item) => ({
+          ...item,
+          address: item.address || {},
+        })),
+        total: result.data.total,
+        totalPages: result.data.totalPages,
+      };
+
+      dispatch({ type: "society/updateData", payload: transformed });
+    } catch (err) {
+      console.error("Failed to fetch societies:", err);
+    }
+  }, [page, pageSize, filters, getCustomerHandler, dispatch]);
+
+  useEffect(() => {
+    fetchSocieties();
+  }, [fetchSocieties]);
+
+  // Open view modal
+  const handleView = (item) => {
+    dispatch(setCustomerId(item.customerId));
+    dispatch(setFormOperationType("view"));
+    setSelectedSociety(item);
+    setModalMode("view");
+  };
+
+  // Open edit modal
+  const handleEdit = (item) => {
+    dispatch(setCustomerId(item.customerId));
+    dispatch(setFormOperationType("edit"));
+    setSelectedSociety(item);
+    setModalMode("edit");
+  };
+
+  // Status change
+  const handleStatusChange = async (item) => {
+    try {
+      const newStatus =
+        item.status === "active"
+          ? "inactive"
+          : item.status === "inactive"
+          ? "active"
+          : "pending";
+
+      await updateCustomerStatus(item.customerId, newStatus);
+      fetchSocieties();
+    } catch (err) {
+      console.error("Status update failed:", err);
+    }
+  };
+
+  // Close modal
   const closeModal = () => {
-    setViewModal(false);
+    setSelectedSociety(null);
     dispatch(resetCustomerFormOperationType());
   };
 
-  const fetchUserList = async () => {
-  try {
-    const result = await getCustomerHandler({
-      page,
-      pageSize,
-      ...filters,
-    });
-
-    if (!result?.data?.data) {
-      console.error("Invalid response shape:", result);
-      return;
-    }
-
-    const transformedData = {
-      data: result.data.data.map((item) => ({
-        customerId: item.customerId,
-        customerName: item.customerName,
-        customerType: item.customerType,
-        email: item.email,
-        phone: item.phone,
-        establishedYear: item.establishedYear,
-        societyType: item.societyType,
-        status: item.status,
-        actions: (
-          <ActionData
-            data={item}
-            openModal={openModal}
-            refreshList={fetchUserList}
-          />
-        ),
-      })),
-      total: result.data.total,
-      totalPages: result.data.totalPages,
-    };
-
-    dispatch({
-      type: "society/updateData",
-      payload: transformedData,
-    });
-
-  } catch (error) {
-    console.error("Failed to fetch user list:", error);
-  }
-};
-
-
-  useEffect(() => {
-    fetchUserList();
-  }, [dispatch, page, pageSize, filters]);
-
   if (status === "loading") return <div>Loading...</div>;
+
+  // Add Actions column
+  const columnsWithActions = columns.map((col) => {
+    if (col.accessor === "actions") {
+      return {
+        ...col,
+        Cell: ({ row }) => {
+          const item = row.original;
+          const statusLower = item.status?.toLowerCase();
+
+          return (
+            <div className="flex items-center justify-center gap-2">
+              <button
+                title="View"
+                className="text-orange-500 hover:text-orange-800"
+                onClick={() => handleView(item)}
+              >
+                <FaEye />
+              </button>
+
+              <button
+                title="Edit"
+                className="text-green-600 hover:text-green-800"
+                onClick={() => handleEdit(item)}
+              >
+                <FaEdit />
+              </button>
+
+              <button
+                title={
+                  statusLower === "pending"
+                    ? "Pending"
+                    : statusLower === "active"
+                    ? "Deactivate"
+                    : "Activate"
+                }
+                className={`cursor-pointer ${
+                  statusLower === "active"
+                    ? "text-green-500 hover:text-green-800"
+                    : statusLower === "inactive"
+                    ? "text-red-500 hover:text-red-800"
+                    : "text-yellow-500 hover:text-yellow-600"
+                }`}
+                onClick={() => handleStatusChange(item)}
+              >
+                {statusLower === "pending" && <FaTimes />}
+                {statusLower === "active" && <FaCheck />}
+                {statusLower === "inactive" && <FaTimes />}
+              </button>
+            </div>
+          );
+        },
+      };
+    }
+    return col;
+  });
 
   return (
     <div>
-      <h1>User List</h1>
+      <UrlPath paths={["Society Management", "Societies List"]} />
+      <PageHeading heading={["Societies List"]} />
+
+      <div className="mt-3 mb-3 text-lg font-medium text-gray-700">
+        TOTAL {visibleCount} Society List
+      </div>
 
       <ReusableTable
-        columns={columns}
+        columns={columnsWithActions}
         data={data}
+        fullData={data}
         pageIndex={page}
         pageSize={pageSize}
-        totalCount={total}
-        totalPages={totalPages}
-        setPageIndex={(index) => dispatch(setPage(index))}
-        setPageSize={(size) => dispatch(setPageSize(size))}
+        setPageIndex={(p) => dispatch(setPage(p))}
+        setPageSize={(s) => dispatch(setPageSize(s))}
+        onSearchChange={setSearch}
+        searchValue={search}
+        fileName="society"
+        onVisibleCountChange={setVisibleCount}
       />
 
-      {viewModal && (
-        <ViewSocietyDetailsModal isOpen={viewModal} onClose={closeModal} />
-      )}
+      {/* Always render modal; visibility controlled via isOpen */}
+      <ViewSocietyDetailsModal
+        isOpen={!!selectedSociety}
+        onClose={closeModal}
+        society={selectedSociety}
+        mode={modalMode}
+      />
     </div>
   );
 };

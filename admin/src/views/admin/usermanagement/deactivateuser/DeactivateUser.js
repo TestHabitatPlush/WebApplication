@@ -21,7 +21,7 @@ const DeactivateUser = () => {
 
   const { getAllDeactiveUserDataHandler ,updateUserForApprovedAndRejectHandler} = UserHandler();
   const token = useSelector((state) => state.auth.token);
-  const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
+   const societyId = useSelector((state) => state.auth.user?.societyId);
 
 
   const paths = ["User Management", "Deactivate Users"];
@@ -74,13 +74,13 @@ const DeactivateUser = () => {
       Cell: ({ row }) => (
         <div className="flex space-x-4">
           <button
-            className="text-yellow-500 hover:text-yellow-700"
+            className="text-yellow-500 cursor-pointer hover:text-yellow-700"
             onClick={() => handleView(row.original)}
           >
             <FaEye className="text-lg" />
           </button>
           <button
-            className="text-green-500 hover:text-green-700"
+            className="text-green-500 cursor-pointer hover:text-green-700"
             onClick={() => handleActivate(row.original.userId)}
           >
             <FaCheck className="text-lg" />

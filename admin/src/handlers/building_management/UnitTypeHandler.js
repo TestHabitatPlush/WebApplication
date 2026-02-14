@@ -3,11 +3,11 @@ import toast from "react-hot-toast";
 import { createUnitTypeService, getUnitTypeBySocietyIdService,deleteUnitTypeService,updateUnitTypeService } from "../../services/building_management/unitTypeService";
 
 const UnitTypeHandler = () => {
-  const token = useSelector((state) => state.auth.token);
-  const societyId = useSelector((state) => state.auth.user.Customer.customerId);
+  const token = useSelector((state) => state.auth?.token);
+  const societyId = useSelector((state) => state.auth.user?.societyId);
 
   const createUnitTypeHandler = async (unitTypeName) => {
-
+    if (!unitTypeName || !token || !societyId) return;
     if (!unitTypeName) {
       toast.error("Fill all the fields !");
       return;
@@ -21,23 +21,32 @@ const UnitTypeHandler = () => {
         return res;
       })
       .catch((err) => {
-        if (err.status === 400) {
+        if (err.response?.status === 400) {
           toast.error(err.response.data.message);
         }
         console.log(err);
       });
   };
 
-  const getUnitTypeHandler = async () => {
-    return await getUnitTypeBySocietyIdService(societyId, token)
-    .then((res) => res)
- .catch((err) => {
-  console.error(err);
-  });
-  }
+//   const getUnitTypeHandler = async () => {
+//     return await getUnitTypeBySocietyIdService(societyId, token)
+//     .then((res) => res)
+//  .catch((err) => {
+//   console.error(err);
+//   });
+//   }
+const getUnitTypeHandler = async () => {
+  if (!token || !societyId) return; 
 
+  try {
+    return await getUnitTypeBySocietyIdService(societyId, token);
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   const deleteUnitTypeHandler = async (unitTypeId) => {
+    if (!token) return;
       try {
         const res = await deleteUnitTypeService(unitTypeId, token);
         return res;

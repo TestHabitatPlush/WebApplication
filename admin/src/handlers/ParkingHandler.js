@@ -10,7 +10,7 @@ import {
 const useParkingHandler = () => {
   const token = useSelector((state) => state.auth.token);
   const societyId = useSelector(
-    (state) => state.auth.user?.Customer?.customerId
+    (state) => state.auth.user?.societyId
   );
 
   const createParkingHandler = async (data) => {
@@ -40,18 +40,22 @@ const useParkingHandler = () => {
     }
   };
 
-  const getParkingDataByIdHandler = async (parkingId) => {
-    try {
-      const response = await getParkingDataByIdService(
-        societyId,
-        parkingId,
-        token
-      );
-      return response.data;
-    } catch (error) {
-      toast.error("Error fetching parking details.");
-    }
-  };
+const getParkingDataByIdHandler = async (parkingId) => {
+  try {
+    if (!parkingId) return;
+
+    const response = await getParkingDataByIdService(
+      parkingId,
+      token
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    toast.error("Error fetching parking details.");
+  }
+};
+
 
   const updateParkingHandler = async (data) => {
     try {

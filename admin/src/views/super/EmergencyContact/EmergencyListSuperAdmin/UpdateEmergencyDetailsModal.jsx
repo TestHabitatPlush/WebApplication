@@ -63,13 +63,16 @@ const UpdateEmergencyDetailsModal = ({
   ];
 
   return (
-    <Dialog
-      isOpen={isOpen}
-      onClose={onClose}
-      className="w-full h-full p-10 overflow-auto"
-      contentClassName="w-full h-full bg-white lg:max-w-4xl rounded-lg overflow-auto scrollbar p-5"
-      overlayClassName="backdrop-blur"
-    >
+   <Dialog
+  isOpen={isOpen}
+  onClose={onClose}
+  className="w-full h-full p-10 overflow-auto"
+  contentClassName="w-full bg-white lg:max-w-4xl rounded-lg 
+  max-h-[85vh] overflow-y-auto scrollbar p-5"
+  overlayClassName="backdrop-blur"
+>
+
+    
       <div className="p-10 my-5 bg-gray-100 border rounded-lg">
         <h2 className="mb-8 text-2xl font-semibold text-gray-800">
           Update Emergency Contact
