@@ -1,3 +1,5 @@
+# web/.gitignore
+@'
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
@@ -26,7 +28,15 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env*.local
+.env
+.env.local
+.env.*.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
 
 # vercel
 .vercel
@@ -34,3 +44,4 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+'@ | Out-File -Encoding utf8 web/.gitignore

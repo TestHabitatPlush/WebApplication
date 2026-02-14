@@ -1,4 +1,22 @@
+# dependencies
 /node_modules
+
+# environment variables
 .env
+.env.local
+.env.*.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+
+# uploads & temp files
 /uploads
 /Hp
+
+# debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
