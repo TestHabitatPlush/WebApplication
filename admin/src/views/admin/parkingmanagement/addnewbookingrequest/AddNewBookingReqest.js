@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from "react";
 import Input from "../../../../components/shared/Input";
 import Button from "../../../../components/ui/Button";
@@ -24,8 +22,8 @@ export default AddNewBookingReqest;
 const Addnewbookingrequest = () => {
   const paths = ["Parking Managemen", "Add New Booking Request"];
   const heading = ["Add New Booking Request"];
-  const { createParkingHandler } = ParkingHandler() ;
-  const { getUnitsHandler } = DefineUnitHandler() ;
+  const { createParkingHandler } = ParkingHandler();
+  const { getUnitsHandler } = DefineUnitHandler();
 
   const [unitOptions, setUnitOptions] = useState([]);
   const [formData, setFormData] = useState({
@@ -55,7 +53,6 @@ const Addnewbookingrequest = () => {
     };
     fetchUnits();
   }, []); // Empty dependency array to run only once
-  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -109,7 +106,9 @@ const Addnewbookingrequest = () => {
 
           {/* Dropdown for unit selection */}
           <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700">Parking Slot Allocation (Unit Name):</label>
+            <label className="block mb-2 text-sm font-bold text-gray-700">
+              Parking Slot Allocation (Unit Name):
+            </label>
             <select
               name="unitName"
               value={formData.unitName}
@@ -139,7 +138,7 @@ const Addnewbookingrequest = () => {
           value={formData.vehicleType}
           onChange={handleChange}
         />
-          <Input
+        <Input
           label="Add Vehicle Number:"
           type="text"
           placeholder="Enter Vehicle Number"
@@ -153,9 +152,20 @@ const Addnewbookingrequest = () => {
           <div>Parking Slot Applicable:</div>
           <div className="flex flex-row items-center gap-3">
             {["PublicUsage", "PrivateUsage"].map((type) => (
-              <label key={type} className="flex items-center gap-3 px-4 py-1 bg-white border rounded-lg">
-                <input type="radio" name="parkingSlotType" value={type} checked={formData.parkingSlotType === type} onChange={handleChange} />
-                {type === "PublicUsage" ? "Public Usage" : "Private/Restricted Usage"}
+              <label
+                key={type}
+                className="flex items-center gap-3 px-4 py-1 bg-white border rounded-lg"
+              >
+                <input
+                  type="radio"
+                  name="parkingSlotType"
+                  value={type}
+                  checked={formData.parkingSlotType === type}
+                  onChange={handleChange}
+                />
+                {type === "PublicUsage"
+                  ? "Public Usage"
+                  : "Private/Restricted Usage"}
               </label>
             ))}
           </div>
@@ -164,31 +174,49 @@ const Addnewbookingrequest = () => {
         <div className="flex flex-row items-center gap-4 py-4">
           <div>Parking Usage:</div>
           {["Free", "Paid"].map((usage) => (
-            <label key={usage} className="flex items-center gap-3 px-4 py-1 bg-white border rounded-lg">
-              <input type="radio" name="parkingCharges" value={usage} checked={formData.parkingCharges === usage} onChange={handleChange} />
+            <label
+              key={usage}
+              className="flex items-center gap-3 px-4 py-1 bg-white border rounded-lg"
+            >
+              <input
+                type="radio"
+                name="parkingCharges"
+                value={usage}
+                checked={formData.parkingCharges === usage}
+                onChange={handleChange}
+              />
               {usage}
             </label>
           ))}
         </div>
-          {formData.parkingCharges === "Paid" && (
-                            <div className="grid items-center grid-cols-1 gap-3 py-4">
-                              <Input
-                                label="Charge Amount"
-                                type="text"
-                                name="chargeAmount"
-                                placeholder="INR : Enter Amount"
-                                size="lg"
-                                value={formData.chargeAmount}
-                                onChange={handleChange}
-                              />
-                            </div>
-                          )}
+        {formData.parkingCharges === "Paid" && (
+          <div className="grid items-center grid-cols-1 gap-3 py-4">
+            <Input
+              label="Charge Amount"
+              type="text"
+              name="chargeAmount"
+              placeholder="INR : Enter Amount"
+              size="lg"
+              value={formData.chargeAmount}
+              onChange={handleChange}
+            />
+          </div>
+        )}
         <div className="flex flex-row items-center gap-4 pt-4">
           <div>Parking Charge :</div>
           <div className="flex flex-row items-center gap-3">
-            {['Hourly','Days'].map((type) => (
-              <label key={type} className="flex items-center gap-3 px-4 py-1 bg-white border rounded-lg">
-                <input type="radio" name="parkingUsage" value={type} checked={formData.parkingUsage === type} onChange={handleChange} />
+            {["Hourly", "Days"].map((type) => (
+              <label
+                key={type}
+                className="flex items-center gap-3 px-4 py-1 bg-white border rounded-lg"
+              >
+                <input
+                  type="radio"
+                  name="parkingUsage"
+                  value={type}
+                  checked={formData.parkingUsage === type}
+                  onChange={handleChange}
+                />
                 {type === "Hourly" ? "Hourly" : "Days"}
               </label>
             ))}
@@ -204,30 +232,41 @@ const Addnewbookingrequest = () => {
           onChange={handleChange}
         /> */}
 
-
-         <div className="flex flex-row items-center gap-3 py-4">
-                          <div className="text-base ">Select Date And Time :</div>
-                          <Input
-                            label={<div>Booking From <span className="text-red-500">*</span></div>}
-                            type="date"
-                            size="lg"
-                            name="bookingFrom"
-                            value={formData.bookingFrom}
-                            onChange={handleChange}
-                          />
-                          <Input
-                          label={<div>Booking To<span className="text-red-500">*</span></div>}
-                          type="date"
-                          size="lg"
-                          name="bookingTo"
-                          value={formData.bookingTo}
-                          onChange={handleChange}
-                          />
-                        </div>
-                      
+        <div className="flex flex-row items-center gap-3 py-4">
+          <div className="text-base ">Select Date And Time :</div>
+          <Input
+            label={
+              <div>
+                Booking From <span className="text-red-500">*</span>
+              </div>
+            }
+            type="date"
+            size="lg"
+            name="bookingFrom"
+            value={formData.bookingFrom}
+            onChange={handleChange}
+          />
+          <Input
+            label={
+              <div>
+                Booking To<span className="text-red-500">*</span>
+              </div>
+            }
+            type="date"
+            size="lg"
+            name="bookingTo"
+            value={formData.bookingTo}
+            onChange={handleChange}
+          />
+        </div>
 
         <div className="flex justify-center mt-5">
-          <Button className="max-w-sm" type="submit" size="lg" onClick={handleSubmitParking}>
+          <Button
+            className="max-w-sm"
+            type="submit"
+            size="lg"
+            onClick={handleSubmitParking}
+          >
             Submit
           </Button>
         </div>

@@ -1,3 +1,5 @@
+
+
 import { createSlice } from "@reduxjs/toolkit";
 
 const authSlice = createSlice({
@@ -31,3 +33,4 @@ const authSlice = createSlice({
 // Export actions to be used in components
 export const { setUser, setToken, clearError, clearAuth } = authSlice.actions;
 export default authSlice.reducer;
+

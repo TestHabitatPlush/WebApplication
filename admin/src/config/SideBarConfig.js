@@ -1,28 +1,41 @@
-import { FaTachometerAlt ,FaUserAlt, FaIdCard,FaBuilding, FaBullhorn, FaComments, FaFileAlt, FaAddressBook,FaParking, FaCog,  FaLaptopCode,FaHome, FaUserTie, FaFileInvoice,FaHeadset} from 'react-icons/fa';
+import {
+  FaTachometerAlt,
+  FaUserAlt,
+  FaIdCard,
+  FaBuilding,
+  FaBullhorn,
+  FaComments,
+  FaFileAlt,
+  FaAddressBook,
+  FaParking,
+  FaCog,
+  FaLaptopCode,
+  FaHome,
+  FaUserTie,
+  FaFileInvoice,
+  FaHeadset,
+} from "react-icons/fa";
 
-import { GiGate } from 'react-icons/gi';
-
-
+import { GiGate } from "react-icons/gi";
 
 const SideBarMenu = {
   society_moderator: [
-     {
+    {
       name: "Dashboard",
       isAvailable: true,
-       icon: FaTachometerAlt ,
+      icon: FaTachometerAlt,
       children: [
         {
           name: "Dashboard",
           url: "user",
         },
-       
       ],
     },
-   
+
     {
       name: "Building Management",
       isAvailable: true,
-       icon: FaBuilding,
+      icon: FaBuilding,
       children: [
         {
           name: "Define Structure",
@@ -42,10 +55,11 @@ const SideBarMenu = {
         // },
       ],
     },
-     {
+
+    {
       name: "User Management",
       isAvailable: true,
-       icon: FaUserAlt,
+      icon: FaUserAlt,
       children: [
         {
           name: "Unapproved Users",
@@ -67,6 +81,11 @@ const SideBarMenu = {
           url: "user/deactivated",
           path: ["user", "setting"],
         },
+        {
+          name: "Add Bulk User",
+          url: "user/bulkuser",
+          path: ["user", "BulkUser"],
+        },
         // {
         //   name: "User Access",
         //   url: "user/access",
@@ -82,8 +101,8 @@ const SideBarMenu = {
     {
       name: "Notice Announcement",
       isAvailable: true,
-       icon: FaBullhorn,
-      
+      icon: FaBullhorn,
+
       children: [
         {
           name: "Add New Notice",
@@ -98,7 +117,7 @@ const SideBarMenu = {
     {
       name: "Discussion Forum",
       isAvailable: true,
-       icon: FaComments,
+      icon: FaComments,
       children: [
         {
           name: "Add New Discussion",
@@ -113,11 +132,11 @@ const SideBarMenu = {
     {
       name: "Visitors Management",
       isAvailable: true,
-      icon:FaIdCard ,
+      icon: FaIdCard,
       children: [
         {
-         // name: "Setup",
-         // url: "visitor/setup",
+          // name: "Setup",
+          // url: "visitor/setup",
           children: [
             {
               name: "Approval Matrix",
@@ -147,8 +166,8 @@ const SideBarMenu = {
     {
       name: "Gate Management",
       isAvailable: true,
-     icon: GiGate ,
-     children: [
+      icon: GiGate,
+      children: [
         {
           name: "Define Gate",
           url: "gate/definegate",
@@ -156,19 +175,17 @@ const SideBarMenu = {
         {
           name: "Guard Profile Creation",
           url: "gate/guardCreation",
-          children:[
+          children: [
             {
               name: "Gate Allocation",
-              url:"gate/allocation"
-            }
-          ]
+              url: "gate/allocation",
+            },
+          ],
         },
         {
           name: "Gate List",
           url: "gate/view",
         },
-
-       
 
         {
           name: "Approved Gate Users",
@@ -176,15 +193,15 @@ const SideBarMenu = {
         },
         {
           name: "Deactivated Gate Users",
-          url: "gate/deactivatedusers"
-        }
+          url: "gate/deactivatedusers",
+        },
       ],
     },
-    
+
     {
       name: "Document Management",
       isAvailable: true,
-      icon:FaFileAlt ,
+      icon: FaFileAlt,
       children: [
         {
           name: "Document Upload Facility",
@@ -239,7 +256,7 @@ const SideBarMenu = {
     {
       name: "Facility Management",
       isAvailable: true,
-      icon:FaHome ,
+      icon: FaHome,
       children: [
         {
           name: "Add New Facility",
@@ -263,7 +280,7 @@ const SideBarMenu = {
     {
       name: "Parking Management",
       isAvailable: true,
-      icon:FaParking ,
+      icon: FaParking,
       children: [
         {
           name: "Add New Parking Slot",
@@ -286,7 +303,7 @@ const SideBarMenu = {
           name: "Add Vechicle Details",
           url: "parking/vechicledetails",
         },
-        
+
         {
           name: "Vehicle List",
           url: "vehicle/list",
@@ -324,90 +341,68 @@ const SideBarMenu = {
     //     },
     //   ],
     // },
-    // {
-    //   name: "Socity HelpDesk Management",
-    //   isAvailable: true,
-    //   icon:FaHeadset ,
-    //   children: [
-    //     {
-    //       name: "SetUp",
-    //       url: "socityhelpdesk/socityhelpdesksetup",
-    //       children: [
-    //         {
-    //           name: "Approval Matrix",
-    //           url: "socityhelpdesk/socityhelpdesksetup/socityapprovalmatrix",
-    //         },
-    //         {
-    //           name: "Define Purpose",
-    //           url: "socityhelpdesk/socityhelpdesksetup/socitydefinepurpose",
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       name: "Create Ticket",
-    //       url: "socityhelpdesk/socityhelpdeskcreateticket",
-    //     },
-    //     {
-    //       name: "Ticket List",
-    //       url: "socityhelpdesk/socityhelpdeskticketlist",
-    //     },
-    //   ],
-    // },
-    // {
-    //   name: "Software HelpDesk Management",
-    //   isAvailable: true,
-    //   icon:FaLaptopCode,
-    //   children: [
-    //     {
-    //       name: "SetUp",
-    //       url: "softwarehelpdesk/softwarehelpdesksetup",
-    //       children: [
-    //         {
-    //           name: "Approval Matrix",
-    //           url: "softwarehelpdesk/softwarehelpdesksetup/softwareapprovalmatrix",
-    //         },
-    //         {
-    //           name: "Define Purpose",
-    //           url: "softwarehelpdesk/softwarehelpdesksetup/softwaredefinepurpose",
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       name: "Create Ticket",
-    //       url: "softwarehelpdesk/softwarehelpdeskcreateticket",
-    //     },
-    //     {
-    //       name: "Ticket List",
-    //       url: "softwarehelpdesk/softwarehelpdeskticketlist",
-    //     },
-    //   ],
-    // },
-
-
-{
-  name: "Emergency Contact",
-  isAvailable: true,
-  icon: FaAddressBook,
-  children: [
     {
-      name: "Contact Details",
-      url: "emergencycontact/ContactDetails",
+      name: "Socity HelpDesk Management",
+      isAvailable: true,
+      icon: FaHeadset,
+      children: [
+        {
+          name: "SetUp",
+          url: "socityhelpdesk/socityhelpdesksetup",
+          children: [
+            {
+              name: "Approval Matrix",
+              url: "socityhelpdesk/socityhelpdesksetup/socityapprovalmatrix",
+            },
+            {
+              name: "Define Purpose",
+              url: "socityhelpdesk/socityhelpdesksetup/socitydefinepurpose",
+            },
+          ],
+        },
+        {
+          name: "Create Ticket",
+          url: "socityhelpdesk/socityhelpdeskcreateticket",
+        },
+        {
+          name: "Ticket List",
+          url: "socityhelpdesk/socityhelpdeskticketlist",
+        },
+      ],
     },
-   {
-      name: "Emergency List",
-      url: "/emerencycontact/EmergencyList",
+    {
+      name: "Emergency Contact",
+      isAvailable: true,
+      icon: FaAddressBook,
+      children: [
+        {
+          name: "Contact Details",
+          url: "emergencycontact/ContactDetails",
+        },
+        {
+          name: "Emergency List",
+          url: "/emerencycontact/EmergencyList",
+        },
+      ],
     },
-    
   ],
-}
 
-  ],
- 
   super_admin: [
+    {
+      name: "Dashboard",
+      isAvailable: true,
+      icon: FaTachometerAlt,
+      children: [
+        {
+          name: "Dashboard",
+          url: "dashboard",
+        },
+      ],
+    },
     {
       name: "Society Management",
       isAvailable: true,
-      icon: FaBuilding, 
+      icon: FaBuilding,
       children: [
         {
           name: "Create Society",
@@ -421,12 +416,16 @@ const SideBarMenu = {
           name: "Create Society User",
           url: "society/createuser",
         },
+        {
+          name: " Society Moderator/User List",
+          url: "society/societyModeratorList",
+        },
       ],
     },
     {
       name: "Product Subscription Management",
       isAvailable: true,
-      icon: FaCog, 
+      icon: FaCog,
       children: [
         {
           name: "Create Product",
@@ -434,18 +433,18 @@ const SideBarMenu = {
         },
         {
           name: "Subscription List",
-          url: "society/view",
+          url: "product/list",
         },
         {
-          name: "Module",
-          url: "module/create",
+          name: "Customer Subscription",
+          url: "product/customerSubscription",
         },
       ],
     },
     {
       name: "Vendor Management",
       isAvailable: true,
-      icon: FaUserTie, 
+      icon: FaUserTie,
       children: [
         {
           name: "Create Vendor",
@@ -457,10 +456,10 @@ const SideBarMenu = {
         },
       ],
     },
-     {
+    {
       name: "Software HelpDesk Management",
       isAvailable: true,
-      icon:FaLaptopCode,
+      icon: FaLaptopCode,
       children: [
         {
           name: "SetUp",
@@ -487,25 +486,280 @@ const SideBarMenu = {
       ],
     },
     {
-  name: "Emergency Contact",
-  isAvailable: true,
-  icon: FaAddressBook,
-  children: [
+      name: "Emergency Contact",
+      isAvailable: true,
+      icon: FaAddressBook,
+      children: [
+        {
+          name: "Emergency Contact Details",
+          url: "emergencycontact/ContactDetails",
+        },
+        {
+          name: "Emergency List",
+          url: "/emerencycontact/EmergencyList",
+        },
+      ],
+    },
     {
-      name: "Emergency Contact Details",
-      url: "emergencycontact/ContactDetails",
+      name: "Subcription Plan",
+      isAvailable: true,
+      icon: FaAddressBook,
+      children: [
+        {
+          name: "Subcription Plan Details",
+          url: "/subscription-plan/details",
+        },
+        {
+          name: "Subcription Plan List",
+          url: "/subscription-plan/list",
+        },
+      ],
     },
-   {
-      name: "Emergency List",
-      url: "/emerencycontact/EmergencyList",
+    {
+      name: "Notice Announcement",
+      isAvailable: true,
+      icon: FaBullhorn,
+
+      children: [
+        {
+          name: "Add New Notice",
+          url: "notice/create",
+        },
+        {
+          name: "Notice List",
+          url: "notice/list",
+        },
+      ],
     },
-    
+    {
+      name: "Document Management",
+      isAvailable: true,
+      icon: FaFileAlt,
+      children: [
+        {
+          name: "Document Upload Facility",
+          url: "document/upload",
+        },
+
+        {
+          name: "Document List",
+          url: "document/view",
+        },
+      ],
+    },
   ],
-}
-  ]
+
+  super_admin_it: [
+    {
+      name: "Software HelpDesk Management",
+      isAvailable: true,
+      icon: FaLaptopCode,
+      children: [
+        {
+          name: "SetUp",
+          url: "softwarehelpdesk/softwarehelpdesksetup",
+          children: [
+            {
+              name: "Approval Matrix",
+              url: "softwarehelpdesk/softwarehelpdesksetup/softwareapprovalmatrix",
+            },
+            {
+              name: "Define Purpose",
+              url: "softwarehelpdesk/softwarehelpdesksetup/softwaredefinepurpose",
+            },
+          ],
+        },
+        {
+          name: "Create Ticket",
+          url: "softwarehelpdesk/softwarehelpdeskcreateticket",
+        },
+        {
+          name: "Ticket List",
+          url: "softwarehelpdesk/softwarehelpdeskticketlist",
+        },
+      ],
+    },
+  ],
+
+  society_security_guard: [
+    {
+      name: "Gate Management",
+      isAvailable: true,
+      icon: GiGate,
+      children: [
+        {
+          name: "Define Gate",
+          url: "gate/definegate",
+        },
+        {
+          name: "Guard Profile Creation",
+          url: "gate/guardCreation",
+          children: [
+            {
+              name: "Gate Allocation",
+              url: "gate/allocation",
+            },
+          ],
+        },
+        {
+          name: "Gate List",
+          url: "gate/view",
+        },
+
+        {
+          name: "Approved Gate Users",
+          url: "gate/approvedusers",
+        },
+        {
+          name: "Deactivated Gate Users",
+          url: "gate/deactivatedusers",
+        },
+      ],
+    },
+      {
+      name: "Notice Announcement",
+      isAvailable: true,
+      icon: FaBullhorn,
+
+      children: [
+        {
+          name: "Add New Notice",
+          url: "notice/create",
+        },
+        {
+          name: "Notice List",
+          url: "notice/list",
+        },
+      ],
+    },
+      {
+      name: "Visitors Management",
+      isAvailable: true,
+      icon: FaIdCard,
+      children: [
+        {
+          // name: "Setup",
+          // url: "visitor/setup",
+          children: [
+            {
+              name: "Approval Matrix",
+              url: "visitor/setup/visitorapprovalmatrix",
+            },
+            {
+              name: "Define Visitor Catagories",
+              url: "visitor/setup/visitordefinevisitor",
+            },
+          ],
+        },
+
+        {
+          name: "New Visitor Entry",
+          url: "visitor/newvisitorentry",
+        },
+        {
+          name: "Visitor List",
+          url: "visitor/visitorlist",
+        },
+        // {
+        //   name: "Visitor Report",
+        //   url: "visitor/report",
+        // },
+      ],
+    },
+    {
+      name: "Parking Management",
+      isAvailable: true,
+      icon: FaParking,
+      children: [
+        {
+          name: "Add New Parking Slot",
+          url: "parking/newslot",
+        },
+        {
+          name: "Parking List",
+          url: "parking/list",
+        },
+        {
+          name: "Add New Booking Request",
+          url: "parking/bookingrequest",
+        },
+        {
+          name: "Parking Booking Details",
+          url: "parking/bookingdetails",
+        },
+
+        {
+          name: "Add Vechicle Details",
+          url: "parking/vechicledetails",
+        },
+
+        {
+          name: "Vehicle List",
+          url: "vehicle/list",
+        },
+      ],
+    },
+      {
+      name: "Socity HelpDesk Management",
+      isAvailable: true,
+      icon: FaHeadset,
+      children: [
+        {
+          name: "SetUp",
+          url: "socityhelpdesk/socityhelpdesksetup",
+          children: [
+            {
+              name: "Approval Matrix",
+              url: "socityhelpdesk/socityhelpdesksetup/socityapprovalmatrix",
+            },
+            {
+              name: "Define Purpose",
+              url: "socityhelpdesk/socityhelpdesksetup/socitydefinepurpose",
+            },
+          ],
+        },
+        {
+          name: "Create Ticket",
+          url: "socityhelpdesk/socityhelpdeskcreateticket",
+        },
+        {
+          name: "Ticket List",
+          url: "socityhelpdesk/socityhelpdeskticketlist",
+        },
+      ],
+    },
+     {
+      name: "Software HelpDesk Management",
+      isAvailable: true,
+      icon: FaLaptopCode,
+      children: [
+        {
+          name: "SetUp",
+          url: "softwarehelpdesk/softwarehelpdesksetup",
+          children: [
+            {
+              name: "Approval Matrix",
+              url: "softwarehelpdesk/softwarehelpdesksetup/softwareapprovalmatrix",
+            },
+            {
+              name: "Define Purpose",
+              url: "softwarehelpdesk/softwarehelpdesksetup/softwaredefinepurpose",
+            },
+          ],
+        },
+        {
+          name: "Create Ticket",
+          url: "softwarehelpdesk/softwarehelpdeskcreateticket",
+        },
+        {
+          name: "Ticket List",
+          url: "softwarehelpdesk/softwarehelpdeskticketlist",
+        },
+      ],
+    },
+  ],
 };
 export default SideBarMenu;
-
 
 // exports.SideBarMenu = {
 //   society_moderator: [
@@ -646,24 +900,24 @@ export default SideBarMenu;
 //         },
 //       ],
 //     },
-    // {
-    //   name: "Facility Management",
-    //   isAvailable: true,
-    //   children: [
-    //     {
-    //       name: "Define Facility",
-    //       url: "visitor/catagories",
-    //     },
-    //     {
-    //       name: "Gate Allocation",
-    //       url: "visitor/create",
-    //     },
-    //     {
-    //       name: "Gate List",
-    //       url: "visitor/view",
-    //     },
-    //   ],
-    // },
+// {
+//   name: "Facility Management",
+//   isAvailable: true,
+//   children: [
+//     {
+//       name: "Define Facility",
+//       url: "visitor/catagories",
+//     },
+//     {
+//       name: "Gate Allocation",
+//       url: "visitor/create",
+//     },
+//     {
+//       name: "Gate List",
+//       url: "visitor/view",
+//     },
+//   ],
+// },
 //     {
 //       name: "Vendor Management",
 //       isAvailable: true,
@@ -926,11 +1180,32 @@ export default SideBarMenu;
 //   ],
 // };
 
-
-
-
-
-
-
-
-
+// {
+//   name: "Software HelpDesk Management",
+//   isAvailable: true,
+//   icon:FaLaptopCode,
+//   children: [
+//     {
+//       name: "SetUp",
+//       url: "softwarehelpdesk/softwarehelpdesksetup",
+//       children: [
+//         {
+//           name: "Approval Matrix",
+//           url: "softwarehelpdesk/softwarehelpdesksetup/softwareapprovalmatrix",
+//         },
+//         {
+//           name: "Define Purpose",
+//           url: "softwarehelpdesk/softwarehelpdesksetup/softwaredefinepurpose",
+//         },
+//       ],
+//     },
+//     {
+//       name: "Create Ticket",
+//       url: "softwarehelpdesk/softwarehelpdeskcreateticket",
+//     },
+//     {
+//       name: "Ticket List",
+//       url: "softwarehelpdesk/softwarehelpdeskticketlist",
+//     },
+//   ],
+// },

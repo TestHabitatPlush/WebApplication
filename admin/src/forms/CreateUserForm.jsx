@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Input from "../components/shared/Input";
@@ -7,6 +8,7 @@ import Button from "../components/ui/Button";
 import UserHandler from "../handlers/UserHandler";
 import UserRoleHandler from "../handlers/UserRoleHandler";
 import CustomerHandler from "../handlers/superadmin/CustomerHandler";
+
 
 const CreateUserForm = () => {
   const dispatch = useDispatch();
@@ -31,7 +33,7 @@ const CreateUserForm = () => {
   }
 
   const newData = result.data
-    .filter((el) => el.roleCategory === "society_moderator")
+    .filter((el) => el.roleCategory === "society_moderator" || el.roleCategory === "super_admin_it" )
     .map((el) => ({ label: el.roleCategory, value: el.roleId }));
 
   dispatch({

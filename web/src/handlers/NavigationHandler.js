@@ -3,6 +3,13 @@ import { useRouter } from "next/navigation";
 
 const NavigationHandler = () => {
   const router = useRouter();
+ // helper: navigate + refresh
+  const navigate = (path) => {
+    if (!path) return;
+
+    router.push(path);
+    router.refresh(); // ✅ refresh ONLY on click
+  };
 
   const navigateToDashboard = () => {
     router.push("/");
@@ -24,9 +31,14 @@ const NavigationHandler = () => {
     router.push("/more");
   };
 
-  const customNavigation = (route) => {
-    router.push(route);
+  const navigateToHelp = () => {
+    router.push("/help");
   };
+
+  // const customNavigation = (route) => {
+  //   router.push(route);
+  // };
+const customNavigation = (route, refresh = false) => navigate(route, refresh);
 
   return {
     navigateToDashboard,
@@ -35,6 +47,7 @@ const NavigationHandler = () => {
     customNavigation,
     navigateToFind,
     navigateToMore,
+    navigateToHelp
   };
 };
 

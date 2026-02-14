@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: habitatplush_dev
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  service:
+    build: .
+    container_name: society-service
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env.docker
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:

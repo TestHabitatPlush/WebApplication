@@ -1,70 +1,106 @@
+
+
 import toast from "react-hot-toast";
-import {
-  CreateNoticeService,
-  deleteNoticeService,
-  getNoticeService,
-  updateNoticeService,
-  userGroupNoticeService,
-} from "../services/noticeService";
 import { useSelector } from "react-redux";
+import {
+  createNoticeBySocietyService,
+  createNoticeByUserService,
+  getNoticesBySocietyService,
+  getNoticesByUserService,
+  updateNoticeService,
+  deleteNoticeService,
+} from "../services/noticeService";
 
 const NoticeHandler = () => {
   const token = useSelector((state) => state.auth.token);
-  const societyId = useSelector((state) => state.auth.user.Customer.customerId);
-  const senderId = useSelector((state) => state.auth.user.userId);
+  const societyId = useSelector((state) => state.auth.user?.Customer?.customerId);
+  const userId = useSelector((state) => state.auth.user?.userId);
 
-  const createNoticeHandler = async (data) => {
-    console.log(senderId);
-    return await CreateNoticeService(
-      { ...data, societyId, senderId },
-      token
-    ).then((res) => {
+  // ===== SOCIETY NOTICE HANDLER =====
+  const createNoticeBySocietyHandler = async (data) => {
+    try {
+      const res = await createNoticeBySocietyService(data, societyId, userId, token);
       if (res.status === 201) {
-        toast.success("Notice created successfully.");
+        toast.success("Notice created for society.");
       }
-    });
+      return res;
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Failed to create society notice.");
+      console.error(err);
+    }
   };
 
-  const getNoticeHandler = async (data) => {
-    console.log("notice data", data);
+const getNoticesBySocietyHandler = async () => {
+  try {
+    const res = await getNoticesBySocietyService(societyId, userId, token);
+    return res; 
+  } catch (err) {
+    toast.error("Failed to fetch society notices.");
+    console.error(err);
+  }
+};
 
-    return await getNoticeService({ ...data, societyId }, token)
-      .then((res) => {
-        return res;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
 
-  const deleteNoticeByIdHandler = async (data) => {
-    console.log("delete", data);
-    return await deleteNoticeService(data, token)
-      .then((res) => {
-        return res;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const updateNoticeHandler = async (data) => {
-    console.log("update Notice Handler", data);
-    return await updateNoticeService(
-      { ...data, societyId, senderId },
-      token
-    ).then((res) => {
+  // ===== USER NOTICE HANDLER =====
+  const createNoticeByUserHandler = async (data) => {
+    try {
+      const res = await createNoticeByUserService(data, userId, token);
       if (res.status === 201) {
-        toast.success("Notice Updated successfully.");
+        toast.success("User notice created successfully.");
       }
-    });
+      return res;
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Failed to create user notice.");
+      console.error(err);
+    }
+  };
+
+const getNoticesByUserHandler = async () => {
+  try {
+    const res = await getNoticesByUserService(userId, token);
+    return res; 
+  } catch (err) {
+    toast.error("Failed to fetch user notices.");
+    console.error(err);
+  }
+};
+
+
+  // ===== COMMON NOTICE HANDLER =====
+  const updateNoticeHandler = async (noticeId, data) => {
+    try {
+      const res = await updateNoticeService(noticeId, data, token);
+      if (res.status === 200) {
+        toast.success("Notice updated successfully.");
+      }
+      return res;
+    } catch (err) {
+      toast.error("Failed to update notice.");
+      console.error(err);
+    }
+  };
+
+  const deleteNoticeHandler = async (noticeId) => {
+    try {
+      const res = await deleteNoticeService(noticeId, token);
+      if (res.status === 200) {
+        toast.success("Notice deleted successfully.");
+      }
+      return res;
+    } catch (err) {
+      toast.error("Failed to delete notice.");
+      console.error(err);
+    }
   };
 
   return {
-    createNoticeHandler,
-    getNoticeHandler,
-    deleteNoticeByIdHandler,
+    createNoticeBySocietyHandler,
+    getNoticesBySocietyHandler,
+    createNoticeByUserHandler,
+    getNoticesByUserHandler,
     updateNoticeHandler,
+    deleteNoticeHandler,
   };
 };
+
 export default NoticeHandler;

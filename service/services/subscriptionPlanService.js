@@ -1,40 +1,38 @@
-const SubscriptionPlan = require("../models/SubscriptionPlan");
-
-const createSubscriptionPlan = async (data) => {
-  return await SubscriptionPlan.create(data);
+const { addMonths, addYears } = require("date-fns");
+const determineStatus = (startDate, endDate) => {
+  const now = new Date();
+  if (!startDate || !endDate) return "pending";
+  if (now < new Date(startDate)) return "pending";
+  if (now > new Date(endDate)) return "expired";
+  return "active";
 };
 
-const getAllSubscriptionPlans = async () => {
-  return await SubscriptionPlan.findAll();
+const computeFinalPrice = (price, discountPercentage) => {
+  const result = price - (price * discountPercentage / 100);
+  return parseFloat(result.toFixed(2));
 };
 
-const getSubscriptionPlanById = async (id) => {
-  return await SubscriptionPlan.findByPk(id);
-};
+const computeEndDate = (startDate, billingCycle) => {
+  const start = new Date(startDate);
 
-const updateSubscriptionPlan = async (id, data) => {
-  const [updated] = await SubscriptionPlan.update(data, {
-    where: { subscriptionId: id },
-  });
-  if (updated) {
-    return await SubscriptionPlan.findByPk(id);
-  }
-  throw new Error("Subscription Plan not found");
-};
-
-const deleteSubscriptionPlan = async (id) => {
-  const deleted = await SubscriptionPlan.destroy({
-    where: { subscriptionId: id },
-  });
-  if (!deleted) {
-    throw new Error("Subscription Plan not found");
+  switch (billingCycle){
+    case "monthly":
+      return addMonths(start, 1);
+      case "quarterly":
+      return addMonths(start, 3);
+    case "half-yearly":
+      return addMonths(start, 6);
+    case "yearly":
+      return addMonths(start, 12);
+    case "custom":
+      return null;
+    default:
+      throw new Error("Invalid billing cycle");
   }
 };
 
 module.exports = {
-  createSubscriptionPlan,
-  getAllSubscriptionPlans,
-  getSubscriptionPlanById,
-  updateSubscriptionPlan,
-  deleteSubscriptionPlan,
+  determineStatus,
+  computeFinalPrice,
+  computeEndDate,
 };

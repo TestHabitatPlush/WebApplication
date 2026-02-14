@@ -1,3 +1,5 @@
+
+'use client';
 import { useState } from "react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import DashboardHeader from "@/views/dashboard/DashboardHeader";
@@ -10,7 +12,7 @@ const Documents = () => {
 
   const handleRefresh = () => {
     setRefreshKey((prev) => prev + 1);
-  }; // ✅ Missing closing brace fixed here
+  };
 
   return (
     <DashboardLayout
@@ -19,7 +21,7 @@ const Documents = () => {
       rightContent={
         <>
           <AddDocument onUploadSuccess={handleRefresh} />
-          <DocumentList refreshKey={refreshKey} />
+          <DocumentList refreshTrigger={refreshKey} />
         </>
       }
     />
@@ -27,4 +29,3 @@ const Documents = () => {
 };
 
 export default Documents;
-

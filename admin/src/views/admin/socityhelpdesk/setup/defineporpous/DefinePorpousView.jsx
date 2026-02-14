@@ -1,10 +1,13 @@
+
+
+
 import React, { useState } from "react";
-import Button from "../../../../../components/ui/Button";
+// import Button from "../../../../../components/ui/Button";
 import Input from "../../../../../components/shared/Input";
 import Dialog from "../../../../../components/ui/Dialog";
 
 const DefinePorpousView = ({ isOpen, onClose, formData }) => {
-  const [viewDefinePurpose, setViewDefinePurpose] = useState(formData);
+  const [viewDefinePurpose] = useState(formData);
 
   return (
     <Dialog
@@ -23,39 +26,34 @@ const DefinePorpousView = ({ isOpen, onClose, formData }) => {
             size={"lg"}
             value={viewDefinePurpose?.purpose_Details || ""}
             name="purpose_Details"
+            readOnly
           />
         </div>
         <div className="grid grid-cols-3 gap-5 items-center mt-3">
-          <div class="flex items-center mb-4">
+          <div className="flex items-center mb-4">
             <input
-              id="default-radio-1"
               type="radio"
-              value="created"
+              value="active"
               name="status"
-              checked={viewDefinePurpose?.status === "created"}
-              class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
+              checked={viewDefinePurpose?.status === "active"}
+              readOnly
+              className="w-4 h-4"
             />
-            <label
-              for="default-radio-1"
-              class="ms-2 text-sm font-medium text-gray-900 "
-            >
-              Created
+            <label className="ms-2 text-sm font-medium text-gray-900 ">
+              Active
             </label>
           </div>
-          <div class="flex items-center mb-4">
+          <div className="flex items-center mb-4">
             <input
-              id="default-radio-1"
               type="radio"
-              value="expired"
+              value="inactive"
               name="status"
-              checked={viewDefinePurpose?.status === "expired"}
-              class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500   focus:ring-2 "
+              checked={viewDefinePurpose?.status === "inactive"}
+              readOnly
+              className="w-4 h-4"
             />
-            <label
-              for="default-radio-1"
-              class="ms-2 text-sm font-medium text-gray-900 "
-            >
-              Expired
+            <label className="ms-2 text-sm font-medium text-gray-900 ">
+              Inactive
             </label>
           </div>
         </div>

@@ -58,7 +58,7 @@ const CreateSociety = () => {
 
   return (
     <form className="p-5">
-      <div className="text-xl mb-5"></div>
+      <div className="mb-5 text-xl"></div>
       <SocietyCreateForm onSubmit={handleSubmit} />
     </form>
   );

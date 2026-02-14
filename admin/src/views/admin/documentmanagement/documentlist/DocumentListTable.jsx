@@ -1,17 +1,7 @@
-
 import React, { useEffect, useMemo, useState } from "react";
 import DocumentHandler from "../../../../handlers/DocumentHandler";
-import {
-  FaFilePdf,
-  FaFileImage,
-  FaTrashAlt,
-} from "react-icons/fa";
-import {
-  FiEye,
-  FiDownload,
-  FiFile,
-  FiFileText,
-} from "react-icons/fi";
+import { FaFilePdf, FaFileImage, FaTrashAlt } from "react-icons/fa";
+import { FiEye, FiDownload, FiFile, FiFileText } from "react-icons/fi";
 import ReusableTable from "../../../../components/shared/ReusableTable";
 import ViewDocumentModal from "./ViewDocumentModal";
 
@@ -22,6 +12,17 @@ const visibilityOptions = [
   { value: "primary", label: "Primary Member" },
   { value: "all", label: "All" },
 ];
+const VISIBILITY_ROLE_MAP = {
+  owner: ["society_owner", "society_owner_family"],
+  tenant: ["society_tenant", "society_tenant_family"],
+  primary: ["primary_member"],
+  all: [
+    "society_owner",
+    "society_owner_family",
+    "society_tenant",
+    "society_tenant_family",
+  ],
+};
 
 const DocumentListTable = () => {
   const [visibilityFilter, setVisibilityFilter] = useState("");
@@ -38,32 +39,45 @@ const DocumentListTable = () => {
     deleteDocumentHandler,
   } = DocumentHandler();
 
-  const toggleViewDiscussionDetailModal = () => {
+  const toggleViewDocumentDetailModal = () => {
     setViewModal((prev) => !prev);
   };
-
   useEffect(() => {
     const fetchDocuments = async () => {
       setLoading(true);
       try {
-        let userDocs = await getDocumentByUserHandler();
-        let societyDocs = await getDocumentBySocietyHandler();
+        const userRes = await getDocumentByUserHandler();
+        const societyRes = await getDocumentBySocietyHandler();
 
-        let allDocs = [
-          ...(userDocs?.documents || []),
-          ...(societyDocs?.documents || []),
-        ];
+        let userDocs = userRes?.documents || [];
+        let societyDocs = societyRes?.data?.documents || [];
 
-        if (visibilityFilter) {
-          allDocs = allDocs.filter((doc) =>
-            Array.isArray(doc.roleCategories)
-              ? doc.roleCategories.includes(
-                  visibilityFilter === "primary"
-                    ? "primary_member"
-                    : `society_${visibilityFilter}`
-                )
-              : false
-          );
+        let allDocs = [...userDocs, ...societyDocs];
+
+        // remove duplicates
+        const uniqueMap = new Map();
+        allDocs.forEach((doc) => uniqueMap.set(doc.documentId, doc));
+        allDocs = Array.from(uniqueMap.values());
+
+        if (visibilityFilter && VISIBILITY_ROLE_MAP[visibilityFilter]) {
+          allDocs = allDocs.filter((doc) => {
+            if (!doc.roleCategories) return false;
+
+            let roles = doc.roleCategories;
+
+            // 🔑 Parse if string
+            if (typeof roles === "string") {
+              try {
+                roles = JSON.parse(roles);
+              } catch {
+                return false;
+              }
+            }
+
+            return roles.some((role) =>
+              VISIBILITY_ROLE_MAP[visibilityFilter].includes(role)
+            );
+          });
         }
 
         setDocuments(allDocs);
@@ -79,8 +93,6 @@ const DocumentListTable = () => {
     fetchDocuments();
   }, [visibilityFilter, pageSize]);
 
-
-  
   const pagedDocs = useMemo(() => {
     const reversed = [...documents].reverse();
     const start = pageIndex * pageSize;
@@ -184,11 +196,61 @@ const DocumentListTable = () => {
             docx: <FiFileText className="inline mr-1 text-indigo-600" />,
           };
 
-          const icon =
-            iconMap[extension] || <FiFile className="inline mr-1 text-gray-400" />;
+          const icon = iconMap[extension] || (
+            <FiFile className="inline mr-1 text-gray-400" />
+          );
           const displayExt = extension ? `.${extension}` : "—";
 
-          return <span className="flex items-center">{icon} {displayExt}</span>;
+          return (
+            <span className="flex items-center">
+              {icon} {displayExt}
+            </span>
+          );
+        },
+        className: "text-left",
+      },
+
+      {
+        Header: "Applicable For",
+        accessor: "roleCategories",
+         Cell: ({ value }) => {
+          if (!value) return "All";
+
+          let roles = value;
+
+          if (typeof roles === "string") {
+            try {
+              roles = JSON.parse(roles);
+            } catch {
+              return "All";
+            }
+          }
+
+          if (!Array.isArray(roles) || roles.length === 0) return "All";
+
+          const labelMap = {
+            society_owner: "Owner",
+            society_owner_family: "Owner",
+            society_tenant: "Tenant",
+            society_tenant_family: "Tenant",
+            primary_member: "Primary Member",
+          };
+
+          const allRoles = [
+            "society_owner",
+            "society_owner_family",
+            "society_tenant",
+            "society_tenant_family",
+          ];
+
+          const isAll =
+            allRoles.every((r) => roles.includes(r)) &&
+            roles.length === allRoles.length;
+
+          if (isAll) return "All";
+
+          const uniqueLabels = [...new Set(roles.map((r) => labelMap[r] || r))];
+          return uniqueLabels.join(", ");
         },
         className: "text-left",
       },
@@ -232,7 +294,8 @@ const DocumentListTable = () => {
   );
 
   const activeGroupName =
-    visibilityOptions.find((opt) => opt.value === visibilityFilter)?.label || "";
+    visibilityOptions.find((opt) => opt.value === visibilityFilter)?.label ||
+    "";
 
   return (
     <div className="relative px-4 py-6">
@@ -266,7 +329,7 @@ const DocumentListTable = () => {
       {viewModal && (
         <ViewDocumentModal
           isOpen={viewModal}
-          onClose={toggleViewDiscussionDetailModal}
+          onClose={toggleViewDocumentDetailModal}
           formData={showViewFormData}
         />
       )}
@@ -289,4 +352,3 @@ const DocumentListTable = () => {
 };
 
 export default DocumentListTable;
-

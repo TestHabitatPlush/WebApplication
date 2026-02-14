@@ -13,7 +13,7 @@ const ContactDetails = () => {
     const paths = ["Emergency Contact", "Contact Details"];
     const Heading = ["Add Contact Information"];
   
-    const userId = useSelector((state) => state.auth.user?.userId); // ✅ Ensure not undefined
+    const userId = useSelector((state) => state.auth.user?.userId); 
     const token = useSelector((state) => state.auth.token);
   
     const [formData, setFormData] = useState({

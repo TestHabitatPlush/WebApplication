@@ -1,3 +1,4 @@
+
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import TokenLoginScreen from "./views/auth/TokenLoginScreen";
@@ -11,10 +12,10 @@ function App() {
   const user = useSelector((state) => state.auth.user);
   // console.log(user);
 
-  const { setIntitalReduxState } = AuthHandler();
+  const { setInitialReduxState } = AuthHandler();
 
   useEffect(() => {
-    setIntitalReduxState();
+    setInitialReduxState();
   }, []);
 
   return (

@@ -275,6 +275,8 @@
 
 // export default ContactUs;
 
+
+
 "use client";
 import Footer from "@/views/footer/Footer";
 import Navbar from "@/views/navbar/Navbar";
@@ -309,10 +311,10 @@ const ContactUs = () => {
 
     emailjs
       .send(
-        "service_9irunus",
-        "template_gbquq9q",
+     "service_9irunus",//service_ID
+        "template_gbquq9q",//template_ID
         formData,
-        "ta2fgL1nL7jyvSr4W"
+        "ta2fgL1nL7jyvSr4W",//public_key     
       )
   .then((response) => {
         console.log("SUCCESS!", response.status, response.text);

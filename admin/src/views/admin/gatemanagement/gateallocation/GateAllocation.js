@@ -161,12 +161,12 @@ function GateAllocation() {
         <>
             <UrlPath paths={paths} />
 
-            <div className="p-10 my-5 border rounded-lg bg-gray-100">
-                <div className="text-xl font-sans font-semibold text-lime">
+            <div className="p-10 my-5 bg-gray-100 border rounded-lg">
+                <div className="font-sans text-xl font-semibold text-lime">
                     Gate Allocation
                 </div>
 
-                <div className="grid grid-cols-3 gap-5 items-center">
+                <div className="grid items-center grid-cols-3 gap-5">
                     <select
                         value={gateName}
                         onChange={(e) => setGateName(e.target.value)}
@@ -219,7 +219,7 @@ function GateAllocation() {
                             >
                                 <MdOutlineCancel
                                     onClick={() => removeAllocation(index)}
-                                    className="absolute right-3 top-3 text-red-600 cursor-pointer text-xl"
+                                    className="absolute text-xl text-red-600 cursor-pointer right-3 top-3"
                                 />
                                 <p className="font-medium text-gray-700">
                                     <strong>Gate:</strong> {value.gate} (AllocatedTo User:{" "}
@@ -230,7 +230,7 @@ function GateAllocation() {
                     </div>
                 </div>
 
-                <div className="max-w-md mx-auto mt-6 flex justify-center">
+                <div className="flex justify-center max-w-md mx-auto mt-6">
                     <Button
                         onClick={handleSubmit} 
                         size="md">
@@ -243,4 +243,4 @@ function GateAllocation() {
     )
 }
 
-export default GateAllocation
+export default GateAllocation;

@@ -101,7 +101,7 @@ exports.requestPasswordReset = async (req, res) => {
 
     await user.update({ resetToken, resetTokenExpiration });
 
-    const frontendURL = process.env.REACT_APP_PUBLIC_FRONTEND_URL || 'http://localhost:3000';
+    const frontendURL = process.env.REACT_APP_PUBLIC_FRONTEND_URL || 'http://localhost:3001';
     const resetLink = `${frontendURL}/reset-password?token=${resetToken}`;
 
     await sendEmail(
@@ -139,7 +139,15 @@ exports.resetPassword = async (req, res) => {
       return res.status(400).json({ error: 'Invalid or expired token' });
     }
 
+    // Hash the new password before storing
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    //Update the password and clear the resetToken fields
+    // await user.update({
+    // password: hashedPassword,
+    // resetToken: null,
+    // resetTokenExpiration: null,
+    // });
 
     user.password = hashedPassword;
     user.resetToken = null;

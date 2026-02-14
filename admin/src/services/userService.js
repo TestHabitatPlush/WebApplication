@@ -10,6 +10,7 @@ export const createSocietyModeratorService = (data, token) => {
       Authorization: `Bearer ${token}`,
       // "Content-Type": "multipart/form-data",
       "Content-Type": "application/json",
+      
     },
   });
 };
@@ -47,7 +48,8 @@ export const createSocietyResidentService = async (societyId, token, data) => {
   return axios.post(url, data, {
     headers: {
       Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
+     // "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
     },
   });
 };
@@ -73,11 +75,11 @@ export const getAllApprovedUserDataService = (societyId, token, data) => {
   return axios.get(url, {
     headers: {
       Authorization: `Bearer ${token}`,
-    },
+    
     params: data,
+    },
   });
 };
-
 
 
 export const getAllDeactiveUserDataService = (societyId, token, { page, pageSize }) => {
@@ -112,6 +114,78 @@ export const updateUsersForApprovedAndRejectService = (data, token) => {
 export const updateModeratorStatusService = async ( data, token) => {
   const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/moderators/${data.id}`;
   return axios.put(url, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+export const updateSocietyModeratorService = async (userId, formData, token) => {
+  if (!token || !userId) throw new Error("Missing token or user ID");
+
+  return await axios.put(
+    `${process.env.REACT_APP_PUBLIC_API_URL}/users/moderator/${userId}`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+export const getSocietyModeratorService = (societyId, token, params = {}) => {
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/moderator/${societyId}`;
+  return axios.get(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params, // will be ignored if empty
+  });
+};
+//get status 
+export const getAllSuperAdminItAndModeratorService = (token, data) => {
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/superadmin/moderator`;
+
+  return axios.get(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,  // ✅ correct
+    },
+    params: data,
+  });
+};
+
+//update status
+export const updateUserIdStatusService = (userId, token, data) => {
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/User/${userId}`;
+  return axios.put(url, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+// Bulk create using file upload (Excel/CSV)
+export const createBulkSocietyUserService = async (societyId, token, formData) => {
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/bulk-create/${societyId}`;
+  return axios.post(url, formData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+// Bulk create manually using JSON
+export const createMultipleSocietyUserService = async (societyId, token, users) => {
+  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/users/bulk-create/${societyId}`;
+
+  // ✅ Ensure backend receives an array
+  if (!Array.isArray(users)) {
+    throw new Error("Users payload must be an array");
+  }
+
+  return axios.post(url, users, {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",

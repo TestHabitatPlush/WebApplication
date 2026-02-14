@@ -1,33 +1,54 @@
-const {
-  createTicketPurpous,
-  getTicketPurpous,
-  getTicketListView,
-  createTicket,
-  updateTicketPurpous,
-  getTicketTable,
-  getrequestType,
-  createrequestType,
-  getAccessManagementMember,
-  createAccessManagementtable,
-} = require("../controllers/softwareHelpDeskController");
+const express = require("express");
+const router = express.Router();
+const softwareHelpdeskController = require("../controllers/softwareHelpDeskController");
 
-const softwareHelpDeskRouter = require("express").Router();
-
-softwareHelpDeskRouter.post("/", createTicketPurpous);
-softwareHelpDeskRouter.get("/", getTicketPurpous);
-softwareHelpDeskRouter.get("/ticketlistview", getTicketListView);
-softwareHelpDeskRouter.post("/createTicket", createTicket);
-softwareHelpDeskRouter.put(
-  "/updateTicketPurpous/:ticket_purpose_Id",
-  updateTicketPurpous
+// 1. Ticket Status
+router.post(
+  "/softwarerefticketstatus",
+  softwareHelpdeskController.createRefTicketStatus
 );
-softwareHelpDeskRouter.get("/getTicketTable", getTicketTable);
-softwareHelpDeskRouter.post("/typeofrequest", createrequestType);
-softwareHelpDeskRouter.get("/typeofrequest", getrequestType);
-softwareHelpDeskRouter.get("/accessmanagement", getAccessManagementMember);
-softwareHelpDeskRouter.post(
-  "/socityaccessmanagementcreate",
-  createAccessManagementtable
+router.get(
+  "/softwarerefticketstatus",
+  softwareHelpdeskController.getRefTicketStatus
 );
 
-module.exports = softwareHelpDeskRouter;
+// 2. Ticket Purpose
+router.post(
+  "/software-ticket-purpose/:societyId/:userId",
+  softwareHelpdeskController.createTicketPurpose
+);
+router.get(
+  "/software-ticket-purpose/:societyId",
+  softwareHelpdeskController.getTicketPurpose
+);
+router.put(
+  "/software-ticket-purpose/:ticket_purpose_Id",
+  softwareHelpdeskController.updateTicketPurpose
+);
+router.get(
+  "/software-ticket-purpose/dropdown/:societyId",
+  softwareHelpdeskController.getTicketListView
+);
+
+router.post(
+  "/software-ticket/create/:userId/:societyId",
+  softwareHelpdeskController.createTicket
+);
+router.get(
+  "/software-ticket/:userId/:societyId",
+  softwareHelpdeskController.getTicketTable
+);
+router.put(
+  "/software-ticket/:ticket_Id",
+  softwareHelpdeskController.updateTicketStatusAndRemarks
+);
+router.get(
+  "/software-accessmanagement/:societyId",
+  softwareHelpdeskController.getAccessManagementMember
+);
+// router.get("/access-management",  softwareHelpdeskController.getAccessManagementMember);
+router.post(
+  "/softwareaccessmanagementcreate/:societyId/:userId",
+  softwareHelpdeskController.createAccessManagementtable
+);
+module.exports = router;

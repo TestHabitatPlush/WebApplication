@@ -75,32 +75,3 @@ export const updateParkingService = (data, token) => {
 };
 
 
-export const createVehicleBySocietyService = (societyId, data, token) => {
-  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/vehicle/${societyId}`;
-  return axios.post(url, data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-};
-
-export const getVehicleService = (societyId, data, token) => {
-  const url = `${process.env.REACT_APP_PUBLIC_API_URL}/society/${societyId}/vehicles`;
-
-  return axios.get(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    params: data,
-  });
-};
-export const getVehicleDataByIdService = (vehicleId, token) => {
-  const url = `${BASE_URL}/vehicleData/${vehicleId}`;
-
-  return axios.get(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  });
-};

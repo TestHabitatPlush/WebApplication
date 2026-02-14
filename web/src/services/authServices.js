@@ -1,6 +1,13 @@
 import axios from "axios";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export const loginService = (data) => {
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/login`;
-    return axios.post(url, data);
+  return axios.post(`${API_URL}/auth/login`, data);
 };
+
+export const jobProfileLoginService = (data) => {
+  return axios.post(`${API_URL}/auth/job-profile-login`, data);
+};
+
+

@@ -1,23 +1,35 @@
+// handlers/EmergencyContactHandler.js
+
 import { useSelector } from "react-redux";
 import { getEmergencyContactByUserIdService } from "@/services/emergencyContactService";
 
 const EmergencyContactHandler = () => {
   const token = useSelector((state) => state.auth.token);
-  const userId = 3;
-  const societyId = 2;
-  //useSelector((state) => state.auth.user?.userId); // ✅ Get userId safely
+  const userId = useSelector((state) => state.auth.user?.userId);
+  const societyId = useSelector(
+    (state) => state.society.selectedSocietyId
+  );
 
-  const getEmergencyContactUserHandler = async (params = {}) => {
+  const getEmergencyContactUserHandler = async () => {
     try {
-      if (!userId || !token || !societyId) {
-        console.error("Missing userId or token");
+      if (!societyId || !userId || !token) {
+        console.error("Missing auth params", {
+          societyId,
+          userId,
+          token,
+        });
         return { success: false, data: [] };
       }
 
-      const res = await getEmergencyContactByUserIdService(userId, societyId,params, token);
-      return { success: true, data: res?.data };
-    } catch (err) {
-      console.error("Error fetching emergency contact:", err);
+      const res = await getEmergencyContactByUserIdService(
+        societyId,
+        userId,
+        token
+      );
+
+      return { success: true, data: res?.data || [] };
+    } catch (error) {
+      console.error("Error fetching emergency contact:", error);
       return { success: false, data: [] };
     }
   };

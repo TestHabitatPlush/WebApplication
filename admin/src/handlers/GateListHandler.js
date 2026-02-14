@@ -4,7 +4,9 @@ import { useSelector } from "react-redux";
 
 const GateListHandler = () => {
   const token = useSelector((state) => state.auth.token);
-  const societyId = useSelector((state) => state.auth.user.Customer.customerId);
+  // const societyId = useSelector((state) => state.auth.user.Customer.customerId);
+    const societyId =
+    user?.societyId || user?.customerId || user?.assignedSocietyId || null;
 
   const getGateListHandler = async (data) => {
     console.log("approved get data", data);

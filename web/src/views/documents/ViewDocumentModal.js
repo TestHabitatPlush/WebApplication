@@ -33,13 +33,13 @@
 //             <FaImage className="mt-1 text-xl text-blue-600" />
 //             <div>
 //               <h4 className="text-sm text-gray-500">Uploaded Image</h4>
-//               <div className="relative w-full max-w-md h-auto mt-2 border border-gray-300 rounded-lg overflow-hidden">
+//               <div className="relative w-full h-auto max-w-md mt-2 overflow-hidden border border-gray-300 rounded-lg">
 //                 <Image
 //                   src={imageUrl}
 //                   alt="Uploaded Document"
 //                   width={400}
 //                   height={300}
-//                   className="w-full h-auto object-contain"
+//                   className="object-contain w-full h-auto"
 //                   unoptimized // remove if image comes from a known domain set in next.config.js
 //                 />
 //               </div>
@@ -72,26 +72,26 @@
 
 'use client';
 
-import Image from 'next/image';
 import { FaFileAlt, FaImage } from 'react-icons/fa';
+import Dialog from '@/components/ui/Dialog';
 
 const getImageUrl = (path) => {
   if (!path) return null;
-  if (path.startsWith('http')) return path;
-  return `${process.env.NEXT_PUBLIC_API_URL}/${path}`;
+  if (path.startsWith("http")) return path;
+  return `${process.env.NEXT_PUBLIC_BASE_URL}/${path}`;
 };
 
-const ViewDocumentModal = ({ isOpen, onClose, formData }) => {
-  if (!isOpen || !formData) return null;
 
-  const imageUrl = getImageUrl(formData.picture);
-  const documentUrl = getImageUrl(formData.document);
+const ViewDocumentModal = ({ isOpen, onClose, formData }) => {
+  if (!formData) return null;
+
+  const imageUrl = getImageUrl(formData.document);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="w-full max-w-4xl bg-white rounded-lg p-6 overflow-auto max-h-[90vh] relative">
         <button
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+          className="absolute text-gray-500 top-2 right-2 hover:text-gray-700"
           onClick={onClose}
         >
           ✕
@@ -106,13 +106,13 @@ const ViewDocumentModal = ({ isOpen, onClose, formData }) => {
             <FaImage className="mt-1 text-xl text-blue-600" />
             <div>
               <h4 className="text-sm text-gray-500">Uploaded Image</h4>
-              <div className="relative w-full max-w-md h-auto mt-2 border border-gray-300 rounded-lg overflow-hidden">
+              <div className="relative w-full h-auto max-w-md mt-2 overflow-hidden border border-gray-300 rounded-lg">
                 <Image
                   src={imageUrl}
                   alt="Uploaded Document"
                   width={400}
                   height={300}
-                  className="w-full h-auto object-contain"
+                  className="object-contain w-full h-auto"
                   unoptimized
                 />
               </div>
@@ -140,5 +140,6 @@ const ViewDocumentModal = ({ isOpen, onClose, formData }) => {
     </div>
   );
 };
+
 
 export default ViewDocumentModal;

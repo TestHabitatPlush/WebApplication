@@ -5,8 +5,9 @@ import VisitorList from "./VisitorList";
 const Visitor = () => {
   return (
     <section>
-      <VisitorList />
+     
       <AddVisitor />
+       <VisitorList />
     </section>
   );
 };

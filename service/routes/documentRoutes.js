@@ -1,3 +1,4 @@
+
 // const express = require("express");
 // const documentRouter = express.Router();
 // const documentController = require("../controllers/documentController");
@@ -16,20 +17,68 @@
 // module.exports = documentRouter;
 
 
+
+// const express = require("express");
+// const documentRouter = express.Router();
+// const documentController = require("../controllers/documentController");
+
+// documentRouter.post("/society/:societyId/:userId", documentController.createDocumentBySocietyId);
+// documentRouter.post("/user/:userId", documentController.createDocumentByUserId);
+
+// documentRouter.get("/society/:societyId/:userId", documentController.getDocumentBySocietyId);
+
+
+// documentRouter.get("/user/:userId", documentController.getDocumentByUserId);
+// // documentRouter.get("/all/by-user/:userId", documentController.getAllDocuments);
+// documentRouter.get("/:userId", documentController.getAllDocuments);
+
+// documentRouter.put("/society/:documentId",documentController.updateDocumentBySocietyId);
+// documentRouter.put("/user/:documentId",documentController.updateDocumentByUserId);
+
+// documentRouter.delete("/:documentId",documentController.deleteDocument);
+
+// module.exports = documentRouter;
+
+
 const express = require("express");
 const documentRouter = express.Router();
 const documentController = require("../controllers/documentController");
 
-documentRouter.post("/society/:societyId/:userId", documentController.createDocumentBySocietyId);
-documentRouter.post("/user/:userId", documentController.createDocumentByUserId);
+documentRouter.post(
+  "/society/:societyId/:userId",
+  documentController.createDocumentBySocietyId
+);
 
-documentRouter.get("/society/:societyId/:userId", documentController.getDocumentBySocietyId);
-documentRouter.get("/user/:userId", documentController.getDocumentByUserId);
-documentRouter.get("/:userId", documentController.getAllDocuments);
+documentRouter.post(
+  "/user/:userId",
+  documentController.createDocumentByUserId
+);
 
-documentRouter.put("/society/:documentId",documentController.updateDocumentBySocietyId);
-documentRouter.put("/user/:documentId",documentController.updateDocumentByUserId);
+documentRouter.get(
+  "/society/:societyId/:userId",
+  documentController.getDocumentBySocietyId
+);
 
-documentRouter.delete("/:documentId",documentController.deleteDocument);
+documentRouter.get(
+  "/user/:userId",
+  documentController.getDocumentByUserId
+);
+
+documentRouter.get(
+  "/all/:userId",
+  documentController.getAllDocuments
+);
+
+
+documentRouter.put(
+  "/:documentId",
+  documentController.updateDocumentByDocumentId
+);
+
+
+documentRouter.delete(
+  "/:documentId",
+  documentController.deleteDocument
+);
 
 module.exports = documentRouter;

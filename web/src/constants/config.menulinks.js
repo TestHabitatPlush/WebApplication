@@ -40,4 +40,15 @@ export const MenuLinks = [
   //   access: ["resident", "security"],
   //   click: navigateToMore,
   // },
+
+
+  // {
+  //   url:"help center",
+  //   name:"help center",
+  //   icon:FaEllipsisH,
+  //   access:["resident","security"],
+  //   click:navigateToMore
+  // }
+
+  
 ];

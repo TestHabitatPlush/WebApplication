@@ -5,7 +5,6 @@ import SectionHeading from "@/components/shared/SectionHeading";
 import Input from "@/components/shared/Input";
 import SectionContainer from "@/components/shared/SectionContainer";
 import { FaPlus } from "react-icons/fa6";
-import Label from "@/components/shared/Label";
 import Button from "@/components/ui/Button";
 
 const AddVisitor = () => {
@@ -19,11 +18,6 @@ const AddVisitor = () => {
         <div className="flex items-center gap-10">
           <ProfilePhoto src={photo} slt={"profile_image"} size="large" />
           <div className="">
-            {/* <SectionHeading size="lg">
-              Chinmaya Kumar Behera
-              <br />
-              <span className="text-lg font-normal">Flat Number</span>
-            </SectionHeading> */}
           </div>
         </div>
         <div className="grid gap-2 mt-5 grid-col-1 md:grid-cols-2 lg:grid-cols-3">
