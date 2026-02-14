@@ -1,0 +1,93 @@
+name: Deploy to Test Environment
+
+on:
+  push:
+    branches:
+      - test
+
+jobs:
+  deploy-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      # SERVICE (Backend) - Test
+      - name: Install Service Dependencies
+        working-directory: ./service
+        run: npm ci
+
+      # WEB (Frontend) - Test
+      - name: Install Web Dependencies
+        working-directory: ./web
+        run: npm ci
+
+      - name: Build Web (Test)
+        working-directory: ./web
+        run: npm run build
+        env:
+          NODE_ENV: test
+
+      # ADMIN (Admin Panel) - Test
+      - name: Install Admin Dependencies
+        working-directory: ./admin
+        run: npm ci
+
+      - name: Build Admin (Test)
+        working-directory: ./admin
+        run: npm run build
+        env:
+          NODE_ENV: test
+
+      # Deploy to Hostinger (Test Server)
+      - name: Deploy to Test Server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
+            echo "Starting test deployment..."
+            
+            cd /var/www/habitat-plush-test
+            
+            # Pull latest code
+            git fetch origin
+            git checkout test
+            git reset --hard origin/test
+            
+            echo "Deploying Service (Backend)..."
+            cd service
+            npm ci
+            pm2 reload habitat-service-test --env test || pm2 start app.js --name "habitat-service-test" --env test
+            
+            echo "Deploying Web (Frontend)..."
+            cd ../web
+            npm ci
+            npm run build
+            pm2 reload habitplus-web-test --env test || pm2 start "npm start" --name "habitplus-web-test" --env test
+            
+            echo "Deploying Admin (Admin Panel)..."
+            cd ../admin
+            npm ci
+            npm run build
+            pm2 reload habitplus-admin-test --env test || pm2 start "npm start" --name "habitplus-admin-test" --env test
+            
+            pm2 save
+            echo "✅ Test deployment successful!"
+
+      - name: Deployment Status
+        if: success()
+        run: echo "✅ Test environment deployed successfully!"
+
+      - name: Deployment Failed
+        if: failure()
+        run: echo "❌ Test deployment failed - check logs above"
