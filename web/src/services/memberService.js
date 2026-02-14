@@ -24,3 +24,13 @@ export const getAllMembersService = (token) => {
     },
   });
 };
+
+export const getMemberDetailsService = (unitId,token) => {
+  console.log("API CALL UNIT ID 👉", unitId);
+
+  return axios.get(`${BASE_URL}/unit/users/${unitId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

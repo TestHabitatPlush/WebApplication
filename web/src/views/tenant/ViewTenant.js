@@ -1,53 +1,76 @@
-import React, { useEffect, useState } from "react";
-import TenantHandler from "@/handlers/TenantHandler";
-import TenantSummaryTable from "./TenantSummaryTable";
-import TenantDetailTable from "./TenantDetailTable";
-
+import React, { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
+import ReusableTable from "@/components/shared/ReusableTable";
+import MemberHandler from "@/handlers/MemberHandler";
+import BackButton from "@/components/shared/BackButton";
 const ViewTenant = () => {
-   const [members, setMembers] = useState([]);
-  const [units, setUnits] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const user = useSelector((state) => state.auth?.user);
+  const unitId = user?.unitId;
 
-  const { fetchTenantFamilyData } = TenantHandler();
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const { getMemberDetailsHandler } = MemberHandler();
 
   useEffect(() => {
-    setLoading(true);
-    const { units, members } = fetchTenantFamilyData();
-    setUnits(units);
-    setMembers(members);
-    setLoading(false);
-  }, []);
+    if (!unitId) return;
 
-  if (loading) return <p>Loading tenant family...</p>;
+    const loadMembers = async () => {
+      setLoading(true);
 
+      const members = await getMemberDetailsHandler(unitId);
+console.log(members)
+      setData(members);
+      setLoading(false);
+    };
+
+    loadMembers();
+  }, [unitId]);
+
+  // ✅ Columns
+const columns = useMemo(
+  () => [
+    { Header: "User ID", accessor: "userId" },
+     {
+      Header: "Unit",
+      accessor: "unitId"
+    },
+    {
+      Header: "Name",
+      Cell: ({ row }) =>
+        `${row.original.firstName} ${row.original.lastName}`,
+    },
+    { Header: "Email", accessor: "email" },
+    { Header: "Mobile", accessor: "mobileNumber" },
+   
+    {
+      Header: "Role",
+      Cell: ({ row }) => row.original.role?.roleCategory || "-",
+    },
+  ],
+  []
+);
   return (
-    <div>
-      <h2>Tenant Family Members</h2>
-      {members.length === 0 ? (
-        <p>No tenant family members found.</p>
+    <div className="p-5">
+      <BackButton />
+      <h2 className="mb-4 text-xl font-bold">Tenant Members</h2>
+
+      {loading ? (
+        <p>Loading...</p>
       ) : (
-        <table border="1" cellPadding="5">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Mobile</th>
-              <th>Unit</th>
-            </tr>
-          </thead>
-          <tbody>
-            {members.map((member) => (
-              <tr key={member.userId}>
-                <td>{member.firstName} {member.lastName}</td>
-                <td>{member.email}</td>
-                <td>{member.mobileNumber}</td>
-                <td>{units.find(u => u.unitId === member.unitId)?.unitName || member.unitId}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <ReusableTable
+          columns={columns}
+          data={data}
+          pageIndex={0}
+          pageSize={data.length || 10}
+          totalCount={data.length}
+          totalPages={1}          // 🔑 VERY IMPORTANT
+          setPageIndex={() => {}}
+          setPageSize={() => {}}
+        />
       )}
     </div>
   );
 };
+
 export default ViewTenant;

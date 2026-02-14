@@ -1,45 +1,61 @@
-import { useSelector } from "react-redux";
+import { getMemberDetailsService } from "@/services/memberService";
+import toast from "react-hot-toast";
 
 const TenantHandler = () => {
-  // Get logged-in user from Redux
-  const loggedInUser = useSelector((state) => state.auth?.user);
-  const allMembers = useSelector((state) => state.members?.allMembers || []); // Assuming you store members in Redux
+  const handleError = () => {
+    toast.error("Failed to fetch tenant members");
+  };
 
-  const fetchTenantFamilyData = () => {
-    if (!loggedInUser) return { units: [], members: [] };
+  // const getMemberDetailsHandler = async (unitId) => {
+  //   try {
+  //     if (!unitId) return [];
 
-    const loggedInRole = loggedInUser.userRole?.roleCategory;
-    const tenantUnitId = loggedInUser.unitId;
+  //     const res = await getMemberDetailsService(unitId);
 
-    // 🔹 Units (unique)
-    const unitsMap = {};
-    allMembers.forEach((m) => {
-      if (m.unitId && !unitsMap[m.unitId]) {
-        unitsMap[m.unitId] = {
-          unitId: m.unitId,
-          unitName: m.unit?.unitName || `Unit ${m.unitId}`,
-        };
+  //     const members = res.data?.data || [];
+
+  //     // ✅ FILTER REQUIRED ROLES
+  //     const filteredMembers = members.filter((m) =>
+  //       ["tenant", "tenant_family", "owner_family"].includes(
+  //         m.role?.roleCategory
+  //       )
+  //     );
+      
+
+  //     return filteredMembers;
+  //   } catch (error) {
+  //     handleError(error);
+  //     return [];
+  //   }
+  // };
+  const getMemberDetailsHandler = async (unitId) => {
+    try {
+      if (!unitId) return [];
+
+      const res = await getMemberDetailsService(unitId);
+      const members = res.data?.data || [];
+
+      // ✅ If Society Owner → show ALL
+      if (loggedInRole === "society_owner") {
+        return members;
       }
-    });
 
-    const units = Object.values(unitsMap);
+      // ✅ Others → limited roles only
+      const allowedRoles = [
+        "tenant",
+        "tenant_family",
+        "owner_family",
+      ];
 
-    // 🔹 Filter tenant family members of the same unit
-    let members = [];
-    if (loggedInRole === "society_tenant") {
-      members = allMembers.filter(
-        (m) =>
-          m.userRole?.roleCategory === "society_tenant_family" &&
-          Number(m.unitId) === Number(tenantUnitId)
+      return members.filter((m) =>
+        allowedRoles.includes(m.role?.roleCategory)
       );
+    } catch (error) {
+      handleError(error);
+      return [];
     }
-
-    return { units, members, tenantUnitId };
   };
-
-  return {
-    fetchTenantFamilyData,
-  };
+  return { getMemberDetailsHandler };
 };
 
 export default TenantHandler;

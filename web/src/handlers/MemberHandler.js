@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import {
   getMyUnitMembersService,
-  getAllMembersService,
+  getAllMembersService,getMemberDetailsService
 } from "@/services/memberService";
 
 const MemberHandler = () => {
@@ -46,10 +46,74 @@ const MemberHandler = () => {
     }
   };
 
+//  const getMemberDetailsHandler = async (unitId) => {
+//     try {
+//       if (!token || !unitId) {
+//         throw new Error("Missing token or unitId");
+//       }
 
+//       const response = await getMemberDetailsService(unitId, token);
 
+//       return response.data; // use this in component
+//     } catch (error) {
+//       console.error("Get member details error:", error);
+//       toast.error(
+//         error?.response?.data?.message || "Failed to fetch member details"
+//       );
+//       throw error;
+//     }
+//   };
 
-  return { fetchUserUnits, fetchAllMembers };
+  
+
+  // // ✅ FETCH MEMBERS BY UNIT
+  // const getMemberDetailsHandler = async (unitId) => {
+  //   try {
+  //    // if (!token || !unitId) return [];
+
+  //     const response = await getMemberDetailsService(unitId);
+
+  //     console.log("MEMBER API RESPONSE 👉", response.data);
+
+  //     return response.data?.data || [];
+  //   } catch (error) {
+  //     toast.error("Failed to fetch member details");
+  //     return [];
+  //   }
+  // };
+  
+  //  const getMemberDetailsHandler = async (unitId) => {
+  //   try {
+  //     if (!unitId) return [];
+
+  //     const isOwner = user?.role?.roleCategory === "society_owner";
+
+  //     const response = await getMemberDetailsService(
+  //       unitId,
+  //       isOwner ? token : null
+  //     );
+
+  //     return response.data?.data || [];
+  //   } catch (error) {
+  //     handleError(error);
+  //     return [];
+  //   }
+  // };
+
+   const getMemberDetailsHandler = async (unitId) => {
+    try {
+      if (!unitId) return [];
+
+      const res = await getMemberDetailsService(unitId);
+      return res.data?.data || [];
+      
+    } catch (error) {
+      handleError(error);
+      return [];
+    }
+  };
+
+  return { fetchUserUnits, fetchAllMembers ,getMemberDetailsHandler};
 };
 
 export default MemberHandler;

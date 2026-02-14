@@ -2,7 +2,7 @@ import DashboardLayout from "@/components/layouts/DashboardLayout";
 import React from "react";
 import DashboardHeader from "../dashboard/DashboardHeader";
 import DashboardLeftContents from "../dashboard/DashboardLeftContents";
-import AddMember from "./AddMember";
+import ViewMember from "./ViewMember";
 
 
 
@@ -14,7 +14,7 @@ const Member = () => {
       leftContent={<DashboardLeftContents />}
       rightContent={
         <React.Fragment>
-          <AddMember/>
+          <ViewMember/>
        </React.Fragment>
       }
     />

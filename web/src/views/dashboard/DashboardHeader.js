@@ -6,8 +6,8 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { IoChatbubbles, IoNotificationsOutline } from "react-icons/io5";
 
-import Logo from "../../../assets/svg&pngicon/user (1).png";
-import defultLogo from "../../../assets/Habitat_Plush_Logo Details/H+_Playstore_Live Chat.png";
+import defultLogo from "../../../assets/svg&pngicon/user (1).png";
+import Logo from "../../../assets/logo/Habitat Plush-8.png";
 
 
 import SideDrawer from "@/components/shared/SideDrawer";
@@ -17,6 +17,9 @@ import AuthHandler from "@/handlers/AuthHandler";
 
 const DashboardHeader = () => {
   const user = useSelector((state) => state.auth.user);
+const selectedSociety = useSelector(
+  (state) => state.society.selectedSocietyId
+);
 
   const [sideDrawer, setSideDrawer] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -47,9 +50,72 @@ const DashboardHeader = () => {
 
   const router = useRouter();
 
+  const handleAdminRedirect = async () => {
+  try {
+    const token = localStorage.getItem("authData")
+      ? JSON.parse(localStorage.getItem("authData")).token
+      : null;
+
+    if (!token) return;
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/admin-redirect`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || "Unauthorized");
+    }
+
+    // backend should return redirect url
+    if (data.redirectUrl) {
+      window.location.href = data.redirectUrl;
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+// const handleAdminRedirect = async () => {
+//   try {
+//     const authData = JSON.parse(localStorage.getItem("authData"));
+//     if (!authData?.token) return;
+
+//     const res = await fetch(
+//       `${process.env.NEXT_PUBLIC_BASE_URL}/auth/admin-redirect`,
+//       {
+//         method: "GET",
+//         headers: {
+//           Authorization: `Bearer ${authData.token}`,
+//         },
+//       }
+//     );
+
+//     const data = await res.json();
+
+//     if (!res.ok) {
+//       alert(data.message || "You are not allowed");
+//       return;
+//     }
+
+//     if (data.redirectUrl) {
+//       window.location.href = data.redirectUrl;
+//     }
+//   } catch (e) {
+//     console.error(e);
+//   }
+// };
+
 const profileImage = user?.photo
   ? `${process.env.NEXT_PUBLIC_BASE_URL}/${user.photo.replace(/\\/g, "/")}`
-  : Logo;
+  : defultLogo;
 
 
   return (
@@ -62,7 +128,7 @@ const profileImage = user?.photo
           <div className="flex items-center gap-3 md:gap-5">
             <div className="relative w-[45px] h-[45px]">
             <Image
-                src={defultLogo}
+                src={Logo}
                 alt="Profile"
                 fill
                 onClick={toggleDropdown}
@@ -73,11 +139,25 @@ const profileImage = user?.photo
 
             <span className="text-sm font-medium text-white md:text-base lg:text-lg">
               {user?.Customer?.customerName}
+
+
             </span>
           </div>
 
           {/* RIGHT */}
           <div className="flex items-center gap-4">
+            {/* Admin Login */}
+          
+             <button
+                onClick={handleAdminRedirect}
+                title="Admin Login"
+                className="px-4 py-2 text-sm font-semibold text-white border border-white rounded-md hover:bg-white/10"
+              >
+                Admin Login
+              </button>
+
+
+       
             {/* Chat */}
             <button className="text-white">
               <IoChatbubbles className="text-xl" />
@@ -93,18 +173,28 @@ const profileImage = user?.photo
               <span className="absolute w-2 h-2 bg-red-500 rounded-full top-1 right-1" />
             </button>
 
-            {/* Profile */}
-            <div
+             <div
               ref={dropdownRef}
-              className="relative w-[40px] h-[40px] cursor-pointer"
+              className={
+                  user?.photo
+                    ? "relative w-[40px] h-[40px] cursor-pointer rounded-full border border-white"
+                    : "relative w-[40px] h-[40px] cursor-pointer"
+                }
+            
             >
               <Image
                 src={profileImage}
                 alt="Profile"
-                fill               
+                fill
                 onClick={toggleDropdown}
-                className="object-contain brightness-0 invert"
+                className={
+                  user?.photo
+                    ? "object-cover rounded-full"
+                    : "object-contain brightness-0 invert"
+                }
               />
+            
+                
 
               {/* DROPDOWN */}
               {isDropdownOpen && (

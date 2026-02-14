@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { updateSocietyModeratorService } from "../services/userService";
+import { updateSocietyModeratorService,getUsersBySocietyIdService } from "../services/userService";
 import { useSelector } from "react-redux";
 
 const UserHandler = () => {
@@ -35,8 +35,24 @@ const UserHandler = () => {
     }
   };
 
+ const getUsersBySocietyHandler = async (societyIdParam, token, { page = 0, pageSize = 10, roleCategory } = {}) => {
+  try {
+    if (!societyIdParam || !token) {
+      throw new Error("Missing societyId or token");
+    }
+
+    const response = await getUsersBySocietyIdService(societyIdParam, token, { page, pageSize, roleCategory });
+
+    return response.data.data || []; // backend returns { success, count, data }
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    toast.error("Failed to load users");
+    return [];
+  }
+};
   return {
     updateResidentBySocietyIdHandler,
+    getUsersBySocietyHandler
   };
 };
 

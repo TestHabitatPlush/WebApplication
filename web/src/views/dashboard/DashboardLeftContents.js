@@ -47,12 +47,12 @@ const DashboardLeftContents = () => {
       icon: IoGridOutline,
       click: () => customNavigation("/more"),
     },
-    {
-      url:"help",
-      name: "Software Helpdesk",
-      icon: TbProgressHelp,
-      click: () => customNavigation("/softwarehelpdesk"),
-    }
+    // {
+    //   url:"help",
+    //   name: "Software Helpdesk",
+    //   icon: TbProgressHelp,
+    //   click: () => customNavigation("/helpdesk"),
+    // }
   ];
 
   const paths = usePathname().split("/").filter(el=>Boolean(el));
